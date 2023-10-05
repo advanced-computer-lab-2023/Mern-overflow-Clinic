@@ -15,6 +15,3 @@ const Adminstrator = model<IAdminstrator>('Adminstrator', adminstratorSchema);
 
 
 export default mongoose.model<IAdminstrator>("Adminstrator", adminstratorSchema);
-
-
-

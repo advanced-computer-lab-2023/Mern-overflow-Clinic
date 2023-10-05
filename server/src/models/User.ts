@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 const mongoUrl: string = process.env.MONGO_URI!;
 
+
 interface FamilyMember {
     name: string;
     mobileNumber: string;

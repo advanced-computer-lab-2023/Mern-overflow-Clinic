@@ -18,7 +18,6 @@ export interface IPatient {
     gender: string;
     mobileNumber: string;
     emergencyContact: FamilyMember[];
-    //TODO family members
     package?: typeof mongoose.Types.ObjectId;
 }
 

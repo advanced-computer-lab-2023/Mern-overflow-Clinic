@@ -12,6 +12,7 @@ interface IDoctor {
     horlyRate: number;
     affiliation: string;
     education: string;
+    status: string;
 }
 
 const doctorShema = new Schema<IDoctor>({
@@ -23,6 +24,7 @@ const doctorShema = new Schema<IDoctor>({
     horlyRate: { type: Number, required: true },
     affiliation: { type: String, required: true , trim: true },
     education: { type: String, required: true , trim: true },
+    status: { type: String, required: true , lowercase: true, enum: ['pending', 'accepted', 'rejected'] },
 })
 
 const Doctor = model<IDoctor>('Doctor', doctorShema);

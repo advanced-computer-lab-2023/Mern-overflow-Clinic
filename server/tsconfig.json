@@ -1,16 +1,18 @@
 {
   "compilerOptions": {
+    "moduleResolution": "NodeNext",     
     "target": "ES2020",
-    "module": "CommonJS",
+    "module": "ESNext",
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "allowImportingTsExtensions":true
   },
   "include": [
     "src/**/*.ts",
     "dotenv/config",
-    "src/jest.config.ts"
+    "src/jest.config.ts"  
   ],
   "exclude": [
     "node_modules"

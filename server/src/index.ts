@@ -1,8 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import mongoose, { ConnectOptions } from 'mongoose';
-import Package from './models/Package'
-
+import Package from './models/Package.ts'
 
 dotenv.config();
 
@@ -10,7 +9,7 @@ const app = express();
 const PORT = 8000;
 const mongoUrl: string = process.env.MONGO_URI!;
 
-
+console.log(mongoUrl);
 // app.use(express.json());
 
 // app.get('/', (req, res) => {

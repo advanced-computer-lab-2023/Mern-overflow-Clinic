@@ -1,5 +1,5 @@
 import mongoose, { Model } from 'mongoose';
-import User, { IUser } from '../../models/User.ts'; // Import your user model and interface
+import User, { IPatient } from '../../models/Patient.ts'; // Import your user model and interface
 import dotenv from 'dotenv'; //TODO 
 dotenv.config();
 const mongoUrl: string = process.env.MONGO_URI!;

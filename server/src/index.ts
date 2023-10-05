@@ -6,19 +6,21 @@ import admin from './models/Adminstrator.ts';
 import appointment from './models/appointment.ts';
 import doctor from './models/Doctor.ts';
 import pack from './models/Package.ts';
-import user from './models/User.ts';
+import user from './models/Patient.ts';
 import dotenv from 'dotenv';
 
 dotenv.config()
 
 mongoose.set('strictQuery', false);
-;
-const MongoURI = "mongodb+srv://dbuser:987654321@acl.n4q8ykx.mongodb.net/?retryWrites=true&w=majority";
+
+const MongoURI:string = "mongodb+srv://dbuser:987654321@acl.n4q8ykx.mongodb.net/?retryWrites=true&w=majority"!;
 
 
 //App variables
 const app = express();
-const port = process.env.PORT || 8000;
+const port:number = parseInt(process.env.PORT!) as number || 8000;
+
+console.log(port);
 
 
 app.get('/', (req,res)=>{
@@ -28,12 +30,10 @@ app.get('/', (req,res)=>{
 
 
 
-mongoose.connect(MongoURI)
-.then(()=>{
-  console.log("MongoDB is now connected!")
+mongoose.connect(MongoURI).then(()=>{
+	console.log("MongoDB is now connected!")
 // Starting server
-  app.listen(port, () => {
-    console.log(`Listening to requests on http://localhost:${port}`);
-  });
-})
-.catch(err => console.log(err));
+  	app.listen(port, () => {
+    	console.log(`Listening to requests on http://localhost:${port}`);
+  	});
+}).catch(err => console.log(err));

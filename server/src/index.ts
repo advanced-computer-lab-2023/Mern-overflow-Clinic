@@ -15,6 +15,10 @@ const MongoURI:string = "mongodb+srv://dbuser:987654321@acl.n4q8ykx.mongodb.net/
 const app = express();
 const port:number = parseInt(process.env.PORT!) as number || 8000;
 
+//app.use(express.urlencoded({extended:true}))
+app.use(bodyParser.json());
+// app.use(express.json);
+
 
 //GET 
 app.get('/', (req,res)=>{

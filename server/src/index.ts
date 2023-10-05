@@ -2,12 +2,11 @@ import express from "express";
 import mongoose from 'mongoose';
 import axios from 'axios';
 import bodyParser from 'body-parser';
-import admin from './models/Adminstrator.ts';
-import appointment from './models/appointment.ts';
-import doctor from './models/Doctor.ts';
-import pack from './models/Package.ts';
-import user from './models/Patient.ts';
 import dotenv from 'dotenv';
+import addPatient from './controller/userController.ts'
+import patient from './models/Patient.ts';
+import exp from "constants";
+import { Request, Response } from 'express';
 
 dotenv.config()
 
@@ -20,13 +19,47 @@ const MongoURI:string = "mongodb+srv://dbuser:987654321@acl.n4q8ykx.mongodb.net/
 const app = express();
 const port:number = parseInt(process.env.PORT!) as number || 8000;
 
-console.log(port);
-
-
+//app.use(express.urlencoded({extended:true}))
+app.use(bodyParser.urlencoded({extended:true}));
+app.use(express.json);
+//GET 
 app.get('/', (req,res)=>{
   res.send("hello");
   console.log("hello, world!");
 });
+
+
+
+
+//POST
+app.post("/addPatient", (req:Request,res:Response)=>{
+  console.log("");
+  console.log("");
+  console.log("=");
+  console.log(req.body);
+  
+  const newPatient = new patient(
+    {
+        username: req.body.username,
+        name: req.body.name,
+        email: req.body.email,
+        passwordHash: req.body.passwordHash,
+        dateOfBirth: req.body.dateOfBirth,
+        gender: req.body.gender,
+        mobileNumber: req.body.mobileNumber,
+        emergencyContact: req.body.emergencyContact
+    }
+    )
+    
+    newPatient.save().then((result)=>{
+        res.send(result);
+    }).catch((err)=>{
+        //console.log(err);
+    });
+});
+
+
+//DELETE
 
 
 

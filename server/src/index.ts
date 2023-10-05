@@ -15,9 +15,7 @@ const MongoURI:string = "mongodb+srv://dbuser:987654321@acl.n4q8ykx.mongodb.net/
 const app = express();
 const port:number = parseInt(process.env.PORT!) as number || 8000;
 
-//app.use(express.urlencoded({extended:true}))
-app.use(bodyParser.urlencoded({extended:true}));
-app.use(express.json);
+
 //GET 
 app.get('/', (req,res)=>{
   res.send("hello");
@@ -34,7 +32,6 @@ app.get("/PatientPrescriptions",userController.viewPatientPrescription);
 app.get("/SearchPrescriptions",userController.searchPrescriptions)
 
 //POST
-app.post("/AddPatient",userController.addPatient);
 app.post("/AddRequest",userController.addRequest);
 app.post("/AddAdmin",userController.addAdmin);
 app.post("/AcceptRequest",userController.acceptAddDoctorRequest);

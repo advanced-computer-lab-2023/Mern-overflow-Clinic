@@ -1,21 +1,37 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import mongoose, { ConnectOptions } from 'mongoose';
-import Package from './models/Package.ts'
+import express from "express";
+import mongoose from 'mongoose';
+import axios from 'axios';
+import bodyParser from 'body-parser';
+import admin from './models/Adminstrator.ts';
+import appointment from './models/appointment.ts';
+import doctor from './models/Doctor.ts';
+import pack from './models/Package.ts';
+import user from './models/User.ts';
 
-dotenv.config();
 
+mongoose.set('strictQuery', false);
+require("dotenv").config();
+const MongoURI:string = process.env.MONGO_URI! ;
+
+
+//App variables
 const app = express();
-const PORT = 8000;
-const mongoUrl: string = process.env.MONGO_URI!;
+const port = process.env.PORT;
 
-console.log(mongoUrl);
-// app.use(express.json());
 
-// app.get('/', (req, res) => {
-//     res.send('Hello, World! This is your Express server.');
-// });
 
-// app.listen(PORT, () => {
-//   console.log(`Server is running on port ${PORT}`);
-// });
+
+
+
+
+
+
+mongoose.connect(MongoURI)
+.then(()=>{
+  console.log("MongoDB is now connected!")
+// Starting server
+ app.listen(port, () => {
+    console.log(`Listening to requests on http://localhost:${port}`);
+  })
+})
+.catch(err => console.log(err));

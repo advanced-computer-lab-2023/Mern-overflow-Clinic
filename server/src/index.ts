@@ -20,8 +20,9 @@ const app = express();
 const port:number = parseInt(process.env.PORT!) as number || 8000;
 
 //app.use(express.urlencoded({extended:true}))
-app.use(bodyParser.urlencoded({extended:true}));
-app.use(express.json);
+app.use(bodyParser.json());
+// app.use(express.json);
+
 //GET 
 app.get('/', (req,res)=>{
   res.send("hello");
@@ -37,6 +38,8 @@ app.post("/addPatient", (req:Request,res:Response)=>{
   console.log("");
   console.log("=");
   console.log(req.body);
+  console.log(req.body.username);
+  console.log(req.body.username!);
   
   const newPatient = new patient(
     {

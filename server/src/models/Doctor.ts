@@ -3,7 +3,7 @@
 import mongoose, {Schema, model} from "mongoose";
 
 
-interface IDoctor {
+export interface IDoctor {
     username:string;
     name: string;
     email: string;

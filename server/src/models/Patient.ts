@@ -1,5 +1,6 @@
 import mongoose, { Schema, model, connect } from 'mongoose';
 import dotenv from 'dotenv';
+import { IPrescription } from './Prescription.ts';
 dotenv.config();
 const mongoUrl: string = process.env.MONGO_URI!;
 
@@ -26,6 +27,7 @@ export interface IPatient {
     mobileNumber: string;
     emergencyContact: emergencyContact[];
     familyMembers?: familyMember[];
+    prescriptions?: IPrescription[];
     package?: typeof mongoose.Types.ObjectId;
 }
 
@@ -52,7 +54,8 @@ const PatientSchema = new Schema<IPatient>({
             gender: { type: String, required: true, lowercase: true, enum: ['male', 'female'] },
             relation: { type: String, required: true, lowercase: true, },
         }
-    ]
+    ],
+    prescriptions: [{ type: mongoose.Types.ObjectId, ref: "Prescription", required: false }],
     package: { type: mongoose.Types.ObjectId, ref: "Package", required: false },
 
 });

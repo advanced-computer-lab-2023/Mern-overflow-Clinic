@@ -7,29 +7,13 @@ import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import app from "../index.js"
+import { relative } from 'path';
 
 
 
 export default{
 
     addPatient(req:Request, res:Response){
-        // const newPatient = new patient(
-        // {
-        //     username: req.body.username,
-        //     name: req.body.name,
-        //     email: req.body.email,
-        //     passwordHash: req.body.passwordHash,
-        //     dateOfBirth: req.body.dateOfBirth,
-        //     gender: req.body.gender,
-        //     mobileNumber: req.body.mobileNumber,
-        //     emergencyContact: req.body.emergencyContact
-        // }
-        // )
-        // newPatient.save().then((result)=>{
-        //     res.send(result);
-        // }).catch((err)=>{
-        //     console.log(err);
-        // });
         const newPatient = patient.create(req.body)
         .then(
             (newPatient) =>{
@@ -154,31 +138,57 @@ export default{
 
     }
     ,
-    addRelative(req:Request, res:Response){
-        const relativeP = new admin({
+    async addRelative(req:Request, res:Response){
+        const relativeP = {
             name: req.body.name,
             mobileNumber: req.body.mobileNumber
-        });
-        relativeP.save().then((res)=>{
-            console.log("relative created");
-        });
-
+        };
+       
         const id = req.params.id;    
-        const relatives = patient.findById({_id:id})
         
+        try {
+            const pat = await (patient.findById(id));
+          
+            if (!pat) {
+              return res.status(404).json({ message: 'Patient not found' });
+            }
+          
+            const newRelatives = pat.emergencyContact;
+            newRelatives.push(relativeP);
+            
+            
+          
+            pat.emergencyContact=newRelatives;
+            await pat.save();
+             
+            res.json(pat);
+          } catch (err) {
+            console.error(err);
+            return res.status(500).json({ message: 'Server error' });
+          }
 
-
+        
+           
+        
+        
 
     }
     ,
     viewRelatives(req:Request, res:Response){
         const id = req.params.id;
     
-        const relatives = patient.findById({_id:id})
+        const relatives = patient.findById(id)
        .then((relatives) => {
-        res.status(200).json(relatives!.emergencyContact)
+        if(relatives!==null)
+            res.status(200).json(relatives.emergencyContact)
     })
-       .catch(err => res.status(400).json(err))
+       
+    .catch(
+        (err) =>{
+            console.log(err);
+            res.status(400).json(err);
+        } 
+        )
      }
     ,
 

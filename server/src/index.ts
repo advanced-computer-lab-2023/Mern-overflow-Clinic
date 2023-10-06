@@ -10,9 +10,9 @@ import config from './config/config.js';
 mongoose.set('strictQuery', false);
 
 //App variables
-const MongoURI:string = config.mongo.URL || "mongodb+srv://dbuser:987654321@acl.n4q8ykx.mongodb.net/?retryWrites=true&w=majority";
+const MongoURI:string = config.mongo.URL;
 const app = express();
-const port:number = config.server.port || 8000;
+const port:number = config.server.port;
 
 
 app.use(bodyParser.json());
@@ -24,7 +24,7 @@ app.get('/', (req,res)=>{
   console.log("hello, world!");
 });
 app.get("/Doctors",userController.viewDoctors);
-app.get("/Relatives",userController.viewRelatives);
+app.get("/Relatives/:id",userController.viewRelatives);
 app.get("/Patients",userController.viewPatients);
 app.get("/PatientRecord",userController.viewRecordOfPatients);
 app.get("/SearchPatient",userController.searchPatient);
@@ -39,7 +39,7 @@ app.post("/AddDoctor",userController.createDoctor);
 app.post("/AddAdmin",userController.addAdmin);
 app.post("/AcceptRequest",userController.acceptAddDoctorRequest);
 app.post("/AddPackage",userController.addPackage);
-app.post("/AddRelative",userController.addRelative);
+app.post("/AddRelative/:id",userController.addRelative);
 
 //PUT
 app.put("/UpdatePackage",userController.updatePackage);

@@ -2,10 +2,16 @@ import express from "express";
 import mongoose from 'mongoose';
 import axios from 'axios';
 import bodyParser from 'body-parser';
-import userController from './controllers/userController.js'
+import patientController from './controllers/UserController.js'
+import doctorController from './controllers/DoctorController.js'
+import adminstratorController from './controllers/AdminstratorController.js'
+import packageController from './controllers/PackageController.js'
+
+
 import exp from "constants";
 import { Request, Response } from 'express';
 import config from './config/config.js';
+import AdminstratorController from "./controllers/AdminstratorController.js";
 
 mongoose.set('strictQuery', false);
 
@@ -23,36 +29,34 @@ app.get('/', (req,res)=>{
   res.send("hello");
   console.log("hello, world!");
 });
-app.get("/Doctors",userController.viewDoctors);
-app.get("/Relatives/:id",userController.viewRelatives);
-app.get("/Patients",userController.viewPatients);
-app.get("/PatientRecord",userController.viewRecordOfPatients);
-app.get("/SearchPatient",userController.searchPatient);
-app.get("/SearchDoctor",userController.searchDoctor);
-app.get("/DoctorDetails",userController.viewDoctorDetails);
-app.get("/PatientPrescriptions",userController.viewPatientPrescription);
-app.get("/SearchPrescriptions",userController.searchPrescriptions)
+app.get("/doctors",doctorController.listDoctors);
+// app.get("/Relatives/:id",userController.viewRelatives);
+app.get("/patients",patientController.listPatients);
+// app.get("/PatientRecord",userController.viewRecordOfPatients);
+app.get("/patient/:id",patientController.readPatient);
+app.get("/doctor/:id",doctorController.readDoctor);
+// app.get("/DoctorDetails",patientController.viewDoctorDetails);
+// app.get("/PatientPrescriptions",patientController.viewPatientPrescription);
+// app.get("/SearchPrescriptions",patientController.searchPrescriptions)
 
 //POST
-app.post("/AddPatient", userController.addPatient);
-app.post("/AddDoctor",userController.createDoctor);
-app.post("/AddAdmin",userController.addAdmin);
-app.post("/AcceptRequest",userController.acceptAddDoctorRequest);
-app.post("/AddPackage",userController.addPackage);
-app.post("/AddRelative/:id",userController.addRelative);
+app.post("/patient", patientController.createPatient);
+app.post("/doctor",doctorController.createDoctor);
+app.post("/admin",AdminstratorController.createAdminstrator);
+// app.post("/AcceptRequest",patientController.acceptAddDoctorRequest);
+app.post("/package",packageController.createPackage);
+// app.post("/AddRelative/:id",patientController.addRelative);
 
 //PUT
-app.put("/UpdatePackage",userController.updatePackage);
-
-//PATCH
-app.patch("/UpdateDoctorData",userController.updateDoctor);
+app.put("/package/:id",packageController.updatePackage);
+app.put("/doctor/:id",doctorController.updateDoctor);
 
 //DELETE
-app.delete("/RemoveDoctor",userController.removeDoctor);
-app.delete("/RemovePatient",userController.removePatient);
-app.delete("/RemoveAdmin",userController.removeAdmin);
-app.delete("/RejectRequest",userController.rejectAddDoctorRequest);
-app.delete("/DeletePackage",userController.deletePackage);
+app.delete("/doctor",doctorController.deleteDoctor);
+app.delete("/Pptient",patientController.deletePatient);
+app.delete("/admin",adminstratorController.deleteAdmin);
+// app.delete("/RejectRequest",patientController.rejectAddDoctorRequest);
+app.delete("/package",packageController.deletePackage);
 
 
 

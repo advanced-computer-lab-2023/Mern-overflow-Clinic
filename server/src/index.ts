@@ -2,12 +2,12 @@ import express from "express";
 import mongoose from 'mongoose';
 import axios from 'axios';
 import bodyParser from 'body-parser';
-import admin from './models/Adminstrator.ts';
-import appointment from './models/appointment.ts';
-import doctor from './models/Doctor.ts';
-import pack from './models/Package.ts';
-import user from './models/Patient.ts';
-import config from './config/config.ts';
+import admin from './models/Adminstrator.js';
+import appointment from './models/appointment.js';
+import doctor from './models/Doctor.js';
+import pack from './models/Package.js';
+import user from './models/Patient.js';
+import config from './config/config.js';
 
 
 mongoose.set('strictQuery', false);

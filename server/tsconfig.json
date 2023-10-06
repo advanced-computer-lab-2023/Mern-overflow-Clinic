@@ -7,8 +7,6 @@
     "rootDir": "./src",
     "strict": true,
     "esModuleInterop": true,
-    "noEmit": true,
-    "allowImportingTsExtensions":true
   },
   "include": [
     "src/**/*.ts",

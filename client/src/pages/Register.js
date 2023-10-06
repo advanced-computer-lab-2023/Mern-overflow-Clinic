@@ -7,7 +7,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useForm, Controller, SubmitHandler } from "react-hook-form"
-import ButtonAppBar from '../components/ButtonAppBar';
+
 
 export default function Register(props) {
     const { register, handleSubmit, setError, formState: { errors } } = useForm();
@@ -29,7 +29,7 @@ export default function Register(props) {
 
     return (
         <>
-            <ButtonAppBar title='El7a2ni Clinic' actionButton='Sign in' />
+            
             <Container component="main" maxWidth="md">
                 <Box
                     sx={{

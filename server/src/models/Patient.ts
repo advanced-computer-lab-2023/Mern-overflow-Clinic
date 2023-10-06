@@ -98,4 +98,4 @@ export async function addTestPatient(username: string, name: string, email: stri
     console.log('Document inserted:', patient);
 }
 
-export default mongoose.model<IPatient>("User", PatientSchema);
+export default mongoose.model<IPatient>("Patient", PatientSchema);

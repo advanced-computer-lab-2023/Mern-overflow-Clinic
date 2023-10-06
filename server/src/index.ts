@@ -7,20 +7,17 @@ import appointment from './models/appointment.ts';
 import doctor from './models/Doctor.ts';
 import pack from './models/Package.ts';
 import user from './models/Patient.ts';
-import dotenv from 'dotenv';
-
-dotenv.config()
+import config from './config/config.ts';
 
 mongoose.set('strictQuery', false);
 
-const MongoURI:string = "mongodb+srv://dbuser:987654321@acl.n4q8ykx.mongodb.net/?retryWrites=true&w=majority"!;
+const MongoURI:string = config.mongo.URL;
 
 
 //App variables
 const app = express();
-const port:number = parseInt(process.env.PORT!) as number || 8000;
+const port:number = config.server.port;
 
-console.log(port);
 
 
 app.get('/', (req,res)=>{

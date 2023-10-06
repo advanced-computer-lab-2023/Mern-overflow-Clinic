@@ -1,6 +1,5 @@
 import mongoose, { Schema, model, connect } from 'mongoose';
 import dotenv from 'dotenv';
-import { IPrescription } from './Prescription.ts';
 dotenv.config();
 const mongoUrl: string = process.env.MONGO_URI!;
 

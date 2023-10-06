@@ -8,7 +8,6 @@ import adminstratorController from './controllers/AdminstratorController.js'
 import packageController from './controllers/PackageController.js'
 import exp from "constants";
 import { Request, Response } from 'express';
-import config from './config/config.js';
 import AdminstratorController from "./controllers/AdminstratorController.js";
 import admin from './models/Adminstrator.js';
 import appointment from './models/appointment.js';

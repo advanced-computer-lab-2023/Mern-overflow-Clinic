@@ -9,12 +9,16 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useForm } from "react-hook-form"
 import Avatar from '@mui/material/Avatar';
-import logo from '../assets/gifs/logo.gif';
+import logo from '../../assets/gifs/logo.gif';
 import ContactPageIcon from '@mui/icons-material/ContactPage';
+import InputLabel from '@mui/material/InputLabel';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputAdornment from '@mui/material/InputAdornment';
+
 
 const defaultTheme = createTheme();
 
-export default function PatientRegister() {
+export default function DoctorRegister() {
   const { register, handleSubmit, setError, formState: { errors } } = useForm();
 
   const onSubmit = data => {
@@ -67,8 +71,8 @@ export default function PatientRegister() {
             <Avatar sx={{ m: 0, bgcolor: 'secondary.main', width: 40, height: 40 }}>
               <ContactPageIcon sx={{ width: 30, height: 30 }} />
             </Avatar>
-            <Typography variant="h5" sx={{ fontWeight: "bold", my: 2 }}> Patient Registration </Typography>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <Typography variant="h5" sx={{ fontWeight: "bold", my: 2 }}> Doctor Registration Request </Typography>
+            <Box component="form" onSubmit={handleSubmit(onSubmit)}>
               <Grid container md={12} spacing={2} sx={{ mt: 3 }}>
                 <Grid item xs={12}>
                   <TextField
@@ -93,19 +97,6 @@ export default function PatientRegister() {
                       />
                     </DemoContainer>
                   </LocalizationProvider>
-                </Grid>
-
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    id="phone"
-                    label="Phone"
-                    type="tel"
-                    {...register("Phone", { required: true, minLength: 4, maxLength: 12 })}
-                    error={!!errors["Phone"]}
-                    helperText={errors["Phone"]?.message}
-                    onBlur={handleChange}
-                  />
                 </Grid>
 
                 <Grid item xs={12} sm={12} md={12}>
@@ -147,38 +138,33 @@ export default function PatientRegister() {
                   />
                 </Grid>
 
-                <Grid item xs={12} >
-                  <FormControl sx={{ mt: 2 }}>
-                    <FormLabel id="gender-label">Gender</FormLabel>
-                    <RadioGroup
-                      row
-                      defaultValue="male"
-                      id="gender"
-                      name="gender"
-                    >
-                      <FormControlLabel value="male" control={<Radio />} label="Male" />
-                      <FormControlLabel value="female" control={<Radio />} label="Female" />
-                    </RadioGroup>
+                <Grid item xs={12}>
+                  <FormControl fullWidth >
+                    <InputLabel htmlFor="outlined-adornment-amount">Hourly Rate</InputLabel>
+                    <OutlinedInput
+                      fullWidth
+                      inputProps={{ max: 10000 }}
+                      type="number"
+                      id="outlined-adornment-amount"
+                      startAdornment={<InputAdornment position="start">EGP</InputAdornment>}
+                      label="Hourly Rate"
+                      {...register("Rate", { required: true, maxLength: 80 })}
+                    error={!!errors["Rate"]}
+                    helperText={errors["Rate"]?.message}
+                    onBlur={handleChange}
+                    />
                   </FormControl>
                 </Grid>
-                <Divider sx={{
-                  width: '60%',
-                  borderWidth: '1px',
-                  mx: 'auto',
-                  my: 5,
-                  borderColor: '#ccc',
-                  filter: 'blur(1px)'
-                }} />
-                <Typography sx={{ align: "center", width: "100%", mb: 2, fontWeight: 'bold' }} variant="h6"> Emergency Contact </Typography>
 
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    id="emergencyName"
-                    label="Name"
-                    {...register("EmergencyName", { required: true, maxLength: 80 })}
-                    error={!!errors["EmergencyName"]}
-                    helperText={errors["EmergencyName"]?.message}
+                    id="affilation"
+                    label="Affilation (Hospital)"
+                    type="text"
+                    {...register("Affilation", { required: true, maxLength: 80 })}
+                    error={!!errors["Affilation"]}
+                    helperText={errors["Affilation"]?.message}
                     onBlur={handleChange}
                   />
                 </Grid>
@@ -186,29 +172,31 @@ export default function PatientRegister() {
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    id="emergencyPhone"
-                    label="Phone"
-                    {...register("EmergencyPhone", { required: true, maxLength: 80 })}
-                    error={!!errors["EmergencyPhone"]}
-                    helperText={errors["EmergencyPhone"]?.message}
+                    id="education"
+                    label="Educational Background"
+                    type="text"
+                    {...register("Education", { required: true, maxLength: 80 })}
+                    error={!!errors["Education"]}
+                    helperText={errors["Education"]?.message}
                     onBlur={handleChange}
                   />
                 </Grid>
+
               </Grid>
-              <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2, p: 2, fontWeight: 'bold', width: "50%" }}>
+              <Button fullWidth type="submit" variant="contained" sx={{ mt: 3, mb: 2, p: 2, fontWeight: 'bold'}}>
                 Submit
               </Button>
-            </form>
+            </Box>
             <Typography sx={{ align: "center", width: "100%", mt: 5, mb: 2, fontWeight: 'bold', color: '#555' }} variant="h6"> OR </Typography>
-            <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2, p: 2, fontWeight: 'bold', width: "50%" }}>
+            <Button fullWidth type="submit" variant="outlined" sx={{ mt: 3, mb: 2, p: 2, fontWeight: 'bold'}}>
               Sign In
             </Button>
-            <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2, p: 2, fontWeight: 'bold', width: "50%" }}>
-              Doctor Registration
+            <Button fullWidth type="submit" variant="outlined" sx={{ mt: 3, mb: 2, p: 2, fontWeight: 'bold'}}>
+              Patient Registration
             </Button>
           </Box>
         </Grid>
       </Grid>
-    </ThemeProvider>
+    </ThemeProvider >
   );
 }

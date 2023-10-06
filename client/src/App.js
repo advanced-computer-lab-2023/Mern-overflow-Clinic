@@ -1,10 +1,10 @@
 import './App.css';
 import * as ReactDOM from "react-dom/client";
 import ButtonAppBar from './components/ButtonAppBar';
-import PatientRegister from './pages/PatientRegister';
-import DoctorRegister from './pages/DoctorRegister';
-import Register from './pages/Register';
-import SignIn from './pages/SignIn';
+import PatientRegister from './pages/authentication/PatientRegister';
+import DoctorRegister from './pages/authentication/DoctorRegister';
+import Register from './pages/authentication/Register';
+import SignIn from './pages/authentication/SignIn';
 
 import {
   createBrowserRouter,

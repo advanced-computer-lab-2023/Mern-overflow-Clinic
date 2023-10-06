@@ -1,5 +1,5 @@
 import './App.css';
-
+import Register from './pages/Register';
 import * as ReactDOM from "react-dom/client";
 import ButtonAppBar from './components/ButtonAppBar';
 import PatientSignUp from './pages/PatientSignUp';
@@ -19,9 +19,8 @@ function App() {
 
   return (
     <div className="App">
-      <PatientSignUp />
-      <ButtonAppBar title='El7a2ni Clinic' actionButton='Sign in' />
       <RouterProvider router={router} />
+
     </div>
   );
 }

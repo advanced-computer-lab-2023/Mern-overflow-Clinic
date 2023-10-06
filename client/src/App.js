@@ -1,10 +1,10 @@
 import './App.css';
-import Register from './pages/Register';
+import PatientSignUp from './pages/PatientSignUp';
 
 function App() {
   return (
     <div className="App">
-      <Register />
+      <PatientSignUp />
     </div>
   );
 }

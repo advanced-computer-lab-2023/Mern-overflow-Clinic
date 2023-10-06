@@ -42,7 +42,7 @@ export default function Register(props) {
                         padding: 3,
                     }}
                 >
-                    <Typography variant="h5" sx={{ fontWeight: "bold", mt: 4}}> New Patient Registration </Typography>
+                    <Typography variant="h5" sx={{ fontWeight: "bold", mt: 4 }}> New Patient Registration </Typography>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <Grid container md={12} spacing={2} sx={{ mt: 3 }}>
                             <Grid item xs={12}>
@@ -120,7 +120,7 @@ export default function Register(props) {
                             </Grid>
 
                             <Grid item xs={12} >
-                                <FormControl sx= {{ mt: 2}}>
+                                <FormControl sx={{ mt: 2 }}>
                                     <FormLabel id="gender-label">Gender</FormLabel>
                                     <RadioGroup
                                         row

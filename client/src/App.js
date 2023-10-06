@@ -1,8 +1,10 @@
 import './App.css';
-import Register from './pages/Register';
 import * as ReactDOM from "react-dom/client";
 import ButtonAppBar from './components/ButtonAppBar';
-import PatientSignUp from './pages/PatientSignUp';
+import PatientRegister from './pages/PatientRegister';
+import DoctorRegister from './pages/DoctorRegister';
+import Register from './pages/Register';
+import SignIn from './pages/SignIn';
 
 import {
   createBrowserRouter,
@@ -12,9 +14,17 @@ import {
 function App() {
   const router = createBrowserRouter([
     {
-      path: "/register",
-      element: <PatientSignUp />,
+      path: "/register/patient",
+      element: <PatientRegister />,
     },
+    {
+      path: "/register/doctor",
+      element: <DoctorRegister />,
+    },
+    {
+      path: "/signin",
+      element: <SignIn />,
+    }
   ]);
 
   return (

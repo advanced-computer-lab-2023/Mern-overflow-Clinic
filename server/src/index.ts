@@ -2,18 +2,12 @@ import express from "express";
 import mongoose from 'mongoose';
 import axios from 'axios';
 import bodyParser from 'body-parser';
-import patientController from './controllers/UserController.js'
+import patientController from './controllers/PatientController.js'
 import doctorController from './controllers/DoctorController.js'
 import adminstratorController from './controllers/AdminstratorController.js'
 import packageController from './controllers/PackageController.js'
-import exp from "constants";
-import { Request, Response } from 'express';
-import AdminstratorController from "./controllers/AdminstratorController.js";
-import admin from './models/Adminstrator.js';
-import appointment from './models/appointment.js';
-import doctor from './models/Doctor.js';
-import pack from './models/Package.js';
-import user from './models/Patient.js';
+// import exp from "constants";
+// import { Request, Response } from 'express';
 import config from './config/config.js';
 
 mongoose.set('strictQuery', false);
@@ -33,33 +27,33 @@ app.get('/', (req,res)=>{
   console.log("hello, world!");
 });
 app.get("/doctors",doctorController.listDoctors);
-// app.get("/Relatives/:id",userController.viewRelatives);
+app.get("/patients/:id/relatives",patientController.readRelative);
 app.get("/patients",patientController.listPatients);
 // app.get("/PatientRecord",userController.viewRecordOfPatients);
-app.get("/patient/:id",patientController.readPatient);
-app.get("/doctor/:id",doctorController.readDoctor);
+app.get("/patients/:id",patientController.readPatient);
+app.get("/doctors/:id",doctorController.readDoctor);
 // app.get("/DoctorDetails",patientController.viewDoctorDetails);
 // app.get("/PatientPrescriptions",patientController.viewPatientPrescription);
 // app.get("/SearchPrescriptions",patientController.searchPrescriptions)
 
 //POST
-app.post("/patient", patientController.createPatient);
-app.post("/doctor",doctorController.createDoctor);
-app.post("/admin",AdminstratorController.createAdminstrator);
+app.post("/patients", patientController.createPatient);
+app.post("/doctors",doctorController.createDoctor);
+app.post("/admins",adminstratorController.createAdminstrator);
 // app.post("/AcceptRequest",patientController.acceptAddDoctorRequest);
-app.post("/package",packageController.createPackage);
-// app.post("/AddRelative/:id",patientController.addRelative);
+app.post("/packages",packageController.createPackage);
+// app.post("/patients/:id/relatives",patientController.createRelative);
 
 //PUT
-app.put("/package/:id",packageController.updatePackage);
-app.put("/doctor/:id",doctorController.updateDoctor);
+app.put("/packages/:id",packageController.updatePackage);
+app.put("/doctors/:id",doctorController.updateDoctor);
 
 //DELETE
-app.delete("/doctor",doctorController.deleteDoctor);
-app.delete("/Pptient",patientController.deletePatient);
-app.delete("/admin",adminstratorController.deleteAdmin);
+app.delete("/doctors",doctorController.deleteDoctor);
+app.delete("/patients",patientController.deletePatient);
+app.delete("/admins",adminstratorController.deleteAdmin);
 // app.delete("/RejectRequest",patientController.rejectAddDoctorRequest);
-app.delete("/package",packageController.deletePackage);
+app.delete("/packages",packageController.deletePackage);
 
 
 

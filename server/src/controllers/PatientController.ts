@@ -53,7 +53,7 @@ const listPatients= async(req: Request, res: Response)=>{
         })
 }
 
-const createRelative = async (req: Request, res: Response) => {
+const createRelative = async (req: Request, res: Response) => {//TODO rename to family member
     const relativeP = {
         name: req.body.name,
         mobileNumber: req.body.mobileNumber
@@ -91,11 +91,10 @@ const createRelative = async (req: Request, res: Response) => {
 
 const readRelative = async (req: Request, res: Response) => {
     const id = req.params.id;
-
-    const relatives = patient.findById(id)
-        .then((relatives) => {
-            if (relatives !== null)
-                res.status(200).json(relatives.emergencyContact)
+    const p = patient.findById(id)
+        .then((p) => {
+            if (p !== null)
+                res.status(200).json(p.familyMembers);
         })
 
         .catch(

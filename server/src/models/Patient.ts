@@ -11,9 +11,9 @@ interface emergencyContact {
 interface familyMember {
     name: string;
     nationalId: string;
-    age:number;
-    gender:string;
-    relation:string;
+    age: number;
+    gender: string;
+    relation: string;
 }
 
 interface IPatient {
@@ -34,11 +34,11 @@ interface IPatient {
 const PatientSchema = new Schema<IPatient>({
     username: { type: String, required: true, unique: true },
     name: { type: String, required: true, trim: true },
-    email: { type: String, required: true, match: [/\S+@\S+\.\S+/, "invalid email"], },
+    email: { type: String, required: true, unique: true, match: [/\S+@\S+\.\S+/, "invalid email"], },
     passwordHash: { type: String, required: true },
     dateOfBirth: { type: Date, required: true },
     gender: { type: String, required: true, lowercase: true, enum: ['male', 'female'] },
-    mobileNumber: { type: String, required: true, min: 8, max: 16, match: [/^(\+\d{8,15}|\d{8,15})$/, "invalid charachters"] },
+    mobileNumber: { type: String, required: true, unique: true, min: 8, max: 16, match: [/^(\+\d{8,15}|\d{8,15})$/, "invalid charachters"] },
     emergencyContact: [
         {
             name: { type: String, required: true, trim: true },
@@ -48,7 +48,7 @@ const PatientSchema = new Schema<IPatient>({
     familyMembers: [
         {
             name: { type: String, required: true, trim: true },
-            nationalId: { type: String, required: true},//TODO add validation
+            nationalId: { type: String, required: true },//TODO add validation
             age: { type: Number, required: true, min: 0, max: 122 },
             gender: { type: String, required: true, lowercase: true, enum: ['male', 'female'] },
             relation: { type: String, required: true, lowercase: true, },

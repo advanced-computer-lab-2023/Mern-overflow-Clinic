@@ -15,6 +15,9 @@ const app = express();
 const port:number = config.server.port;
 
 
+app.use(bodyParser.json());
+
+
 //GET 
 app.get('/', (req,res)=>{
   res.send("hello");
@@ -31,12 +34,12 @@ app.get("/PatientPrescriptions",userController.viewPatientPrescription);
 app.get("/SearchPrescriptions",userController.searchPrescriptions)
 
 //POST
-app.post("/AddRequest",userController.addRequest);
+app.post("/AddPatient", userController.addPatient);
+app.post("/AddDoctor",userController.createDoctor);
 app.post("/AddAdmin",userController.addAdmin);
 app.post("/AcceptRequest",userController.acceptAddDoctorRequest);
 app.post("/AddPackage",userController.addPackage);
 app.post("/AddRelative",userController.addRelative);
-
 
 //PUT
 app.put("/UpdatePackage",userController.updatePackage);
@@ -50,6 +53,8 @@ app.delete("/RemovePatient",userController.removePatient);
 app.delete("/RemoveAdmin",userController.removeAdmin);
 app.delete("/RejectRequest",userController.rejectAddDoctorRequest);
 app.delete("/DeletePackage",userController.deletePackage);
+
+
 
 
 

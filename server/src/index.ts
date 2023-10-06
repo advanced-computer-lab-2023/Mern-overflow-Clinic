@@ -2,10 +2,10 @@ import express from "express";
 import mongoose from 'mongoose';
 import axios from 'axios';
 import bodyParser from 'body-parser';
-import userController from './controller/userController.ts'
+import userController from './controllers/userController.js'
 import exp from "constants";
 import { Request, Response } from 'express';
-import config from './config/config.ts';
+import config from './config/config.js';
 
 mongoose.set('strictQuery', false);
 

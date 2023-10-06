@@ -1,12 +1,12 @@
-import admin from '../models/Adminstrator.ts';
-import appointment from '../models/appointment.ts';
-import doctor from '../models/Doctor.ts';
-import pack from '../models/Package.ts';
-import patient from '../models/Patient.ts';
+import admin from '../models/Adminstrator.js';
+import appointment from '../models/appointment.js';
+import doctor from '../models/Doctor.js';
+import pack from '../models/Package.js';
+import patient from '../models/Patient.js';
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
-import app from "../index.ts"
+import app from "../index.js"
 
 export default{
 

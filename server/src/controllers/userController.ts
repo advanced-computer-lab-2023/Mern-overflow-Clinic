@@ -38,6 +38,7 @@ export default{
             )
         .catch(
             (err) => {
+                console.log(err);
                 res.status(400).json(err);
             }
             )
@@ -115,7 +116,11 @@ export default{
     }
     ,
     viewDoctors(req:Request, res:Response){
-
+        const doctors =  doctor.find({})
+        .then(doctors => res.status(200).json(doctors))
+        .catch((err) => {
+            res.status(400).json(err);
+        })
     }
     ,
     acceptAddDoctorRequest(req:Request, res:Response){
@@ -150,15 +155,39 @@ export default{
     }
     ,
     addRelative(req:Request, res:Response){
+        const relativeP = new admin({
+            name: req.body.name,
+            mobileNumber: req.body.mobileNumber
+        });
+        relativeP.save().then((res)=>{
+            console.log("relative created");
+        });
+
+        const id = req.params.id;    
+        const relatives = patient.findById({_id:id})
+        
+
+
 
     }
     ,
     viewRelatives(req:Request, res:Response){
-
-    }
+        const id = req.params.id;
+    
+        const relatives = patient.findById({_id:id})
+       .then((relatives) => {
+        res.status(200).json(relatives!.emergencyContact)
+    })
+       .catch(err => res.status(400).json(err))
+     }
     ,
-    viewPatients(req:Request, res:Response){
 
+    viewPatients(req:Request, res:Response){
+        const pat =  patient.find({})
+        .then(pat => res.status(200).json(pat))
+        .catch((err) => {
+            res.status(400).json(err);
+        })
     }
     ,
     viewRecordOfPatients(req:Request, res:Response){

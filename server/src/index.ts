@@ -8,7 +8,6 @@ import doctor from './models/Doctor.js';
 import pack from './models/Package.js';
 import user from './models/Patient.js';
 import config from './config/config.js';
-
 mongoose.set('strictQuery', false);
 
 const MongoURI:string = config.mongo.URL;

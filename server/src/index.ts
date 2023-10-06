@@ -2,18 +2,17 @@ import express from "express";
 import mongoose from 'mongoose';
 import axios from 'axios';
 import bodyParser from 'body-parser';
-import dotenv from 'dotenv';
 import userController from './controller/userController.ts'
 import exp from "constants";
 import { Request, Response } from 'express';
+import config from './config/config.ts';
 
-dotenv.config()
 mongoose.set('strictQuery', false);
 
 //App variables
-const MongoURI:string = "mongodb+srv://dbuser:987654321@acl.n4q8ykx.mongodb.net/?retryWrites=true&w=majority"!;
+const MongoURI:string = config.mongo.URL;
 const app = express();
-const port:number = parseInt(process.env.PORT!) as number || 8000;
+const port:number = config.server.port;
 
 
 //GET 

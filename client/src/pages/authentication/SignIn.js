@@ -11,6 +11,7 @@ import { useForm } from "react-hook-form"
 import Avatar from '@mui/material/Avatar';
 import logo from '../../assets/gifs/logo.gif';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
+import { Link } from 'react-router-dom';
 
 const defaultTheme = createTheme();
 
@@ -68,45 +69,49 @@ export default function SignIn() {
                             <LockOpenIcon sx={{ width: 30, height: 30 }} />
                         </Avatar>
                         <Typography variant="h5" sx={{ fontWeight: "bold", my: 2 }}> Sign in </Typography>
-                        <Box component="form" onSubmit={handleSubmit(onSubmit)} sx= {{width: '100%'}}>
-                        <Grid container md={12} spacing={2} sx={{ mt: 3 }}>
-                            <Grid item xs={12}>
-                                <TextField
-                                    autoFocus
-                                    fullWidth
-                                    id="username"
-                                    type="text"
-                                    label="Username"
-                                    {...register("Username", { required: true, maxLength: 80 })}
-                                    error={!!errors["Username"]}
-                                    helperText={errors["Username"]?.message}
-                                    onBlur={handleChange}
-                                />
-                            </Grid>
+                        <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ width: '100%' }}>
+                            <Grid container md={12} spacing={2} sx={{ mt: 3 }}>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        autoFocus
+                                        fullWidth
+                                        id="username"
+                                        type="text"
+                                        label="Username"
+                                        {...register("Username", { required: true, maxLength: 80 })}
+                                        error={!!errors["Username"]}
+                                        helperText={errors["Username"]?.message}
+                                        onBlur={handleChange}
+                                    />
+                                </Grid>
 
-                            <Grid item xs={12}>
-                                <TextField
-                                    fullWidth
-                                    id="password"
-                                    label="Password"
-                                    type="password"
-                                    {...register("Password", { required: true, maxLength: 80 })}
-                                    error={!!errors["Password"]}
-                                    helperText={errors["Password"]?.message}
-                                    onBlur={handleChange}
-                                />
+                                <Grid item xs={12}>
+                                    <TextField
+                                        fullWidth
+                                        id="password"
+                                        label="Password"
+                                        type="password"
+                                        {...register("Password", { required: true, maxLength: 80 })}
+                                        error={!!errors["Password"]}
+                                        helperText={errors["Password"]?.message}
+                                        onBlur={handleChange}
+                                    />
+                                </Grid>
                             </Grid>
-                        </Grid>
-                        <Button fullWidth type="submit" variant="contained" sx={{ mt: 3, mb: 2, p: 2, fontWeight: 'bold'}}>
-                            Sign In
-                        </Button>
+                            <Button fullWidth type="submit" variant="contained" sx={{ mt: 3, mb: 2, p: 2, fontWeight: 'bold' }}>
+                                Sign In
+                            </Button>
                         </Box>
 
                         <Typography sx={{ align: "center", width: "100%", mt: 5, mb: 2, fontWeight: 'bold', color: '#555' }} variant="h6"> OR </Typography>
-                        <Button fullWidth type="submit" variant="outlined" sx={{ mt: 3, mb: 2, p: 2, fontWeight: 'bold'}}>
+                        <Button fullWidth type="submit" variant="outlined" sx={{ mt: 3, mb: 2, p: 2, fontWeight: 'bold' }}
+                            component={Link}
+                            to="/register/patient">
                             Patient Registration
                         </Button>
-                        <Button fullWidth type="submit" variant="outlined" sx={{ mt: 3, mb: 2, p: 2, fontWeight: 'bold'}}>
+                        <Button fullWidth type="submit" variant="outlined" sx={{ mt: 3, mb: 2, p: 2, fontWeight: 'bold' }}
+                            component={Link}
+                            to="/register/doctor">
                             Doctor Registration
                         </Button>
                     </Box>

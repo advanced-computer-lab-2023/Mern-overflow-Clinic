@@ -6,12 +6,16 @@ import patientController from './controllers/UserController.js'
 import doctorController from './controllers/DoctorController.js'
 import adminstratorController from './controllers/AdminstratorController.js'
 import packageController from './controllers/PackageController.js'
-
-
 import exp from "constants";
 import { Request, Response } from 'express';
 import config from './config/config.js';
 import AdminstratorController from "./controllers/AdminstratorController.js";
+import admin from './models/Adminstrator.js';
+import appointment from './models/appointment.js';
+import doctor from './models/Doctor.js';
+import pack from './models/Package.js';
+import user from './models/Patient.js';
+import config from './config/config.js';
 
 mongoose.set('strictQuery', false);
 

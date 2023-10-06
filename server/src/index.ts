@@ -2,25 +2,21 @@ import express from "express";
 import mongoose from 'mongoose';
 import axios from 'axios';
 import bodyParser from 'body-parser';
-import admin from './models/Adminstrator.ts';
-import appointment from './models/appointment.ts';
-import doctor from './models/Doctor.ts';
-import pack from './models/Package.ts';
-import user from './models/Patient.ts';
-import dotenv from 'dotenv';
-
-dotenv.config()
+import admin from './models/Adminstrator.js';
+import appointment from './models/appointment.js';
+import doctor from './models/Doctor.js';
+import pack from './models/Package.js';
+import user from './models/Patient.js';
+import config from './config/config.js';
 
 mongoose.set('strictQuery', false);
 
-const MongoURI:string = "mongodb+srv://dbuser:987654321@acl.n4q8ykx.mongodb.net/?retryWrites=true&w=majority"!;
+const MongoURI:string = config.mongo.URL;
 
 
 //App variables
 const app = express();
-const port:number = parseInt(process.env.PORT!) as number || 8000;
-
-console.log(port);
+const port:number = config.server.port;
 
 
 app.get('/', (req,res)=>{

@@ -17,7 +17,7 @@ interface familyMember {
     relation:string;
 }
 
-export interface IPatient {
+interface IPatient {
     username: string;
     name: string;
     email: string;
@@ -27,7 +27,7 @@ export interface IPatient {
     mobileNumber: string;
     emergencyContact: emergencyContact[];
     familyMembers?: familyMember[];
-    prescriptions?: IPrescription[];
+    prescriptions?: typeof mongoose.Types.ObjectId[];
     package?: typeof mongoose.Types.ObjectId;
 }
 

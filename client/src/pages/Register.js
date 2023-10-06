@@ -37,16 +37,17 @@ export default function Register(props) {
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
-                        backgroundColor: '#F4F4F4',
+                        backgroundColor: '#FFF',
                         borderRadius: 5,
                         padding: 3,
                     }}
                 >
-                    <Typography variant="h5" sx={{ fontWeight: "bold" }}> New Patient Registration </Typography>
+                    <Typography variant="h5" sx={{ fontWeight: "bold", mt: 4}}> New Patient Registration </Typography>
                     <form onSubmit={handleSubmit(onSubmit)}>
-                        <Grid container spacing={2} sx={{ mt: 3 }}>
+                        <Grid container md={12} spacing={2} sx={{ mt: 3 }}>
                             <Grid item xs={12}>
                                 <TextField
+                                    autoFocus
                                     id="name"
                                     label="Name"
                                     {...register("Name", { required: true, maxLength: 80 })}
@@ -119,7 +120,7 @@ export default function Register(props) {
                             </Grid>
 
                             <Grid item xs={12} >
-                                <FormControl>
+                                <FormControl sx= {{ mt: 2}}>
                                     <FormLabel id="gender-label">Gender</FormLabel>
                                     <RadioGroup
                                         row

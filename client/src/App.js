@@ -28,6 +28,10 @@ function App() {
     {
       path: "/admin",
       element: <AdminDashbaord />,
+    },
+    {
+      path: "/temp",
+      element: <Register />,
     }
   ]);
 

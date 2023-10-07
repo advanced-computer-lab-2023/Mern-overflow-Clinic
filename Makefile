@@ -19,7 +19,7 @@ up:
 
 # Run 'npm start' in the frontend container
 f-up:
-	docker exec -it mern-overflow-web-1 /bin/bash -c "cd ../client;npm start"
+	docker exec -it mern-overflow-clinic-web-1 /bin/bash -c "cd ../client;npm start"
 
 # Stop and remove Docker containers
 down:

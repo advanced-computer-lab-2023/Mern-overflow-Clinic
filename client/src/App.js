@@ -20,6 +20,7 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
+import AdminEditPackage from './pages/admin/AdminEditPackage';
 
 function App() {
   const router = createBrowserRouter([
@@ -50,6 +51,10 @@ function App() {
     {
       path: "/admin/packages",
       element: <AdminManagePackages />,
+    },
+    {
+      path: "/admin/packages/1",
+      element: <AdminEditPackage />,
     },
     {
       path: "/admin/doctor-requests",

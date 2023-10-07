@@ -28,7 +28,7 @@ const DoctorManageProfile = () => {
                         <TextField sx={{ mb: 3 }} label="Affilation (Hospital)" type="text" fullWidth />
                         <Button type="submit" variant="contained" fullWidth sx={{ mb: 3, p: 1.8, fontWeight: 'bold' }}
                             component={Link}
-                            to="/pharmacist/medicines">
+                            to="/doctor/profile">
                             Update Profile
                         </Button>
                     </Box>

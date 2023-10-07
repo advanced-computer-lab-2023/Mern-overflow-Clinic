@@ -2,34 +2,48 @@ import ButtonAppBar from "../../components/ButtonAppBar";
 import * as React from 'react';
 import { Typography, Toolbar, Box, AppBar, IconButton, Button, Drawer, List, ListItem, ListItemButton, ListItemIcon, InboxIcon, MailIcon, ListItemText, Divider } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
+import FamilyRestroomIcon from '@mui/icons-material/FamilyRestroom';
+import MedicationIcon from '@mui/icons-material/Medication';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import TodayIcon from '@mui/icons-material/Today';
-import PeopleIcon from '@mui/icons-material/People';
 import { Link } from 'react-router-dom';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
-const DoctorDashboard = (props) => {
+const PatientDashboard = (props) => {
     return (
-        <ButtonAppBar user="Doctor" actionButton="Log out" title={props.title}>
+        <ButtonAppBar user="Patient" actionButton="Log out" title={props.title}>
             <Divider />
             <List>
                 <ListItem disablePadding>
-                    <ListItemButton component={Link} to='/doctor/profile'>
+                    <ListItemButton component={Link} to='/patient/family'>
                         <ListItemIcon>
                             <Avatar sx={{ m: 0, bgcolor: 'white', color: 'black', width: 30, height: 30, padding: 0 }}>
-                                <AccountCircleIcon sx={{ width: 30, height: 30 }} />
+                                <FamilyRestroomIcon sx={{ width: 30, height: 30 }} />
                             </Avatar>
                         </ListItemIcon>
-                        <ListItemText primary="Profile" />
+                        <ListItemText primary="Family" />
                     </ListItemButton>
                 </ListItem>
             </List>
             <Divider />
             <List>
                 <ListItem disablePadding>
-                    <ListItemButton component={Link} to='/doctor/appointments'>
+                    <ListItemButton component={Link} to='/patient/doctors'>
                         <ListItemIcon>
                             <Avatar sx={{ m: 0, bgcolor: 'white', color: 'black', width: 30, height: 30, padding: 0 }}>
-                                <TodayIcon sx={{ width: 25, height: 25 }} />
+                                <AccountBoxIcon sx={{ width: 30, height: 30 }} />
+                            </Avatar>
+                        </ListItemIcon>
+                        <ListItemText primary="Doctors" />
+                    </ListItemButton>
+                </ListItem>
+            </List>
+            <Divider />
+            <List>
+                <ListItem disablePadding>
+                    <ListItemButton component={Link} to='/patient/appointments'>
+                        <ListItemIcon>
+                            <Avatar sx={{ m: 0, bgcolor: 'white', color: 'black', width: 30, height: 30, padding: 0 }}>
+                                <TodayIcon sx={{ width: 30, height: 30 }} />
                             </Avatar>
                         </ListItemIcon>
                         <ListItemText primary="My Appointments" />
@@ -39,18 +53,18 @@ const DoctorDashboard = (props) => {
             <Divider />
             <List>
                 <ListItem disablePadding>
-                    <ListItemButton component={Link} to='/doctor/patients'>
+                    <ListItemButton component={Link} to='/patient/prescriptions'>
                         <ListItemIcon>
                             <Avatar sx={{ m: 0, bgcolor: 'white', color: 'black', width: 30, height: 30, padding: 0 }}>
-                                <PeopleIcon sx={{ width: 25, height: 25 }} />
+                                <MedicationIcon sx={{ width: 30, height: 30 }} />
                             </Avatar>
                         </ListItemIcon>
-                        <ListItemText primary="My Patients" />
+                        <ListItemText primary="My Prescriptions" />
                     </ListItemButton>
                 </ListItem>
             </List>
-            <Divider /> 
+            <Divider />
         </ButtonAppBar>
     );
 }
-export default DoctorDashboard;
+export default PatientDashboard;

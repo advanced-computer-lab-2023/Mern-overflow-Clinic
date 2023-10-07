@@ -10,7 +10,11 @@ import AdminManagePackages from './pages/admin/AdminManagePackages';
 import AdminManageDoctorRequests from './pages/admin/AdminManageDoctorRequests';
 import DoctorManageProfile from './pages/doctor/DoctorManageProfile';
 import DoctorManageAppointments from './pages/doctor/DoctorManageAppointments';
-import DoctorManagePatients from './pages/doctor/DoctorManagePatients'
+import DoctorManagePatients from './pages/doctor/DoctorManagePatients';
+import PatientManageFamily from './pages/patient/PatientManageFamily';
+import PatientManageDoctors from './pages/patient/PatientManageDoctors';
+import PatientManagePrescriptions from './pages/patient/PatientManagePrescriptions';
+import PatientManageAppointments from './pages/patient/PatientManageAppointments';
 
 import {
   createBrowserRouter,
@@ -62,6 +66,22 @@ function App() {
     {
       path: "/doctor/patients",
       element: <DoctorManagePatients />,
+    },
+    {
+      path: "/patient/family",
+      element: <PatientManageFamily />,
+    },
+    {
+      path: "/patient/appointments",
+      element: <PatientManageAppointments />,
+    },
+    {
+      path: "/patient/doctors",
+      element: <PatientManageDoctors />,
+    },
+    {
+      path: "/patient/prescriptions",
+      element: <PatientManagePrescriptions />,
     },
   ]);
 

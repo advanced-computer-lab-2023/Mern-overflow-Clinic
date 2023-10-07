@@ -3,13 +3,13 @@ import * as ReactDOM from "react-dom/client";
 import ButtonAppBar from './components/ButtonAppBar';
 import PatientRegister from './pages/authentication/PatientRegister';
 import DoctorRegister from './pages/authentication/DoctorRegister';
-import Register from './pages/authentication/Register';
 import SignIn from './pages/authentication/SignIn';
 
 import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
+import AdminDashbaord from './pages/admin/AdminDashboard';
 
 function App() {
   const router = createBrowserRouter([
@@ -24,6 +24,10 @@ function App() {
     {
       path: "/signin",
       element: <SignIn />,
+    },
+    {
+      path: "/admin",
+      element: <AdminDashbaord />,
     }
   ]);
 

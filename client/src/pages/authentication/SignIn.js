@@ -12,6 +12,7 @@ import Avatar from '@mui/material/Avatar';
 import logo from '../../assets/gifs/logo.gif';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { Link } from 'react-router-dom';
+import ButtonAppBar from '../../components/ButtonAppBar';
 
 const defaultTheme = createTheme();
 
@@ -35,6 +36,7 @@ export default function SignIn() {
 
     return (
         <ThemeProvider theme={defaultTheme}>
+            <ButtonAppBar/>
             <Grid container component="main" sx={{ height: '100vh' }}>
                 <CssBaseline />
                 <Grid

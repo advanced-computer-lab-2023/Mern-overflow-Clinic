@@ -14,7 +14,6 @@ const selectPatientByName = async (req:Request, res:Response) => {
   var pIDs: any[]=[];
   var pats: any[]=[];
   try{   
-    console.log("search");
     const apt = appointment.find({"doctor":id}).then((apts)=>{
         for (const appoint of apts){
           pIDs.push(appoint.patient);
@@ -24,9 +23,7 @@ const selectPatientByName = async (req:Request, res:Response) => {
     if(!apt)
       res.status(404).send("no appointments found");
     
-    console.log("looping");
     const patients = await patient.find({ _id: { $in: pIDs } }).exec();
-    console.log("done");
 
     for(const pat of patients){
       if(pat.name.includes(patientName))

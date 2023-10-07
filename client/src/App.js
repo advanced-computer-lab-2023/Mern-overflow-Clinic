@@ -4,12 +4,16 @@ import ButtonAppBar from './components/ButtonAppBar';
 import PatientRegister from './pages/authentication/PatientRegister';
 import DoctorRegister from './pages/authentication/DoctorRegister';
 import SignIn from './pages/authentication/SignIn';
+import AdminDashbaord from './pages/admin/AdminDashboard';
+import AdminManageAdmins from './pages/admin/AdminManageAdmins';
+import AdminManageDoctors from './pages/admin/AdminManageDoctors';
+import AdminManagePatients from './pages/admin/AdminManageAdmins';
+import AdminManagePackages from './pages/admin/AdminManagePackages';
 
 import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import AdminDashbaord from './pages/admin/AdminDashboard';
 
 function App() {
   const router = createBrowserRouter([
@@ -30,8 +34,20 @@ function App() {
       element: <AdminDashbaord />,
     },
     {
-      path: "/temp",
-      element: <Register />,
+      path: "/admin/admins",
+      element: <AdminManageAdmins />,
+    },
+    {
+      path: "/admin/doctors",
+      element: <AdminManageDoctors />,
+    },
+    {
+      path: "/admin/patients",
+      element: <AdminManagePatients />,
+    },
+    {
+      path: "/admin/packages",
+      element: <AdminManagePackages />,
     }
   ]);
 

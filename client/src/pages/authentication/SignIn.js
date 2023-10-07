@@ -36,7 +36,6 @@ export default function SignIn() {
 
     return (
         <ThemeProvider theme={defaultTheme}>
-            <ButtonAppBar/>
             <Grid container component="main" sx={{ height: '100vh' }}>
                 <CssBaseline />
                 <Grid

@@ -8,9 +8,8 @@ import { Link } from 'react-router-dom';
 
 
 const AdminDashboard = (props) => {
-    const whatever = props.title;
     return (
-        <ButtonAppBar user="Admin" actionButton="Log out" title={whatever}>
+        <ButtonAppBar user="Admin" actionButton="Log out" title={props.title}>
             <Box sx={{ display: 'inline-flex', alignItems: 'center', mt: 2, ml: 3 }}>
                 <Avatar sx={{ m: 0, bgcolor: 'white', color: 'inherit', width: 40, height: 40, }}>
                     <PersonIcon sx={{ width: 30, height: 30 }} />

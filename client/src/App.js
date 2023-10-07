@@ -8,6 +8,9 @@ import AdminManageDoctors from './pages/admin/AdminManageDoctors';
 import AdminManagePatients from './pages/admin/AdminManagePatients';
 import AdminManagePackages from './pages/admin/AdminManagePackages';
 import AdminManageDoctorRequests from './pages/admin/AdminManageDoctorRequests';
+import DoctorManageProfile from './pages/doctor/DoctorManageProfile';
+import DoctorManageAppointments from './pages/doctor/DoctorManageAppointments';
+import DoctorManagePatients from './pages/doctor/DoctorManagePatients'
 
 import {
   createBrowserRouter,
@@ -47,6 +50,18 @@ function App() {
     {
       path: "/admin/doctor-requests",
       element: <AdminManageDoctorRequests />,
+    },
+    {
+      path: "/doctor/profile",
+      element: <DoctorManageProfile />,
+    },
+    {
+      path: "/doctor/appointments",
+      element: <DoctorManageAppointments />,
+    },
+    {
+      path: "/doctor/patients",
+      element: <DoctorManagePatients />,
     },
   ]);
 

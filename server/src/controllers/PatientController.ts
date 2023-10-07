@@ -166,38 +166,40 @@ const listDoctorsBySessionPrice = async (req: Request, res: Response) => {
   try {
     const pId = req.params.id;
     const patientFound = await patient.findById(pId);
-
+    var docSessDisc = 0;
+    
     if (!patientFound) {
       return res.status(404).json({ error: 'Patient not found' });
     }
-    else{
-      
-      if (patientFound.package !== undefined) {
-        const packageId = patientFound.package;
-        const packageData = await pack.findById(packageId);
-      
-      const doctors = Doctor
-      .find({})
-      .then((doctors) => {
-      doctors.forEach((doctor) => {
-      const sessionPrice = doctor.hourlyRate + (0.1 * doctor.hourlyRate) - packageData!.discountOnDoctorSessions; 
-      res.status(200).json(sessionPrice);
-    });
+
+    if (patientFound.package !== undefined) {
+      const packageId = patientFound.package;
+      const packageData = await pack.findById(packageId);
+
+      const doctors = await Doctor.find({});
+      const sessionPrices = doctors.map((doctor) => {
+        if (packageData) {
+          docSessDisc = (packageData.discountOnDoctorSessions / 100) * doctor.hourlyRate;
+        }
+        const sessionPrice = doctor.hourlyRate + 0.1 * doctor.hourlyRate - docSessDisc;
+        return { doctorName: doctor.name, sessionPrice };
       });
-     
-  }
-  else {
-    return res.status(404).json({ error: 'Patient not found' });
-  }
+
+      res.status(200).json(sessionPrices); // Send the response after the loop is done
+    } else {
+      const doctors = await Doctor.find({});
+      const sessionPrices = doctors.map((doctor) => {
+        const sessionPrice = doctor.hourlyRate + 0.1 * doctor.hourlyRate - docSessDisc;
+        return { doctorName: doctor.name, sessionPrice };
+      });
+
+      res.status(200).json(sessionPrices); // Send the response after the loop is done
     }
   } catch (error) {
     res.status(500).json(error);
   }
 };
 
-// const viewRecordOfPatients=async(req: Request, res: Response)=>{
-
-// }
 
 export default {
   createPatient,

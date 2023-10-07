@@ -43,9 +43,10 @@ app.get("/appointemnts/:id",appointmentController.readAppointment);
 // app.get("/DoctorDetails",patientController.viewDoctorDetails);
 app.get("/prescriptions/:id",prescriptionController.viewPatientPrescription);
 // app.get("/SearchPrescriptions",patientController.searchPrescriptions)
-app.get("/patients/:id/doctors/:dId", patientController.selectDoctor); //test
+app.get("/patients/:id/doctors/:dId", patientController.selectDoctor);
 app.get("/patients/:id/doctors", patientController.selectDoctorByName);
-app.get("/patients/:id/doctors/price", patientController.listDoctorsBySessionPrice);
+app.get("/patients/:id/price", patientController.listDoctorsBySessionPrice);
+app.get("/doctors/:id/res",doctorController.listAllMyPatientsUpcoming);
 
 
 

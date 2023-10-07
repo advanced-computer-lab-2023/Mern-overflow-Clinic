@@ -157,6 +157,34 @@ const selectPatient = async (req: Request, res: Response) => {
 };
 
 
+const listAllMyPatientsUpcoming = async (req: Request, res: Response) => {
+  const id = req.params.id;
+  //const id: string = '65200d0602668a2ddd63d01c';
+  // Get the current date and time
+  const currentDate = new Date();
+
+  try {
+    // Find all upcoming appointments for the doctor with the specified ID
+    const upcomingAppointments = await appointment
+      .find({ 'doctor': id, 'date': { $gte: currentDate } }) // Filter by date >= currentDate
+      .populate('patient')
+      .exec();
+
+    if(!upcomingAppointments || upcomingAppointments.length===0)
+      res.status(404).send("no upcoming appointments found");
+
+    const patientIds = upcomingAppointments.map((appointment) => appointment.patient);
+
+    // Find all patients with the extracted IDs
+    const patients = await patient.find({ _id: { $in: patientIds } }).exec();
+
+    res.status(200).json(patients);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+};
+
+
 
 export default {
   createDoctor,
@@ -166,5 +194,6 @@ export default {
   listDoctors,
   listAllMyPatients,
   selectPatient,
-  selectPatientByName
+  selectPatientByName,
+  listAllMyPatientsUpcoming
 };

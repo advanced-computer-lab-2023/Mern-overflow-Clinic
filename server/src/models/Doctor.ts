@@ -13,6 +13,8 @@ interface IDoctor {
     affiliation: string;
     education: string;
     status: string;
+    speciality: string;
+
 }
 
 const doctorShema = new Schema<IDoctor>({
@@ -25,6 +27,7 @@ const doctorShema = new Schema<IDoctor>({
     affiliation: { type: String, required: true , trim: true },
     education: { type: String, required: true , trim: true },
     status: { type: String, required: true , lowercase: true, enum: ['pending', 'accepted', 'rejected'] },
+    speciality: { type: String, required: true , trim: true },
 })
 
 const Doctor = model<IDoctor>('Doctor', doctorShema);

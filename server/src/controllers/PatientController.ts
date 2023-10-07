@@ -111,58 +111,55 @@ const selectDoctor = async (req: Request, res: Response) => {
 };
 
 
-const selectDoctorByName = async (req:Request, res:Response) => {
+const selectDoctorByName = async (req: Request, res: Response) => {
   const id = req.params.id;
   const doctorName = req.body.doctorName;
-  var dIDs: any[]=[];
-  var docs: any[]=[];
-  var docs2: any[] =[];
+  var docs: any[] = [];
+  var docs2: any[] = [];
   const speciality = req.body.speciality;
-  try{
+  var spc = false;
+  try {
+    const doctors = await Doctor.find({});
 
-    const doctors = Doctor
-    .find({})
-    .then((doctors) => {
+    if (!doctorName) {
+      return res.status(400).send("No name entered");
+    }
 
-      if(doctorName){
-        for(const doc of doctors){
-          if(doc.name.includes(doctorName))
-            docs.push(doc);
-        }
-        if(docs.length === 0){
-          res.status(404).send("no doctors found with this name");
-        }
-        if(speciality){
-          for(const d of docs){
-            if(d.speciality.includes(speciality))
-              docs2.push(d);
-          }
-          if(docs2.length === 0){
-            res.status(404).send("no doctors found with this speciality");
-          }
-        }
-       
-        res.status(200).json(docs2);
+    for (const doc of doctors) {
+      if (doc.name.includes(doctorName)) {
+        docs.push(doc);
       }
-      else{
-        res.status(400).send("no name entered");
+    }
+
+    if (docs.length === 0) {
+      return res.status(404).send("No doctors found with this name");
+    }
+    console.log(docs.length);
+
+    if (speciality) {
+      for (const d of docs) {
+        if (d.speciality.includes(speciality)) {
+          docs2.push(d);
+        }
       }
 
-    })
-    .catch((err) => {
-      res.status(400).json(err);
-    });
+      if (docs2.length === 0) {
+        return res.status(404).send("No doctors found with this speciality");
+      }
 
-   
-    if(docs.length === 0)
-      res.status(404).send("no patients found");
-
-    res.status(200).json(docs);
-  }catch(err){
+      spc = true;
+    }
+    
+    if(spc){
+      res.status(200).json(docs2);
+    }else{
+      res.status(200).json(docs);
+    }
+  } catch (err) {
     res.status(400).json(err);
   }
-
 };
+
 
 
 const listDoctorsBySessionPrice = async (req: Request, res: Response) => {

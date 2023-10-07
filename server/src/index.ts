@@ -6,9 +6,11 @@ import patientController from "./controllers/PatientController.js";
 import doctorController from "./controllers/DoctorController.js";
 import adminstratorController from "./controllers/AdminstratorController.js";
 import packageController from "./controllers/PackageController.js";
+import Prescription from "./models/Prescription.js";
 // import exp from "constants";
 // import { Request, Response } from 'express';
 import config from "./config/config.js";
+import PrescriptionController from "./controllers/PrescriptionController.js";
 
 mongoose.set("strictQuery", false);
 
@@ -34,7 +36,7 @@ app.get("/patients/:id", patientController.readPatient);
 app.get("/doctors/:id", doctorController.readDoctor);
 app.get("/admins", adminstratorController.viewRequest);
 // app.get("/DoctorDetails",patientController.viewDoctorDetails);
-// app.get("/PatientPrescriptions",patientController.viewPatientPrescription);
+app.get("/PatientPrescriptions",PrescriptionController.viewPatientPrescription);
 // app.get("/SearchPrescriptions",patientController.searchPrescriptions)
 
 //POST

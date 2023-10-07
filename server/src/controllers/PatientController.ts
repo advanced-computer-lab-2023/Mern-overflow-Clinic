@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import app from "../index.js";
 import { relative } from "path";
-import Doctor from "../models/Doctor.js";
+import doctor from "../models/Doctor.js";
 
 const createPatient = async (req: Request, res: Response) => {
   const newPatient = patient
@@ -92,15 +92,14 @@ const readFamilyMember = async (req: Request, res: Response) => {
 };
 
 const selectDoctor = async (req: Request, res: Response) => {
-  const id = req.params.id;   // id patient 
-  const dId = req.params.dId;  // id doct
+  const idd = req.params.id;   
+  const dId = req.params.dId;  
 
-  // Find all appointments where the 'doctor' field matches the doctor's name
-  const docs = await Doctor
-    .findById(dId) // Assuming 'name' is a unique identifier
+  const docs = await doctor
+    .findById(dId) 
     .then((docs) =>{
       if (!docs) {
-        // Handle the case where the patient with the given pId doesn't exist
+        console.log("no doctor")
         return res.status(404).json({ message: 'Patient not found' });
       } else{
       res.status(200).json(docs);
@@ -119,7 +118,7 @@ const selectDoctorByName = async (req: Request, res: Response) => {
   const speciality = req.body.speciality;
   var spc = false;
   try {
-    const doctors = await Doctor.find({});
+    const doctors = await doctor.find({});
 
     if (!doctorName) {
       return res.status(400).send("No name entered");
@@ -161,7 +160,6 @@ const selectDoctorByName = async (req: Request, res: Response) => {
 };
 
 
-
 const listDoctorsBySessionPrice = async (req: Request, res: Response) => {
   try {
     const pId = req.params.id;
@@ -176,7 +174,7 @@ const listDoctorsBySessionPrice = async (req: Request, res: Response) => {
       const packageId = patientFound.package;
       const packageData = await pack.findById(packageId);
 
-      const doctors = await Doctor.find({});
+      const doctors = await doctor.find({});
       const sessionPrices = doctors.map((doctor) => {
         if (packageData) {
           docSessDisc = (packageData.discountOnDoctorSessions / 100) * doctor.hourlyRate;
@@ -187,7 +185,7 @@ const listDoctorsBySessionPrice = async (req: Request, res: Response) => {
 
       res.status(200).json(sessionPrices); // Send the response after the loop is done
     } else {
-      const doctors = await Doctor.find({});
+      const doctors = await doctor.find({});
       const sessionPrices = doctors.map((doctor) => {
         const sessionPrice = doctor.hourlyRate + 0.1 * doctor.hourlyRate - docSessDisc;
         return { doctorName: doctor.name, sessionPrice };

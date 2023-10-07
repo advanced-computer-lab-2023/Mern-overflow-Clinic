@@ -4,6 +4,7 @@ import { Typography, Toolbar, Box, AppBar, IconButton, Button, Drawer, List, Lis
 import PersonIcon from '@mui/icons-material/Person';
 import Avatar from '@mui/material/Avatar';
 import InventoryIcon from '@mui/icons-material/Inventory';
+import HowToRegIcon from '@mui/icons-material/HowToReg';
 import { Link } from 'react-router-dom';
 
 
@@ -41,6 +42,20 @@ const AdminDashboard = (props) => {
                     </ListItemButton>
                 </ListItem>
             </List>
+            <Divider />
+            <List>
+                <ListItem disablePadding>
+                    <ListItemButton component={Link} to='/admin/doctor-requests'>
+                        <ListItemIcon>
+                            <Avatar sx={{ m: 0, bgcolor: 'white', color: 'black', width: 30, height: 30, padding: 0 }}>
+                                <HowToRegIcon sx={{ width: 25, height: 25 }} />
+                            </Avatar>
+                        </ListItemIcon>
+                        <ListItemText primary="Doctor Requests" />
+                    </ListItemButton>
+                </ListItem>
+            </List>
+            <Divider />
         </ButtonAppBar>
     );
 }

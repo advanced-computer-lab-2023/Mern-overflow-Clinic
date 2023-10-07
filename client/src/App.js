@@ -1,6 +1,4 @@
 import './App.css';
-import * as ReactDOM from "react-dom/client";
-import ButtonAppBar from './components/ButtonAppBar';
 import PatientRegister from './pages/authentication/PatientRegister';
 import DoctorRegister from './pages/authentication/DoctorRegister';
 import SignIn from './pages/authentication/SignIn';
@@ -9,6 +7,7 @@ import AdminManageAdmins from './pages/admin/AdminManageAdmins';
 import AdminManageDoctors from './pages/admin/AdminManageDoctors';
 import AdminManagePatients from './pages/admin/AdminManagePatients';
 import AdminManagePackages from './pages/admin/AdminManagePackages';
+import AdminManageDoctorRequests from './pages/admin/AdminManageDoctorRequests';
 
 import {
   createBrowserRouter,
@@ -30,10 +29,6 @@ function App() {
       element: <SignIn />,
     },
     {
-      path: "/admin",
-      element: <AdminDashbaord />,
-    },
-    {
       path: "/admin/admins",
       element: <AdminManageAdmins />,
     },
@@ -48,7 +43,11 @@ function App() {
     {
       path: "/admin/packages",
       element: <AdminManagePackages />,
-    }
+    },
+    {
+      path: "/admin/doctor-requests",
+      element: <AdminManageDoctorRequests />,
+    },
   ]);
 
   return (

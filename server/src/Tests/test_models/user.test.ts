@@ -1,17 +1,16 @@
 import mongoose, { Model } from 'mongoose';
-import User, { IPatient } from '../../models/Patient.ts'; // Import your user model and interface
-import dotenv from 'dotenv'; //TODO 
-dotenv.config();
-const mongoUrl: string = process.env.MONGO_URI!;
+import Patient from '../../models/Patient.js'; // Import your user model and interface
+import config from '../../config/config.js';
+const mongoUrl: string = config.mongo.URL!;
 
 
 
 test('should save a new user',async () => {
     // let userModel = User;
     await mongoose.connect(mongoUrl);
-    const newUser = new User({
-        username: 'testuser',
-        name: 'Test User',
+    const newPatient = new Patient({
+        username: 'testpatient',
+        name: 'Test Patient',
         email: 'tesst@gmail.com',
         passwordHash: '123456',
         dateOfBirth: new Date('1999-01-01'),
@@ -22,8 +21,8 @@ test('should save a new user',async () => {
           mobileNumber: '01000000001'
       }
   });
-  const savedUser = await newUser.save();
-  expect(savedUser.username).toBe('testuser');
+  const savedPatient = await newPatient.save();
+  expect(savedPatient.username).toBe('testpatient');
 });
 
 
@@ -48,8 +47,8 @@ test('should save a new user',async () => {
 // 				mobileNumber: '01000000001'
 // 			}
 //         });
-//         const savedUser = await newUser.save();
-//         expect(savedUser.username).toBe('testuser');
+//         const savedPatient = await newUser.save();
+//         expect(savedPatient.username).toBe('testuser');
 //         // Add more assertions as needed
 //     });
 

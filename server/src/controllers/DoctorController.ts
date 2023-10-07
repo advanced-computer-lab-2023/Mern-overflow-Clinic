@@ -73,10 +73,9 @@ const updateDoctor = async (req: Request, res: Response) => {
   const hourlyRate = req.body.hourlyRate;
   const affiliation = req.body.aff;
   const update: { [key: string]: any } = {};
-  if (!email) update["email"] = email;
-  if (!hourlyRate) update["hourlyRate"] = hourlyRate;
-
-  if (!affiliation) update["affiliation"] = affiliation;
+  if (email!==undefined) update["email"] = email;
+  if (hourlyRate!==undefined) update["hourlyRate"] = hourlyRate;
+  if (affiliation!==undefined) update["affiliation"] = affiliation;
 
   doctor
     .findOneAndUpdate(query, update, { new: true })

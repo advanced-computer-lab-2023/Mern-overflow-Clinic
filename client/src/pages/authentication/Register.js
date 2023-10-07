@@ -7,29 +7,38 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useForm, Controller, SubmitHandler } from "react-hook-form"
+import FormContainer from '../../components/formComponents/FormContainer';
 
 
 export default function Register(props) {
-    const { register, handleSubmit, setError, formState: { errors } } = useForm();
-
-    const onSubmit = data => {
-        console.log("Data to server" + JSON.stringify(data));
-    }
-    console.log(errors);
-
-    const handleChange = (event) => {
-        if (errors[event.target.name]) {
-            setError(event.target.name,
-                {
-                    type: errors[event.target.name]["type"],
-                    message: errors[event.target.name]["type"]
-                })
-        }
-    }
+    
 
     return (
         <>
-            
+            <FormContainer>
+
+            </FormContainer>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             <Container component="main" maxWidth="md">
                 <Box
                     sx={{
@@ -133,6 +142,7 @@ export default function Register(props) {
                                     </RadioGroup>
                                 </FormControl>
                             </Grid>
+                            
                             <Divider sx={{
                                 width: '60%',
                                 borderWidth: '1px',

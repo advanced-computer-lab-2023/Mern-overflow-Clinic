@@ -24,6 +24,10 @@ function App() {
     {
       path: "/signin",
       element: <SignIn />,
+    },
+    {
+      path: "/temp",
+      element: <Register />,
     }
   ]);
 

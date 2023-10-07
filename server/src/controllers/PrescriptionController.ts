@@ -66,11 +66,21 @@ const deletePrescription = async(req:Request, res:Response)=>{
         res.status(400).json(err);
       });
 }
+const selectPrescription = async(req:Request, res:Response)=>{
+  const id = req.params.id;
+    const pres = Prescription
+    .findById(id)
+    .then((pres) => res.status(200).json(pres))
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+}
 
 
 export default{
     createPrescription,
-    viewPatientPrescription,
+    selectPrescription,
     updatePrescription,
-    deletePrescription
+    deletePrescription,
+    viewPatientPrescription
 }

@@ -7,7 +7,7 @@ import SignIn from './pages/authentication/SignIn';
 import AdminDashbaord from './pages/admin/AdminDashboard';
 import AdminManageAdmins from './pages/admin/AdminManageAdmins';
 import AdminManageDoctors from './pages/admin/AdminManageDoctors';
-import AdminManagePatients from './pages/admin/AdminManageAdmins';
+import AdminManagePatients from './pages/admin/AdminManagePatients';
 import AdminManagePackages from './pages/admin/AdminManagePackages';
 
 import {

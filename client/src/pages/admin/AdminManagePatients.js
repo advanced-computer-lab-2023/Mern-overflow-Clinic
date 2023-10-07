@@ -1,10 +1,10 @@
 import AdminDashboard from "./AdminDashboard";
 
-const AdminManageAdmins = () => {
+const AdminManagePatients = () => {
     return (
         <AdminDashboard title="Manage System Patients" />
 
      );
 }
 
-export default AdminManageAdmins;
+export default AdminManagePatients;

@@ -11,6 +11,7 @@ import appointmentController from "./controllers/AppointmentController.js";
 // import exp from "constants";
 // import { Request, Response } from 'express';
 import config from "./config/config.js";
+import prescriptionController from "./controllers/PrescriptionController.js"
 
 mongoose.set("strictQuery", false);
 
@@ -40,7 +41,7 @@ app.get("/admins", adminstratorController.viewRequest);
 app.get("/appointemnts",appointmentController.listAllAppointments);
 app.get("/appointemnts/:id",appointmentController.readAppointment);
 // app.get("/DoctorDetails",patientController.viewDoctorDetails);
-app.get("/PatientPrescriptions",PrescriptionController.viewPatientPrescription);
+app.get("/prescriptions/:id",prescriptionController.viewPatientPrescription);
 // app.get("/SearchPrescriptions",patientController.searchPrescriptions)
 
 
@@ -51,16 +52,21 @@ app.post("/doctors", doctorController.createDoctor);
 app.post("/admins", adminstratorController.createAdminstrator);
 // app.post("/AcceptRequest",patientController.acceptAddDoctorRequest);
 app.post("/packages", packageController.createPackage);
+app.post("/prescriptions",prescriptionController.createPrescription);
 // app.post("/patients/:id/relatives",patientController.addFamilyMember);
 
 //PUT
 app.put("/packages/:id", packageController.updatePackage);
 app.put("/doctors/:id", doctorController.updateDoctor);
+app.put("/prescriptions/:id",prescriptionController.updatePrescription);
+
 
 //DELETE
 app.delete("/doctors/:id", doctorController.deleteDoctor);
 app.delete("/patients/:id", patientController.deletePatient);
 app.delete("/admins/:id", adminstratorController.deleteAdmin);
+app.delete("/prescriptions/:id",prescriptionController.deletePrescription);
+
 // app.delete("/RejectRequest",patientController.rejectAddDoctorRequest);
 app.delete("/packages/:id", packageController.deletePackage);
 app.delete("/appointments/:id",appointmentController.deleteAppointment);

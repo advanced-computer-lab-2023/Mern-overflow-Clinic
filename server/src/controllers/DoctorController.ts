@@ -8,33 +8,40 @@ import patient from "../models/Patient.js";
 
 
 
-const selectPatientByName = async (req: Request, res: Response) => {
+const selectPatientByName = async (req:Request, res:Response) => {
   const id = req.params.id;
   const patientName = req.body.patientName;
-
-  try {
-    const apts = await appointment.find({ "doctor": id }).exec();
-    if (apts.length === 0) {
-      return res.status(404).json({ message: "No appointments found" });
-    }
-
-    const pIDs = apts.map((appoint) => appoint.patient);
+  var pIDs: any[]=[];
+  var pats: any[]=[];
+  try{   
+    console.log("search");
+    const apt = appointment.find({"doctor":id}).then((apts)=>{
+        for (const appoint of apts){
+          pIDs.push(appoint.patient);
+        }
+      })
+    
+    if(!apt)
+      res.status(404).send("no appointments found");
+    
+    console.log("looping");
     const patients = await patient.find({ _id: { $in: pIDs } }).exec();
+    console.log("done");
 
-    const matchingPatients = patients.filter((pat) =>
-      pat.name.includes(patientName)
-    );
-
-    if (matchingPatients.length === 0) {
-      return res.status(404).json({ message: "No patients found" });
+    for(const pat of patients){
+      if(pat.name.includes(patientName))
+        pats.push(pat);
     }
 
-    res.status(200).json(matchingPatients);
-  } catch (err) {
+    if(pats.length === 0)
+      res.status(404).send("no patients found");
+
+    res.status(200).json(pats);
+  }catch(err){
     res.status(400).json(err);
   }
-};
 
+};
 
 
 const createDoctor = async (req: Request, res: Response) => {

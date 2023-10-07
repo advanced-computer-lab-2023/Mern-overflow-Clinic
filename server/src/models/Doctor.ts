@@ -11,6 +11,7 @@ interface IDoctor {
     dateOfBirth: Date;
     hourlyRate: number;
     affiliation: string;
+    speciality: string;
     education: string;
     status: string;
 }
@@ -23,6 +24,7 @@ const doctorShema = new Schema<IDoctor>({
     dateOfBirth: { type: Date, required: true },
     hourlyRate: { type: Number, required: true },
     affiliation: { type: String, required: true , trim: true },
+    speciality: { type: String, required: true , trim: true },
     education: { type: String, required: true , trim: true },
     status: { type: String, required: true , lowercase: true, enum: ['pending', 'accepted', 'rejected'] },
 })

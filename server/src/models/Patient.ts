@@ -30,10 +30,6 @@ interface IPatient {
     package?: typeof mongoose.Types.ObjectId;
 }
 
-interface INationalId {
-    nationalId: string;
-}
-
 /*
 function validateNationalId(nationalId: string, dateOfBirth: Date, gender: string): boolean {
     // Check if the national ID is a valid ObjectId
@@ -137,7 +133,7 @@ const PatientSchema = new Schema<IPatient>({
             nationalId: { type: mongoose.Types.ObjectId, ref: "NationalId", required: true, validate: { validator: validateNationalId, message: 'invalid national id' } },//TODO write test for this
             age: { type: Number, required: true, min: 0, max: 122 },
             gender: { type: String, required: true, lowercase: true, enum: ['male', 'female'] },
-            relation: { type: String, required: true, lowercase: true, },
+            relation: { type: String, required: true, lowercase: true, enum: ['husband', 'wife', 'son', 'daughter']},//TODO add validation for relation
         }
     ],
     prescriptions: [{ type: mongoose.Types.ObjectId, ref: "Prescription", required: false }],

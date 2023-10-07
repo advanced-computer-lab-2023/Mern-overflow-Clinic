@@ -24,7 +24,7 @@ const readPatient = async (req: Request, res: Response) => {};
 const updatePatient = async (req: Request, res: Response) => {};
 
 const deletePatient = async (req: Request, res: Response) => {
-  const id = req.body.id;
+  const id = req.params.id;
   const pat = patient
     .findByIdAndDelete({ _id: id })
     .then((pat) => {

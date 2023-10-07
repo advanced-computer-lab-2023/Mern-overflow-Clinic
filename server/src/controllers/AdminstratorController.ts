@@ -25,7 +25,7 @@ const readAdminstrator = async (req: Request, res: Response) => {};
 const updateAdminstrator = async (req: Request, res: Response) => {};
 
 const deleteAdmin = async (req: Request, res: Response) => {
-  const id = req.body.id;
+  const id = req.params.id;
   const newAdminstrator = adminstrator
     .findByIdAndDelete({ _id: id })
     .then((newAdminstrator) => {

@@ -18,7 +18,7 @@ const readPackage = async (req: Request, res: Response) => {};
 const updatePackage = async (req: Request, res: Response) => {};
 
 const deletePackage = async (req: Request, res: Response) => {
-  const id = req.body.id;
+  const id = req.params.id;
   const pkg = pack
     .findByIdAndDelete({ _id: id })
     .then((pkg) => {

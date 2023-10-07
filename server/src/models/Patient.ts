@@ -3,13 +3,20 @@ import dotenv from 'dotenv';
 dotenv.config();
 const mongoUrl: string = process.env.MONGO_URI!;
 
-
-interface FamilyMember {
+interface emergencyContact {
     name: string;
     mobileNumber: string;
 }
 
-export interface IPatient {
+interface familyMember {
+    name: string;
+    nationalId: string;
+    age:number;
+    gender:string;
+    relation:string;
+}
+
+interface IPatient {
     username: string;
     name: string;
     email: string;
@@ -17,7 +24,9 @@ export interface IPatient {
     dateOfBirth: Date;
     gender: string;
     mobileNumber: string;
-    emergencyContact: FamilyMember[];
+    emergencyContact: emergencyContact[];
+    familyMembers?: familyMember[];
+    prescriptions?: typeof mongoose.Types.ObjectId[];
     package?: typeof mongoose.Types.ObjectId;
 }
 
@@ -36,6 +45,16 @@ const PatientSchema = new Schema<IPatient>({
             mobileNumber: { type: String, required: true, min: 8, max: 16, match: [/^(\+\d{8,15}|\d{8,15})$/, "invalid charachters"] },
         }
     ],
+    familyMembers: [
+        {
+            name: { type: String, required: true, trim: true },
+            nationalId: { type: String, required: true},//TODO add validation
+            age: { type: Number, required: true, min: 0, max: 122 },
+            gender: { type: String, required: true, lowercase: true, enum: ['male', 'female'] },
+            relation: { type: String, required: true, lowercase: true, },
+        }
+    ],
+    prescriptions: [{ type: mongoose.Types.ObjectId, ref: "Prescription", required: false }],
     package: { type: mongoose.Types.ObjectId, ref: "Package", required: false },
 
 });
@@ -79,4 +98,4 @@ export async function addTestPatient(username: string, name: string, email: stri
     console.log('Document inserted:', patient);
 }
 
-export default mongoose.model<IPatient>("User", PatientSchema);
+export default mongoose.model<IPatient>("Patient", PatientSchema);

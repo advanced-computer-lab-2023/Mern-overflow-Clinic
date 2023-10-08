@@ -58,6 +58,7 @@ app.get("/patients/:id/price", patientController.listDoctorsBySessionPrice);
 app.get("/doctors/:id/res", doctorController.listAllMyPatientsUpcoming);
 app.get("/packages/:id", packageController.readPackage);
 app.get("/packages", packageController.listPackages);
+app.get("/doctors/filter", patientController.filterDoctor);
 
 
 
@@ -71,13 +72,7 @@ app.post("/admins", adminstratorController.createAdminstrator);
 app.post("/packages", packageController.createPackage);
 app.post("/prescriptions", prescriptionController.createPrescription);
 // app.post("/patients/:id/relatives",patientController.addFamilyMember);
-<<<<<<< HEAD
 app.post("/packages",packageController.createPackage);
-app.post("/doctors/filter", patientController.filterDoctor);
-=======
-app.post("/packages", packageController.createPackage);
-
->>>>>>> b7520f09a94ca8c8eb49789fd349099eeda89ded
 
 //PUT
 app.put("/packages/:id", packageController.updatePackage);

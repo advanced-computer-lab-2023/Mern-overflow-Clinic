@@ -1,9 +1,10 @@
 import jwt from 'jsonwebtoken';
 import {IPatient} from '../models/Patient.js';
 import { Document, } from 'mongoose';
+import config from '../config/config.js';
 
 const generateToken= async(patient: Document<IPatient>) => {
-    const secretKey = process.env.JWT_SECRET || 'your-secret-key';//TODO
+    const secretKey = config.jwt.secret;
     const expiresIn = '1h';
     console.log("here");
     const token = jwt.sign(

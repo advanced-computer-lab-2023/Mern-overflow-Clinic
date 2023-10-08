@@ -1,7 +1,4 @@
 import mongoose, { Schema, model, connect } from 'mongoose';
-import dotenv from 'dotenv';
-dotenv.config();
-const mongoUrl: string = process.env.MONGO_URI!;
 
 interface emergencyContact {
     name: string;
@@ -61,41 +58,5 @@ const PatientSchema = new Schema<IPatient>({
 
 // 3. Create a Model.
 const Patient = model<IPatient>('Patient', PatientSchema);
-
-
-// let p;
-// export async function f():Promise<any> {
-//     await connect(mongoUrl);
-//     p = await User.deleteMany({name:'Ahmed'}).exec();
-//     console.log(p);
-// }
-
-
-
-
-
-
-// run().catch(err => console.log(err));
-
-export async function addTestPatient(username: string, name: string, email: string, passwordHash: string, date: string, gender: string, mobileNumber: string) {
-    // 4. Connect to MongoDB
-    await connect(mongoUrl);
-
-    const patient = new Patient({
-        username: username,
-        name: name,
-        email: email,
-        passwordHash: passwordHash,
-        dateOfBirth: new Date(date),
-        gender: gender,
-        mobileNumber: mobileNumber,
-        emergencyContact: {
-            name: 'person',
-            mobileNumber: '01000000001'
-        }
-    });
-    await patient.save();
-    console.log('Document inserted:', patient);
-}
 
 export default mongoose.model<IPatient>("Patient", PatientSchema);

@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
+import config from '../config/config.js';
 
 // Define the type for your payload, which should match what you used in generating tokens.
 interface TokenPayload {
@@ -29,8 +30,7 @@ const isAuthenticated = (
     return res.status(401).json({ message: 'Unauthorized - No token provided' });
   }
 
-  const secretKey = process.env.JWT_SECRET || 'your-secret-key'; // TODO: Replace with your actual secret key.
-
+  const secretKey = config.jwt.secret;
   try {
     const decoded = jwt.verify(token, secretKey) as TokenPayload;
 

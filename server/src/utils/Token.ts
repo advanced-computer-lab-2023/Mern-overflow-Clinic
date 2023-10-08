@@ -1,15 +1,15 @@
 import jwt from 'jsonwebtoken';
-import {IPatient} from '../models/Patient.js';
+import {IUser} from '../models/User.js';
 import { Document, } from 'mongoose';
 import config from '../config/config.js';
 
-const generateToken= async(patient: Document<IPatient>) => {
+const generateToken= async(user: Document<IUser>) => {
     const secretKey = config.jwt.secret;
     const expiresIn = '7d';
     console.log("here");
     const token = jwt.sign(
       {
-        patientId: patient._id,
+        patientId: user._id,
       },
       secretKey,
       { expiresIn }

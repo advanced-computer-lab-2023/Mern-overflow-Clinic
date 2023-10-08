@@ -26,6 +26,7 @@ const port: number = config.server.port;
 
 app.use(bodyParser.json());
 
+
 app.use('/auth', authRouter);
 
 //GET

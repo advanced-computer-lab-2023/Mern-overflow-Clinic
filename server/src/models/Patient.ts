@@ -16,7 +16,7 @@ interface familyMember {
     relation: string;
 }
 
-interface IPatient {
+export interface IPatient {
     username: string;
     name: string;
     email: string;

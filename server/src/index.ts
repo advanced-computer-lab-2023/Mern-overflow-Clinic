@@ -13,6 +13,9 @@ import appointmentController from "./controllers/AppointmentController.js";
 import config from "./config/config.js";
 import prescriptionController from "./controllers/PrescriptionController.js"
 
+import authRouter from './routes/Auth.js';
+import isAuthenticated from "./middlewares/IsAuthenticated.js";
+
 mongoose.set("strictQuery", false);
 
 //App variables
@@ -23,12 +26,14 @@ const port: number = config.server.port;
 
 app.use(bodyParser.json());
 
+app.use('/auth', authRouter);
+
 //GET
 app.get("/", (req, res) => {
   res.send("hello");
   console.log("hello, world!");
 });
-app.get("/doctors", doctorController.listDoctors);
+app.get("/doctors", doctorController.listDoctors); 
 app.get("/patients/:id/relatives", patientController.readFamilyMember);
 app.get("/patients", patientController.listPatients);
 // app.get("/PatientRecord",userController.viewRecordOfPatients);

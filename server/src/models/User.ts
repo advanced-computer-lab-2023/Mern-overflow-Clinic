@@ -3,6 +3,7 @@ import mongoose, {Document, Schema, model} from "mongoose";
 export interface IUser extends Document {
     username:string;
     passwordHash: string;
+    __t: string;
 }
 
 const userSchema = new Schema<IUser>({

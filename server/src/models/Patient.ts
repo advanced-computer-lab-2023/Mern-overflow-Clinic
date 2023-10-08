@@ -60,4 +60,5 @@ const PatientSchema = new Schema<IPatient>({
 // const Patient = model<IPatient>('Patient', PatientSchema);
 const Patient = User.discriminator<IPatient>('Patient', PatientSchema);
 
-export default mongoose.model<IPatient>("Patient", PatientSchema);
+// export default mongoose.model<IPatient>("Patient", PatientSchema);
+export default Patient;

@@ -15,4 +15,5 @@ const adminstratorSchema = new Schema<IAdminstrator>({
 // const Adminstrator = model<IAdminstrator>('Adminstrator', adminstratorSchema);
 const Adminstrator = User.discriminator<IAdminstrator>('Adminstrator', adminstratorSchema);
 
-export default mongoose.model<IAdminstrator>("Adminstrator", adminstratorSchema);
+// export default mongoose.model<IAdminstrator>("Adminstrator", adminstratorSchema);
+export default Adminstrator;

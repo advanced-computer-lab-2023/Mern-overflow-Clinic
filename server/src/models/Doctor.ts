@@ -31,7 +31,8 @@ const doctorShema = new Schema<IDoctor>({
 // const Doctor = model<IDoctor>('Doctor', doctorShema);
 const Doctor = User.discriminator<IDoctor>('Doctor', doctorShema);
 
-export default mongoose.model<IDoctor>("Doctor", doctorShema);
+// export default mongoose.model<IDoctor>("Doctor", doctorShema);
+export default Doctor;
 
 
 

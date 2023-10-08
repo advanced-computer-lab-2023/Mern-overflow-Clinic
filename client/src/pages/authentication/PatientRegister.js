@@ -13,29 +13,34 @@ import logo from '../../assets/gifs/logo.gif';
 import ContactPageIcon from '@mui/icons-material/ContactPage';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import sha256 from 'js-sha256';
+
 
 const defaultTheme = createTheme();
 
 export default function PatientRegister() {
+
   const { register, handleSubmit, setError, formState: { errors } ,control} = useForm();
 
+  // function hashPassword(passwordParam) {
+  //   const sha256 = createHash('sha256');
+  //   sha256.update(passwordParam);
+  //   const hashedPassword = sha256.digest('hex');
+  //   return hashedPassword;
+  // }
+
   const onSubmit = data => {
-    // const data2 = {
-    //   username: "sadasdas",
-    //   name: "asdasd",
-    //   email: "hhaswh@email.com",
-    //   passwordHash: "2334ewr",
-    //   dateOfBirth: "12-12-1999",
-    //   gender: "male",
-    //   mobileNumber: "348723487",
-    //   emergencyContact: [{
-    //     name: "ahmed",
-    //     mobileNumber: "1232314234"
-    //   }]
-    //   // Add other required fields here
-    // };
-    console.log("Data to server" + JSON.stringify(data));
-    axios.post('http://localhost:8000/patients', data)
+    const dataToServer = {...data};
+
+    console.log("hellooooo");
+    dataToServer["passwordHash"] = sha256(data["password"]);
+    console.log("beyyyyeeeeeeee");
+    dataToServer["emergencyContact"] = [{name:data["EmergencyName"],mobileNumber:data["EmergencyPhone"]}];
+    delete dataToServer.EmergencyName
+    delete dataToServer.EmergencyPhone
+    delete dataToServer.password
+    console.log("Data to server" + JSON.stringify(dataToServer));
+    axios.post('http://localhost:8000/patients', dataToServer)
     .then((response) => {
       // Handle the successful response here
       console.log('POST request successful', response);
@@ -45,6 +50,7 @@ export default function PatientRegister() {
       console.error('Error making POST request', error);
     });
   }
+
   console.log(errors);
 
   const handleChange = (event) => {
@@ -101,9 +107,9 @@ export default function PatientRegister() {
                     autoFocus
                     id="name"
                     label="Name"
-                    {...register("Name", { required: true, maxLength: 80 })}
-                    error={!!errors["Name"]}
-                    helperText={errors["Name"]?.message}
+                    {...register("name", { required: true, maxLength: 80 })}
+                    error={!!errors["name"]}
+                    helperText={errors["name"]?.message}
                     onBlur={handleChange}
                   />
                 </Grid>
@@ -155,9 +161,9 @@ export default function PatientRegister() {
                     id="phone"
                     label="Phone"
                     type="tel"
-                    {...register("Phone", { required: true, minLength: 4, maxLength: 12 })}
-                    error={!!errors["Phone"]}
-                    helperText={errors["Phone"]?.message}
+                    {...register("mobileNumber", { required: true, minLength: 4, maxLength: 12 })}
+                    error={!!errors["mobileNumber"]}
+                    helperText={errors["mobileNumber"]?.message}
                     onBlur={handleChange}
                   />
                 </Grid>
@@ -168,9 +174,9 @@ export default function PatientRegister() {
                     id="username"
                     type="text"
                     label="Username"
-                    {...register("Username", { required: true, maxLength: 80 })}
-                    error={!!errors["Username"]}
-                    helperText={errors["Username"]?.message}
+                    {...register("username", { required: true, maxLength: 80 })}
+                    error={!!errors["username"]}
+                    helperText={errors["username"]?.message}
                     onBlur={handleChange}
                   />
                 </Grid>
@@ -194,9 +200,9 @@ export default function PatientRegister() {
                     id="password"
                     label="Password"
                     type="password"
-                    {...register("Password", { required: true, maxLength: 80 })}
-                    error={!!errors["Password"]}
-                    helperText={errors["Password"]?.message}
+                    {...register("password", { required: true, maxLength: 80 })}
+                    error={!!errors["password"]}
+                    helperText={errors["password"]?.message}
                     onBlur={handleChange}
                   />
                 </Grid>

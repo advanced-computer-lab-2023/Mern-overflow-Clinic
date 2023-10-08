@@ -5,7 +5,7 @@ import config from '../config/config.js';
 
 const generateToken= async(patient: Document<IPatient>) => {
     const secretKey = config.jwt.secret;
-    const expiresIn = '1h';
+    const expiresIn = '7d';
     console.log("here");
     const token = jwt.sign(
       {

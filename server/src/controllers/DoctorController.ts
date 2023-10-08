@@ -5,42 +5,6 @@ import patient from "../models/Patient.js";
 
 
 
-
-
-
-const selectPatientByName = async (req:Request, res:Response) => {
-  const id = req.params.id;
-  const patientName = req.body.patientName;
-  var pIDs: any[]=[];
-  var pats: any[]=[];
-  try{   
-    const apt = appointment.find({"doctor":id}).then((apts)=>{
-        for (const appoint of apts){
-          pIDs.push(appoint.patient);
-        }
-      })
-    
-    if(!apt)
-      res.status(404).send("no appointments found");
-    
-    const patients = await patient.find({ _id: { $in: pIDs } }).exec();
-
-    for(const pat of patients){
-      if(pat.name.includes(patientName))
-        pats.push(pat);
-    }
-
-    if(pats.length === 0)
-      res.status(404).send("no patients found");
-
-    res.status(200).json(pats);
-  }catch(err){
-    res.status(400).json(err);
-  }
-
-};
-
-
 const createDoctor = async (req: Request, res: Response) => {
   req.body.status = "pending";
   const newDoctor = doctor
@@ -110,7 +74,6 @@ const listDoctors = async (req: Request, res: Response) => {
     });
 };
 
-
 const listAllMyPatients = async (req: Request, res: Response) => {
   const id = req.params.id;
   const pId = req.params.pId;
@@ -155,7 +118,6 @@ const selectPatient = async (req: Request, res: Response) => {
   res.status(200).json(pat);
 };
 
-
 const listAllMyPatientsUpcoming = async (req: Request, res: Response) => {
   const id = req.params.id;
   //const id: string = '65200d0602668a2ddd63d01c';
@@ -183,7 +145,37 @@ const listAllMyPatientsUpcoming = async (req: Request, res: Response) => {
   }
 };
 
+const selectPatientByName = async (req:Request, res:Response) => {
+  const id = req.params.id;
+  const patientName = req.body.patientName;
+  var pIDs: any[]=[];
+  var pats: any[]=[];
+  try{   
+    const apt = appointment.find({"doctor":id}).then((apts)=>{
+        for (const appoint of apts){
+          pIDs.push(appoint.patient);
+        }
+      })
+    
+    if(!apt)
+      res.status(404).send("no appointments found");
+    
+    const patients = await patient.find({ _id: { $in: pIDs } }).exec();
 
+    for(const pat of patients){
+      if(pat.name.includes(patientName))
+        pats.push(pat);
+    }
+
+    if(pats.length === 0)
+      res.status(404).send("no patients found");
+
+    res.status(200).json(pats);
+  }catch(err){
+    res.status(400).json(err);
+  }
+
+};
 
 
 

@@ -1,8 +1,5 @@
 import mongoose, { Schema, model, connect } from 'mongoose';
-import dotenv from 'dotenv';
-dotenv.config();
-const mongoUrl: string = process.env.MONGO_URI!;
-
+import User from "./User.js";
 interface emergencyContact {
     name: string;
     mobileNumber: string;
@@ -16,11 +13,11 @@ interface familyMember {
     relation: string;
 }
 
-interface IPatient {
-    username: string;
+export interface IPatient {
+    // username: string;
     name: string;
     email: string;
-    passwordHash: string;
+    // passwordHash: string;
     dateOfBirth: Date;
     gender: string;
     mobileNumber: string;
@@ -32,10 +29,10 @@ interface IPatient {
 
 // 2. Create a Schema corresponding to the document interface.
 const PatientSchema = new Schema<IPatient>({
-    username: { type: String, required: true, unique: true },
+    // username: { type: String, required: true, unique: true },
     name: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true, match: [/\S+@\S+\.\S+/, "invalid email"], },
-    passwordHash: { type: String, required: true },
+    // passwordHash: { type: String, required: true },
     dateOfBirth: { type: Date, required: true },
     gender: { type: String, required: true, lowercase: true, enum: ['male', 'female'] },
     mobileNumber: { type: String, required: true, unique: true, min: 8, max: 16, match: [/^(\+\d{8,15}|\d{8,15})$/, "invalid charachters"] },
@@ -60,42 +57,8 @@ const PatientSchema = new Schema<IPatient>({
 });
 
 // 3. Create a Model.
-const Patient = model<IPatient>('Patient', PatientSchema);
+// const Patient = model<IPatient>('Patient', PatientSchema);
+const Patient = User.discriminator<IPatient>('Patient', PatientSchema);
 
-
-// let p;
-// export async function f():Promise<any> {
-//     await connect(mongoUrl);
-//     p = await User.deleteMany({name:'Ahmed'}).exec();
-//     console.log(p);
-// }
-
-
-
-
-
-
-// run().catch(err => console.log(err));
-
-export async function addTestPatient(username: string, name: string, email: string, passwordHash: string, date: string, gender: string, mobileNumber: string) {
-    // 4. Connect to MongoDB
-    await connect(mongoUrl);
-
-    const patient = new Patient({
-        username: username,
-        name: name,
-        email: email,
-        passwordHash: passwordHash,
-        dateOfBirth: new Date(date),
-        gender: gender,
-        mobileNumber: mobileNumber,
-        emergencyContact: {
-            name: 'person',
-            mobileNumber: '01000000001'
-        }
-    });
-    await patient.save();
-    console.log('Document inserted:', patient);
-}
-
-export default mongoose.model<IPatient>("Patient", PatientSchema);
+// export default mongoose.model<IPatient>("Patient", PatientSchema);
+export default Patient;

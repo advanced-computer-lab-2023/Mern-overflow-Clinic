@@ -6,25 +6,24 @@ const createPrescription = async (req: Request, res: Response) => {
   try {
     const newPrescriptionData = req.body;
     
-    // Set the 'filled' field to 'false' before creating the Prescription
     newPrescriptionData.filled = false;
 
     const newPrescription = await Prescription.create(newPrescriptionData);
     res.status(200).json(newPrescription);
-  } catch (err) {
+  } catch (error) {
     console.log("error");
-    res.status(400).json(err);
+    res.status(400).json(error);
   }
 };
 
 
 const viewPatientPrescription = async(req:Request, res:Response)=>{
     const id = req.params.id
-    const pres = Prescription
+    const presc = Prescription
     .find({})
-    .then((pres) => {
+    .then((presc) => {
       var arr: any[]=[]
-      for(const p of pres){
+      for(const p of presc){
         if(p.patient.toString() === id.toString()){
           arr.push(p);
         }

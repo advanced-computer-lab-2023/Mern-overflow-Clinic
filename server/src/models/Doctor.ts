@@ -1,13 +1,11 @@
-
-
 import mongoose, {Schema, model} from "mongoose";
-
+import User from "./User.js";
 
 interface IDoctor {
-    username:string;
+    // username:string;
     name: string;
     email: string;
-    passwordHash: string;
+    // passwordHash: string;
     dateOfBirth: Date;
     hourlyRate: number;
     affiliation: string;
@@ -18,10 +16,10 @@ interface IDoctor {
 }
 
 const doctorShema = new Schema<IDoctor>({
-    username: { type: String, required: true , unique: true },
+    // username: { type: String, required: true , unique: true },
     name: { type: String, required: true , trim: true },
     email: { type: String, required: true, match : [/\S+@\S+\.\S+/, "invalid email"], },
-    passwordHash:{ type: String, required: true },
+    // passwordHash:{ type: String, required: true },
     dateOfBirth: { type: Date, required: true },
     hourlyRate: { type: Number, required: true },
     affiliation: { type: String, required: true , trim: true },
@@ -30,10 +28,11 @@ const doctorShema = new Schema<IDoctor>({
     speciality: { type: String, required: true , trim: true },
 })
 
-const Doctor = model<IDoctor>('Doctor', doctorShema);
+// const Doctor = model<IDoctor>('Doctor', doctorShema);
+const Doctor = User.discriminator<IDoctor>('Doctor', doctorShema);
 
-
-export default mongoose.model<IDoctor>("Doctor", doctorShema);
+// export default mongoose.model<IDoctor>("Doctor", doctorShema);
+export default Doctor;
 
 
 

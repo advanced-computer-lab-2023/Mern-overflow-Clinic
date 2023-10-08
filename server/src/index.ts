@@ -14,8 +14,9 @@ import config from "./config/config.js";
 import prescriptionController from "./controllers/PrescriptionController.js"
 
 import authRouter from './routes/Auth.js';
-import isAuthenticated from "./middlewares/permissions/IsAuthenticated.js";
-
+import isAuthenticated from "./middlewares/permissions/isAuthenticated.js";
+import isAuthorized from "./middlewares/permissions/isAuthorized.js";
+import { UserType } from "./enums/UserTypes.js";
 mongoose.set("strictQuery", false);
 
 //App variables
@@ -34,7 +35,7 @@ app.get("/", (req, res) => {
     res.send("hello");
     console.log("hello, world!");
 });
-app.get("/doctors", doctorController.listDoctors);
+app.get("/doctors",doctorController.listDoctors);
 app.get("/patients/:id/relatives", patientController.readFamilyMember);
 app.get("/patients", patientController.listPatients);
 // app.get("/PatientRecord",userController.viewRecordOfPatients);
@@ -44,7 +45,7 @@ app.get("/doctors/:id/patients", doctorController.listAllMyPatients);
 app.get("/doctors/:id/patients/:pId", doctorController.selectPatient);
 app.get("/doctors/:id/search", doctorController.selectPatientByName);
 // app.get("/admins", adminstratorController.viewRequest);
-app.get("/admins", isAuthenticated, adminstratorController.listAdminstrators)
+app.get("/admins" ,isAuthenticated,isAuthorized([UserType.ADMINSTARTOR]), adminstratorController.listAdminstrators)
 app.get("/appointemnts", appointmentController.listAllAppointments);
 app.get("/appointemnts/:id", appointmentController.readAppointment);
 // app.get("/DoctorDetails",patientController.viewDoctorDetails);

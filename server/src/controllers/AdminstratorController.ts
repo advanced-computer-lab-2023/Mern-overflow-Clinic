@@ -3,12 +3,7 @@ import adminstrator from "../models/Adminstrator.js";
 import doctor from "../models/Doctor.js";
 
 const createAdminstrator = async (req: Request, res: Response) => {
-	//handle later-AUTH
-	//const userName = req.params.userName;
 
-	//admin.find(userName)
-	// req.body.username = "admin";
-	// req.body.passwordHash = "admin";
 	const newAdminstrator = adminstrator
 		.create(req.body)
 		.then((newAdminstrator) => {

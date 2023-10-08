@@ -9,6 +9,7 @@ const createPrescription = async (req: Request, res: Response) => {
     newPrescriptionData.filled = false;
 
     const newPrescription = await Prescription.create(newPrescriptionData);
+    
     res.status(200).json(newPrescription);
   } catch (error) {
     console.log("error");

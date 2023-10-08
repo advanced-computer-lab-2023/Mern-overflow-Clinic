@@ -12,11 +12,12 @@ const login = async (req: Request, res: Response) => {
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
+        }else{
+            const token = await TokenUtils.generateToken(user);
+            res.header('Authorization', `Bearer ${token}`);
+            res.status(200).json({ token, user });
         }
-        const token = await TokenUtils.generateToken(user);
-        res.header('Authorization', `Bearer ${token}`);
-
-        res.status(200).json({ token, user });
+        
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });

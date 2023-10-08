@@ -1,4 +1,6 @@
 import AdminDashboard from "./AdminDashboard";
+import AdminViewDoctors from "../../components/ViewComponents/AdminViewDoctors";
+
 import { Box, Typography, Button, Container, Paper, TextField } from "@mui/material";
 
 const AdminManageAdmins = () => {
@@ -16,6 +18,9 @@ const AdminManageAdmins = () => {
                     </Box>
                 </Paper>
             </Container>
+                 <AdminViewDoctors/>
+
+
         </>
     );
 }

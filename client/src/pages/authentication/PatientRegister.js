@@ -12,6 +12,7 @@ import Avatar from '@mui/material/Avatar';
 import logo from '../../assets/gifs/logo.gif';
 import ContactPageIcon from '@mui/icons-material/ContactPage';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const defaultTheme = createTheme();
 
@@ -19,7 +20,30 @@ export default function PatientRegister() {
   const { register, handleSubmit, setError, formState: { errors } ,control} = useForm();
 
   const onSubmit = data => {
+    // const data2 = {
+    //   username: "sadasdas",
+    //   name: "asdasd",
+    //   email: "hhaswh@email.com",
+    //   passwordHash: "2334ewr",
+    //   dateOfBirth: "12-12-1999",
+    //   gender: "male",
+    //   mobileNumber: "348723487",
+    //   emergencyContact: [{
+    //     name: "ahmed",
+    //     mobileNumber: "1232314234"
+    //   }]
+    //   // Add other required fields here
+    // };
     console.log("Data to server" + JSON.stringify(data));
+    axios.post('http://localhost:8000/patients', data)
+    .then((response) => {
+      // Handle the successful response here
+      console.log('POST request successful', response);
+    })
+    .catch((error) => {
+      // Handle any errors here
+      console.error('Error making POST request', error);
+    });
   }
   console.log(errors);
 
@@ -157,9 +181,9 @@ export default function PatientRegister() {
                     id="email"
                     label="Email"
                     type="email"
-                    {...register("Email", { required: true, maxLength: 80 })}
-                    error={!!errors["Email"]}
-                    helperText={errors["Email"]?.message}
+                    {...register("email", { required: true, maxLength: 80 })}
+                    error={!!errors["email"]}
+                    helperText={errors["email"]?.message}
                     onBlur={handleChange}
                   />
                 </Grid>

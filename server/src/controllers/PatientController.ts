@@ -8,7 +8,10 @@ import app from "../index.js";
 import { relative } from "path";
 import doctor from "../models/Doctor.js";
 
+
+
 const createPatient = async (req: Request, res: Response) => {
+  console.log("patient reg "+JSON.stringify(req.body));
   const newPatient = patient
     .create(req.body)
     .then((newPatient) => {

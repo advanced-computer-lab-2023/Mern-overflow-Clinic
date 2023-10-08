@@ -12,6 +12,8 @@ import appointmentController from "./controllers/AppointmentController.js";
 // import { Request, Response } from 'express';
 import config from "./config/config.js";
 import prescriptionController from "./controllers/PrescriptionController.js"
+import cors from "cors";
+
 
 mongoose.set("strictQuery", false);
 
@@ -22,6 +24,7 @@ const app = express();
 const port: number = config.server.port;
 
 app.use(bodyParser.json());
+app.use(cors());
 
 //GET
 app.get("/", (req, res) => {
@@ -53,7 +56,6 @@ app.get("/packages",packageController.listPackages);
 
 
 
-
 //POST
 app.post("/patients", patientController.createPatient);
 app.post("/appointemnts", appointmentController.createAppointment);
@@ -64,6 +66,7 @@ app.post("/packages", packageController.createPackage);
 app.post("/prescriptions",prescriptionController.createPrescription);
 // app.post("/patients/:id/relatives",patientController.addFamilyMember);
 app.post("/packages",packageController.createPackage);
+
 
 
 //PUT

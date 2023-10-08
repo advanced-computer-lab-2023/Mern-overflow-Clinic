@@ -56,7 +56,7 @@ app.get("/packages",packageController.listPackages);
 
 //POST
 app.post("/patients", patientController.createPatient);
-app.post("/appointemnts", appointmentController.createAppointment);
+app.post("/appointments", appointmentController.createAppointment);
 app.post("/doctors", doctorController.createDoctor);
 app.post("/admins", adminstratorController.createAdminstrator);
 // app.post("/AcceptRequest",patientController.acceptAddDoctorRequest);
@@ -64,7 +64,7 @@ app.post("/packages", packageController.createPackage);
 app.post("/prescriptions",prescriptionController.createPrescription);
 // app.post("/patients/:id/relatives",patientController.addFamilyMember);
 app.post("/packages",packageController.createPackage);
-
+app.post("/doctors/filter", patientController.filterDoctor);
 
 //PUT
 app.put("/packages/:id", packageController.updatePackage);

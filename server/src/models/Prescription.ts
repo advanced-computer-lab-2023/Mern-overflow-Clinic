@@ -15,7 +15,7 @@ export interface IPrescription {
 const PrescriptionSchema = new Schema<IPrescription>({
     patient: { type: mongoose.Types.ObjectId, ref: "Patient", required: true },
     doctor: { type: mongoose.Types.ObjectId, ref: "Doctor", required: true },
-    medicine: [{ type: mongoose.Types.ObjectId, required: true }],
+    medicine: [{ type: mongoose.Types.ObjectId, required: false }],
     date: { type: Date, required: true },
     filled: { type: Boolean, required: true },
 });

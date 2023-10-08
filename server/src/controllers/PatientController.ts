@@ -206,7 +206,7 @@ const filterDoctor = async (req: Request, res: Response) => {
   console.log(dateInput.toISOString()); // Ensure dateInput is in ISO format
 
   try {
-    const docRes = await Doctor.find({ 'speciality': speciality });
+    const docRes = await doctor.find({ 'speciality': speciality });
 
     if (docRes.length === 0) {
       res.status(404).send("No doctors with this speciality available");

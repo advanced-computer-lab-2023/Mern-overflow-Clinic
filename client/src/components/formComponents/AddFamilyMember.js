@@ -8,24 +8,29 @@ import MenuItem from '@mui/material/MenuItem';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from "react";
 
-const AddAdmin = () => {
+const AddFamilyMember = () => {
     let { id } = useParams();
     const { register, handleSubmit, setError, formState: { errors } } = useForm();
-    const [name, setName] = useState("");
-    const [nationalId, setNationalId] = useState("");
-    const [age, setAge] = useState("");
-    const [gender, setGender] = useState("");
-    const [relation, setRelation] = useState("");
 
     const onSubmit = data => {
-        const dataToServer = { name, nationalId, age, gender, relation };
-        axios.put(`http://localhost:8000/patients/${id}/relatives`, dataToServer)
+        const dataToServer = { ...data };
+        axios.post(`http://localhost:8000/patients/${id}/familyMember`, dataToServer)
             .then((response) => {
                 console.log('PUT request successful', response);
             })
             .catch((error) => {
                 console.error('Error making PUT request', error);
             });
+    }
+
+    const handleChange = (event) => {
+        if (errors[event.target.name]) {
+            setError(event.target.name,
+                {
+                    type: errors[event.target.name]["type"],
+                    message: errors[event.target.name]["type"]
+                })
+        }
     }
 
     return (
@@ -39,8 +44,9 @@ const AddAdmin = () => {
                                 <TextField
                                     id="name"
                                     label="Name"
-                                    value={name}
-                                    onChange={(e) => { setName(e.target.value) }}
+                                    {...register("name", { required: true, maxLength: 80 })}
+                                    error={!!errors["name"]}
+                                    helperText={errors["name"]?.message}
                                     fullWidth
                                     required
                                 />
@@ -49,8 +55,9 @@ const AddAdmin = () => {
                                 <TextField
                                     id="nationalId"
                                     label="National ID"
-                                    value={nationalId}
-                                    onChange={(e) => { setNationalId(e.target.value) }}
+                                    {...register("nationalId", { required: true, maxLength: 80 })}
+                                    error={!!errors["nationalId"]}
+                                    helperText={errors["nationalId"]?.message}
                                     type="number"
                                     fullWidth
                                     required
@@ -60,8 +67,9 @@ const AddAdmin = () => {
                                 <TextField
                                     id="age"
                                     label="Age"
-                                    value={age}
-                                    onChange={(e) => { setAge(e.target.value) }}
+                                    {...register("age", { required: true, maxLength: 80 })}
+                                    error={!!errors["age"]}
+                                    helperText={errors["age"]?.message}
                                     type="number"
                                     fullWidth
                                     required
@@ -71,8 +79,9 @@ const AddAdmin = () => {
                                 <FormControl fullWidth variant="outlined">
                                     <InputLabel id="gender-label">Gender</InputLabel>
                                     <Select
-                                        value={nationalId}
-                                        onChange={(e) => { setNationalId(e.target.value) }}
+                                        {...register("gender", { required: true, maxLength: 80 })}
+                                        error={!!errors["gender"]}
+                                        helperText={errors["gender"]?.message}
                                         type="number"
                                         fullWidth
                                         required
@@ -87,7 +96,14 @@ const AddAdmin = () => {
                                 </FormControl>
                             </Grid>
                             <Grid item xs={12} sm={4}>
-                                <TextField label="Relation" fullWidth />
+                                <TextField
+                                    id="relation"
+                                    label="Relation"
+                                    {...register("relation", { required: true, maxLength: 80 })}
+                                    error={!!errors["relation"]}
+                                    helperText={errors["relation"]?.message}
+                                    fullWidth
+                                    required />
                             </Grid>
                             <Grid item xs={12} sm={4}>
                                 <Button type="submit" variant="outlined" fullWidth sx={{ p: 1.8, fontWeight: 'bold' }}>
@@ -103,4 +119,4 @@ const AddAdmin = () => {
     );
 }
 
-export default AddAdmin;
+export default AddFamilyMember;

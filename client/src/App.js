@@ -2,7 +2,7 @@ import './App.css';
 import PatientRegister from './pages/authentication/PatientRegister';
 import DoctorRegister from './pages/authentication/DoctorRegister';
 import SignIn from './pages/authentication/SignIn';
-import AdminDashbaord from './pages/admin/AdminDashboard';
+import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminManageAdmins from './pages/admin/AdminManageAdmins';
 import AdminManageDoctors from './pages/admin/AdminManageDoctors';
 import AdminManagePatients from './pages/admin/AdminManagePatients';
@@ -15,7 +15,7 @@ import PatientManageFamily from './pages/patient/PatientManageFamily';
 import PatientManageDoctors from './pages/patient/PatientManageDoctors';
 import PatientManagePrescriptions from './pages/patient/PatientManagePrescriptions';
 import PatientManageAppointments from './pages/patient/PatientManageAppointments';
-
+import AddFamilyMember from './components/formComponents/AddFamilyMember'
 import {
   createBrowserRouter,
   RouterProvider,
@@ -85,10 +85,10 @@ function App() {
       path: "/patient/family",
       element: <PatientManageFamily />,
     },
-    // {
-    //   path: "/doctor/profile/:id",
-    //   element: <DoctorManageProfile />,
-    // },
+    {
+      path: "/patient/family/:id",
+      element: <AddFamilyMember />,
+    },
     {
       path: "/patient/appointments",
       element: <PatientManageAppointments />,

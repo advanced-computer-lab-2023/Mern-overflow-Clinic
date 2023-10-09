@@ -10,6 +10,7 @@ import adminRouter from "./routes/Admins.js"
 import appointmentRouter from "./routes/Appointments.js"
 import prescriptionRouter from "./routes/Prescriptions.js"
 import packageRouter from "./routes/Package.js"
+import cors from 'cors'
 
 // import isAuthenticated from "./middlewares/permissions/isAuthenticated.js";
 // import isAuthorized from "./middlewares/permissions/isAuthorized.js";

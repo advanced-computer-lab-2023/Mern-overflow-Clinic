@@ -21,12 +21,12 @@ import { UserType } from "./enums/UserTypes.js";
 mongoose.set("strictQuery", false);
 
 //App variables
-const MongoURI: string =
-    config.mongo.URL;
+const MongoURI: string =config.mongo.URL;
 const app = express();
 const port: number = config.server.port;
-
 app.use(bodyParser.json());
+
+
 
 //ROUTERS
 app.use('/auth', authRouter);

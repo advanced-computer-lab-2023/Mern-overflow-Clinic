@@ -73,7 +73,7 @@ const listDoctors = async (req: Request, res: Response) => {
     });
 };
 
-const listAllMyPatients = async (req: Request, res: Response) => {
+const listDoctorPatients = async (req: Request, res: Response) => {
   const id = req.params.id;
   const pId = req.params.pId;
 
@@ -182,7 +182,7 @@ export default {
   updateDoctor,
   deleteDoctor,
   listDoctors,
-  listAllMyPatients,
+  listDoctorPatients ,
   selectPatient,
   selectPatientByName,
   listAllMyPatientsUpcoming

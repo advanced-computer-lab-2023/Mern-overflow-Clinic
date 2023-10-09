@@ -1,7 +1,8 @@
 import mongoose, { Schema, model, connect } from 'mongoose';
 import dotenv from 'dotenv';
+import config from '.././config/config.js';
 dotenv.config();
-const mongoUrl: string = process.env.MONGO_URI!;
+const mongoUrl: string = config.mongo.URL;
 
 interface emergencyContact {
     name: string;
@@ -30,6 +31,88 @@ interface IPatient {
     package?: typeof mongoose.Types.ObjectId;
 }
 
+/*
+function validateNationalId(nationalId: string, dateOfBirth: Date, gender: string): boolean {
+    // Check if the national ID is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(nationalId)) {
+        return false;
+    }
+
+    // Check if the national ID is exactly 14 characters long
+    if (nationalId.length !== 14) {
+        return false;
+    }
+
+    // Check if the first digit corresponds to the century of dateOfBirth where 2 => 20th century
+    const year = dateOfBirth.getFullYear();
+    const centuryDigit = nationalId.charAt(0);
+    if (parseInt(centuryDigit) !== Math.floor(year / 100) - 18) {
+        return false;
+    }
+    
+    // Check if the second and third digits correspond to the year of dateOfBirth
+    const yearDigits = nationalId.substring(1, 3);
+    if (parseInt(yearDigits) !== year % 100) {
+        return false;
+    }
+
+    // Check if the fourth and fifth digits correspond to the month of dateOfBirth
+    const month = dateOfBirth.getMonth() + 1;
+    const monthDigits = nationalId.substring(3, 5);
+    if (parseInt(monthDigits) !== month) {
+        return false;
+    }
+
+    // Check if the sixth and seventh digits correspond to the day of dateOfBirth
+    const day = dateOfBirth.getDate();
+    const dayDigits = nationalId.substring(5, 7);
+    if (parseInt(dayDigits) !== day) {
+        return false;
+    }
+
+    // Check if the thirteenth digit corresponds to gender, where odd is male and even is female
+    const genderDigit = parseInt(nationalId.charAt(12));
+    if ((gender === 'male' && genderDigit % 2 === 0) || (gender === 'female' && genderDigit % 2 !== 0)) {
+        return false;
+    }
+    
+    return true;
+}
+*/
+
+function validateNationalId (nationalId: string, age: number, gender: string): boolean {
+    // Check if the national ID is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(nationalId)) {
+        return false;
+    }
+
+    // Check if the national ID is exactly 14 characters long
+    if (nationalId.length !== 14) {
+        return false;
+    }
+
+    // Check if digits 2 through 6 correspond to the birth date
+    const year = nationalId.substring(1, 3);
+    const month = nationalId.substring(3, 5);
+    const day = nationalId.substring(5, 7);
+    const birthDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+    const today = new Date();
+    const ageDiff = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    const dayDiff = today.getDate() - birthDate.getDate();
+    if (ageDiff < age || (ageDiff === age && monthDiff < 0) || (ageDiff === age && monthDiff === 0 && dayDiff < 0)) {
+        return false;
+    }
+
+    // Check if the thirteenth digit corresponds to gender, where odd is male and even is female
+    const genderDigit = parseInt(nationalId.charAt(12));
+    if ((gender === 'male' && genderDigit % 2 === 0) || (gender === 'female' && genderDigit % 2 !== 0)) {
+        return false;
+    }
+
+    return true;
+}
+
 // 2. Create a Schema corresponding to the document interface.
 const PatientSchema = new Schema<IPatient>({
     username: { type: String, required: true, unique: true },
@@ -48,10 +131,10 @@ const PatientSchema = new Schema<IPatient>({
     familyMembers: [
         {
             name: { type: String, required: true, trim: true },
-            nationalId: { type: String, required: true},//TODO add validation
+            nationalId: { type: mongoose.Types.ObjectId, ref: "NationalId", required: true, validate: { validator: validateNationalId, message: 'invalid national id' } },//TODO write test for this
             age: { type: Number, required: true, min: 0, max: 122 },
             gender: { type: String, required: true, lowercase: true, enum: ['male', 'female'] },
-            relation: { type: String, required: true, lowercase: true, },
+            relation: { type: String, required: true, lowercase: true, enum: ['husband', 'wife', 'son', 'daughter']},//TODO add validation for relation
         }
     ],
     prescriptions: [{ type: mongoose.Types.ObjectId, ref: "Prescription", required: false }],

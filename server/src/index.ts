@@ -13,7 +13,7 @@ import admin from './models/Adminstrator.js';
 import appointment from './models/appointment.js';
 import doctor from './models/Doctor.js';
 import pack from './models/Package.js';
-import user from './models/Patient.js';
+import patient from './models/Patient.js';
 import config from './config/config.js';
 
 mongoose.set('strictQuery', false);

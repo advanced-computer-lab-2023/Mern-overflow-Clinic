@@ -80,13 +80,13 @@ const rows = [
   },
 ];
 
-export default function PatientView(props) {
+export default function AdminViewDoctors(props) {
   const [searchData, setSearchData] = useState(rows);
   const [filterSpecialty, setfilterSpecialty] = useState("No filter");
   const uniqueSpecialties = ["No filter"];
   rows.map((key) => {
-    if (uniqueSpecialties.indexOf(key.affiliation) === -1) {
-      uniqueSpecialties.push(key.affiliation);
+    if (uniqueSpecialties.indexOf(key.status) === -1) {
+      uniqueSpecialties.push(key.status);
     }
   });
   const handleFilter = (e) => {

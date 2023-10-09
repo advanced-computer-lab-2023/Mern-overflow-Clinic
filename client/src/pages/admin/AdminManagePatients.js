@@ -1,5 +1,8 @@
 import AdminDashboard from "./AdminDashboard";
+import AdminViewPatients from "../../components/ViewComponents/AdminViewPatients";
+
 import { Box, Typography, Button, Container, Paper, TextField } from "@mui/material";
+
 
 const AdminManagePatients = () => {
     return (
@@ -16,6 +19,9 @@ const AdminManagePatients = () => {
                     </Box>
                 </Paper>
             </Container>
+
+            <AdminViewPatients/>
+
         </>
     );
 }

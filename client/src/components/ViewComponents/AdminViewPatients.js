@@ -80,7 +80,7 @@ const rows = [
   },
 ];
 
-export default function PatientView(props) {
+export default function AdminViewPatients(props) {
   const [searchData, setSearchData] = useState(rows);
   const [filterSpecialty, setfilterSpecialty] = useState("No filter");
   const uniqueSpecialties = ["No filter"];

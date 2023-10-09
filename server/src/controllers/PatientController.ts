@@ -49,7 +49,7 @@ const listPatients = async (req: Request, res: Response) => {
 };
 
 const addFamilyMember = async (req: Request, res: Response) => {
-  //TODO rename to family member
+
   const familyMember = {
     name: req.body.name,
     nationalId: req.body.nationalId,
@@ -65,15 +65,18 @@ const addFamilyMember = async (req: Request, res: Response) => {
 
     if (!pat) {
       return res.status(404).json({ message: "Patient not found" });
+    }else{
+      
+      const newRelatives = pat.familyMembers;
+      if (newRelatives !== undefined) 
+        newRelatives.push(familyMember);
+
+      pat.familyMembers = newRelatives;
+      await pat.save();
+
+      res.status(200).json(pat);
     }
 
-    const newRelatives = pat.familyMembers;
-    if (newRelatives !== undefined) newRelatives.push(familyMember);
-
-    pat.familyMembers = newRelatives;
-    await pat.save();
-
-    res.json(pat);
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: "Server error" });
@@ -85,7 +88,8 @@ const readFamilyMember = async (req: Request, res: Response) => {
   const p = patient
     .findById(id)
     .then((p) => {
-      if (p !== null) res.status(200).json(p.familyMembers);
+      if (p !== null) 
+        res.status(200).json(p.familyMembers);
     })
 
     .catch((err) => {
@@ -102,10 +106,9 @@ const selectDoctor = async (req: Request, res: Response) => {
     .findById(dId) 
     .then((docs) =>{
       if (!docs) {
-        console.log("no doctor")
         return res.status(404).json({ message: 'Patient not found' });
       } else{
-      res.status(200).json(docs);
+        res.status(200).json(docs);
       }
     }).catch((err) =>{
       res.status(404).send(err);
@@ -125,37 +128,36 @@ const selectDoctorByName = async (req: Request, res: Response) => {
 
     if (!doctorName) {
       return res.status(400).send("No name entered");
-    }
-
-    for (const doc of doctors) {
-      if (doc.name.includes(doctorName)) {
-        docs.push(doc);
-      }
-    }
-
-    if (docs.length === 0) {
-      return res.status(404).send("No doctors found with this name");
-    }
-    console.log(docs.length);
-
-    if (speciality) {
-      for (const d of docs) {
-        if (d.speciality.includes(speciality)) {
-          docs2.push(d);
+    }else{
+      for (const doc of doctors) {
+        if (doc.name.includes(doctorName)) {
+          docs.push(doc);
         }
       }
-
-      if (docs2.length === 0) {
-        return res.status(404).send("No doctors found with this speciality");
-      }
-
-      spc = true;
-    }
+  
+      if (docs.length === 0) {
+        return res.status(404).send("No doctors found with this name");
+      }else{
+        if (speciality) {
+          for (const d of docs) {
+            if (d.speciality.includes(speciality)) {
+              docs2.push(d);
+            }
+          }
     
-    if(spc){
-      res.status(200).json(docs2);
-    }else{
-      res.status(200).json(docs);
+          if (docs2.length === 0) {
+            return res.status(404).send("No doctors found with this speciality");
+          }else{
+            spc = true;
+          }
+        }
+
+        if(spc){
+          res.status(200).json(docs2);
+        }else{
+          res.status(200).json(docs);
+        }
+      }
     }
   } catch (err) {
     res.status(400).json(err);
@@ -171,33 +173,82 @@ const listDoctorsBySessionPrice = async (req: Request, res: Response) => {
     
     if (!patientFound) {
       return res.status(404).json({ error: 'Patient not found' });
-    }
-
-    if (patientFound.package !== undefined) {
-      const packageId = patientFound.package;
-      const packageData = await pack.findById(packageId);
-
-      const doctors = await doctor.find({});
-      const sessionPrices = doctors.map((doctor) => {
-        if (packageData) {
-          docSessDisc = (packageData.discountOnDoctorSessions / 100) * doctor.hourlyRate;
-        }
-        const sessionPrice = doctor.hourlyRate + 0.1 * doctor.hourlyRate - docSessDisc;
-        return { doctorName: doctor.name, sessionPrice };
-      });
-
-      res.status(200).json(sessionPrices); // Send the response after the loop is done
-    } else {
-      const doctors = await doctor.find({});
-      const sessionPrices = doctors.map((doctor) => {
-        const sessionPrice = doctor.hourlyRate + 0.1 * doctor.hourlyRate - docSessDisc;
-        return { doctorName: doctor.name, sessionPrice };
-      });
-
-      res.status(200).json(sessionPrices); // Send the response after the loop is done
+    }else{
+      if (patientFound.package !== undefined) {
+        const packageId = patientFound.package;
+        const packageData = await pack.findById(packageId);
+  
+        const doctors = await doctor.find({});
+        const sessionPrices = doctors.map((doctor) => {
+          if (packageData) {
+            docSessDisc = (packageData.discountOnDoctorSessions / 100) * doctor.hourlyRate;
+          }
+          const sessionPrice = doctor.hourlyRate + 0.1 * doctor.hourlyRate - docSessDisc;
+          return { doctorName: doctor.name, sessionPrice };
+        });
+  
+        res.status(200).json(sessionPrices); // Send the response after the loop is done
+      } else {
+        const doctors = await doctor.find({});
+        const sessionPrices = doctors.map((doctor) => {
+          const sessionPrice = doctor.hourlyRate + 0.1 * doctor.hourlyRate - docSessDisc;
+          return { doctorName: doctor.name, sessionPrice };
+        });
+  
+        res.status(200).json(sessionPrices); // Send the response after the loop is done
+      }
     }
   } catch (error) {
     res.status(500).json(error);
+  }
+};
+
+
+const filterDoctor = async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const speciality = req.body.speciality;
+  const dateInput = new Date(req.body.date);
+  console.log(dateInput.toISOString()); // Ensure dateInput is in ISO format
+
+  try {
+    const docRes = await doctor.find({ 'speciality': speciality });
+
+    if (docRes.length === 0) {
+      res.status(404).send("No doctors with this speciality available");
+    } else {
+      if (!dateInput) {
+        res.status(200).send(docRes);
+      } else {
+        var resDocs: any[] = [];
+        var avDocs: any[] = [];
+
+        for (const doc of docRes) {
+          const appointmentsForDoctor = await appointment
+            .find({ 'doctor': doc._id })
+            .exec();
+
+          var count = 0;
+          for (const apt of appointmentsForDoctor) {
+            // Convert apt.date to ISO string for comparison
+            if (apt.date.toISOString() === dateInput.toISOString()) {
+              count++;
+            }
+          }
+
+          if (count === 0) {
+            avDocs.push(doc);
+          }
+        }
+
+        if (avDocs.length === 0) {
+          res.status(404).send("No doctors within this speciality are available at this date/time");
+        } else {
+          res.status(200).send(avDocs);
+        }
+      }
+    }
+  } catch (err) {
+    res.status(404).send(err);
   }
 };
 
@@ -213,4 +264,5 @@ export default {
   selectDoctor,
   selectDoctorByName,
   listDoctorsBySessionPrice,
+  filterDoctor
 };

@@ -45,7 +45,6 @@ const createPackage = async (req: Request, res: Response) => {
 
     res.status(200).json(updatedPackage);
   } catch (err) {
-    console.error("Error:", err);
     res.status(400).json(err);
   }
 };
@@ -71,15 +70,7 @@ const readPackage = async (req: Request, res: Response) => {
 
 const updatePackage = async (req: Request, res: Response) => {
   const id = req.params.id;
-
   const query = { _id: id };
-
-    // type: string;
-    // price: number;
-    // discountOnDoctorSessions: number;
-    // discountOnMedicine: number;
-    // discountForFamily: number;
-
   const type = req.body.type;
   const price = req.body.price;
   const discountOnDoctorSessions = req.body.discountOnDoctorSessions;

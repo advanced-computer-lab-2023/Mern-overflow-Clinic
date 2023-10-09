@@ -87,7 +87,7 @@ function App() {
     },
     {
       path: "/patient/family/:id",
-      element: <AddFamilyMember />,
+      element: <PatientManageFamily />,
     },
     {
       path: "/patient/appointments",

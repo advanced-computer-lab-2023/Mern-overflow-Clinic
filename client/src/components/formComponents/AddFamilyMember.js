@@ -96,14 +96,25 @@ const AddFamilyMember = () => {
                                 </FormControl>
                             </Grid>
                             <Grid item xs={12} sm={4}>
-                                <TextField
-                                    id="relation"
-                                    label="Relation"
-                                    {...register("relation", { required: true, maxLength: 80 })}
-                                    error={!!errors["relation"]}
-                                    helperText={errors["relation"]?.message}
-                                    fullWidth
-                                    required />
+                            <FormControl fullWidth variant="outlined">
+                                    <InputLabel id="relation">Relation</InputLabel>
+                                    <Select
+                                        {...register("relation", { required: true, maxLength: 80 })}
+                                        error={!!errors["relation"]}
+                                        helperText={errors["relation"]?.message}
+                                        type="number"
+                                        fullWidth
+                                        required
+                                        sx={{ textAlign: 'left' }}
+                                        labelId="relation-label"
+                                        id="relation-select"
+                                        label="Relation"
+                                    >
+                                        <MenuItem value="husband">Husband</MenuItem>
+                                        <MenuItem value="wife">Wife</MenuItem>
+                                        <MenuItem value="chlid">Child</MenuItem>
+                                    </Select>
+                                </FormControl>
                             </Grid>
                             <Grid item xs={12} sm={4}>
                                 <Button type="submit" variant="outlined" fullWidth sx={{ p: 1.8, fontWeight: 'bold' }}>

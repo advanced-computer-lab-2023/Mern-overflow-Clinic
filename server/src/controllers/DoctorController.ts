@@ -140,7 +140,7 @@ const listAllMyPatientsUpcoming = async (req: Request, res: Response) => {
 
 const selectPatientByName = async (req:Request, res:Response) => {
   const id = req.params.id;
-  const patientName = req.body.patientName;
+  const patientName = req.body.patientName.toLowerCase();
   var pIDs: any[]=[];
   var pats: any[]=[];
   try{   

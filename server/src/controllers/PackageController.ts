@@ -8,7 +8,7 @@ const createPackage = async (req: Request, res: Response) => {
 
     let updatedPackage:any = newPackage; // Initialize with the newly created package
 
-    if (req.body.type === "silver") {
+    if (req.body.name.toLowerCase() === "silver") {
       updatedPackage = await pack.findByIdAndUpdate(
         newPackage._id,
         {
@@ -19,7 +19,7 @@ const createPackage = async (req: Request, res: Response) => {
         },
         { new: true } // Return the updated package
       );
-    } else if (req.body.type === "gold") {
+    } else if (req.body.name.toLowerCase() === "gold") {
       updatedPackage = await pack.findByIdAndUpdate(
         newPackage._id,
         {
@@ -30,7 +30,7 @@ const createPackage = async (req: Request, res: Response) => {
         },
         { new: true } // Return the updated package
       );
-    } else if (req.body.type === "platinum") {
+    } else if (req.body.name.toLowerCase() === "platinum") {
       updatedPackage = await pack.findByIdAndUpdate(
         newPackage._id,
         {
@@ -71,14 +71,14 @@ const readPackage = async (req: Request, res: Response) => {
 const updatePackage = async (req: Request, res: Response) => {
   const id = req.params.id;
   const query = { _id: id };
-  const type = req.body.type;
+  const name = req.body.name.toLowerCase();
   const price = req.body.price;
   const discountOnDoctorSessions = req.body.discountOnDoctorSessions;
   const discountOnMedicine = req.body.discountOnMedicine;
   const discountForFamily = req.body.discountForFamily;
 
   const update: { [key: string]: any } = {};
-  if (type !==undefined) update["type"] = type;
+  if (name !==undefined) update["name"] = name;
   if (price !==undefined) update["price"] = price;
   if (discountOnDoctorSessions !==undefined) update["discountOnDoctorSessions"] = discountOnDoctorSessions;
   if (discountOnMedicine !==undefined) update["discountOnMedicine"] = discountOnMedicine;

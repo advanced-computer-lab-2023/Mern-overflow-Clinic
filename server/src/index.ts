@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import axios from "axios";
 import bodyParser from "body-parser";
 import patientController from "./controllers/PatientController.js";
-// import doctorController from "./controllers/DoctorController.js";
+import doctorController from "./controllers/DoctorController.js";
 import adminstratorController from "./controllers/AdminstratorController.js";
 import packageController from "./controllers/PackageController.js";
 import Prescription from "./models/Prescription.js";
@@ -68,6 +68,7 @@ app.post("/packages", packageController.createPackage);
 app.post("/prescriptions", prescriptionController.createPrescription);
 // app.post("/patients/:id/relatives",patientController.addFamilyMember);
 app.post("/packages",packageController.createPackage);
+//app.post("/doctors",doctorController.createDoctor);
 
 //PUT
 app.put("/packages/:id", packageController.updatePackage);

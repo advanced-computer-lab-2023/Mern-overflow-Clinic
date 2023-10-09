@@ -48,11 +48,11 @@ const listPatients = async (req: Request, res: Response) => {
 const addFamilyMember = async (req: Request, res: Response) => {
 
   const familyMember = {
-    name: req.body.name,
+    name: req.body.name.toLowerCase(),
     nationalId: req.body.nationalId,
     age: req.body.age,
-    gender: req.body.gender,
-    relation: req.body.relation,
+    gender: req.body.gender.toLowerCase(),
+    relation: req.body.relation.toLowerCase(),
   };
 
   const id = req.params.id;
@@ -115,10 +115,10 @@ const selectDoctor = async (req: Request, res: Response) => {
 
 const selectDoctorByName = async (req: Request, res: Response) => {
   const id = req.params.id;
-  const doctorName = req.body.doctorName;
+  const doctorName = req.body.doctorName.toLowerCase();
   var docs: any[] = [];
   var docs2: any[] = [];
-  const speciality = req.body.speciality;
+  const speciality = req.body.speciality.toLowerCase();
   var spc = false;
   try {
     const doctors = await doctor.find({});
@@ -203,7 +203,7 @@ const listDoctorsBySessionPrice = async (req: Request, res: Response) => {
 
 const filterDoctor = async (req: Request, res: Response) => {
   const id = req.params.id;
-  const speciality = req.body.speciality;
+  const speciality = req.body.speciality.toLowerCase();
   const dateInput = new Date(req.body.date);
   console.log(dateInput.toISOString()); // Ensure dateInput is in ISO format
 

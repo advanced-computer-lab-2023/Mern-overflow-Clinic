@@ -25,81 +25,61 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Fuse from "fuse.js";
+import axios from "axios";
 
 const columns = [
+  {
+    key: "username",
+    label: "USERNAME",
+  },
+
   {
     key: "name",
     label: "NAME",
   },
+
   {
-    key: "affiliation",
-    label: "AFFILIATION",
-  },
-  {
-    key: "hourlyrate",
-    label: "HOURLY RATE",
+    key: "email",
+    label: "EMAIL",
   },
 
   {
-    key: "status",
-    label: "STATUS",
+    key: "dateOfBirth",
+    label: "DATE OF BIRTH",
+  },
+
+  {
+    key: "gender",
+    label: "GENDER",
+  },
+
+  {
+    key: "mobileNumber",
+    label: "MOBILE NUMBER",
   },
 ];
 
-const rows = [
-  {
-    username: "a",
-    name: "Ahmed Alkhadem",
-    affiliation: "Dentist",
-    hourlyRate: "10$",
-    status: "Available",
-  },
+export default function AdminViewPatients() {
+  const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
 
-  {
-    username: "b",
-    name: "Ahmed El Akkad",
-    affiliation: "Dentist",
-    hourlyRate: "10$",
-    status: "Available",
-  },
-
-  {
-    username: "c",
-    name: "Adel El Etreby",
-    affiliation: "Cardiology",
-    hourlyRate: "100$",
-    status: "Pending",
-  },
-
-  {
-    username: "d",
-    name: "Ahmed Ragab",
-    affiliation: "Cardiology",
-    hourlyRate: "50$",
-    status: "Available",
-  },
-];
-
-export default function AdminViewPatients(props) {
-  const [searchData, setSearchData] = useState(rows);
-  const [filterSpecialty, setfilterSpecialty] = useState("No filter");
-  const uniqueSpecialties = ["No filter"];
-  rows.map((key) => {
-    if (uniqueSpecialties.indexOf(key.affiliation) === -1) {
-      uniqueSpecialties.push(key.affiliation);
-    }
-  });
-  const handleFilter = (e) => {
-    e.preventDefault();
-    setfilterSpecialty(e.target.value);
+  const fetchTableData = () => {
+    axios.get(`http://localhost:8000/patients`).then((res) => {
+      setData(res.data);
+      setFilteredData(res.data);
+    });
   };
+
+  useEffect(() => {
+    fetchTableData();
+  }, []);
 
   const searchItem = (query) => {
     if (!query) {
-      setSearchData(rows);
+      setFilteredData(data);
       return;
     }
-    const fuse = new Fuse(rows, {
+    const fuse = new Fuse(filteredData, {
       keys: ["name"],
       threshold: 0.3,
     });
@@ -109,9 +89,9 @@ export default function AdminViewPatients(props) {
       result.forEach((item) => {
         finalResult.push(item.item);
       });
-      setSearchData(finalResult);
+      setFilteredData(finalResult);
     } else {
-      setSearchData([]);
+      setFilteredData([]);
     }
   };
 
@@ -126,22 +106,6 @@ export default function AdminViewPatients(props) {
           onChange={(e) => searchItem(e.target.value)}
         />
       </Container>
-      <Container>
-        <FormControl>
-          <InputLabel id="filter-by-specialty">Specialty</InputLabel>
-          <Select
-            labelId="filter-by-specialty"
-            id="filter-by-specialty-select"
-            value={filterSpecialty}
-            label="specialty"
-            onChange={handleFilter}
-          >
-            {uniqueSpecialties.map((item) => {
-              return <MenuItem value={item}>{item}</MenuItem>;
-            })}
-          </Select>
-        </FormControl>
-      </Container>
       <Table>
         <TableHead>
           <TableRow>
@@ -151,18 +115,17 @@ export default function AdminViewPatients(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {searchData.map(
-            (row) =>
-              (filterSpecialty === "No filter" ||
-                filterSpecialty === row.affiliation) && (
-                <TableRow key={row.key}>
-                  <TableCell>{row.name}</TableCell>
-                  <TableCell>{row.affiliation}</TableCell>
-                  <TableCell>{row.hourlyRate}</TableCell>
-                  <TableCell>{row.status}</TableCell>
-                </TableRow>
-              ),
-          )}
+          {filteredData.map((row) => (
+            <TableRow key={row.username}>
+              <TableCell>{row.username}</TableCell>
+              <TableCell>{row.name}</TableCell>
+
+              <TableCell>{row.email}</TableCell>
+              <TableCell>{row.dateOfBirth}</TableCell>
+              <TableCell>{row.gender}</TableCell>
+              <TableCell>{row.mobileNumber}</TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </Container>

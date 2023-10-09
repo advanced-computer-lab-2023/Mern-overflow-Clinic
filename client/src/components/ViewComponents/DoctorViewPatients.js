@@ -49,46 +49,22 @@ const columns = [
   },
 
   {
-    key: "affiliation",
-    label: "AFFILIATION",
+    key: "gender",
+    label: "GENDER",
   },
 
   {
-    key: "education",
-    label: "EDUCATION",
-  },
-  {
-    key: "status",
-    label: "STATUS",
-  },
-
-  {
-    key: "speciality",
-    label: "SPECIALITY",
-  },
-  {
-    key: "hourlyrate",
-    label: "HOURLY RATE",
+    key: "mobileNumber",
+    label: "MOBILE NUMBER",
   },
 ];
 
-export default function AdminViewPatients() {
+export default function DoctorViewPatients() {
   const [data, setData] = useState([]);
-  const [uniqueSpecialties, setUniqueSpecialties] = useState(["No filter"]);
   const [filteredData, setFilteredData] = useState([]);
 
   const fetchTableData = () => {
-    axios.get(`http://localhost:8000/doctors`).then((res) => {
-      let temp = ["No filter"];
-
-      res.data.map((key) => {
-        if (temp.indexOf(key.speciality) === -1) {
-          temp.push(key.speciality);
-        }
-      });
-
-      setUniqueSpecialties(temp);
-
+    axios.get(`http://localhost:8000/patients`).then((res) => {
       setData(res.data);
       setFilteredData(res.data);
     });
@@ -97,17 +73,6 @@ export default function AdminViewPatients() {
   useEffect(() => {
     fetchTableData();
   }, []);
-
-  const handleFilter = (e) => {
-    e.preventDefault();
-    let filter = e.target.value;
-    console.log(filter);
-
-    let filteredData = data.filter(
-      (row) => filter === "No filter" || row.speciality === filter,
-    );
-    setFilteredData(filteredData);
-  };
 
   const searchItem = (query) => {
     if (!query) {
@@ -141,22 +106,6 @@ export default function AdminViewPatients() {
           onChange={(e) => searchItem(e.target.value)}
         />
       </Container>
-      <Container>
-        <FormControl>
-          <InputLabel id="filter-by-speciality">Specialty</InputLabel>
-          <Select
-            labelId="filter-by-speciality"
-            id="filter-by-speciality-select"
-            label="speciality"
-            uncontrolled="true"
-            onChange={handleFilter}
-          >
-            {uniqueSpecialties.map((item) => {
-              return <MenuItem value={item}>{item}</MenuItem>;
-            })}
-          </Select>
-        </FormControl>
-      </Container>
       <Table>
         <TableHead>
           <TableRow>
@@ -173,11 +122,8 @@ export default function AdminViewPatients() {
 
               <TableCell>{row.email}</TableCell>
               <TableCell>{row.dateOfBirth}</TableCell>
-              <TableCell>{row.affiliation}</TableCell>
-              <TableCell>{row.education}</TableCell>
-              <TableCell>{row.status}</TableCell>
-              <TableCell>{row.speciality}</TableCell>
-              <TableCell>{row.hourlyRate}</TableCell>
+              <TableCell>{row.gender}</TableCell>
+              <TableCell>{row.mobileNumber}</TableCell>
             </TableRow>
           ))}
         </TableBody>

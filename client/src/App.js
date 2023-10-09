@@ -25,6 +25,10 @@ import AdminEditPackage from './pages/admin/AdminEditPackage';
 function App() {
   const router = createBrowserRouter([
     {
+      path: "/",
+      element: <SignIn />,
+    },
+    {
       path: "/register/patient",
       element: <PatientRegister />,
     },

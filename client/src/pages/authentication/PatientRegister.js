@@ -7,7 +7,7 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Controller,useForm } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import Avatar from '@mui/material/Avatar';
 import logo from '../../assets/gifs/logo.gif';
 import ContactPageIcon from '@mui/icons-material/ContactPage';
@@ -20,26 +20,26 @@ const defaultTheme = createTheme();
 
 export default function PatientRegister() {
 
-  const { register, handleSubmit, setError, formState: { errors } ,control} = useForm();
+  const { register, handleSubmit, setError, formState: { errors }, control } = useForm();
 
   const onSubmit = data => {
-    const dataToServer = {...data};
+    const dataToServer = { ...data };
 
     dataToServer["passwordHash"] = sha256(data["password"]);
-    dataToServer["emergencyContact"] = [{name:data["EmergencyName"],mobileNumber:data["EmergencyPhone"]}];
+    dataToServer["emergencyContact"] = [{ name: data["EmergencyName"], mobileNumber: data["EmergencyPhone"] }];
     delete dataToServer.EmergencyName
     delete dataToServer.EmergencyPhone
     delete dataToServer.password
     console.log("Data to server" + JSON.stringify(dataToServer));
     axios.post('http://localhost:8000/patients', dataToServer)
-    .then((response) => {
-      // Handle the successful response here
-      console.log('POST request successful', response);
-    })
-    .catch((error) => {
-      // Handle any errors here
-      console.error('Error making POST request', error);
-    });
+      .then((response) => {
+        // Handle the successful response here
+        console.log('POST request successful', response);
+      })
+      .catch((error) => {
+        // Handle any errors here
+        console.error('Error making POST request', error);
+      });
   }
 
   console.log(errors);
@@ -108,38 +108,33 @@ export default function PatientRegister() {
                 <Grid item xs={12} >
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DemoContainer components={['DatePicker']}>
-
-
-
-
-
-
-                    <Controller
-  control={control}
-  name="dateOfBirth"
-  render={({ field }) => (
-    <DatePicker
-      openTo="year"
-      views={['year', 'month', 'day']}
-      mask="____-__-__"
-      format="DD-MM-YYYY"
-      label="Date of Birth"
-      inputFormat="DD-MM-YYYY"
-      value={field.value || null}
-      onChange={(date) => field.onChange(date)}
-    >
-      {({ inputProps, inputRef }) => (
-        <TextField
-          {...inputProps}
-          fullWidth
-          error={!!errors["dateOfBirth"]}
-          helperText={errors["dateOfBirth"]?.message}
-          inputRef={inputRef}
-        />
-      )}
-    </DatePicker>
-  )}
-/>
+                      <Controller
+                        control={control}
+                        name="dateOfBirth"
+                        render={({ field }) => (
+                          <DatePicker
+                            sx={{ width: "100%" }}
+                            openTo="year"
+                            views={['year', 'month', 'day']}
+                            mask="____-__-__"
+                            format="DD-MM-YYYY"
+                            label="Date of Birth"
+                            inputFormat="DD-MM-YYYY"
+                            value={field.value || null}
+                            onChange={(date) => field.onChange(date)}
+                          >
+                            {({ inputProps, inputRef }) => (
+                              <TextField
+                                {...inputProps}
+                                sx={{ width: "100%" }}
+                                error={!!errors["dateOfBirth"]}
+                                helperText={errors["dateOfBirth"]?.message}
+                                inputRef={inputRef}
+                              />
+                            )}
+                          </DatePicker>
+                        )}
+                      />
 
 
                     </DemoContainer>
@@ -199,24 +194,24 @@ export default function PatientRegister() {
                 </Grid>
 
                 <Grid item xs={12}>
-  <FormControl sx={{ mt: 2 }}>
-    <FormLabel id="gender-label">Gender</FormLabel>
-    <Controller
-      control={control}
-      name="gender" // Ensure the name matches the one used in RadioGroup
-      defaultValue="male" // Set the default value if needed
-      render={({ field }) => (
-        <RadioGroup
-          row
-          {...field} // Spread the field props to RadioGroup
-        >
-          <FormControlLabel value="male" control={<Radio />} label="Male" />
-          <FormControlLabel value="female" control={<Radio />} label="Female" />
-        </RadioGroup>
-      )}
-    />
-  </FormControl>
-</Grid>
+                  <FormControl sx={{ mt: 2 }}>
+                    <FormLabel id="gender-label">Gender</FormLabel>
+                    <Controller
+                      control={control}
+                      name="gender" // Ensure the name matches the one used in RadioGroup
+                      defaultValue="male" // Set the default value if needed
+                      render={({ field }) => (
+                        <RadioGroup
+                          row
+                          {...field} // Spread the field props to RadioGroup
+                        >
+                          <FormControlLabel value="male" control={<Radio />} label="Male" />
+                          <FormControlLabel value="female" control={<Radio />} label="Female" />
+                        </RadioGroup>
+                      )}
+                    />
+                  </FormControl>
+                </Grid>
 
                 <Divider sx={{
                   width: '60%',

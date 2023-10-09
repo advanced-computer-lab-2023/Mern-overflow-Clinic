@@ -15,6 +15,8 @@ import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import sha256 from 'js-sha256';
 
 const defaultTheme = createTheme();
 
@@ -23,15 +25,7 @@ export default function DoctorRegister() {
 
   const onSubmit = data => {
     console.log("Data to server" + JSON.stringify(data));
-    axios.post('http://localhost:8000/patients', dataToServer)
-    .then((response) => {
-      // Handle the successful response here
-      console.log('POST request successful', response);
-    })
-    .catch((error) => {
-      // Handle any errors here
-      console.error('Error making POST request', error);
-    });
+    
   }
   console.log(errors);
 

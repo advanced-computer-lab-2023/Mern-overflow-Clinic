@@ -18,9 +18,7 @@ const AdminManageAdmins = () => {
                     </Box>
                 </Paper>
             </Container>
-                 <AdminViewDoctors/>
-
-
+            <AdminViewDoctors />
         </>
     );
 }

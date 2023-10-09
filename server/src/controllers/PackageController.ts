@@ -5,9 +5,9 @@ const createPackage = async (req: Request, res: Response) => {
   try {
     const newPackage = await pack.create(req.body);
 
-    let updatedPackage: any = newPackage; // Initialize with the newly created package
+    let updatedPackage:any = newPackage; // Initialize with the newly created package
 
-    if (req.body.name === "silver") {
+    if (req.body.name.toLowerCase() === "silver") {
       updatedPackage = await pack.findByIdAndUpdate(
         newPackage._id,
         {
@@ -18,7 +18,7 @@ const createPackage = async (req: Request, res: Response) => {
         },
         { new: true } // Return the updated package
       );
-    } else if (req.body.name === "gold") {
+    } else if (req.body.name.toLowerCase() === "gold") {
       updatedPackage = await pack.findByIdAndUpdate(
         newPackage._id,
         {
@@ -29,7 +29,7 @@ const createPackage = async (req: Request, res: Response) => {
         },
         { new: true } // Return the updated package
       );
-    } else if (req.body.name === "platinum") {
+    } else if (req.body.name.toLowerCase() === "platinum") {
       updatedPackage = await pack.findByIdAndUpdate(
         newPackage._id,
         {
@@ -77,18 +77,18 @@ const readPackage = async (req: Request, res: Response) => {
 const updatePackage = async (req: Request, res: Response) => {
   const id = req.params.id;
   const query = { _id: id };
-  const type = req.body.type;
+  const name = req.body.name.toLowerCase();
   const price = req.body.price;
   const discountOnDoctorSessions = req.body.discountOnDoctorSessions;
   const discountOnMedicine = req.body.discountOnMedicine;
   const discountForFamily = req.body.discountForFamily;
 
   const update: { [key: string]: any } = {};
-  if (type !== undefined) update["type"] = type;
-  if (price !== undefined) update["price"] = price;
-  if (discountOnDoctorSessions !== undefined) update["discountOnDoctorSessions"] = discountOnDoctorSessions;
-  if (discountOnMedicine !== undefined) update["discountOnMedicine"] = discountOnMedicine;
-  if (discountForFamily !== undefined) update["discountForFamily"] = discountForFamily;
+  if (name !==undefined) update["name"] = name;
+  if (price !==undefined) update["price"] = price;
+  if (discountOnDoctorSessions !==undefined) update["discountOnDoctorSessions"] = discountOnDoctorSessions;
+  if (discountOnMedicine !==undefined) update["discountOnMedicine"] = discountOnMedicine;
+  if (discountForFamily !==undefined) update["discountForFamily"] = discountForFamily;
 
   pack
     .findOneAndUpdate(query, update, { new: true })

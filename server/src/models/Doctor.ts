@@ -27,7 +27,19 @@ const doctorShema = new Schema<IDoctor>({
     status: { type: String, required: true , lowercase: true, enum: ['pending', 'accepted', 'rejected'] },
     speciality: { type: String, required: true , trim: true },
 })
-
+doctorShema.pre('save', function (next) {
+    if (this.isModified('name')) {
+        this.name = this.name.toLowerCase();
+    }
+    if (this.isModified('email')) {
+        this.email = this.email.toLowerCase();
+    }
+    if (this.isModified('speciality')) {
+        this.speciality = this.speciality.toLowerCase();
+    }
+    
+    next();
+});
 // const Doctor = model<IDoctor>('Doctor', doctorShema);
 const Doctor = User.discriminator<IDoctor>('Doctor', doctorShema);
 

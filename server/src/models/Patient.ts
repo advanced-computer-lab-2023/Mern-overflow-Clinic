@@ -11,6 +11,7 @@ interface familyMember {
     age: number;
     gender: string;
     relation: string;
+    package?: typeof mongoose.Types.ObjectId;
 }
 
 export interface IPatient {
@@ -49,6 +50,7 @@ const PatientSchema = new Schema<IPatient>({
             age: { type: Number, required: true, min: 0, max: 122 },
             gender: { type: String, required: true, lowercase: true, enum: ['male', 'female'] },
             relation: { type: String, required: true, lowercase: true, },
+            package: { type: mongoose.Types.ObjectId, ref: "Package", required: false },
         }
     ],
     prescriptions: [{ type: mongoose.Types.ObjectId, ref: "Prescription", required: false }],

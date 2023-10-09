@@ -12,7 +12,7 @@ const createPackage = async (req: Request, res: Response) => {
       updatedPackage = await pack.findByIdAndUpdate(
         newPackage._id,
         {
-          price: 3600,
+           price: 3600,
           discountOnDoctorSessions: 40,
           discountOnMedicine: 20,
           discountForFamily: 10,

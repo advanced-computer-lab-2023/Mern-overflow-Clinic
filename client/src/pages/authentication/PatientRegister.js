@@ -22,19 +22,10 @@ export default function PatientRegister() {
 
   const { register, handleSubmit, setError, formState: { errors } ,control} = useForm();
 
-  // function hashPassword(passwordParam) {
-  //   const sha256 = createHash('sha256');
-  //   sha256.update(passwordParam);
-  //   const hashedPassword = sha256.digest('hex');
-  //   return hashedPassword;
-  // }
-
   const onSubmit = data => {
     const dataToServer = {...data};
 
-    console.log("hellooooo");
     dataToServer["passwordHash"] = sha256(data["password"]);
-    console.log("beyyyyeeeeeeee");
     dataToServer["emergencyContact"] = [{name:data["EmergencyName"],mobileNumber:data["EmergencyPhone"]}];
     delete dataToServer.EmergencyName
     delete dataToServer.EmergencyPhone
@@ -125,7 +116,7 @@ export default function PatientRegister() {
 
                     <Controller
   control={control}
-  name="dob"
+  name="dateOfBirth"
   render={({ field }) => (
     <DatePicker
       openTo="year"
@@ -141,8 +132,8 @@ export default function PatientRegister() {
         <TextField
           {...inputProps}
           fullWidth
-          error={!!errors["dob"]}
-          helperText={errors["dob"]?.message}
+          error={!!errors["dateOfBirth"]}
+          helperText={errors["dateOfBirth"]?.message}
           inputRef={inputRef}
         />
       )}
@@ -207,20 +198,26 @@ export default function PatientRegister() {
                   />
                 </Grid>
 
-                <Grid item xs={12} >
-                  <FormControl sx={{ mt: 2 }}>
-                    <FormLabel id="gender-label">Gender</FormLabel>
-                    <RadioGroup
-                      row
-                      defaultValue="male"
-                      id="gender"
-                      name="gender"
-                    >
-                      <FormControlLabel value="male" control={<Radio />} label="Male" />
-                      <FormControlLabel value="female" control={<Radio />} label="Female" />
-                    </RadioGroup>
-                  </FormControl>
-                </Grid>
+                <Grid item xs={12}>
+  <FormControl sx={{ mt: 2 }}>
+    <FormLabel id="gender-label">Gender</FormLabel>
+    <Controller
+      control={control}
+      name="gender" // Ensure the name matches the one used in RadioGroup
+      defaultValue="male" // Set the default value if needed
+      render={({ field }) => (
+        <RadioGroup
+          row
+          {...field} // Spread the field props to RadioGroup
+        >
+          <FormControlLabel value="male" control={<Radio />} label="Male" />
+          <FormControlLabel value="female" control={<Radio />} label="Female" />
+        </RadioGroup>
+      )}
+    />
+  </FormControl>
+</Grid>
+
                 <Divider sx={{
                   width: '60%',
                   borderWidth: '1px',

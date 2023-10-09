@@ -71,7 +71,7 @@ function App() {
     },
     {
       path: "/doctor/profile/:id",
-      element: <EditDoctorProfile />,
+      element: <DoctorManageProfile />,
     },
     {
       path: "/doctor/appointments",
@@ -85,6 +85,10 @@ function App() {
       path: "/patient/family",
       element: <PatientManageFamily />,
     },
+    // {
+    //   path: "/doctor/profile/:id",
+    //   element: <DoctorManageProfile />,
+    // },
     {
       path: "/patient/appointments",
       element: <PatientManageAppointments />,

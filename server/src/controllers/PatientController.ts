@@ -66,9 +66,8 @@ const addFamilyMember = async (req: Request, res: Response) => {
     if (!pat) {
       return res.status(404).json({ message: "Patient not found" });
     }else{
-      
       const newRelatives = pat.familyMembers;
-      if (newRelatives !== undefined) 
+      if (newRelatives !== undefined)
         newRelatives.push(familyMember);
 
       pat.familyMembers = newRelatives;

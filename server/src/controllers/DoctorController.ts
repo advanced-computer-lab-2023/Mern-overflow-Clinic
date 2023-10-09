@@ -33,7 +33,7 @@ const updateDoctor = async (req: Request, res: Response) => {
   const query = { _id: id };
   const email = req.body.email;
   const hourlyRate = req.body.hourlyRate;
-  const affiliation = req.body.aff;
+  const affiliation = req.body.affiliation;
   const update: { [key: string]: any } = {};
 
   if (email!==undefined) update["email"] = email;

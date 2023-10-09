@@ -21,11 +21,16 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import AdminEditPackage from './pages/admin/AdminEditPackage';
+import EditDoctorProfile from './components/formComponents/EditDoctorProfile';
 
 function App() {
   const router = createBrowserRouter([
     {
       path: "/",
+      element: <SignIn />,
+    },
+    {
+      path: "/signin",
       element: <SignIn />,
     },
     {
@@ -35,10 +40,6 @@ function App() {
     {
       path: "/register/doctor",
       element: <DoctorRegister />,
-    },
-    {
-      path: "/signin",
-      element: <SignIn />,
     },
     {
       path: "/admin/admins",
@@ -67,6 +68,10 @@ function App() {
     {
       path: "/doctor/profile",
       element: <DoctorManageProfile />,
+    },
+    {
+      path: "/doctor/profile/:id",
+      element: <EditDoctorProfile />,
     },
     {
       path: "/doctor/appointments",

@@ -1,25 +1,24 @@
 import { Request, Response } from "express";
 import pack from "../models/Package.js";
-import Package from "../models/Package.js";
 
 const createPackage = async (req: Request, res: Response) => {
   try {
     const newPackage = await pack.create(req.body);
 
-    let updatedPackage:any = newPackage; // Initialize with the newly created package
+    let updatedPackage: any = newPackage; // Initialize with the newly created package
 
-    if (req.body.type === "silver") {
+    if (req.body.name === "silver") {
       updatedPackage = await pack.findByIdAndUpdate(
         newPackage._id,
         {
-           price: 3600,
+          price: 3600,
           discountOnDoctorSessions: 40,
           discountOnMedicine: 20,
           discountForFamily: 10,
         },
         { new: true } // Return the updated package
       );
-    } else if (req.body.type === "gold") {
+    } else if (req.body.name === "gold") {
       updatedPackage = await pack.findByIdAndUpdate(
         newPackage._id,
         {
@@ -30,7 +29,7 @@ const createPackage = async (req: Request, res: Response) => {
         },
         { new: true } // Return the updated package
       );
-    } else if (req.body.type === "platinum") {
+    } else if (req.body.name === "platinum") {
       updatedPackage = await pack.findByIdAndUpdate(
         newPackage._id,
         {
@@ -41,6 +40,13 @@ const createPackage = async (req: Request, res: Response) => {
         },
         { new: true } // Return the updated package
       );
+    } else {
+      pack.create(req.body).then(result => {
+        res.status(200).send(result);
+      }).catch(err => {
+        res.status(400).send(err);
+      }
+      )
     }
 
     res.status(200).json(updatedPackage);
@@ -50,7 +56,7 @@ const createPackage = async (req: Request, res: Response) => {
 };
 
 
-const listPackages = async (req:Request, res:Response)=>{
+const listPackages = async (req: Request, res: Response) => {
   const pkjs = pack
     .find({})
     .then((pkjs) => res.status(200).json(pkjs))
@@ -60,7 +66,7 @@ const listPackages = async (req:Request, res:Response)=>{
 }
 const readPackage = async (req: Request, res: Response) => {
   const id = req.params.id;
-    const pkj = pack
+  const pkj = pack
     .findById(id)
     .then((pkj) => res.status(200).json(pkj))
     .catch((err) => {
@@ -78,13 +84,13 @@ const updatePackage = async (req: Request, res: Response) => {
   const discountForFamily = req.body.discountForFamily;
 
   const update: { [key: string]: any } = {};
-  if (type !==undefined) update["type"] = type;
-  if (price !==undefined) update["price"] = price;
-  if (discountOnDoctorSessions !==undefined) update["discountOnDoctorSessions"] = discountOnDoctorSessions;
-  if (discountOnMedicine !==undefined) update["discountOnMedicine"] = discountOnMedicine;
-  if (discountForFamily !==undefined) update["discountForFamily"] = discountForFamily;
+  if (type !== undefined) update["type"] = type;
+  if (price !== undefined) update["price"] = price;
+  if (discountOnDoctorSessions !== undefined) update["discountOnDoctorSessions"] = discountOnDoctorSessions;
+  if (discountOnMedicine !== undefined) update["discountOnMedicine"] = discountOnMedicine;
+  if (discountForFamily !== undefined) update["discountForFamily"] = discountForFamily;
 
-  Package
+  pack
     .findOneAndUpdate(query, update, { new: true })
     .then((pkj) => {
       if (pkj) {

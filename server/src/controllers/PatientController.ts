@@ -201,53 +201,67 @@ const listDoctorsBySessionPrice = async (req: Request, res: Response) => {
 };
 
 
-const filterDoctor = async (req: Request, res: Response) => {
-  const id = req.params.id;
-  const speciality = req.body.speciality.toLowerCase();
-  const dateInput = new Date(req.body.date);
-  console.log(dateInput.toISOString()); // Ensure dateInput is in ISO format
+// const filterDoctor = async (req: Request, res: Response) => {
+//   const id = req.params.id;
+//   const speciality = req.body.speciality.toLowerCase();
+//   const dateInput = new Date(req.body.date);
+//   const hoursInput = dateInput.getHours();
+//   const minutesInput = dateInput.getMinutes();
+//   console.log(dateInput.toISOString()); // Ensure dateInput is in ISO format
 
-  try {
-    const docRes = await doctor.find({ 'speciality': speciality });
+//   try {
+//     const docRes = await doctor.find({ 'speciality': speciality });
 
-    if (docRes.length === 0) {
-      res.status(404).send("No doctors with this speciality available");
-    } else {
-      if (!dateInput) {
-        res.status(200).send(docRes);
-      } else {
-        var resDocs: any[] = [];
-        var avDocs: any[] = [];
+//     if (docRes.length === 0) {
+//       res.status(404).send("No doctors with this speciality available");
+//     } else {
+//       if (!dateInput) {
+//         res.status(200).send(docRes);
+//       } else {
+//         var resDocs: any[] = [];
+//         var avDocs: any[] = [];
 
-        for (const doc of docRes) {
-          const appointmentsForDoctor = await appointment
-            .find({ 'doctor': doc._id })
-            .exec();
+//         for (const doc of docRes) {
+//           const appointmentsForDoctor = await appointment
+//             .find({ 'doctor': doc._id })
+//             .exec();
 
-          var count = 0;
-          for (const apt of appointmentsForDoctor) {
-            // Convert apt.date to ISO string for comparison
-            if (apt.date.toISOString() === dateInput.toISOString()) {
-              count++;
-            }
-          }
+//           var count = 0;
+         
+//           for (const apt of appointmentsForDoctor) {
+//             // Convert apt.date to ISO string for comparison
+//             const startHours = apt.date.getHours();
+//             const startMinutes = apt.date.getMinutes();
+//             var endHours  = startHours+apt.duration;
 
-          if (count === 0) {
-            avDocs.push(doc);
-          }
-        }
+//             if (endHours >= 24) {
+//               endHours -= 24; // Subtract 24 to wrap around to the next day
+//             }
 
-        if (avDocs.length === 0) {
-          res.status(404).send("No doctors within this speciality are available at this date/time");
-        } else {
-          res.status(200).send(avDocs);
-        }
-      }
-    }
-  } catch (err) {
-    res.status(404).send(err);
-  }
-};
+//             if (apt.date.toISOString() === dateInput.toISOString()) {
+//               count++;
+//             }
+//           }
+
+//           if (count === 0) {
+//             avDocs.push(doc);
+//           }
+//         }
+
+//         if (avDocs.length === 0) {
+//           res.status(404).send("No doctors within this speciality are available at this date/time");
+//         } else {
+//           res.status(200).send(avDocs);
+//         }
+//       }
+//     }
+//   } catch (err) {
+//     res.status(404).send(err);
+//   }
+// };
+
+
+
 
 
 export default {

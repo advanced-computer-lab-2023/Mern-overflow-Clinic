@@ -18,6 +18,7 @@ router.get("/:id/price", patientController.listDoctorsBySessionPrice);
 
 //POST
 router.post("/", patientController.createPatient);
+router.post("/:id/familyMember",patientController.addFamilyMember);
 
 
 //DELETE

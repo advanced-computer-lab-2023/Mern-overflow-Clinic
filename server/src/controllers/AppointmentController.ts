@@ -12,6 +12,8 @@ const createAppointment = async (req: Request, res: Response) => {
     .then((newApt) => {
         newApt.doctor = req.body.docID;
         newApt.patient = req.body.patID;
+        //assuming appointemnts are fixed for 2 hours duration
+        newApt.duration = 1;
       res.status(200).json(newApt);
     })
     .catch((err) => {

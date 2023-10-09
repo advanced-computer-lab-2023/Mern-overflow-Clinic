@@ -9,7 +9,7 @@ const AddAdmin = () => {
     const onSubmit = data => {
         const dataToServer = {...data};
         dataToServer["passwordHash"] = sha256(data["password"]);
-        axios.post('http://localhost:8000/admins', data)
+        axios.post('http://localhost:8000/admins', dataToServer)
           .then((response) => {
             // Handle the successful response here
             console.log('POST request successful', response);

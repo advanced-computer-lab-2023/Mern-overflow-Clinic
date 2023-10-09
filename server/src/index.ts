@@ -45,7 +45,7 @@ app.get("/patients", patientController.listPatients);
 // app.get("/PatientRecord",userController.viewRecordOfPatients);
 app.get("/patients/:id", patientController.readPatient);
 // app.get("/admins", adminstratorController.viewRequest);
-app.get("/admins" ,isAuthenticated,isAuthorized([UserType.ADMINSTARTOR]), adminstratorController.listAdminstrators)
+app.get("/admins", adminstratorController.listAdminstrators)
 app.get("/appointemnts", appointmentController.listAllAppointments);
 app.get("/appointemnts/:id", appointmentController.readAppointment);
 // app.get("/DoctorDetails",patientController.viewDoctorDetails);

@@ -26,7 +26,7 @@ export default function PatientRegister() {
     const dataToServer = { ...data };
 
     dataToServer["passwordHash"] = sha256(data["password"]);
-    dataToServer["emergencyContact"] = [{ name: data["EmergencyName"], mobileNumber: data["EmergencyPhone"] }];
+    dataToServer["emergencyContact"] = { name: data["EmergencyName"], mobileNumber: data["EmergencyPhone"] };
     delete dataToServer.EmergencyName
     delete dataToServer.EmergencyPhone
     delete dataToServer.password

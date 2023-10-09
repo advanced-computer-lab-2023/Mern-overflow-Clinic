@@ -1,14 +1,13 @@
 import PatientDashboard from "./PatientDashboard";
-import PatientView from "../../components/ViewComponents/PatientView";
+import PatientViewDoctors from "../../components/ViewComponents/PatientViewDoctors";
 
 const PatientManageDoctors = () => {
   return (
     <>
       <PatientDashboard title="View All Doctors" />
-      <PatientView />
+      <PatientViewDoctors />
     </>
   );
 };
 
 export default PatientManageDoctors;
-

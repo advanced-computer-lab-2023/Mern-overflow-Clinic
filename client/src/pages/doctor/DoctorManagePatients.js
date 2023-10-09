@@ -1,12 +1,14 @@
 import DoctorDashbaord from "./DoctorDashboard";
-import DoctorView from "../../components/ViewComponents/DoctorView";
+import DoctorViewPatients from "../../components/ViewComponents/DoctorViewPatients";
 
 const DoctorManagePatients = () => {
-    return(
-        <><DoctorDashbaord title="Manage My Patients" />
-        <DoctorView/></>
-
-     );
-}
+  return (
+    <>
+      <DoctorDashbaord title="Manage My Patients" />
+      <DoctorViewPatients />
+    </>
+  );
+};
 
 export default DoctorManagePatients;
+

@@ -1,7 +1,7 @@
 import mongoose, {Schema, model} from "mongoose";
 import User from "./User.js";
 
-interface IDoctor {
+export interface IDoctor {
     // username:string;
     name: string;
     email: string;

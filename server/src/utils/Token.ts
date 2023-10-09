@@ -5,8 +5,8 @@ import config from '../config/config.js';
 import { UserType, UserTypesNames } from '../enums/UserTypes.js';
 
 export interface TokenPayload {
-    patientId: string; // Adjust the payload structure if needed.
-    userRole: string; // Add the user's role to the payload.
+    userId: string;
+    userRole: string;
 }
 
 const generateToken = async (user: HydratedDocument<IUser>) => {

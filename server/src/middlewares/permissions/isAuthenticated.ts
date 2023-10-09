@@ -1,6 +1,7 @@
-import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
-import config from '../../config/config.js';
+import TokenUtils from '../../utils/Token.js';
+import doctor, { IDoctor } from "../../models/Doctor.js";
+import { HydratedDocument } from 'mongoose';
 
 // Define the type for your payload, which should match what you used in generating tokens.
 interface TokenPayload {
@@ -16,8 +17,7 @@ declare global {
     }
 }
 
-// Define a middleware function.
-const isAuthenticated = (
+const isAuthenticated = async (
     req: Request,
     res: Response,
     next: NextFunction
@@ -29,16 +29,29 @@ const isAuthenticated = (
         return res.status(401).json({ message: 'Unauthorized - No token provided' });
     }
 
-    const secretKey = config.jwt.secret;
-    try {
-        const decoded = jwt.verify(token, secretKey) as TokenPayload;
-
-        req.patientId = decoded.patientId;
-
-        next();
-    } catch (error) {
-        return res.status(401).json({ message: 'Unauthorized - Invalid token' });
+    if (!TokenUtils.verifyToken(token)) {
+        return res.status(401).json({ message: 'Unauthorized - Invalid token signature' });
     }
+
+    const decodedToken = TokenUtils.decodeToken(token);
+
+    if (!decodedToken) {
+        return res.status(401).json({ message: 'Unauthorized - Invalid token' });
+    } else if(decodedToken.userRole === "2") {
+        const doc: HydratedDocument<IDoctor> | null = await getDoctor(decodedToken.userId);
+        if (!doc || doc.status != "accepted") {
+            return res.status(401).json({ message: 'Unauthorized - Invalid token' });
+        }
+    }
+
+
+
+    next();
 };
+
+const getDoctor = async (id: string): Promise<HydratedDocument<IDoctor> | null> => {
+    const doc: HydratedDocument<IDoctor> | null = await doctor.findById(id).exec();
+    return doc;
+}
 
 export default isAuthenticated;

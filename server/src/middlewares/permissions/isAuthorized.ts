@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import TokenUtils, {TokenPayload} from '../../utils/Token.js';
-import { UserType, UserTypesNames } from '../../enums/UserTypes.js';
+import TokenUtils from '../../utils/Token.js';
+import { UserType } from '../../enums/UserTypes.js';
 
 
 const isAuthorized = (requiredRoles: UserType[]) => {

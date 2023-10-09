@@ -30,13 +30,12 @@ const readDoctor = async (req: Request, res: Response) => {
 
 const updateDoctor = async (req: Request, res: Response) => {
   const id = req.params.id;
-
   const query = { _id: id };
-
   const email = req.body.email;
   const hourlyRate = req.body.hourlyRate;
   const affiliation = req.body.aff;
   const update: { [key: string]: any } = {};
+
   if (email!==undefined) update["email"] = email;
   if (hourlyRate!==undefined) update["hourlyRate"] = hourlyRate;
   if (affiliation!==undefined) update["affiliation"] = affiliation;
@@ -74,21 +73,17 @@ const listDoctors = async (req: Request, res: Response) => {
     });
 };
 
-const listAllMyPatients = async (req: Request, res: Response) => {
+const listDoctorPatients = async (req: Request, res: Response) => {
   const id = req.params.id;
   const pId = req.params.pId;
 
-  // Find all appointments where the 'doctor' field matches the doctor's name
   const appointments = await appointment
-    .find({ 'doctor': id }) // Assuming 'name' is a unique identifier
+    .find({ 'doctor': id }) 
     .populate('patient')
     .exec();
 
   const patientIds = appointments.map((appointment) => appointment.patient);
-
-    // Find all patients with the extracted IDs
   const patients = await patient.find({ _id: { $in: patientIds } }).exec();
-
 
   res.status(200).json(patients);
 };
@@ -97,25 +92,22 @@ const selectPatient = async (req: Request, res: Response) => {
   const id = req.params.id;
   const pId = req.params.pId;
 
-  // Find all appointments where the 'doctor' field matches the doctor's name
   const appointments = await appointment
-    .find({ 'doctor': id }) // Assuming 'name' is a unique identifier
+    .find({ 'doctor': id }) 
     .populate('patient')
     .exec();
 
   const patientIds = appointments.map((appointment) => appointment.patient);
 
-    // Find all patients with the extracted IDs
   const pat = await patient
   .findOne({ _id: pId })
   .exec();
 
   if (!pat) {
-    // Handle the case where the patient with the given pId doesn't exist
     return res.status(404).json({ message: 'Patient not found' });
+  }else{
+    res.status(200).json(pat);
   }
-
-  res.status(200).json(pat);
 };
 
 const listAllMyPatientsUpcoming = async (req: Request, res: Response) => {
@@ -133,13 +125,14 @@ const listAllMyPatientsUpcoming = async (req: Request, res: Response) => {
 
     if(!upcomingAppointments || upcomingAppointments.length===0)
       res.status(404).send("no upcoming appointments found");
+    else{
+      const patientIds = upcomingAppointments.map((appointment) => appointment.patient);
 
-    const patientIds = upcomingAppointments.map((appointment) => appointment.patient);
-
-    // Find all patients with the extracted IDs
-    const patients = await patient.find({ _id: { $in: patientIds } }).exec();
-
-    res.status(200).json(patients);
+      const patients = await patient.find({ _id: { $in: patientIds } }).exec();
+  
+      res.status(200).json(patients);
+    }
+   
   } catch (error) {
     res.status(400).json(error);
   }
@@ -159,23 +152,29 @@ const selectPatientByName = async (req:Request, res:Response) => {
     
     if(!apt)
       res.status(404).send("no appointments found");
-    
-    const patients = await patient.find({ _id: { $in: pIDs } }).exec();
+    else{
+          
+      const patients = await patient.find({ _id: { $in: pIDs } }).exec();
 
-    for(const pat of patients){
-      if(pat.name.includes(patientName))
-        pats.push(pat);
+      for(const pat of patients){
+        if(pat.name.includes(patientName))
+          pats.push(pat);
+      }
+
+      if(pats.length === 0)
+        res.status(404).send("no patients found");
+      else{
+        res.status(200).json(pats);
+      }
     }
-
-    if(pats.length === 0)
-      res.status(404).send("no patients found");
-
-    res.status(200).json(pats);
   }catch(err){
     res.status(400).json(err);
   }
 
 };
+
+
+
 
 export default {
   createDoctor,
@@ -183,7 +182,7 @@ export default {
   updateDoctor,
   deleteDoctor,
   listDoctors,
-  listAllMyPatients,
+  listDoctorPatients ,
   selectPatient,
   selectPatientByName,
   listAllMyPatientsUpcoming

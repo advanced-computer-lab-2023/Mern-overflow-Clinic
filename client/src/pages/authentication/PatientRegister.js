@@ -12,15 +12,36 @@ import Avatar from '@mui/material/Avatar';
 import logo from '../../assets/gifs/logo.gif';
 import ContactPageIcon from '@mui/icons-material/ContactPage';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import sha256 from 'js-sha256';
+
 
 const defaultTheme = createTheme();
 
 export default function PatientRegister() {
+
   const { register, handleSubmit, setError, formState: { errors } ,control} = useForm();
 
   const onSubmit = data => {
-    console.log("Data to server" + JSON.stringify(data));
+    const dataToServer = {...data};
+
+    dataToServer["passwordHash"] = sha256(data["password"]);
+    dataToServer["emergencyContact"] = [{name:data["EmergencyName"],mobileNumber:data["EmergencyPhone"]}];
+    delete dataToServer.EmergencyName
+    delete dataToServer.EmergencyPhone
+    delete dataToServer.password
+    console.log("Data to server" + JSON.stringify(dataToServer));
+    axios.post('http://localhost:8000/patients', dataToServer)
+    .then((response) => {
+      // Handle the successful response here
+      console.log('POST request successful', response);
+    })
+    .catch((error) => {
+      // Handle any errors here
+      console.error('Error making POST request', error);
+    });
   }
+
   console.log(errors);
 
   const handleChange = (event) => {
@@ -77,9 +98,9 @@ export default function PatientRegister() {
                     autoFocus
                     id="name"
                     label="Name"
-                    {...register("Name", { required: true, maxLength: 80 })}
-                    error={!!errors["Name"]}
-                    helperText={errors["Name"]?.message}
+                    {...register("name", { required: true, maxLength: 80 })}
+                    error={!!errors["name"]}
+                    helperText={errors["name"]?.message}
                     onBlur={handleChange}
                   />
                 </Grid>
@@ -95,7 +116,7 @@ export default function PatientRegister() {
 
                     <Controller
   control={control}
-  name="dob"
+  name="dateOfBirth"
   render={({ field }) => (
     <DatePicker
       openTo="year"
@@ -111,8 +132,8 @@ export default function PatientRegister() {
         <TextField
           {...inputProps}
           fullWidth
-          error={!!errors["dob"]}
-          helperText={errors["dob"]?.message}
+          error={!!errors["dateOfBirth"]}
+          helperText={errors["dateOfBirth"]?.message}
           inputRef={inputRef}
         />
       )}
@@ -131,9 +152,9 @@ export default function PatientRegister() {
                     id="phone"
                     label="Phone"
                     type="tel"
-                    {...register("Phone", { required: true, minLength: 4, maxLength: 12 })}
-                    error={!!errors["Phone"]}
-                    helperText={errors["Phone"]?.message}
+                    {...register("mobileNumber", { required: true, minLength: 4, maxLength: 12 })}
+                    error={!!errors["mobileNumber"]}
+                    helperText={errors["mobileNumber"]?.message}
                     onBlur={handleChange}
                   />
                 </Grid>
@@ -144,9 +165,9 @@ export default function PatientRegister() {
                     id="username"
                     type="text"
                     label="Username"
-                    {...register("Username", { required: true, maxLength: 80 })}
-                    error={!!errors["Username"]}
-                    helperText={errors["Username"]?.message}
+                    {...register("username", { required: true, maxLength: 80 })}
+                    error={!!errors["username"]}
+                    helperText={errors["username"]?.message}
                     onBlur={handleChange}
                   />
                 </Grid>
@@ -157,9 +178,9 @@ export default function PatientRegister() {
                     id="email"
                     label="Email"
                     type="email"
-                    {...register("Email", { required: true, maxLength: 80 })}
-                    error={!!errors["Email"]}
-                    helperText={errors["Email"]?.message}
+                    {...register("email", { required: true, maxLength: 80 })}
+                    error={!!errors["email"]}
+                    helperText={errors["email"]?.message}
                     onBlur={handleChange}
                   />
                 </Grid>
@@ -170,27 +191,33 @@ export default function PatientRegister() {
                     id="password"
                     label="Password"
                     type="password"
-                    {...register("Password", { required: true, maxLength: 80 })}
-                    error={!!errors["Password"]}
-                    helperText={errors["Password"]?.message}
+                    {...register("password", { required: true, maxLength: 80 })}
+                    error={!!errors["password"]}
+                    helperText={errors["password"]?.message}
                     onBlur={handleChange}
                   />
                 </Grid>
 
-                <Grid item xs={12} >
-                  <FormControl sx={{ mt: 2 }}>
-                    <FormLabel id="gender-label">Gender</FormLabel>
-                    <RadioGroup
-                      row
-                      defaultValue="male"
-                      id="gender"
-                      name="gender"
-                    >
-                      <FormControlLabel value="male" control={<Radio />} label="Male" />
-                      <FormControlLabel value="female" control={<Radio />} label="Female" />
-                    </RadioGroup>
-                  </FormControl>
-                </Grid>
+                <Grid item xs={12}>
+  <FormControl sx={{ mt: 2 }}>
+    <FormLabel id="gender-label">Gender</FormLabel>
+    <Controller
+      control={control}
+      name="gender" // Ensure the name matches the one used in RadioGroup
+      defaultValue="male" // Set the default value if needed
+      render={({ field }) => (
+        <RadioGroup
+          row
+          {...field} // Spread the field props to RadioGroup
+        >
+          <FormControlLabel value="male" control={<Radio />} label="Male" />
+          <FormControlLabel value="female" control={<Radio />} label="Female" />
+        </RadioGroup>
+      )}
+    />
+  </FormControl>
+</Grid>
+
                 <Divider sx={{
                   width: '60%',
                   borderWidth: '1px',

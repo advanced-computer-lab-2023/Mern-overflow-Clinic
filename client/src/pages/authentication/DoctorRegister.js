@@ -23,6 +23,15 @@ export default function DoctorRegister() {
 
   const onSubmit = data => {
     console.log("Data to server" + JSON.stringify(data));
+    axios.post('http://localhost:8000/patients', dataToServer)
+    .then((response) => {
+      // Handle the successful response here
+      console.log('POST request successful', response);
+    })
+    .catch((error) => {
+      // Handle any errors here
+      console.error('Error making POST request', error);
+    });
   }
   console.log(errors);
 

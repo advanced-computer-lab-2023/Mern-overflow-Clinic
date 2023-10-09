@@ -23,6 +23,7 @@ export default function DoctorRegister() {
 
   const onSubmit = data => {
     console.log("Data to server" + JSON.stringify(data));
+    
   }
   console.log(errors);
 

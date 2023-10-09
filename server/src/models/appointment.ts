@@ -9,6 +9,7 @@ interface IAppointment {
     prescription?: typeof mongoose.Types.ObjectId;//TODO prescription
     date: Date;
     duration: number;
+    status:string;
 }
 
 const appointmentSchema = new Schema<IAppointment>({
@@ -17,6 +18,7 @@ const appointmentSchema = new Schema<IAppointment>({
     prescription: { type: mongoose.Types.ObjectId, ref: "Prescription", required: false },
     date: { type: Date, required: true },
     duration: { type: Number, required: true },
+    status: { type: String, required: true, lowercase: true, enum: ['upcoming', 'completed','canceled','rescheduled']},
 })
 
 const Appointment = model<IAppointment>('Appointment', appointmentSchema);

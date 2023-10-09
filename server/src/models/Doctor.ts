@@ -7,6 +7,7 @@ export interface IDoctor {
     email: string;
     // passwordHash: string;
     dateOfBirth: Date;
+    //gender:string;
     hourlyRate: number;
     affiliation: string;
     education: string;
@@ -21,6 +22,7 @@ const doctorShema = new Schema<IDoctor>({
     email: { type: String, required: true, match : [/\S+@\S+\.\S+/, "invalid email"], },
     // passwordHash:{ type: String, required: true },
     dateOfBirth: { type: Date, required: true },
+    //gender: { type: String, required: true, lowercase: true, enum: ['male', 'female'] },
     hourlyRate: { type: Number, required: true },
     affiliation: { type: String, required: true , trim: true },
     education: { type: String, required: true , trim: true },

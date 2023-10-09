@@ -14,6 +14,7 @@ interface familyMember {
     package?: typeof mongoose.Types.ObjectId;
 }
 
+
 export interface IPatient {
     // username: string;
     name: string;
@@ -49,7 +50,7 @@ const PatientSchema = new Schema<IPatient>({
             nationalId: { type: String, required: true },//TODO add validation
             age: { type: Number, required: true, min: 0, max: 122 },
             gender: { type: String, required: true, lowercase: true, enum: ['male', 'female'] },
-            relation: { type: String, required: true, lowercase: true, },
+            relation: { type: String, required: true, lowercase: true, enum: ['wife', 'husband','child']},
             package: { type: mongoose.Types.ObjectId, ref: "Package", required: false },
         }
     ],

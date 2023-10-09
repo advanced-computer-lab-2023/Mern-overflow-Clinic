@@ -7,17 +7,35 @@ import bodyParser from "body-parser";
 import app from "../index.js";
 import { relative } from "path";
 import doctor from "../models/Doctor.js";
+import user from "../models/User.js";
+
 
 const createPatient = async (req: Request, res: Response) => {
-  const newPatient = patient
-    .create(req.body)
-    .then((newPatient) => {
-      res.status(200).json(newPatient);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(400).json(err);
-    });
+  
+  const entry = user.find({ 'username': req.body.username }).then((document) => {
+    if (document.length === 0) {
+
+        patient.find({ 'email': req.body.email }).then((emailRes) => {
+
+            if (emailRes.length !== 0)
+                res.status(404).send("You are already registered , please sign in ");
+        
+            else {
+                const newPatient = patient
+                    .create(req.body)
+                    .then((newPatient) => {
+                        res.status(200).json(newPatient);
+                    })
+                    .catch((err) => {
+                        res.status(400).json(err);
+                    });
+            }
+        })
+    }
+    else if (document.length !== 0)
+        res.status(400).send("username taken , please choose another one ");
+})
+
 };
 
 const readPatient = async (req: Request, res: Response) => {};
@@ -202,12 +220,12 @@ const listDoctorsBySessionPrice = async (req: Request, res: Response) => {
 
 
 // const filterDoctor = async (req: Request, res: Response) => {
+//   //to be tested
 //   const id = req.params.id;
 //   const speciality = req.body.speciality.toLowerCase();
 //   const dateInput = new Date(req.body.date);
-//   const hoursInput = dateInput.getHours();
-//   const minutesInput = dateInput.getMinutes();
-//   console.log(dateInput.toISOString()); // Ensure dateInput is in ISO format
+
+//  //console.log(dateInput.toISOString()); // Ensure dateInput is in ISO format
 
 //   try {
 //     const docRes = await doctor.find({ 'speciality': speciality });
@@ -229,17 +247,24 @@ const listDoctorsBySessionPrice = async (req: Request, res: Response) => {
 //           var count = 0;
          
 //           for (const apt of appointmentsForDoctor) {
-//             // Convert apt.date to ISO string for comparison
+//             var hoursInput = dateInput.getHours();
+//             const minutesInput = dateInput.getMinutes();
+        
 //             const startHours = apt.date.getHours();
 //             const startMinutes = apt.date.getMinutes();
 //             var endHours  = startHours+apt.duration;
 
+//             var inputTime = (hoursInput*60)+minutesInput;
+//             var startTime = (startHours*60)+startMinutes;
+//             var endTime = (endHours*60)+startMinutes;
+            
 //             if (endHours >= 24) {
 //               endHours -= 24; // Subtract 24 to wrap around to the next day
 //             }
 
-//             if (apt.date.toISOString() === dateInput.toISOString()) {
-//               count++;
+//             if (apt.date.getFullYear() === dateInput.getFullYear() && apt.date.getMonth() === dateInput.getMonth() && apt.date.getDate() === dateInput.getDate()) {
+//               if(startTime<=inputTime && endTime>=inputTime)
+//                 count++;
 //             }
 //           }
 
@@ -260,7 +285,123 @@ const listDoctorsBySessionPrice = async (req: Request, res: Response) => {
 //   }
 // };
 
+const filterDoctor = async (req: Request, res: Response) => {
+  //to be tested
+  const id = req.params.id;
+  const speciality = req.body.speciality.toLowerCase();
+  const dateInput = new Date(req.body.date);
 
+ //console.log(dateInput.toISOString()); // Ensure dateInput is in ISO format
+
+  try {
+    const docRes = await doctor.find({ 'speciality': speciality });
+
+    if (docRes.length === 0) {
+      res.status(404).send("No doctors with this speciality available");
+    } else {
+      if (!dateInput) {
+        res.status(200).send(docRes);
+      } else {
+        var resDocs: any[] = [];
+        var avDocs: any[] = [];
+
+        for (const doc of docRes) {
+          const appointmentsForDoctor = await appointment
+            .find({ 'doctor': doc._id })
+            .exec();
+
+          var count = 0;
+
+          for (const apt of appointmentsForDoctor) {
+            var hoursInput = dateInput.getHours();
+            const minutesInput = dateInput.getMinutes();
+
+            const startHours = apt.date.getHours();
+            const startMinutes = apt.date.getMinutes();
+            var beforeRange  = hoursInput-apt.duration;
+
+            if((beforeRange===startHours && startMinutes>minutesInput) || (hoursInput===startHours && startMinutes<minutesInput))
+                count++;
+          }
+
+          if (count === 0) {
+            avDocs.push(doc);
+          }
+        }
+
+        if (avDocs.length === 0) {
+          res.status(404).send("No doctors within this speciality are available at this date/time");
+        } else {
+          res.status(200).send(avDocs);
+        }
+      }
+    }
+  } catch (err) {
+    res.status(404).send(err);
+  }
+};
+
+
+// const filterDoctor = async (req: Request, res: Response) => {
+//   const id = req.params.id;
+//   const speciality = req.body.speciality;
+//   const dateInput = new Date(req.body.date);
+//   const hoursInput = dateInput.getHours();
+//   const minutesInput = dateInput.getMinutes();
+
+//   try {
+//     const docRes = await doctor.find({ 'speciality': speciality });
+
+//     if (docRes.length === 0) {
+//       res.status(404).send("No doctors with this speciality available");
+//     } else {
+//       if (!dateInput) {
+//         res.status(200).send(docRes);
+//       } else {
+//         var resDocs: any[] = [];
+//         var avDocs: any[] = [];
+
+//         for (const doc of docRes) {
+//           const appointmentsForDoctor = await appointment
+//             .find({ 'doctor': doc._id })
+//             .exec();
+
+//           // Calculate the end time of the doctor's appointments
+//           const endTimes: Date[] = [];
+//           for (const apt of appointmentsForDoctor) {
+//             const aptStartTime = apt.date;
+//             const aptEndTime = new Date(aptStartTime);
+//             aptEndTime.setMinutes(aptStartTime.getMinutes() + apt.duration);
+//             endTimes.push(aptEndTime);
+//           }
+
+//           // Check if the requested time slot overlaps with any appointment
+//           const requestedStartTime = new Date(dateInput);
+//           const requestedEndTime = new Date(dateInput);
+//           requestedEndTime.setMinutes(requestedEndTime.getMinutes() + 1); // Assuming 1-minute slot
+//           const overlap = endTimes.some((endTime) => {
+//             return (
+//               requestedStartTime >= endTime && // Corrected here
+//               requestedStartTime < endTime
+//             );
+//           });
+
+//           if (!overlap) {
+//             avDocs.push(doc);
+//           }
+//         }
+
+//         if (avDocs.length === 0) {
+//           res.status(404).send("No doctors within this speciality are available at this date/time");
+//         } else {
+//           res.status(200).send(avDocs);
+//         }
+//       }
+//     }
+//   } catch (err) {
+//     res.status(404).send(err);
+//   }
+// };
 
 
 

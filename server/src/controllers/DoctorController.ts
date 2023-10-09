@@ -2,27 +2,47 @@ import { Request, Response } from "express";
 import doctor from "../models/Doctor.js";
 import appointment from "../models/appointment.js";
 import patient from "../models/Patient.js";
+import user from "../models/User.js";
 
 
 
 const createDoctor = async (req: Request, res: Response) => {
   req.body.status = "pending";
-  const newDoctor = doctor
-    .create(req.body)
-    .then((newDoctor) => {
-      res.status(200).json(newDoctor);
-    })
-    .catch((err) => {
-      console.log("error");
-      res.status(400).json(err);
-    });
+  const entry = user.find({ 'username': req.body.username }).then((document) => {
+    if (document.length === 0) {
+
+        doctor.find({ 'email': req.body.email }).then((emailRes) => {
+
+            if (emailRes.length !== 0)
+                res.status(404).send("You are already registered , please sign in ");
+        
+            else {
+                const newDoctor = doctor
+                    .create(req.body)
+                    .then((newDoctor) => {
+                        res.status(200).json(newDoctor);
+                    })
+                    .catch((err) => {
+                        res.status(400).json(err);
+                    });
+            }
+        })
+    }
+    else if (document.length !== 0)
+        res.status(400).send("username taken , please choose another one ");
+})
 };
 
 const readDoctor = async (req: Request, res: Response) => {
   const id = req.params.id;
     const doc = doctor
-    .findById(id)
-    .then((doc) => res.status(200).json(doc))
+    .find({"_id":id, "status":"pending"})
+    .then((doc) => {
+      if(doc.length === 0)
+        res.status(400).send("doctor with this ID is not pending any more");
+      else
+        res.status(200).json(doc);
+    })
     .catch((err) => {
       res.status(400).json(err);
     });
@@ -33,7 +53,7 @@ const updateDoctor = async (req: Request, res: Response) => {
   const query = { _id: id };
   const email = req.body.email;
   const hourlyRate = req.body.hourlyRate;
-  const affiliation = req.body.aff;
+  const affiliation = req.body.affiliation;
   const update: { [key: string]: any } = {};
 
   if (email!==undefined) update["email"] = email;

@@ -17,7 +17,7 @@ declare global {
     }
 }
 
-const isAuthenticated = async (
+const isAuthenticated = (
     req: Request,
     res: Response,
     next: NextFunction
@@ -38,14 +38,17 @@ const isAuthenticated = async (
     if (!decodedToken) {
         return res.status(401).json({ message: 'Unauthorized - Invalid token' });
     } else if(decodedToken.userRole === "2") {
-        const doc: HydratedDocument<IDoctor> | null = await getDoctor(decodedToken.userId);
-        if (!doc || doc.status != "accepted") {
-            return res.status(401).json({ message: 'Unauthorized - Invalid token' });
-        }
+        getDoctor(decodedToken.userId)
+            .then((doc) => {
+                if (!doc || doc.status != "accepted") {
+                    return res.status(401).json({ message: 'Unauthorized - Invalid token' });
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+                return res.status(500).json({ message: 'Internal server error' });
+            });
     }
-
-
-
     next();
 };
 

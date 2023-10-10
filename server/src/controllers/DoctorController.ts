@@ -188,39 +188,38 @@ const listMyPatients = async (req: Request, res: Response) => {
   }
 };
 
-const selectPatientByName = async (req:Request, res:Response) => {
+const selectPatientByName = async (req: Request, res: Response) => {
   const id = req.params.id;
   const patientName = req.body.patientName.toLowerCase();
-  var pIDs: any[]=[];
-  var pats: any[]=[];
-  try{   
-    const apt = appointment.find({"doctor":id}).then((apts)=>{
-        for (const appoint of apts){
-          pIDs.push(appoint.patient);
-        }
-      })
-    
-    if(!apt)
-      res.status(404).send("no appointments found");
-    else{
-          
-      const patients = await patient.find({ _id: { $in: pIDs } }).exec();
+  var pIDs: any[] = [];
+  var pats: any[] = [];
+  try {
+    const apts = await appointment.find({ "doctor": id, "status": { $nin: ["canceled"] } });
 
-      for(const pat of patients){
-        if(pat.name.includes(patientName))
-          pats.push(pat);
+    if (apts.length === 0) {
+      res.status(404).send("no appointments found");
+    } else {
+      for (const appoint of apts) {
+        pIDs.push(appoint.patient);
       }
 
-      if(pats.length === 0)
+      const patients = await patient.find({ _id: { $in: pIDs } }).exec();
+
+      for (const pat of patients) {
+        if (pat.name.includes(patientName)) {
+          pats.push(pat);
+        }
+      }
+
+      if (pats.length === 0) {
         res.status(404).send("no patients found");
-      else{
+      } else {
         res.status(200).json(pats);
       }
     }
-  }catch(err){
+  } catch (err) {
     res.status(400).json(err);
   }
-
 };
 
 

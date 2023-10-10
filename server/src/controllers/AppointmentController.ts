@@ -8,14 +8,11 @@ import { stat } from "fs";
 
 
 const createAppointment = async (req: Request, res: Response) => {
+    req.body.duration=1;
+    req.body.status = "upcoming";
     const newApt = appointment
     .create(req.body)
     .then((newApt) => {
-        newApt.doctor = req.body.docID;
-        newApt.patient = req.body.patID;
-        newApt.status = "upcoming";
-        //assuming appointemnts are fixed for 2 hours duration
-        newApt.duration = 1;
       res.status(200).json(newApt);
     })
     .catch((err) => {

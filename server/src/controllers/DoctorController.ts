@@ -132,9 +132,6 @@ const selectPatient = async (req: Request, res: Response) => {
 
 const listAllMyPatientsUpcoming = async (req: Request, res: Response) => {
   const id = req.params.id;
-  //const id: string = '65200d0602668a2ddd63d01c';
-  // Get the current date and time
-  // const currentDate = new Date();
 
   try {
     // Find all upcoming appointments for the doctor with the specified ID
@@ -160,12 +157,7 @@ const listAllMyPatientsUpcoming = async (req: Request, res: Response) => {
 
 
 const listMyPatients = async (req: Request, res: Response) => {
-  //reqId :33
   const id = req.params.id;
-  //const id: string = '65200d0602668a2ddd63d01c';
-  // Get the current date and time
-  // const currentDate = new Date();
-
   try {
     // Find all upcoming appointments for the doctor with the specified ID
     const appointments = await appointment

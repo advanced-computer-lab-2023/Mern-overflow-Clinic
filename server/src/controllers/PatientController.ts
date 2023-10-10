@@ -140,12 +140,11 @@ const selectDoctor = async (req: Request, res: Response) => {
 };
 
 
-const selectDoctorByName = async (req: Request, res: Response) => {
-    const id = req.params.id;
+const selectDoctorByNameAndSpeciality = async (req: Request, res: Response) => {
     const doctorName = req.body.doctorName.toLowerCase();
     var docs: any[] = [];
     var docs2: any[] = [];
-    const speciality = req.body.speciality.toLowerCase();
+    
     var spc = false;
     try {
         const doctors = await doctor.find({});
@@ -162,7 +161,8 @@ const selectDoctorByName = async (req: Request, res: Response) => {
             if (docs.length === 0) {
                 return res.status(404).send("No doctors found with this name");
             } else {
-                if (speciality) {
+                if (req.body.speciality) {
+                    const speciality = req.body.speciality.toLowerCase();
                     for (const d of docs) {
                         if (d.speciality.includes(speciality)) {
                             docs2.push(d);
@@ -194,7 +194,7 @@ const listDoctorsBySessionPrice = async (req: Request, res: Response) => {
         const pId = req.params.id;
         const patientFound = await patient.findById(pId);
         var docSessDisc = 0;
-
+        //var duration = 2;
         if (!patientFound) {
             return res.status(404).json({ error: 'Patient not found' });
         } else {
@@ -207,17 +207,26 @@ const listDoctorsBySessionPrice = async (req: Request, res: Response) => {
                     if (packageData) {
                         docSessDisc = (packageData.discountOnDoctorSessions / 100) * doctor.hourlyRate;
                     }
-                    const sessionPrice = doctor.hourlyRate + 0.1 * doctor.hourlyRate - docSessDisc;
-                    return { doctorName: doctor.name, sessionPrice };
+                    const sessionPrice = doctor.hourlyRate + (0.1 * doctor.hourlyRate) - docSessDisc;
+                    return { doctor, sessionPrice };
                 });
 
                 res.status(200).json(sessionPrices); // Send the response after the loop is done
             } else {
                 const doctors = await doctor.find({});
                 const sessionPrices = doctors.map((doctor) => {
-                    const sessionPrice = doctor.hourlyRate + 0.1 * doctor.hourlyRate - docSessDisc;
-                    return { doctorName: doctor.name, sessionPrice };
+                    const sessionPrice = doctor.hourlyRate + (0.1 * doctor.hourlyRate) - docSessDisc;
+                    return { doctor, sessionPrice };
                 });
+                // const doctors = await doctor.find({});
+                // const sessionPrices = await Promise.all(
+                // doctors.map(async (doctor) => {
+                //     const sessionPrice = doctor.hourlyRate + 0.1 * doctor.hourlyRate - docSessDisc;
+                //     const fullDoctor = await (doctor as DocumentQuery<IDoctor, IDoctor>).findOne({ _id: doctor._id }).lean();
+                //     return { doctor: fullDoctor, sessionPrice };
+                // })
+                // );
+
 
                 res.status(200).json(sessionPrices); // Send the response after the loop is done
             }
@@ -431,7 +440,7 @@ export default {
     readFamilyMember,
     listPatients,
     selectDoctor,
-    selectDoctorByName,
+    selectDoctorByNameAndSpeciality,
     listDoctorsBySessionPrice,
     filterDoctor
 };

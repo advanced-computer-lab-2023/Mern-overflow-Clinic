@@ -123,14 +123,14 @@ const readFamilyMember = async (req: Request, res: Response) => {
 };
 
 const selectDoctor = async (req: Request, res: Response) => {
-    const idd = req.params.id;
+
     const dId = req.params.dId;
 
     const docs = await doctor
         .findById(dId)
         .then((docs) => {
             if (!docs) {
-                return res.status(404).json({ message: 'Patient not found' });
+                return res.status(404).json({ message: 'Doctor not found' });
             } else {
                 res.status(200).json(docs);
             }
@@ -237,74 +237,8 @@ const listDoctorsBySessionPrice = async (req: Request, res: Response) => {
 };
 
 
-// const filterDoctor = async (req: Request, res: Response) => {
-//   //to be tested
-//   const id = req.params.id;
-//   const speciality = req.body.speciality.toLowerCase();
-//   const dateInput = new Date(req.body.date);
-
-//  //console.log(dateInput.toISOString()); // Ensure dateInput is in ISO format
-
-//   try {
-//     const docRes = await doctor.find({ 'speciality': speciality });
-
-//     if (docRes.length === 0) {
-//       res.status(404).send("No doctors with this speciality available");
-//     } else {
-//       if (!dateInput) {
-//         res.status(200).send(docRes);
-//       } else {
-//         var resDocs: any[] = [];
-//         var avDocs: any[] = [];
-
-//         for (const doc of docRes) {
-//           const appointmentsForDoctor = await appointment
-//             .find({ 'doctor': doc._id })
-//             .exec();
-
-//           var count = 0;
-
-//           for (const apt of appointmentsForDoctor) {
-//             var hoursInput = dateInput.getHours();
-//             const minutesInput = dateInput.getMinutes();
-
-//             const startHours = apt.date.getHours();
-//             const startMinutes = apt.date.getMinutes();
-//             var endHours  = startHours+apt.duration;
-
-//             var inputTime = (hoursInput*60)+minutesInput;
-//             var startTime = (startHours*60)+startMinutes;
-//             var endTime = (endHours*60)+startMinutes;
-
-//             if (endHours >= 24) {
-//               endHours -= 24; // Subtract 24 to wrap around to the next day
-//             }
-
-//             if (apt.date.getFullYear() === dateInput.getFullYear() && apt.date.getMonth() === dateInput.getMonth() && apt.date.getDate() === dateInput.getDate()) {
-//               if(startTime<=inputTime && endTime>=inputTime)
-//                 count++;
-//             }
-//           }
-
-//           if (count === 0) {
-//             avDocs.push(doc);
-//           }
-//         }
-
-//         if (avDocs.length === 0) {
-//           res.status(404).send("No doctors within this speciality are available at this date/time");
-//         } else {
-//           res.status(200).send(avDocs);
-//         }
-//       }
-//     }
-//   } catch (err) {
-//     res.status(404).send(err);
-//   }
-// };
-
 const filterDoctor = async (req: Request, res: Response) => {
-    //to be tested
+    //to be tested @ahmed_wael
     const id = req.params.id;
     const speciality = req.body.speciality.toLowerCase();
     const dateInput = new Date(req.body.date);
@@ -331,22 +265,22 @@ const filterDoctor = async (req: Request, res: Response) => {
 
                     var count = 0;
                     
-
                     for (const apt of appointmentsForDoctor) {
-                        console.log("hello");
-                        var hoursInput = dateInput.getHours();
-                        const minutesInput = dateInput.getMinutes();
-
-                        const startHours = apt.date.getHours();
-                        const startMinutes = apt.date.getMinutes();
-                        var beforeRange = hoursInput - apt.duration;
-
-                        console.log(hoursInput + " + " + minutesInput + " + " + startHours + " + " + startMinutes + " + " + beforeRange);
-
-                        if ((beforeRange === startHours && startMinutes > minutesInput) || (hoursInput === startHours && startMinutes < minutesInput)){
-                            count++;
-                            break;
-                        }
+                        if(!apt.status.includes("canceled")){
+                            var hoursInput = dateInput.getHours();
+                            const minutesInput = dateInput.getMinutes();
+    
+                            const startHours = apt.date.getHours();
+                            const startMinutes = apt.date.getMinutes();
+                            var beforeRange = hoursInput - apt.duration;
+    
+                            console.log(hoursInput + " + " + minutesInput + " + " + startHours + " + " + startMinutes + " + " + beforeRange);
+    
+                            if ((beforeRange === startHours && startMinutes > minutesInput) || (hoursInput === startHours && startMinutes < minutesInput)){
+                                count++;
+                                break;
+                            }
+                        }   
                     }
 
                     if (count === 0) {

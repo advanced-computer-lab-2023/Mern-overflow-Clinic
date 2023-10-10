@@ -96,7 +96,7 @@ const AddFamilyMember = () => {
                                 </FormControl>
                             </Grid>
                             <Grid item xs={12} sm={4}>
-                            <FormControl fullWidth variant="outlined">
+                                <FormControl fullWidth variant="outlined">
                                     <InputLabel id="relation">Relation</InputLabel>
                                     <Select
                                         {...register("relation", { required: true, maxLength: 80 })}

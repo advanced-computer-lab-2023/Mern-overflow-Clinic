@@ -147,7 +147,7 @@ export default function PatientRegister() {
                     id="phone"
                     label="Phone"
                     type="tel"
-                    {...register("mobileNumber", { required: true, minLength: 4, maxLength: 12 })}
+                    {...register("mobileNumber", { required: true, minLength: 8, maxLength: 16 })}
                     error={!!errors["mobileNumber"]}
                     helperText={errors["mobileNumber"]?.message}
                     onBlur={handleChange}
@@ -240,7 +240,7 @@ export default function PatientRegister() {
                     fullWidth
                     id="emergencyPhone"
                     label="Phone"
-                    {...register("EmergencyPhone", { required: true, maxLength: 80 })}
+                    {...register("EmergencyPhone", { required: true, minLength: 8, maxLength: 16 })}
                     error={!!errors["EmergencyPhone"]}
                     helperText={errors["EmergencyPhone"]?.message}
                     onBlur={handleChange}

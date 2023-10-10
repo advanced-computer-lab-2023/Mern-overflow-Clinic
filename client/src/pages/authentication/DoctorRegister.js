@@ -7,7 +7,7 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import {Controller ,useForm } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import Avatar from '@mui/material/Avatar';
 import logo from '../../assets/gifs/logo.gif';
 import ContactPageIcon from '@mui/icons-material/ContactPage';
@@ -29,14 +29,11 @@ export default function DoctorRegister() {
     dataToServer["passwordHash"] = sha256(data["password"]);
     delete dataToServer.password
 
-    console.log("Data to server" + JSON.stringify(dataToServer));
     axios.post('http://localhost:8000/doctors', dataToServer)
       .then((response) => {
-        // Handle the successful response here
         console.log('POST request successful', response);
       })
       .catch((error) => {
-        // Handle any errors here
         console.error('Error making POST request', error);
       });
   }
@@ -133,8 +130,6 @@ export default function DoctorRegister() {
                           </DatePicker>
                         )}
                       />
-
-
                     </DemoContainer>
                   </LocalizationProvider>
                 </Grid>

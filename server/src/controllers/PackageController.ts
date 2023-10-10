@@ -7,42 +7,6 @@ const createPackage = async (req: Request, res: Response) => {
     const newPackage = await pack.create(req.body);
 
     let updatedPackage:any = newPackage; // Initialize with the newly created package
-
-    if (req.body.name.toLowerCase() === "silver") {
-      updatedPackage = await pack.findByIdAndUpdate(
-        newPackage._id,
-        {
-          price: 3600,
-          discountOnDoctorSessions: 40,
-          discountOnMedicine: 20,
-          discountForFamily: 10,
-        },
-        { new: true } // Return the updated package
-      );
-    } else if (req.body.name.toLowerCase() === "gold") {
-      updatedPackage = await pack.findByIdAndUpdate(
-        newPackage._id,
-        {
-          price: 6000,
-          discountOnDoctorSessions: 60,
-          discountOnMedicine: 30,
-          discountForFamily: 15,
-        },
-        { new: true } // Return the updated package
-      );
-    } else if (req.body.name.toLowerCase() === "platinum") {
-      updatedPackage = await pack.findByIdAndUpdate(
-        newPackage._id,
-        {
-          price: 9000,
-          discountOnDoctorSessions: 80,
-          discountOnMedicine: 40,
-          discountForFamily: 20,
-        },
-        { new: true } // Return the updated package
-      );
-    }
-
     res.status(200).json(updatedPackage);
   } catch (err) {
     res.status(400).json(err);
@@ -58,6 +22,8 @@ const listPackages = async (req:Request, res:Response)=>{
       res.status(400).json(err);
     });
 }
+
+
 const readPackage = async (req: Request, res: Response) => {
   const id = req.params.id;
     const pkj = pack
@@ -69,6 +35,7 @@ const readPackage = async (req: Request, res: Response) => {
 };
 
 const updatePackage = async (req: Request, res: Response) => {
+  // TODO refactor
   const id = req.params.id;
   const query = { _id: id };
   const name = req.body.name.toLowerCase();
@@ -96,6 +63,7 @@ const updatePackage = async (req: Request, res: Response) => {
     });
 
 };
+
 
 const deletePackage = async (req: Request, res: Response) => {
   const id = req.params.id;

@@ -66,11 +66,12 @@ const listPatients = async (req: Request, res: Response) => {
 const addFamilyMember = async (req: Request, res: Response) => {
 
   const familyMember = {
-    name: req.body.name.toLowerCase(),
+    //name: req.body.name.toLowerCase(),
     nationalId: req.body.nationalId,
-    age: req.body.age,
-    gender: req.body.gender.toLowerCase(),
-    relation: req.body.relation.toLowerCase(),
+    patientId: req.body.patientId
+    // age: req.body.age,
+    // gender: req.body.gender.toLowerCase(),
+    // relation: req.body.relation.toLowerCase(),
   };
 
   const id = req.params.id;
@@ -319,6 +320,8 @@ const filterDoctor = async (req: Request, res: Response) => {
             const startHours = apt.date.getHours();
             const startMinutes = apt.date.getMinutes();
             var beforeRange  = hoursInput-apt.duration;
+
+            console.log(hoursInput + " + " + minutesInput + " + " + startHours + " + " + startMinutes + " + " + beforeRange);
 
             if((beforeRange===startHours && startMinutes>minutesInput) || (hoursInput===startHours && startMinutes<minutesInput))
                 count++;

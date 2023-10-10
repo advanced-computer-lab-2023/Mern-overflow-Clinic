@@ -6,12 +6,13 @@ interface emergencyContact {
 }
 
 interface familyMember {
-    name: string;
+    //name: string;
     nationalId: string;
-    age: number;
-    gender: string;
-    relation: string;
-    package?: typeof mongoose.Types.ObjectId;
+    patientId: typeof mongoose.Types.ObjectId;
+    // age: number;
+    // gender: string;
+    // relation: string;
+    // package?: typeof mongoose.Types.ObjectId;
 }
 
 
@@ -46,12 +47,13 @@ const PatientSchema = new Schema<IPatient>({
     ],
     familyMembers: [
         {
-            name: { type: String, required: true, trim: true },
+            //name: { type: String, required: true, trim: true },
             nationalId: { type: String, required: true },//TODO add validation
-            age: { type: Number, required: true, min: 0, max: 122 },
-            gender: { type: String, required: true, lowercase: true, enum: ['male', 'female'] },
-            relation: { type: String, required: true, lowercase: true, enum: ['wife', 'husband','child']},
-            package: { type: mongoose.Types.ObjectId, ref: "Package", required: false },
+            patientId: { type: mongoose.Types.ObjectId, ref: "Patient", required: true },
+            // age: { type: Number, required: true, min: 0, max: 122 },
+            // gender: { type: String, required: true, lowercase: true, enum: ['male', 'female'] },
+            // relation: { type: String, required: true, lowercase: true, enum: ['wife', 'husband','child']},
+            // package: { type: mongoose.Types.ObjectId, ref: "Package", required: false },
         }
     ],
     prescriptions: [{ type: mongoose.Types.ObjectId, ref: "Prescription", required: false }],

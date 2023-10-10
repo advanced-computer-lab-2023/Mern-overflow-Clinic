@@ -9,7 +9,7 @@ const router = express.Router();
 router.use(bodyParser.json());
 
 //GET
-router.get("/" ,isAuthenticated,isAuthorized([UserType.ADMINSTARTOR]), adminstratorController.listAdminstrators)
+router.get("/" , adminstratorController.listAdminstrators)
 
 //POST
 router.post("/", adminstratorController.createAdminstrator);

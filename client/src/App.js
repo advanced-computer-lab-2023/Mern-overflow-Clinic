@@ -58,7 +58,7 @@ function App() {
       element: <AdminManagePackages />,
     },
     {
-      path: "/admin/packages/1",
+      path: "/admin/packages/:id",
       element: <AdminEditPackage />,
     },
     {

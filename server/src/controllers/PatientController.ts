@@ -305,9 +305,10 @@ const filterDoctor = async (req: Request, res: Response) => {
     const docRes = await doctor.find({ 'speciality': speciality });
 
     if (docRes.length === 0) {
-      res.status(404).send("No doctors with this speciality available");
+      res.status(404).send("No doctors with this speciality");
     } else {
       if (!dateInput) {
+        console.log("hi!");
         res.status(200).send(docRes);
       } else {
         var resDocs: any[] = [];

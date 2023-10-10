@@ -1,21 +1,4 @@
-import {
-  Input,
-  InputLabel,
-  TextField,
-  Grid,
-  Select,
-  MenuItem,
-  Button,
-  Box,
-  Container,
-  FormControl,
-  Typography,
-  Divider,
-  FormLabel,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-} from "@mui/material";
+import { Input, InputLabel, TextField, Grid, Select, MenuItem, Button, Box, Container, FormControl, Typography, Divider, FormLabel, RadioGroup, FormControlLabel, Radio } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -24,6 +7,8 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
 import Fuse from "fuse.js";
 import axios from "axios";
 
@@ -32,27 +17,22 @@ const columns = [
     key: "username",
     label: "USERNAME",
   },
-
   {
     key: "name",
     label: "NAME",
   },
-
   {
     key: "email",
     label: "EMAIL",
   },
-
   {
     key: "dateOfBirth",
     label: "DATE OF BIRTH",
   },
-
   {
     key: "affiliation",
     label: "AFFILIATION",
   },
-
   {
     key: "education",
     label: "EDUCATION",
@@ -61,7 +41,6 @@ const columns = [
     key: "status",
     label: "STATUS",
   },
-
   {
     key: "speciality",
     label: "SPECIALITY",
@@ -69,6 +48,10 @@ const columns = [
   {
     key: "hourlyrate",
     label: "HOURLY RATE",
+  },
+  {
+    key: "action",
+    label: "ACTION",
   },
 ];
 
@@ -80,7 +63,6 @@ export default function AdminViewPatients() {
   const fetchTableData = () => {
     axios.get(`http://localhost:8000/doctors`).then((res) => {
       let temp = ["No filter"];
-
       res.data.map((key) => {
         if (temp.indexOf(key.speciality) === -1) {
           temp.push(key.speciality);
@@ -93,6 +75,17 @@ export default function AdminViewPatients() {
       setFilteredData(res.data);
     });
   };
+
+  const handleDelete = (id) => {
+    axios.delete(`http://localhost:8000/doctors/${id}`)
+      .then((response) => {
+        console.log('DELETE request successful', response);
+        fetchTableData();
+      })
+      .catch((error) => {
+        console.error('Error making DELETE request', error);
+      });
+  }
 
   useEffect(() => {
     fetchTableData();
@@ -131,57 +124,76 @@ export default function AdminViewPatients() {
   };
 
   return (
-    <Container>
-      <Container>
-        <Input
-          size="lg"
-          bordered
-          clearable
-          placeholder="Search..."
-          onChange={(e) => searchItem(e.target.value)}
-        />
-      </Container>
-      <Container>
-        <FormControl>
-          <InputLabel id="filter-by-speciality">Specialty</InputLabel>
-          <Select
-            labelId="filter-by-speciality"
-            id="filter-by-speciality-select"
-            label="speciality"
-            uncontrolled="true"
-            onChange={handleFilter}
-          >
-            {uniqueSpecialties.map((item) => {
-              return <MenuItem value={item}>{item}</MenuItem>;
-            })}
-          </Select>
-        </FormControl>
-      </Container>
-      <Table>
-        <TableHead>
-          <TableRow>
-            {columns.map((column) => (
-              <TableCell key={column.key}>{column.label}</TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {filteredData.map((row) => (
-            <TableRow key={row.username}>
-              <TableCell>{row.username}</TableCell>
-              <TableCell>{row.name}</TableCell>
+    <Container maxWidth="xl">
+      <Paper elevation={3} sx={{ p: '20px', my: '40px', paddingBottom: 5 }}>
+        <Container>
+          <Container sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', my: 5 }}>
+            <Container sx={{ width: '48%' }}>
+              <Input
+                size="lg"
+                bordered
+                clearable
+                placeholder="Search..."
+                onChange={(e) => searchItem(e.target.value)}
+                fullWidth
+              />
+            </Container>
+            <Container sx={{ width: '48%' }}>
+              <FormControl fullWidth>
+                <InputLabel id="filter-by-speciality">Specialty</InputLabel>
+                <Select
+                  labelId="filter-by-speciality"
+                  id="filter-by-speciality-select"
+                  label="speciality"
+                  uncontrolled="true"
+                  onChange={handleFilter}
+                  fullWidth
+                >
+                  {uniqueSpecialties.map((item) => {
+                    return <MenuItem value={item}>{item}</MenuItem>;
+                  })}
+                </Select>
+              </FormControl>
+            </Container>
+          </Container>
+          <Container>
+            <Table>
+              {/* ... rest of the code ... */}
+            </Table>
+          </Container>
 
-              <TableCell>{row.email}</TableCell>
-              <TableCell>{row.dateOfBirth}</TableCell>
-              <TableCell>{row.affiliation}</TableCell>
-              <TableCell>{row.education}</TableCell>
-              <TableCell>{row.status}</TableCell>
-              <TableCell>{row.speciality}</TableCell>
-              <TableCell>{row.hourlyRate}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          <Table>
+            <TableHead>
+              <TableRow>
+                {columns.map((column) => (
+                  <TableCell key={column.key}>{column.label}</TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredData.map((row) => (
+                <TableRow key={row.username}>
+                  <TableCell>{row.username}</TableCell>
+                  <TableCell>{row.name}</TableCell>
+                  <TableCell>{row.email}</TableCell>
+                  <TableCell>{row.dateOfBirth}</TableCell>
+                  <TableCell>{row.affiliation}</TableCell>
+                  <TableCell>{row.education}</TableCell>
+                  <TableCell>{row.status}</TableCell>
+                  <TableCell>{row.speciality}</TableCell>
+                  <TableCell>{row.hourlyRate}</TableCell>
+                  <TableCell>
+                    <IconButton onClick={() => handleDelete(row._id)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Container>
+      </Paper>
     </Container>
+
   );
 }

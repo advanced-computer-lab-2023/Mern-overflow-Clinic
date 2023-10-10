@@ -18,9 +18,9 @@ const EditDoctorProfile = () => {
         const fetchData = async () => {
             try {
                 const response = await axios.get(`http://localhost:8000/doctors/${id}`);
-                setEmail(response.data.email);
-                setHourlyRate(response.data.hourlyRate);
-                setAffiliation(response.data.affiliation);
+                setEmail(response.data[0].email);
+                setHourlyRate(response.data[0].hourlyRate);
+                setAffiliation(response.data[0].affiliation);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }

@@ -2,7 +2,7 @@ import appointment from "../models/appointment.js";
 import pack from "../models/Package.js";
 import patient from "../models/Patient.js";
 import { Request, Response } from "express";
-import mongoose from "mongoose";
+import mongoose, { Mongoose } from "mongoose";
 import bodyParser from "body-parser";
 import app from "../index.js";
 import { relative } from "path";
@@ -38,7 +38,8 @@ const createPatient = async (req: Request, res: Response) => {
 
 };
 
-const readPatient = async (req: Request, res: Response) => {};
+const readPatient = async (req: Request, res: Response) => {
+};
 
 const updatePatient = async (req: Request, res: Response) => {};
 
@@ -64,14 +65,20 @@ const listPatients = async (req: Request, res: Response) => {
 };
 
 const addFamilyMember = async (req: Request, res: Response) => {
+  const familyMem = await patient.findOne({"nationalId" : req.body.nationalId});
+  if(!familyMem){
+    return res.status(404).send("user not found");
+  }
 
+  const familyMemId:mongoose.Types.ObjectId = familyMem._id;
+  
   const familyMember = {
     //name: req.body.name.toLowerCase(),
     nationalId: req.body.nationalId,
-    patientId: req.body.patientId
+    patientId: familyMemId,
     // age: req.body.age,
     // gender: req.body.gender.toLowerCase(),
-    // relation: req.body.relation.toLowerCase(),
+     relation: req.body.relation.toLowerCase(),
   };
 
   const id = req.params.id;

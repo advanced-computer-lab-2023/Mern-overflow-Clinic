@@ -11,7 +11,7 @@ interface familyMember {
     patientId: typeof mongoose.Types.ObjectId;
     // age: number;
     // gender: string;
-    // relation: string;
+     relation: string;
     // package?: typeof mongoose.Types.ObjectId;
 }
 
@@ -20,6 +20,7 @@ export interface IPatient {
     // username: string;
     name: string;
     email: string;
+    nationalId: string;
     // passwordHash: string;
     dateOfBirth: Date;
     gender: string;
@@ -35,6 +36,7 @@ const PatientSchema = new Schema<IPatient>({
     // username: { type: String, required: true, unique: true },
     name: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true, match: [/\S+@\S+\.\S+/, "invalid email"], },
+    nationalId: { type: String, required: true },
     // passwordHash: { type: String, required: true },
     dateOfBirth: { type: Date, required: true },
     gender: { type: String, required: true, lowercase: true, enum: ['male', 'female'] },
@@ -52,7 +54,7 @@ const PatientSchema = new Schema<IPatient>({
             patientId: { type: mongoose.Types.ObjectId, ref: "Patient", required: true },
             // age: { type: Number, required: true, min: 0, max: 122 },
             // gender: { type: String, required: true, lowercase: true, enum: ['male', 'female'] },
-            // relation: { type: String, required: true, lowercase: true, enum: ['wife', 'husband','child']},
+             relation: { type: String, required: true, lowercase: true, enum: ['wife', 'husband','child']},
             // package: { type: mongoose.Types.ObjectId, ref: "Package", required: false },
         }
     ],

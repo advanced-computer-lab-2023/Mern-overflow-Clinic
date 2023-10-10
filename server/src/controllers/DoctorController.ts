@@ -169,7 +169,7 @@ const listMyPatients = async (req: Request, res: Response) => {
   try {
     // Find all upcoming appointments for the doctor with the specified ID
     const appointments = await appointment
-      .find({ 'doctor': id , "status" :  "upcoming" }) // Filter by date >= currentDate
+      .find({ 'doctor': id , "status":{$in: ["upcoming", "completed", "rescheduled"]} }) // Filter by date >= currentDate
       .populate('patient')
       .exec();
 

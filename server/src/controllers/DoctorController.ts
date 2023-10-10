@@ -2,27 +2,47 @@ import { Request, Response } from "express";
 import doctor from "../models/Doctor.js";
 import appointment from "../models/appointment.js";
 import patient from "../models/Patient.js";
+import user from "../models/User.js";
 
 
 
 const createDoctor = async (req: Request, res: Response) => {
   req.body.status = "pending";
-  const newDoctor = doctor
-    .create(req.body)
-    .then((newDoctor) => {
-      res.status(200).json(newDoctor);
-    })
-    .catch((err) => {
-      console.log("error");
-      res.status(400).json(err);
-    });
+  const entry = user.find({ 'username': req.body.username }).then((document) => {
+    if (document.length === 0) {
+
+        doctor.find({ 'email': req.body.email }).then((emailRes) => {
+
+            if (emailRes.length !== 0)
+                res.status(404).send("You are already registered , please sign in ");
+        
+            else {
+                const newDoctor = doctor
+                    .create(req.body)
+                    .then((newDoctor) => {
+                        res.status(200).json(newDoctor);
+                    })
+                    .catch((err) => {
+                        res.status(400).json(err);
+                    });
+            }
+        })
+    }
+    else if (document.length !== 0)
+        res.status(400).send("username taken , please choose another one ");
+})
 };
 
 const readDoctor = async (req: Request, res: Response) => {
   const id = req.params.id;
     const doc = doctor
-    .findById(id)
-    .then((doc) => res.status(200).json(doc))
+    .find({"_id":id, "status":"pending"})
+    .then((doc) => {
+      if(doc.length === 0)
+        res.status(400).send("doctor with this ID is not pending any more");
+      else
+        res.status(200).json(doc);
+    })
     .catch((err) => {
       res.status(400).json(err);
     });
@@ -138,6 +158,36 @@ const listAllMyPatientsUpcoming = async (req: Request, res: Response) => {
   }
 };
 
+
+const listMyPatients = async (req: Request, res: Response) => {
+  //reqId :33
+  const id = req.params.id;
+  //const id: string = '65200d0602668a2ddd63d01c';
+  // Get the current date and time
+  // const currentDate = new Date();
+
+  try {
+    // Find all upcoming appointments for the doctor with the specified ID
+    const appointments = await appointment
+      .find({ 'doctor': id , "status":{$in: ["upcoming", "completed", "rescheduled"]} }) // Filter by date >= currentDate
+      .populate('patient')
+      .exec();
+
+    if(appointments.length===0)
+      res.status(404).send("no patients found");
+    else{
+      const patientIds = appointments.map((appointment) => appointment.patient);
+
+      const patients = await patient.find({ _id: { $in: patientIds } }).exec();
+  
+      res.status(200).json(patients);
+    }
+   
+  } catch (error) {
+    res.status(400).json(error);
+  }
+};
+
 const selectPatientByName = async (req:Request, res:Response) => {
   const id = req.params.id;
   const patientName = req.body.patientName.toLowerCase();
@@ -185,5 +235,6 @@ export default {
   listDoctorPatients ,
   selectPatient,
   selectPatientByName,
-  listAllMyPatientsUpcoming
+  listAllMyPatientsUpcoming,
+  listMyPatients
 };

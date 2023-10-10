@@ -7,19 +7,19 @@ router.use(bodyParser.json());
 
 
 //GET
-router.get("/packages/:id", packageController.readPackage);
-router.get("/packages", packageController.listPackages);
+router.get("/:id", packageController.readPackage);
+router.get("/", packageController.listPackages);
 
 //POST
-router.post("/packages", packageController.createPackage);
-router.post("/packages",packageController.createPackage);
+router.post("/", packageController.createPackage);
+router.post("/",packageController.createPackage);
 
 //PUT
-router.put("/packages/:id", packageController.updatePackage);
-router.put("/packages/:id", packageController.updatePackage);
+router.put("/:id", packageController.updatePackage);
+router.put("/:id", packageController.updatePackage);
 
 //DELETE
-router.delete("/packages/:id", packageController.deletePackage);
-router.delete("/packages/:id", packageController.deletePackage);
+router.delete("/:id", packageController.deletePackage);
+router.delete("/:id", packageController.deletePackage);
 
 export default router;

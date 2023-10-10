@@ -8,6 +8,7 @@ const router = express.Router();
 router.use(bodyParser.json());
 
 //GET
+
 router.get("/:id/relatives", patientController.readFamilyMember);
 router.get("/", patientController.listPatients);
 router.get("/:id", patientController.readPatient);

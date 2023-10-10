@@ -11,6 +11,7 @@ router.get("/",doctorController.listDoctors);
 router.get("/filter", patientController.filterDoctor);
 router.get("/:id", doctorController.readDoctor);
 router.get("/:id/patients", doctorController.listDoctorPatients);
+router.get("/:id/registeredPatients", doctorController.listMyPatients);
 router.get("/:id/patients/:pId", doctorController.selectPatient);
 router.get("/:id/search", doctorController.selectPatientByName);
 router.get("/:id/res", doctorController.listAllMyPatientsUpcoming);//?

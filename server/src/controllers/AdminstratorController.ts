@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import adminstrator from "../models/Adminstrator.js";
 import doctor from "../models/Doctor.js";
+import user from "../models/User.js";
 
 const createAdminstrator = async (req: Request, res: Response) => {
 
@@ -10,7 +11,7 @@ const createAdminstrator = async (req: Request, res: Response) => {
 			res.status(200).json(newAdminstrator);
 		})
 		.catch((err) => {
-			console.log("error");
+			//console.log("error");
 			res.status(400).json(err);
 		});
 };

@@ -17,4 +17,6 @@ router.put("/:id", prescriptionController.updatePrescription);
 //DELETE
 router.delete("/:id", prescriptionController.deletePrescription);
 
+
+
 export default router;

@@ -1,4 +1,4 @@
-import mongoose, { Schema, model, connect } from 'mongoose';
+import mongoose, { Schema, Types,model, connect } from 'mongoose';
 import User from "./User.js";
 interface emergencyContact {
     name: string;
@@ -8,7 +8,7 @@ interface emergencyContact {
 interface familyMember {
     //name: string;
     nationalId: string;
-    patientId: typeof mongoose.Types.ObjectId;
+    patientId: Types.ObjectId;
     // age: number;
     // gender: string;
      relation: string;
@@ -27,8 +27,8 @@ export interface IPatient {
     mobileNumber: string;
     emergencyContact: emergencyContact[];
     familyMembers?: familyMember[];
-    prescriptions?: typeof mongoose.Types.ObjectId[];
-    package?: typeof mongoose.Types.ObjectId;
+    prescriptions?: Types.ObjectId[];
+    package?: Types.ObjectId;
 }
 
 // 2. Create a Schema corresponding to the document interface.
@@ -51,15 +51,15 @@ const PatientSchema = new Schema<IPatient>({
         {
             //name: { type: String, required: true, trim: true },
             nationalId: { type: String, required: true },//TODO add validation
-            patientId: { type: mongoose.Types.ObjectId, ref: "Patient", required: true },
+            patientId: { type: Schema.Types.ObjectId, ref: "Patient", required: true },
             // age: { type: Number, required: true, min: 0, max: 122 },
             // gender: { type: String, required: true, lowercase: true, enum: ['male', 'female'] },
              relation: { type: String, required: true, lowercase: true, enum: ['wife', 'husband','child']},
             // package: { type: mongoose.Types.ObjectId, ref: "Package", required: false },
         }
     ],
-    prescriptions: [{ type: mongoose.Types.ObjectId, ref: "Prescription", required: false }],
-    package: { type: mongoose.Types.ObjectId, ref: "Package", required: false },
+    prescriptions: [{ type: Schema.Types.ObjectId, ref: "Prescription", required: false }],
+    package: { type: Schema.Types.ObjectId, ref: "Package", required: false },
 
 });
 

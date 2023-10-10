@@ -1,21 +1,21 @@
 
 
-import mongoose, {Schema, model} from "mongoose";
+import mongoose, {Schema,Types, model} from "mongoose";
 
 
 interface IAppointment {
-    doctor:typeof mongoose.Types.ObjectId;
-    patient:typeof mongoose.Types.ObjectId;
-    prescription?: typeof mongoose.Types.ObjectId;//TODO prescription
+    doctor: Types.ObjectId;
+    patient: Types.ObjectId;
+    prescription?: Types.ObjectId;//TODO prescription
     date: Date;
     duration: number;
     status:string;
 }
 
 const appointmentSchema = new Schema<IAppointment>({
-    doctor: { type: mongoose.Types.ObjectId, ref: "Doctor", required: true },
-    patient: { type: mongoose.Types.ObjectId, ref: "Patient", required: true },
-    prescription: { type: mongoose.Types.ObjectId, ref: "Prescription", required: false },
+    doctor: { type: Schema.Types.ObjectId, ref: "Doctor", required: true },
+    patient: { type: Schema.Types.ObjectId, ref: "Patient", required: true },
+    prescription: { type: Schema.Types.ObjectId, ref: "Prescription", required: false },
     date: { type: Date, required: true },
     duration: { type: Number, required: true },
     status: { type: String, required: true, lowercase: true, enum: ['upcoming', 'completed','canceled','rescheduled']},

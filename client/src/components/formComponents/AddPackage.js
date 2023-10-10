@@ -1,6 +1,7 @@
-import { Box, Grid, Typography, Button, Container, Paper, TextField } from "@mui/material";
-import axios from 'axios';
-import sha256 from 'js-sha256';
+import { Box, Typography, Grid, FormControl, Button, Container, Paper, TextField } from "@mui/material";
+import InputLabel from '@mui/material/InputLabel';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputAdornment from '@mui/material/InputAdornment'; import axios from 'axios';
 import { useForm } from "react-hook-form"
 
 const AddPackage = () => {
@@ -10,14 +11,11 @@ const AddPackage = () => {
         const dataToServer = { ...data };
         axios.post('http://localhost:8000/packages', dataToServer)
             .then((response) => {
-                // Handle the successful response here
                 console.log('POST request successful', response);
             })
             .catch((error) => {
-                // Handle any errors here
                 console.error('Error making POST request', error);
             });
-
     }
 
     const handleChange = (event) => {
@@ -37,41 +35,86 @@ const AddPackage = () => {
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={4}>
                             <TextField sx={{ mr: "2%" }} label="Name" fullWidth
-                                {...register("name", { required: true, maxLength: 80 })}
+                                {...register("name", { required: true})}
                                 error={!!errors["name"]}
                                 helperText={errors["name"]?.message}
-                                onBlur={handleChange} />
+                                onBlur={handleChange}
+                            />
                         </Grid>
                         <Grid item xs={12} sm={4}>
-                            <TextField sx={{ mr: "2%" }} label="Price" fullWidth type="number"
-                                {...register("price", { required: true, maxLength: 80 })}
-                                error={!!errors["price"]}
-                                helperText={errors["price"]?.message}
-                                onBlur={handleChange} />
+                            <FormControl fullWidth>
+                                <InputLabel htmlFor="outlined-adornment-amount">Price</InputLabel>
+                                <OutlinedInput
+                                    {...register("price", { required: true})}
+                                    error={!!errors["price"]}
+                                    helperText={errors["price"]?.message}
+                                    onBlur={handleChange}
+                                    autoComplete="off"
+                                    required
+                                    fullWidth
+                                    type="number"
+                                    id="outlined-adornment-amount"
+                                    startAdornment={<InputAdornment position="start">EGP</InputAdornment>}
+                                    label="Price"
+                                />
+                            </FormControl>
                         </Grid>
                         <Grid item xs={12} sm={4}>
-                            <TextField sx={{ mr: "2%" }} label="Discount on Doctor Sessions" fullWidth type="number"
-                                inputProps={{ max: 100 }}
-                                {...register("discountOnDoctorSessions", { required: true, maxLength: 80 })}
-                                error={!!errors["discountOnDoctorSessions"]}
-                                helperText={errors["discountOnDoctorSessions"]?.message}
-                                onBlur={handleChange} />
+                            <FormControl fullWidth>
+                                <InputLabel htmlFor="outlined-adornment-amount">Discount on Doctor Sessions</InputLabel>
+                                <OutlinedInput
+                                    inputProps={{ min: 0, max: 100 }}
+                                    {...register("discountOnDoctorSessions", { required: true })}
+                                    error={!!errors["discountOnDoctorSessions"]}
+                                    helperText={errors["discountOnDoctorSessions"]?.message}
+                                    onBlur={handleChange}
+                                    autoComplete="off"
+                                    required
+                                    fullWidth
+                                    type="number"
+                                    id="outlined-adornment-amount"
+                                    startAdornment={<InputAdornment position="start">%</InputAdornment>}
+                                    label="Discount on Doctor Sessions"
+                                />
+                            </FormControl>
                         </Grid>
                         <Grid item xs={12} sm={4}>
-                            <TextField sx={{ mr: "2%" }} label="Discount on Medicine" fullWidth type="number"
-                                inputProps={{ max: 100 }}
-                                {...register("discountOnMedicine", { required: true, maxLength: 80 })}
-                                error={!!errors["discountOnMedicine"]}
-                                helperText={errors["discountOnMedicine"]?.message}
-                                onBlur={handleChange} />
+                            <FormControl fullWidth>
+                                <InputLabel htmlFor="outlined-adornment-amount">Discount on Medicine</InputLabel>
+                                <OutlinedInput
+                                    inputProps={{ min: 0, max: 100 }}
+                                    {...register("discountOnMedicine", { required: true})}
+                                    error={!!errors["discountOnMedicine"]}
+                                    helperText={errors["discountOnMedicine"]?.message}
+                                    onBlur={handleChange}
+                                    autoComplete="off"
+                                    required
+                                    fullWidth
+                                    type="number"
+                                    id="outlined-adornment-amount"
+                                    startAdornment={<InputAdornment position="start">%</InputAdornment>}
+                                    label="Discount on Medicine"
+                                />
+                            </FormControl>
                         </Grid>
                         <Grid item xs={12} sm={4}>
-                            <TextField sx={{ mr: "2%" }} label="Discount For Family" fullWidth type="number"
-                                inputProps={{ max: 100 }}
-                                {...register("discountForFamily", { required: true, maxLength: 80 })}
-                                error={!!errors["discountForFamily"]}
-                                helperText={errors["discountForFamily"]?.message}
-                                onBlur={handleChange} />
+                            <FormControl fullWidth>
+                                <InputLabel htmlFor="outlined-adornment-amount">Discount For Family</InputLabel>
+                                <OutlinedInput
+                                    inputProps={{ min: 0, max: 100 }}
+                                    {...register("discountForFamily", { required: true})}
+                                    error={!!errors["discountForFamily"]}
+                                    helperText={errors["discountForFamily"]?.message}
+                                    onBlur={handleChange}
+                                    autoComplete="off"
+                                    required
+                                    fullWidth
+                                    type="number"
+                                    id="outlined-adornment-amount"
+                                    startAdornment={<InputAdornment position="start">%</InputAdornment>}
+                                    label="Discount For Family"
+                                />
+                            </FormControl>
                         </Grid>
                         <Grid item xs={12} sm={4}>
                             <Button type="submit" variant="outlined" fullWidth sx={{ p: 1.8, fontWeight: 'bold' }}>

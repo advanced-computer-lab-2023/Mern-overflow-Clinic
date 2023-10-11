@@ -1,5 +1,6 @@
 import mongoose, { Schema, Types,model, connect } from 'mongoose';
 import User from "./User.js";
+import HelthRecords, {IHealthRecord} from './HelthRecords.js';
 interface emergencyContact {
     name: string;
     mobileNumber: string;
@@ -29,6 +30,7 @@ export interface IPatient {
     familyMembers?: familyMember[];
     prescriptions?: Types.ObjectId[];
     package?: Types.ObjectId;
+    healthRecords?: IHealthRecord[];
 }
 
 // 2. Create a Schema corresponding to the document interface.
@@ -60,7 +62,13 @@ const PatientSchema = new Schema<IPatient>({
     ],
     prescriptions: [{ type: Schema.Types.ObjectId, ref: "Prescription", required: false }],
     package: { type: Schema.Types.ObjectId, ref: "Package", required: false },
-
+    healthRecords: [
+        {
+            name: { type: String, required: true,},
+            diagnosis: { type: String, required: true },
+            date: { type: Date, required: true },
+        }
+    ],
 });
 
 PatientSchema.pre('save', function (next) {

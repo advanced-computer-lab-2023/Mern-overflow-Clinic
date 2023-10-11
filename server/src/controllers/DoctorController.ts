@@ -132,14 +132,11 @@ const selectPatient = async (req: Request, res: Response) => {
 
 const listAllMyPatientsUpcoming = async (req: Request, res: Response) => {
   const id = req.params.id;
-  //const id: string = '65200d0602668a2ddd63d01c';
-  // Get the current date and time
-  const currentDate = new Date();
 
   try {
     // Find all upcoming appointments for the doctor with the specified ID
     const upcomingAppointments = await appointment
-      .find({ 'doctor': id, 'date': { $gte: currentDate } }) // Filter by date >= currentDate
+      .find({ 'doctor': id, "status" : "upcoming" }) // Filter by date >= currentDate
       .populate('patient')
       .exec();
 
@@ -160,12 +157,7 @@ const listAllMyPatientsUpcoming = async (req: Request, res: Response) => {
 
 
 const listMyPatients = async (req: Request, res: Response) => {
-  //reqId :33
   const id = req.params.id;
-  //const id: string = '65200d0602668a2ddd63d01c';
-  // Get the current date and time
-  // const currentDate = new Date();
-
   try {
     // Find all upcoming appointments for the doctor with the specified ID
     const appointments = await appointment
@@ -194,33 +186,32 @@ const selectPatientByName = async (req: Request, res: Response) => {
   var pIDs: any[] = [];
   var pats: any[] = [];
   try {
-    const apt = appointment.find({ "doctor": id }).then((apts) => {
+    const apts = await appointment.find({ "doctor": id, "status": { $nin: ["canceled"] } });
+
+    if (apts.length === 0) {
+      res.status(404).send("no appointments found");
+    } else {
       for (const appoint of apts) {
         pIDs.push(appoint.patient);
       }
-    })
-
-    if (!apt)
-      res.status(404).send("no appointments found");
-    else {
 
       const patients = await patient.find({ _id: { $in: pIDs } }).exec();
 
       for (const pat of patients) {
-        if (pat.name.includes(patientName))
+        if (pat.name.includes(patientName)) {
           pats.push(pat);
+        }
       }
 
-      if (pats.length === 0)
+      if (pats.length === 0) {
         res.status(404).send("no patients found");
-      else {
+      } else {
         res.status(200).json(pats);
       }
     }
   } catch (err) {
     res.status(400).json(err);
   }
-
 };
 
 

@@ -7,8 +7,8 @@ import patientController from "../controllers/PatientController.js";
 const router = express.Router();
 router.use(bodyParser.json());
 
-router.get("/",doctorController.listDoctors);
-router.get("/filter", patientController.filterDoctor);
+router.get("/", doctorController.listDoctors);
+router.post("/filter", patientController.filterDoctor);
 router.get("/:id", doctorController.readDoctor);
 router.get("/:id/patients", doctorController.listDoctorPatients);
 router.get("/:id/registeredPatients", doctorController.listMyPatients);

@@ -144,7 +144,7 @@ const selectDoctorByNameAndSpeciality = async (req: Request, res: Response) => {
     const doctorName = req.body.doctorName.toLowerCase();
     var docs: any[] = [];
     var docs2: any[] = [];
-    
+
     var spc = false;
     try {
         const doctors = await doctor.find({});
@@ -248,39 +248,39 @@ const filterDoctor = async (req: Request, res: Response) => {
     try {
         const docRes = await doctor.find({ 'speciality': speciality });
 
-    if (docRes.length === 0) {
-      res.status(404).send("No doctors with this speciality available");
-    } else {
-      if (!dateInput) {
-        console.log("hi!");
-        res.status(200).send(docRes);
-      } else {
-        var resDocs: any[] = [];
-        var avDocs: any[] = [];
-        
+        if (docRes.length === 0) {
+            res.status(404).send("No doctors with this speciality available");
+        } else {
+            if (!dateInput) {
+                console.log("hi!");
+                res.status(200).send(docRes);
+            } else {
+                var resDocs: any[] = [];
+                var avDocs: any[] = [];
+
                 for (const doc of docRes) {
                     const appointmentsForDoctor = await appointment
                         .find({ 'doctor': doc._id })
                         .exec();
 
                     var count = 0;
-                    
+
                     for (const apt of appointmentsForDoctor) {
-                        if(!apt.status.includes("canceled")){
+                        if (!apt.status.includes("canceled")) {
                             var hoursInput = dateInput.getHours();
                             const minutesInput = dateInput.getMinutes();
-    
+
                             const startHours = apt.date.getHours();
                             const startMinutes = apt.date.getMinutes();
                             var beforeRange = hoursInput - apt.duration;
-    
+
                             console.log(hoursInput + " + " + minutesInput + " + " + startHours + " + " + startMinutes + " + " + beforeRange);
-    
-                            if ((beforeRange === startHours && startMinutes > minutesInput) || (hoursInput === startHours && startMinutes < minutesInput)){
+
+                            if ((beforeRange === startHours && startMinutes > minutesInput) || (hoursInput === startHours && startMinutes < minutesInput)) {
                                 count++;
                                 break;
                             }
-                        }   
+                        }
                     }
 
                     if (count === 0) {

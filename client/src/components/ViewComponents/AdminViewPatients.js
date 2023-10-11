@@ -1,165 +1,132 @@
-import { Input, InputLabel, TextField, Grid, Select, MenuItem, Button, Box, Container, FormControl, Typography, Divider, FormLabel, RadioGroup, FormControlLabel, Radio } from "@mui/material";
+import {
+  Input,
+  Container,
+  Button,
+  List,
+  ListItem,
+  Paper,
+  FormControl,
+  Select,
+  InputLabel,
+  MenuItem,
+  Typography,
+  IconButton,
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import React, { useEffect, useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import IconButton from '@mui/material/IconButton';
-import DeleteIcon from '@mui/icons-material/Delete';
-import Fuse from "fuse.js";
 import axios from "axios";
-
-const columns = [
-  {
-    key: "username",
-    label: "USERNAME",
-  },
-  {
-    key: "name",
-    label: "NAME",
-  },
-  {
-    key: "email",
-    label: "EMAIL",
-  },
-  {
-    key: "dateOfBirth",
-    label: "DATE OF BIRTH",
-  },
-  {
-    key: "gender",
-    label: "GENDER",
-  },
-  {
-    key: "mobileNumber",
-    label: "MOBILE NUMBER",
-  },
-  {
-    key: "action",
-    label: "ACTION",
-  },
-];
 
 export default function AdminViewPatients() {
   const [data, setData] = useState([]);
-  const [uniqueSpecialties, setUniqueSpecialties] = useState(["No filter"]);
-  const [filteredData, setFilteredData] = useState([]);
+  const [Query, setQuery] = useState("");
+  const [selectedPatient, setSelectedPatient] = useState({});
+  console.log(selectedPatient);
+
+  const id = "6526a25ec258c85350a575cd";
 
   const fetchTableData = () => {
-    axios.get(`http://localhost:8000/patients`).then((res) => {
-      let temp = ["No filter"];
-      res.data.map((key) => {
-        if (temp.indexOf(key.speciality) === -1) {
-          temp.push(key.speciality);
-        }
-      });
-
-      setUniqueSpecialties(temp);
-
-      setData(res.data);
-      setFilteredData(res.data);
-    });
-  };
-
-  const handleDelete = (id) => {
-    axios.delete(`http://localhost:8000/patients/${id}`)
-      .then((response) => {
-        console.log('DELETE request successful', response);
-        fetchTableData();
+    axios
+      .get(`http://localhost:8000/doctors/${id}/patients`, {
+        params: { id: id },
       })
-      .catch((error) => {
-        console.error('Error making DELETE request', error);
+      .then((res) => {
+        setData(res.data);
       });
-  }
+  };
 
   useEffect(() => {
     fetchTableData();
   }, []);
 
+  const handleDelete = (id) => {
+    axios
+      .delete(`http://localhost:8000/patients/${id}`)
+      .then((response) => {
+        console.log("DELETE request successful", response);
+        fetchTableData();
+      })
+      .catch((error) => {
+        console.error("Error making DELETE request", error);
+      });
+  };
   const handleFilter = (e) => {
     e.preventDefault();
     let filter = e.target.value;
-    console.log(filter);
 
-    let filteredData = data.filter(
-      (row) => filter === "No filter" || row.speciality === filter,
-    );
-    setFilteredData(filteredData);
-  };
-
-  const searchItem = (query) => {
-    if (!query) {
-      setFilteredData(data);
-      return;
-    }
-    const fuse = new Fuse(filteredData, {
-      keys: ["name"],
-      threshold: 0.3,
-    });
-    const result = fuse.search(query);
-    const finalResult = [];
-    if (result.length) {
-      result.forEach((item) => {
-        finalResult.push(item.item);
-      });
-      setFilteredData(finalResult);
+    if (filter === "all") {
+      fetchTableData();
     } else {
-      setFilteredData([]);
+      axios
+        .get(`http://localhost:8000/doctors/${id}/res`, {
+          params: { id: id },
+        })
+        .then((res) => {
+          setData(res.data);
+        });
     }
   };
 
   return (
     <Container maxWidth="xl">
-      <Paper elevation={3} sx={{ p: '20px', my: '40px', paddingBottom: 5 }}>
+      <Paper elevation={3} sx={{ p: "20px", my: "40px", paddingBottom: 5 }}>
         <Container>
-          <Container sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', my: 5 }}>
-            <Container sx={{ width: '48%' }}>
+          <Container
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              my: 5,
+            }}
+          >
+            <Container sx={{ width: "48%" }}>
               <Input
                 size="lg"
                 bordered
                 clearable
                 placeholder="Search..."
-                onChange={(e) => searchItem(e.target.value)}
+                onChange={(e) => setQuery(e.target.value)}
                 fullWidth
               />
             </Container>
-            <Container sx={{ width: '48%' }}>
+            <Container sx={{ width: "48%" }}>
               <FormControl fullWidth>
-                <InputLabel id="filter-by-speciality">Specialty</InputLabel>
+                <InputLabel id="filter-by-status">Status</InputLabel>
                 <Select
-                  labelId="filter-by-speciality"
-                  id="filter-by-speciality-select"
-                  label="speciality"
+                  labelId="filter-by-status"
+                  id="filter-by-status-select"
+                  label="status"
                   uncontrolled="true"
                   onChange={handleFilter}
                   fullWidth
                 >
-                  {uniqueSpecialties.map((item) => {
-                    return <MenuItem value={item}>{item}</MenuItem>;
-                  })}
+                  <MenuItem value="all">All</MenuItem>
+                  <MenuItem value="upcoming">Upcoming</MenuItem>
                 </Select>
               </FormControl>
             </Container>
           </Container>
-          <Container>
-            <Table>
-              {/* ... rest of the code ... */}
-            </Table>
-          </Container>
-
-          <Table>
-            <TableHead>
-              <TableRow>
-                {columns.map((column) => (
-                  <TableCell key={column.key}>{column.label}</TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredData.map((row) => (
+        </Container>
+      </Paper>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell key="username">Username</TableCell>
+            <TableCell key="name">Name</TableCell>
+            <TableCell key="email">Email</TableCell>
+            <TableCell key="dateOfBirth">Date of Birth</TableCell>
+            <TableCell key="gender">Gender</TableCell>
+            <TableCell key="mobileNumber">Mobile Number</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {data.map(
+            (row) =>
+              row.name.toLowerCase().includes(Query.toLowerCase()) && (
                 <TableRow key={row.username}>
                   <TableCell>{row.username}</TableCell>
                   <TableCell>{row.name}</TableCell>
@@ -168,17 +135,41 @@ export default function AdminViewPatients() {
                   <TableCell>{row.gender}</TableCell>
                   <TableCell>{row.mobileNumber}</TableCell>
                   <TableCell>
+                    <Button onClick={() => setSelectedPatient(row)}>
+                      Select Patient
+                    </Button>
+                  </TableCell>
+
+                  <TableCell>
                     <IconButton onClick={() => handleDelete(row._id)}>
                       <DeleteIcon />
                     </IconButton>
                   </TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Container>
-      </Paper>
+              ),
+          )}
+        </TableBody>
+      </Table>
+      {typeof selectedPatient.name !== "undefined" && (
+        <List>
+          <ListItem>{"Name: " + selectedPatient.name}</ListItem>
+          <ListItem>{"Email: " + selectedPatient.email}</ListItem>
+          <ListItem>{"Date of Birth: " + selectedPatient.dateOfBirth}</ListItem>
+          <ListItem>{"Gender: " + selectedPatient.gender}</ListItem>
+          <ListItem>
+            {"Mobile Number: " + selectedPatient.mobileNumber}
+          </ListItem>
+          <Typography>Emergency Contacts</Typography>
+          {selectedPatient.emergencyContact.map((item) => {
+            return (
+              <List>
+                <ListItem>{"Name: " + item.name}</ListItem>
+                <ListItem>{"Mobile Number: " + item.mobileNumber}</ListItem>
+              </List>
+            );
+          })}
+        </List>
+      )}
     </Container>
-
   );
 }

@@ -9,6 +9,7 @@ import {
   Select,
   InputLabel,
   MenuItem,
+  Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Table from "@mui/material/Table";
@@ -137,15 +138,15 @@ export default function DoctorViewPatients() {
           <ListItem>
             {"Mobile Number: " + selectedPatient.mobileNumber}
           </ListItem>
-          {
-            //   selectedPatient.emergencyContact.map((item) => {
-            //   <>
-            //     <ListItem>{item.name}</ListItem>
-            //     <ListItem>{item.name}</ListItem>
-            //     <ListItem>{item.name}</ListItem>
-            //   </>;
-            // })
-          }
+          <Typography>Emergency Contacts</Typography>
+          {selectedPatient.emergencyContact.map((item) => {
+            return (
+              <List>
+                <ListItem>{"Name: " + item.name}</ListItem>
+                <ListItem>{"Mobile Number: " + item.mobileNumber}</ListItem>
+              </List>
+            );
+          })}
         </List>
       )}
     </Container>

@@ -2,7 +2,7 @@ import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import CssBaseline from '@mui/material/CssBaseline';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { TextField, Grid, Button, Box, Container, FormControl, Typography, Divider, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
+import { TextField, Alert, Grid, Button, Box, Container, FormControl, Typography, Divider, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -90,6 +90,7 @@ export default function PatientRegister() {
               <ContactPageIcon sx={{ width: 30, height: 30 }} />
             </Avatar>
             <Typography variant="h5" sx={{ fontWeight: "bold", my: 2 }}> Patient Registration </Typography>
+            <Alert severity="error">This is an error alert — check it out!</Alert>
             <Box component="form" onSubmit={handleSubmit(onSubmit)}>
               <Grid container md={12} spacing={2} sx={{ mt: 3 }}>
                 <Grid item xs={12}>

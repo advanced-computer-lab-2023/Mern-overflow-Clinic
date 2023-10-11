@@ -9,7 +9,10 @@ router.use(bodyParser.json());
 
 //GET
 router.get("/doctorsSearch", patientController.selectDoctorByNameAndSpeciality);
+
+//added this new route
 router.get("/:id/prescriptionsFilter", prescriptionController.filterPrescriptions);
+//
 router.get("/doctors/:dId", patientController.selectDoctor);
 router.get("/:id/relatives", patientController.readFamilyMember);
 router.get("/", patientController.listPatients);

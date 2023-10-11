@@ -23,12 +23,13 @@ const columns = [
     },
 ];
 
-export default function AdminViewPatients() {
+export default function AdminViewAdmins(props) {
     const [data, setData] = useState([]);
 
     const fetchTableData = () => {
         axios.get(`http://localhost:8000/admins`).then((res) => {
             setData(res.data);
+            props.setDataIsUpdated(true);
         });
     };
 
@@ -45,7 +46,7 @@ export default function AdminViewPatients() {
 
     useEffect(() => {
         fetchTableData();
-    }, []);
+    }, [props.dataIsUpdated]);
 
     return (
         <Container maxWidth="xl">

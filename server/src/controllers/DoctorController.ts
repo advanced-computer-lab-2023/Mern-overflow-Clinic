@@ -11,34 +11,34 @@ const createDoctor = async (req: Request, res: Response) => {
   const entry = user.find({ 'username': req.body.username }).then((document) => {
     if (document.length === 0) {
 
-        doctor.find({ 'email': req.body.email }).then((emailRes) => {
+      doctor.find({ 'email': req.body.email }).then((emailRes) => {
 
-            if (emailRes.length !== 0)
-                res.status(404).send("You are already registered , please sign in ");
-        
-            else {
-                const newDoctor = doctor
-                    .create(req.body)
-                    .then((newDoctor) => {
-                        res.status(200).json(newDoctor);
-                    })
-                    .catch((err) => {
-                        res.status(400).json(err);
-                    });
-            }
-        })
+        if (emailRes.length !== 0)
+          res.status(404).send("You are already registered , please sign in ");
+
+        else {
+          const newDoctor = doctor
+            .create(req.body)
+            .then((newDoctor) => {
+              res.status(200).json(newDoctor);
+            })
+            .catch((err) => {
+              res.status(400).json(err);
+            });
+        }
+      })
     }
     else if (document.length !== 0)
-        res.status(400).send("username taken , please choose another one ");
-})
+      res.status(400).send("username taken , please choose another one ");
+  })
 };
 
 const readDoctor = async (req: Request, res: Response) => {
   const id = req.params.id;
-    const doc = doctor
-    .find({"_id":id, "status":"pending"})
+  const doc = doctor
+    .find({ "_id": id, "status": "pending" })
     .then((doc) => {
-      if(doc.length === 0)
+      if (doc.length === 0)
         res.status(400).send("doctor with this ID is not pending any more");
       else
         res.status(200).json(doc);
@@ -56,9 +56,9 @@ const updateDoctor = async (req: Request, res: Response) => {
   const affiliation = req.body.affiliation;
   const update: { [key: string]: any } = {};
 
-  if (email!==undefined) update["email"] = email;
-  if (hourlyRate!==undefined) update["hourlyRate"] = hourlyRate;
-  if (affiliation!==undefined) update["affiliation"] = affiliation;
+  if (email !== undefined) update["email"] = email;
+  if (hourlyRate !== undefined) update["hourlyRate"] = hourlyRate;
+  if (affiliation !== undefined) update["affiliation"] = affiliation;
 
   doctor
     .findOneAndUpdate(query, update, { new: true })
@@ -86,7 +86,7 @@ const deleteDoctor = async (req: Request, res: Response) => {
 
 const listDoctors = async (req: Request, res: Response) => {
   const doctors = doctor
-    .find({})
+    .find({ "status": "accepted" })
     .then((doctors) => res.status(200).json(doctors))
     .catch((err) => {
       res.status(400).json(err);
@@ -98,7 +98,7 @@ const listDoctorPatients = async (req: Request, res: Response) => {
   const pId = req.params.pId;
 
   const appointments = await appointment
-    .find({ 'doctor': id }) 
+    .find({ 'doctor': id })
     .populate('patient')
     .exec();
 
@@ -113,19 +113,19 @@ const selectPatient = async (req: Request, res: Response) => {
   const pId = req.params.pId;
 
   const appointments = await appointment
-    .find({ 'doctor': id }) 
+    .find({ 'doctor': id })
     .populate('patient')
     .exec();
 
   const patientIds = appointments.map((appointment) => appointment.patient);
 
   const pat = await patient
-  .findOne({ _id: pId })
-  .exec();
+    .findOne({ _id: pId })
+    .exec();
 
   if (!pat) {
     return res.status(404).json({ message: 'Patient not found' });
-  }else{
+  } else {
     res.status(200).json(pat);
   }
 };
@@ -143,16 +143,16 @@ const listAllMyPatientsUpcoming = async (req: Request, res: Response) => {
       .populate('patient')
       .exec();
 
-    if(!upcomingAppointments || upcomingAppointments.length===0)
+    if (!upcomingAppointments || upcomingAppointments.length === 0)
       res.status(404).send("no upcoming appointments found");
-    else{
+    else {
       const patientIds = upcomingAppointments.map((appointment) => appointment.patient);
 
       const patients = await patient.find({ _id: { $in: patientIds } }).exec();
-  
+
       res.status(200).json(patients);
     }
-   
+
   } catch (error) {
     res.status(400).json(error);
   }
@@ -169,55 +169,55 @@ const listMyPatients = async (req: Request, res: Response) => {
   try {
     // Find all upcoming appointments for the doctor with the specified ID
     const appointments = await appointment
-      .find({ 'doctor': id , "status":{$in: ["upcoming", "completed", "rescheduled"]} }) // Filter by date >= currentDate
+      .find({ 'doctor': id, "status": { $in: ["upcoming", "completed", "rescheduled"] } }) // Filter by date >= currentDate
       .populate('patient')
       .exec();
 
-    if(appointments.length===0)
+    if (appointments.length === 0)
       res.status(404).send("no patients found");
-    else{
+    else {
       const patientIds = appointments.map((appointment) => appointment.patient);
 
       const patients = await patient.find({ _id: { $in: patientIds } }).exec();
-  
+
       res.status(200).json(patients);
     }
-   
+
   } catch (error) {
     res.status(400).json(error);
   }
 };
 
-const selectPatientByName = async (req:Request, res:Response) => {
+const selectPatientByName = async (req: Request, res: Response) => {
   const id = req.params.id;
   const patientName = req.body.patientName.toLowerCase();
-  var pIDs: any[]=[];
-  var pats: any[]=[];
-  try{   
-    const apt = appointment.find({"doctor":id}).then((apts)=>{
-        for (const appoint of apts){
-          pIDs.push(appoint.patient);
-        }
-      })
-    
-    if(!apt)
+  var pIDs: any[] = [];
+  var pats: any[] = [];
+  try {
+    const apt = appointment.find({ "doctor": id }).then((apts) => {
+      for (const appoint of apts) {
+        pIDs.push(appoint.patient);
+      }
+    })
+
+    if (!apt)
       res.status(404).send("no appointments found");
-    else{
-          
+    else {
+
       const patients = await patient.find({ _id: { $in: pIDs } }).exec();
 
-      for(const pat of patients){
-        if(pat.name.includes(patientName))
+      for (const pat of patients) {
+        if (pat.name.includes(patientName))
           pats.push(pat);
       }
 
-      if(pats.length === 0)
+      if (pats.length === 0)
         res.status(404).send("no patients found");
-      else{
+      else {
         res.status(200).json(pats);
       }
     }
-  }catch(err){
+  } catch (err) {
     res.status(400).json(err);
   }
 
@@ -232,7 +232,7 @@ export default {
   updateDoctor,
   deleteDoctor,
   listDoctors,
-  listDoctorPatients ,
+  listDoctorPatients,
   selectPatient,
   selectPatientByName,
   listAllMyPatientsUpcoming,

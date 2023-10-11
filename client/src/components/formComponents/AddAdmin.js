@@ -3,7 +3,7 @@ import axios from 'axios';
 import sha256 from 'js-sha256';
 import { useForm } from "react-hook-form"
 
-const AddAdmin = () => {
+const AddAdmin = (props) => {
   const { register, handleSubmit, setError, formState: { errors } } = useForm();
 
   const onSubmit = data => {
@@ -11,14 +11,12 @@ const AddAdmin = () => {
     dataToServer["passwordHash"] = sha256(data["password"]);
     axios.post('http://localhost:8000/admins', dataToServer)
       .then((response) => {
-        // Handle the successful response here
         console.log('POST request successful', response);
+        props.setDataIsUpdated(false);
       })
       .catch((error) => {
-        // Handle any errors here
         console.error('Error making POST request', error);
       });
-
   }
 
   const handleChange = (event) => {

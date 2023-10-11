@@ -54,7 +54,6 @@ const handleDoctorRequest = async (req: Request, res: Response) => {
 };
 
 const listAdminstrators = async (req: Request, res: Response) => {
-	console.log("entered here")
 	const adminstrators = adminstrator
 		.find({})
 		.then((adm) => res.status(200).json(adm))

@@ -302,66 +302,6 @@ const filterDoctor = async (req: Request, res: Response) => {
 };
 
 
-// const filterDoctor = async (req: Request, res: Response) => {
-//   const id = req.params.id;
-//   const speciality = req.body.speciality;
-//   const dateInput = new Date(req.body.date);
-//   const hoursInput = dateInput.getHours();
-//   const minutesInput = dateInput.getMinutes();
-
-//   try {
-//     const docRes = await doctor.find({ 'speciality': speciality });
-
-//     if (docRes.length === 0) {
-//       res.status(404).send("No doctors with this speciality available");
-//     } else {
-//       if (!dateInput) {
-//         res.status(200).send(docRes);
-//       } else {
-//         var resDocs: any[] = [];
-//         var avDocs: any[] = [];
-
-//         for (const doc of docRes) {
-//           const appointmentsForDoctor = await appointment
-//             .find({ 'doctor': doc._id })
-//             .exec();
-
-//           // Calculate the end time of the doctor's appointments
-//           const endTimes: Date[] = [];
-//           for (const apt of appointmentsForDoctor) {
-//             const aptStartTime = apt.date;
-//             const aptEndTime = new Date(aptStartTime);
-//             aptEndTime.setMinutes(aptStartTime.getMinutes() + apt.duration);
-//             endTimes.push(aptEndTime);
-//           }
-
-//           // Check if the requested time slot overlaps with any appointment
-//           const requestedStartTime = new Date(dateInput);
-//           const requestedEndTime = new Date(dateInput);
-//           requestedEndTime.setMinutes(requestedEndTime.getMinutes() + 1); // Assuming 1-minute slot
-//           const overlap = endTimes.some((endTime) => {
-//             return (
-//               requestedStartTime >= endTime && // Corrected here
-//               requestedStartTime < endTime
-//             );
-//           });
-
-//           if (!overlap) {
-//             avDocs.push(doc);
-//           }
-//         }
-
-//         if (avDocs.length === 0) {
-//           res.status(404).send("No doctors within this speciality are available at this date/time");
-//         } else {
-//           res.status(200).send(avDocs);
-//         }
-//       }
-//     }
-//   } catch (err) {
-//     res.status(404).send(err);
-//   }
-// };
 
 
 

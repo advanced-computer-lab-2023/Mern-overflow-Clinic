@@ -19,25 +19,6 @@ const createPrescription = async (req: Request, res: Response) => {
   }
 };
 
-
-// const viewPatientPrescription = async(req:Request, res:Response)=>{
-//     const id = req.params.id
-//     const presc = Prescription
-//     .find({})
-//     .then((presc) => {
-//       var arr: any[]=[]
-//       for(const p of presc){
-//         if(p.patient.toString() === id.toString()){
-//           arr.push(p);
-//         }
-//       }
-//       res.status(200).json(arr)}
-//       )
-//     .catch((err) => {
-//       res.status(400).json(err);
-//     });
-// }
-
 const viewPatientPrescription = async (req:Request, res:Response) => {
   const id = req.params.id;
   try {

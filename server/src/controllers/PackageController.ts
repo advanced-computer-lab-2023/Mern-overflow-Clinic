@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import pack from "../models/Package.js";
 import Package from "../models/Package.js";
 
+
+
 const createPackage = async (req: Request, res: Response) => {
   try {
     const newPackage = await pack.create(req.body);

@@ -23,7 +23,6 @@ export default function DoctorViewPatients() {
   const [data, setData] = useState([]);
   const [Query, setQuery] = useState("");
   const [selectedPatient, setSelectedPatient] = useState({});
-  console.log(selectedPatient);
 
   const id = "6526a25ec258c85350a575cd";
 

@@ -11,7 +11,7 @@ router.use(bodyParser.json());
 router.get("/doctorsSearch", patientController.selectDoctorByNameAndSpeciality);
 
 //added this new route
-router.get("/:id/prescriptionsFilter", prescriptionController.filterPrescriptions);
+router.post("/:id/prescriptionsFilter", prescriptionController.filterPrescriptions);
 //
 router.get("/doctors/:dId", patientController.selectDoctor);
 router.get("/:id/relatives", patientController.readFamilyMember);
@@ -22,7 +22,7 @@ router.get("/:id/price", patientController.listDoctorsBySessionPrice);
 
 //POST
 router.post("/", patientController.createPatient);
-router.post("/:id/familyMember",patientController.addFamilyMember);
+router.post("/:id/familyMember", patientController.addFamilyMember);
 
 
 //DELETE

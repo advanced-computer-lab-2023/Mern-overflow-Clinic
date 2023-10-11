@@ -7,11 +7,11 @@ import Doctor from '../models/Doctor.js';
 const createPrescription = async (req: Request, res: Response) => {
   try {
     const newPrescriptionData = req.body;
-    
+
     newPrescriptionData.filled = false;
 
     const newPrescription = await Prescription.create(newPrescriptionData);
-    
+
     res.status(200).json(newPrescription);
   } catch (error) {
     console.log("error");
@@ -19,13 +19,13 @@ const createPrescription = async (req: Request, res: Response) => {
   }
 };
 
-const viewPatientPrescription = async (req:Request, res:Response) => {
+const viewPatientPrescription = async (req: Request, res: Response) => {
   const id = req.params.id;
   try {
     const prescriptions = await Prescription.find({ patient: id });
-    if(prescriptions.length ===0){
+    if (prescriptions.length === 0) {
       res.status(404).send("no prescriptions found");
-    }else{
+    } else {
       res.status(200).json(prescriptions);
     }
   } catch (err) {
@@ -34,12 +34,12 @@ const viewPatientPrescription = async (req:Request, res:Response) => {
 };
 
 
-const updatePrescription = async(req:Request, res:Response)=>{
-    const id = req.params.id;
-    const query = { _id: id };
-    const filled = req.body.filled;
-     const update: { [key: string]: any } = {};
-    if (filled !== undefined) update["filled"] = filled;
+const updatePrescription = async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const query = { _id: id };
+  const filled = req.body.filled;
+  const update: { [key: string]: any } = {};
+  if (filled !== undefined) update["filled"] = filled;
 
   Prescription
     .findOneAndUpdate(query, update, { new: true })
@@ -53,20 +53,20 @@ const updatePrescription = async(req:Request, res:Response)=>{
     });
 }
 
-const deletePrescription = async(req:Request, res:Response)=>{
-    const id = req.params.id;
-    const prescription = Prescription
-      .findByIdAndDelete({ _id: id })
-      .then((prescription) => {
-        res.status(200).json(prescription);
-      })
-      .catch((err) => {
-        res.status(400).json(err);
-      });
-}
-const selectPrescription = async(req:Request, res:Response)=>{
+const deletePrescription = async (req: Request, res: Response) => {
   const id = req.params.id;
-    const pres = Prescription
+  const prescription = Prescription
+    .findByIdAndDelete({ _id: id })
+    .then((prescription) => {
+      res.status(200).json(prescription);
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+}
+const selectPrescription = async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const pres = Prescription
     .findById(id)
     .then((pres) => res.status(200).json(pres))
     .catch((err) => {
@@ -114,7 +114,7 @@ const filterPrescriptions = async (req: Request, res: Response) => {
 
     // Add conditions based on the filters
     if (filters.date) {
-      queryConditions.date = filters.date;
+      queryConditions.date = new Date(filters.date);
     }
     if (filters.doctorName) {
       // Find doctors with names containing the input name
@@ -127,8 +127,6 @@ const filterPrescriptions = async (req: Request, res: Response) => {
     }
 
     const prescriptions = await Prescription.find(queryConditions)
-      .populate('patient', '_id') // Select only the "_id" property of the "patient"
-      .populate('doctor', '_id'); // Select only the "_id" property of the "doctor"
 
     res.status(200).json(prescriptions);
   } catch (err) {
@@ -139,11 +137,11 @@ const filterPrescriptions = async (req: Request, res: Response) => {
 
 
 
-export default{
-    createPrescription,
-    selectPrescription,
-    updatePrescription,
-    deletePrescription,
-    viewPatientPrescription,
-    filterPrescriptions
+export default {
+  createPrescription,
+  selectPrescription,
+  updatePrescription,
+  deletePrescription,
+  viewPatientPrescription,
+  filterPrescriptions
 }

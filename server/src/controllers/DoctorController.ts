@@ -33,10 +33,11 @@ const createDoctor = async (req: Request, res: Response) => {
   })
 };
 
+// pending and rejected doctors
 const readDoctor = async (req: Request, res: Response) => {
   const id = req.params.id;
   const doc = doctor
-    .find({ "_id": id, "status": "pending" })
+    .find({ "_id": id, "status":{$in: ["pending", "rejected"]} })
     .then((doc) => {
       if (doc.length === 0)
         res.status(400).send("doctor with this ID is not pending any more");

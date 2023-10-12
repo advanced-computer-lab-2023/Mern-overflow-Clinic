@@ -17,10 +17,12 @@ import InputAdornment from '@mui/material/InputAdornment';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import sha256 from 'js-sha256';
+import { useNavigate } from 'react-router-dom';
 
 const defaultTheme = createTheme();
 
 export default function DoctorRegister() {
+  const navigate = useNavigate();
   const { register, handleSubmit, setError, formState: { errors }, control } = useForm();
 
   const onSubmit = data => {
@@ -32,9 +34,11 @@ export default function DoctorRegister() {
     axios.post('http://localhost:8000/doctors', dataToServer)
       .then((response) => {
         console.log('POST request successful', response);
+        navigate('/doctor/profile');
       })
       .catch((error) => {
         console.error('Error making POST request', error);
+        alert('Error making POST request: ' + error.message);
       });
   }
   console.log(errors);

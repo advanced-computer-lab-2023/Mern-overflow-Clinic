@@ -13,13 +13,14 @@ import logo from '../../assets/gifs/logo.gif';
 import ContactPageIcon from '@mui/icons-material/ContactPage';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { useState } from 'react';
 import sha256 from 'js-sha256';
-
+import { useNavigate } from 'react-router-dom';
 
 const defaultTheme = createTheme();
 
 export default function PatientRegister() {
-
+  const navigate = useNavigate();
   const { register, handleSubmit, setError, formState: { errors }, control } = useForm();
 
   const onSubmit = data => {
@@ -33,12 +34,12 @@ export default function PatientRegister() {
     console.log("Data to server" + JSON.stringify(dataToServer));
     axios.post('http://localhost:8000/patients', dataToServer)
       .then((response) => {
-        // Handle the successful response here
         console.log('POST request successful', response);
+        navigate('/patient/family');
       })
       .catch((error) => {
-        // Handle any errors here
         console.error('Error making POST request', error);
+        alert('Error making POST request: ' + error.message);
       });
   }
 
@@ -90,7 +91,7 @@ export default function PatientRegister() {
               <ContactPageIcon sx={{ width: 30, height: 30 }} />
             </Avatar>
             <Typography variant="h5" sx={{ fontWeight: "bold", my: 2 }}> Patient Registration </Typography>
-            <Alert severity="error">This is an error alert — check it out!</Alert>
+            {/* <Alert severity="error"></Alert> */}
             <Box component="form" onSubmit={handleSubmit(onSubmit)}>
               <Grid container md={12} spacing={2} sx={{ mt: 3 }}>
                 <Grid item xs={12}>
@@ -151,6 +152,18 @@ export default function PatientRegister() {
                     {...register("mobileNumber", { required: true, minLength: 8, maxLength: 16 })}
                     error={!!errors["mobileNumber"]}
                     helperText={errors["mobileNumber"]?.message}
+                    onBlur={handleChange}
+                  />
+
+                </Grid> <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    id="nationalId"
+                    label="National ID"
+                    type="number"
+                    {...register("nationalId", { required: true, minLength: 8, maxLength: 16 })}
+                    error={!!errors["nationalId"]}
+                    helperText={errors["nationalId"]?.message}
                     onBlur={handleChange}
                   />
                 </Grid>

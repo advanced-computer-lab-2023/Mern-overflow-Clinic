@@ -18,7 +18,7 @@ const EditDoctorProfile = () => {
         const fetchData = async () => {
             try {
                 const response = await axios.get(`http://localhost:8000/doctors/${id}`);
-                setEmail(response.data[0].email);
+                setEmail(response.data.email);
                 setHourlyRate(response.data[0].hourlyRate);
                 setAffiliation(response.data[0].affiliation);
             } catch (error) {

@@ -74,11 +74,11 @@ const addFamilyMember = async (req: Request, res: Response) => {
     const familyMemId = new mongoose.Types.ObjectId(familyMem._id);
 
     const familyMember = {
-        //name: req.body.name.toLowerCase(),
+        name: req.body.name.toLowerCase(),
         nationalId: req.body.nationalId,
         patientId: familyMemId,
-        // age: req.body.age,
-        // gender: req.body.gender.toLowerCase(),
+        age: req.body.age,
+        gender: req.body.gender.toLowerCase(),
         relation: req.body.relation.toLowerCase(),
     };
 
@@ -109,6 +109,7 @@ const addFamilyMember = async (req: Request, res: Response) => {
 
 const readFamilyMember = async (req: Request, res: Response) => {
     const id = req.params.id;
+    console.log(id)
     const p = patient
         .findById(id)
         .then((p) => {

@@ -7,12 +7,12 @@ router.use(bodyParser.json());
 
 
 //GET
-router.get("/filter",appointmentController.filterAppointments);
 router.get("/", appointmentController.listAllAppointments);
 router.get("/:id", appointmentController.readAppointment);
 
 //POST
 router.post("/", appointmentController.createAppointment);
+router.post("/filter", appointmentController.filterAppointments);
 
 //DELETE
 router.delete("/:id", appointmentController.deleteAppointment);

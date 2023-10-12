@@ -1,6 +1,6 @@
-import mongoose, { Schema, Types,model, connect } from 'mongoose';
+import mongoose, { Schema, Types, model, connect } from 'mongoose';
 import User from "./User.js";
-import HelthRecords, {IHealthRecord} from './HelthRecords.js';
+import HelthRecords, { IHealthRecord } from './HelthRecords.js';
 interface emergencyContact {
     name: string;
     mobileNumber: string;
@@ -12,7 +12,7 @@ interface familyMember {
     patientId: Types.ObjectId;
     // age: number;
     // gender: string;
-     relation: string;
+    relation: string;
     // package?: typeof mongoose.Types.ObjectId;
 }
 
@@ -51,12 +51,12 @@ const PatientSchema = new Schema<IPatient>({
     ],
     familyMembers: [
         {
-            //name: { type: String, required: true, trim: true },
+            name: { type: String, required: true, trim: true },
             nationalId: { type: String, required: true },//TODO add validation
             patientId: { type: Schema.Types.ObjectId, ref: "Patient", required: true },
-            // age: { type: Number, required: true, min: 0, max: 122 },
-            // gender: { type: String, required: true, lowercase: true, enum: ['male', 'female'] },
-             relation: { type: String, required: true, lowercase: true, enum: ['wife', 'husband','child']},
+            age: { type: Number, required: true, min: 0, max: 122 },
+            gender: { type: String, required: true, lowercase: true, enum: ['male', 'female'] },
+            relation: { type: String, required: true, lowercase: true, enum: ['wife', 'husband', 'child'] },
             // package: { type: mongoose.Types.ObjectId, ref: "Package", required: false },
         }
     ],
@@ -64,21 +64,21 @@ const PatientSchema = new Schema<IPatient>({
     package: { type: Schema.Types.ObjectId, ref: "Package", required: false },
     healthRecords: [
         {
-            name: { type: String, required: true,},
+            name: { type: String, required: true, },
             diagnosis: { type: String, required: true },
             date: { type: Date, required: true },
         }
     ],
 });
 
-PatientSchema.pre('save', function (next) {
+PatientSchema.pre('save', function(next) {
     if (this.isModified('name')) {
         this.name = this.name.toLowerCase();
     }
     if (this.isModified('email')) {
         this.email = this.email.toLowerCase();
     }
-    
+
     next();
 });
 

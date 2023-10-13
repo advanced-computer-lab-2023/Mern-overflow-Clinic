@@ -25,15 +25,10 @@ export default function AdminViewPatients() {
   const [data, setData] = useState([]);
   const [Query, setQuery] = useState("");
   const [selectedPatient, setSelectedPatient] = useState({});
-  console.log(selectedPatient);
-
-  const id = "6526a25ec258c85350a575cd";
 
   const fetchTableData = () => {
     axios
-      .get(`http://localhost:8000/doctors/${id}/patients`, {
-        params: { id: id },
-      })
+      .get(`http://localhost:8000/patients`)
       .then((res) => {
         setData(res.data);
       });
@@ -53,22 +48,6 @@ export default function AdminViewPatients() {
       .catch((error) => {
         console.error("Error making DELETE request", error);
       });
-  };
-  const handleFilter = (e) => {
-    e.preventDefault();
-    let filter = e.target.value;
-
-    if (filter === "all") {
-      fetchTableData();
-    } else {
-      axios
-        .get(`http://localhost:8000/doctors/${id}/res`, {
-          params: { id: id },
-        })
-        .then((res) => {
-          setData(res.data);
-        });
-    }
   };
 
   return (
@@ -92,22 +71,6 @@ export default function AdminViewPatients() {
                 onChange={(e) => setQuery(e.target.value)}
                 fullWidth
               />
-            </Container>
-            <Container sx={{ width: "48%" }}>
-              <FormControl fullWidth>
-                <InputLabel id="filter-by-status">Status</InputLabel>
-                <Select
-                  labelId="filter-by-status"
-                  id="filter-by-status-select"
-                  label="status"
-                  uncontrolled="true"
-                  onChange={handleFilter}
-                  fullWidth
-                >
-                  <MenuItem value="all">All</MenuItem>
-                  <MenuItem value="upcoming">Upcoming</MenuItem>
-                </Select>
-              </FormControl>
             </Container>
           </Container>
         </Container>

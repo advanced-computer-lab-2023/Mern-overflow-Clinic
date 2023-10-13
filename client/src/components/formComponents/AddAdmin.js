@@ -12,9 +12,11 @@ const AddAdmin = (props) => {
     axios.post('http://localhost:8000/admins', dataToServer)
       .then((response) => {
         console.log('POST request successful', response);
+
         props.setDataIsUpdated(false);
       })
       .catch((error) => {
+
         console.error('Error making POST request', error);
       });
   }

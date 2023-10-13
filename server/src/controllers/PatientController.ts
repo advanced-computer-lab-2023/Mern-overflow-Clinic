@@ -67,7 +67,7 @@ const listPatients = async (req: Request, res: Response) => {
 const addFamilyMember = async (req: Request, res: Response) => {
     const familyMem = await patient.findOne({ "nationalId": req.body.nationalId });
     if (!familyMem) {
-        return res.status(404).send("user not found");
+        return res.status(404).send("Family Member should be registered as a patient.");
     }
 
     //   const familyMemId:mongoose.Types.ObjectId = familyMem._id;
@@ -209,7 +209,8 @@ const listDoctorsBySessionPrice = async (req: Request, res: Response) => {
                         docSessDisc = (packageData.discountOnDoctorSessions / 100) * doctor.hourlyRate;
                     }
                     const sessionPrice = doctor.hourlyRate + (0.1 * doctor.hourlyRate) - docSessDisc;
-                    return { doctor, sessionPrice };
+                    const ret = { sessionPrice, ...doctor }
+                    return ret;
                 });
 
                 res.status(200).json(sessionPrices); // Send the response after the loop is done
@@ -217,7 +218,9 @@ const listDoctorsBySessionPrice = async (req: Request, res: Response) => {
                 const doctors = await doctor.find({});
                 const sessionPrices = doctors.map((doctor) => {
                     const sessionPrice = doctor.hourlyRate + (0.1 * doctor.hourlyRate) - docSessDisc;
-                    return { doctor, sessionPrice };
+
+                    const ret = { sessionPrice, ...doctor }
+                    return ret;
                 });
                 // const doctors = await doctor.find({});
                 // const sessionPrices = await Promise.all(
@@ -240,7 +243,19 @@ const listDoctorsBySessionPrice = async (req: Request, res: Response) => {
 
 const filterDoctor = async (req: Request, res: Response) => {
     //to be tested @ahmed_wael
-    const id = req.params.id;
+
+    const pId = req.body.id;
+
+    const patientFound = await patient.findById(pId);
+
+    if (!patientFound) {
+        return res.status(404).json({ error: 'Patient not found' });
+    }
+    //var duration = 2;
+
+    const packageId = patientFound.package;
+    const packageData = await pack.findById(packageId);
+
     const speciality = req.body.speciality.toLowerCase();
     const dateInput = new Date(req.body.date);
 
@@ -253,20 +268,32 @@ const filterDoctor = async (req: Request, res: Response) => {
             res.status(404).send("No doctors with this speciality available");
         } else {
             if (!dateInput) {
-                console.log("hi!");
-                res.status(200).send(docRes);
+                var docSessDisc = 0;
+                const doctorsWithSessionPrices = docRes.map((doctor) => {
+                    if (packageData) {
+                        docSessDisc = (packageData.discountOnDoctorSessions / 100) * doctor.hourlyRate;
+                    }
+                    const sessionPrice = doctor.hourlyRate + (0.1 * doctor.hourlyRate) - docSessDisc;
+                    const ret = { sessionPrice, ...doctor }
+
+                    return ret;
+                });
+                res.status(200).send(doctorsWithSessionPrices);
             } else {
                 var resDocs: any[] = [];
                 var avDocs: any[] = [];
 
                 for (const doc of docRes) {
+                    console.log(doc)
                     const appointmentsForDoctor = await appointment
                         .find({ 'doctor': doc._id })
                         .exec();
 
                     var count = 0;
 
+                    console.log(appointmentsForDoctor)
                     for (const apt of appointmentsForDoctor) {
+
                         if (!apt.status.includes("canceled")) {
                             var hoursInput = dateInput.getHours();
                             const minutesInput = dateInput.getMinutes();
@@ -274,7 +301,9 @@ const filterDoctor = async (req: Request, res: Response) => {
                             const startHours = apt.date.getHours();
                             const startMinutes = apt.date.getMinutes();
                             var beforeRange = hoursInput - apt.duration;
-
+                            if (beforeRange < 0) {
+                                beforeRange = beforeRange + 24
+                            }
                             console.log(hoursInput + " + " + minutesInput + " + " + startHours + " + " + startMinutes + " + " + beforeRange);
 
                             if ((beforeRange === startHours && startMinutes > minutesInput) || (hoursInput === startHours && startMinutes < minutesInput)) {
@@ -293,7 +322,18 @@ const filterDoctor = async (req: Request, res: Response) => {
                     res.status(404).send("No doctors within this speciality are available at this date/time");
                 } else {
                     console.log("hey");
-                    res.status(200).send(avDocs);
+
+                    var docSessDisc = 0;
+                    const doctorsWithSessionPrices = avDocs.map((doctor) => {
+                        if (packageData) {
+                            docSessDisc = (packageData.discountOnDoctorSessions / 100) * doctor.hourlyRate;
+                        }
+                        const sessionPrice = doctor.hourlyRate + (0.1 * doctor.hourlyRate) - docSessDisc;
+                        const ret = { sessionPrice, ...doctor }
+
+                        return ret;
+                    });
+                    res.status(200).send(doctorsWithSessionPrices);
                 }
             }
         }

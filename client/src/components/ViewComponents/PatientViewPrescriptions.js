@@ -27,7 +27,7 @@ export default function PatientViewPrescriptions() {
   const [data, setData] = useState([]);
   const [selectedPrescription, setSelectedPrescription] = useState({});
 
-  const id = "6525bfc47ad8f4f09edd6e12";
+  const id = "6529347d1b1e1b92fd454eff";
 
   const fetchTableData = () => {
     axios
@@ -115,6 +115,16 @@ export default function PatientViewPrescriptions() {
                 </Button>
               </FormControl>
             </form>
+
+            <Button
+              fullWidth
+              type="submit"
+              variant="contained"
+              onClick={fetchTableData}
+              sx={{ mt: 3, mb: 2, p: 2, fontWeight: "bold" }}
+            >
+              Clear
+            </Button>
           </Container>
         </Container>
       </Paper>

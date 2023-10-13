@@ -22,7 +22,7 @@ import axios from "axios";
 export default function DoctorViewAppointments() {
   const [data, setData] = useState([]);
 
-  const id = "6525bfc47ad8f4f09edd6e12";
+  const id = "65293c2cb5a34d208108cc33";
 
   const fetchTableData = () => {
     axios
@@ -30,6 +30,7 @@ export default function DoctorViewAppointments() {
         params: { id: id },
       })
       .then((res) => {
+        console.log(res.data)
         setData(res.data);
       });
   };
@@ -49,6 +50,7 @@ export default function DoctorViewAppointments() {
           status: status,
         })
         .then((res) => {
+          console.log(res.data)
           setData(res.data);
         })
         .catch(() => setData([]));
@@ -142,9 +144,9 @@ export default function DoctorViewAppointments() {
         </TableHead>
         <TableBody>
           {data.map((row) => (
-            <TableRow key={row.date + row.patient + row.doctor + row.status}>
-              <TableCell>{row.patient}</TableCell>
-              <TableCell>{row.doctor}</TableCell>
+            <TableRow key={row.date + row.patient.name + row.doctor.name + row.status}>
+              <TableCell>{row.patient.name}</TableCell>
+              <TableCell>{row.doctor.name}</TableCell>
               <TableCell>{row.duration}</TableCell>
               <TableCell>{row.date}</TableCell>
               <TableCell>{row.status}</TableCell>

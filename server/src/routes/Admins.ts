@@ -9,7 +9,8 @@ const router = express.Router();
 router.use(bodyParser.json());
 
 //GET
-router.get("/" , adminstratorController.listAdminstrators)
+router.get("/", adminstratorController.listAdminstrators)
+router.get("/requests", adminstratorController.viewRequest)
 
 //POST
 router.post("/", adminstratorController.createAdminstrator);

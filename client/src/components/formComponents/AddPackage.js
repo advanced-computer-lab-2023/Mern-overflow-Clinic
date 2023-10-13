@@ -16,6 +16,7 @@ const AddPackage = () => {
             .catch((error) => {
                 console.error('Error making POST request', error);
             });
+        window.location.reload();
     }
 
     const handleChange = (event) => {

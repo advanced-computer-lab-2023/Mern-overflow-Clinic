@@ -3,12 +3,11 @@ import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 import { useForm } from "react-hook-form"
-import { useParams } from 'react-router-dom';
 import { useEffect, useState } from "react";
 import axios from 'axios';
 
 const EditDoctorProfile = () => {
-    let { id } = useParams();
+    let  id  = "65293c2cb5a34d208108cc33"; 
     const { register, handleSubmit, setError, formState: { errors } } = useForm();
     const [email, setEmail] = useState("");
     const [hourlyRate, setHourlyRate] = useState("");
@@ -17,8 +16,8 @@ const EditDoctorProfile = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`http://localhost:8000/doctors/${id}`);
-                setEmail(response.data.email);
+                const response = await axios.get(`http://localhost:8000/doctors/${id}`, {params: {id:id}});
+                setEmail(response.data[0].email);
                 setHourlyRate(response.data[0].hourlyRate);
                 setAffiliation(response.data[0].affiliation);
             } catch (error) {

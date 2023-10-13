@@ -6,27 +6,25 @@ import user from "../models/User.js";
 
 const createAdminstrator = async (req: Request, res: Response) => {
 
-	const createAdminstrator = async(req:Request, res:Response)=>{
-        //add another adminstrator with a set username and password
-        // missing authentication part
-        const entry = adminstrator.find({ 'username': req.body.username }).then((document) => {
-          if (document.length === 0) {
-    
-            const newAdmin = adminstrator
-            .create(req.body)
-            .then((newAdmin) => {
-                res.status(200).json(newAdmin);
-            })
-            .catch((err) => {
-                res.status(400).json(err);
-            });
+	//add another adminstrator with a set username and password
+	// missing authentication part
+	const entry = adminstrator.find({ 'username': req.body.username }).then((document) => {
+		if (document.length === 0) {
 
-          }
-          else if (document.length !== 0)
-              res.status(400).send("username taken , please choose another one ");
-      })
+			const newAdmin = adminstrator
+				.create(req.body)
+				.then((newAdmin) => {
+					res.status(200).json(newAdmin);
+				})
+				.catch((err) => {
+					res.status(400).json(err);
+				});
+
+		}
+		else if (document.length !== 0)
+			res.status(400).send("username taken , please choose another one ");
+	})
 }
-};
 
 const readAdminstrator = async (req: Request, res: Response) => { };
 

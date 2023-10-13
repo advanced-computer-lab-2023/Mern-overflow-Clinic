@@ -14,13 +14,25 @@ import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { Link } from 'react-router-dom';
 import ButtonAppBar from '../../components/ButtonAppBar';
 
+import { useNavigate } from 'react-router-dom';
 const defaultTheme = createTheme();
 
 export default function SignIn() {
     const { register, handleSubmit, setError, formState: { errors } } = useForm();
+    const navigate = useNavigate();
 
     const onSubmit = data => {
         console.log("Data to server" + JSON.stringify(data));
+        if (data.Username.includes("patient")) {
+       navigate("/patient/family"); 
+        }
+        else if (data.Username.includes("doctor")) {
+
+       navigate("/doctor/profile"); 
+        }
+        else if (data.Username.includes("admin")) {
+       navigate("/admin/patients"); 
+        };
     }
     console.log(errors);
 

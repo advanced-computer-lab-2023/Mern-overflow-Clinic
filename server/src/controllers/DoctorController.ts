@@ -33,11 +33,26 @@ const createDoctor = async (req: Request, res: Response) => {
   })
 };
 
-// pending and rejected doctors
+
 const readDoctor = async (req: Request, res: Response) => {
   const id = req.params.id;
   const doc = doctor
-    .find({ "_id": id, "status":{$in: ["pending", "rejected"]} })
+    .find({ "_id": id })
+    .then((doc) => {
+      if (doc.length === 0)
+        res.status(400).send("doctor with this ID is not found");
+      else
+        res.status(200).json(doc);
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+};
+
+const isDoctorPending = async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const doc = doctor
+    .find({ "_id": id, "status": { $in: ["pending", "rejected"] } })
     .then((doc) => {
       if (doc.length === 0)
         res.status(400).send("doctor with this ID is not pending any more");
@@ -96,13 +111,16 @@ const listDoctors = async (req: Request, res: Response) => {
 
 const listDoctorPatients = async (req: Request, res: Response) => {
   const id = req.params.id;
-  const pId = req.params.pId;
+
 
   const appointments = await appointment
     .find({ 'doctor': id })
     .populate('patient')
     .exec();
 
+  console.log(id)
+
+  console.log(appointments)
   const patientIds = appointments.map((appointment) => appointment.patient);
   const patients = await patient.find({ _id: { $in: patientIds } }).exec();
 
@@ -137,7 +155,7 @@ const listAllMyPatientsUpcoming = async (req: Request, res: Response) => {
   try {
     // Find all upcoming appointments for the doctor with the specified ID
     const upcomingAppointments = await appointment
-      .find({ 'doctor': id, "status" : "upcoming" }) // Filter by date >= currentDate
+      .find({ 'doctor': id, "status": "upcoming" }) // Filter by date >= currentDate
       .populate('patient')
       .exec();
 

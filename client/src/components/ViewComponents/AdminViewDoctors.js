@@ -9,7 +9,6 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
-import Fuse from "fuse.js";
 import axios from "axios";
 
 const columns = [
@@ -55,7 +54,7 @@ const columns = [
   },
 ];
 
-export default function AdminViewPatients() {
+export default function AdminViewDoctors() {
   const [data, setData] = useState([]);
   const [uniqueSpecialties, setUniqueSpecialties] = useState(["No filter"]);
   const [filteredData, setFilteredData] = useState([]);
@@ -91,76 +90,11 @@ export default function AdminViewPatients() {
     fetchTableData();
   }, []);
 
-  const handleFilter = (e) => {
-    e.preventDefault();
-    let filter = e.target.value;
-    console.log(filter);
-
-    let filteredData = data.filter(
-      (row) => filter === "No filter" || row.speciality === filter,
-    );
-    setFilteredData(filteredData);
-  };
-
-  const searchItem = (query) => {
-    if (!query) {
-      setFilteredData(data);
-      return;
-    }
-    const fuse = new Fuse(filteredData, {
-      keys: ["name"],
-      threshold: 0.3,
-    });
-    const result = fuse.search(query);
-    const finalResult = [];
-    if (result.length) {
-      result.forEach((item) => {
-        finalResult.push(item.item);
-      });
-      setFilteredData(finalResult);
-    } else {
-      setFilteredData([]);
-    }
-  };
 
   return (
     <Container maxWidth="xl">
       <Paper elevation={3} sx={{ p: '20px', my: '40px', paddingBottom: 5 }}>
-        <Container>
-          <Container sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', my: 5 }}>
-            <Container sx={{ width: '48%' }}>
-              <Input
-                size="lg"
-                bordered
-                clearable
-                placeholder="Search..."
-                onChange={(e) => searchItem(e.target.value)}
-                fullWidth
-              />
-            </Container>
-            <Container sx={{ width: '48%' }}>
-              <FormControl fullWidth>
-                <InputLabel id="filter-by-speciality">Specialty</InputLabel>
-                <Select
-                  labelId="filter-by-speciality"
-                  id="filter-by-speciality-select"
-                  label="speciality"
-                  uncontrolled="true"
-                  onChange={handleFilter}
-                  fullWidth
-                >
-                  {uniqueSpecialties.map((item) => {
-                    return <MenuItem value={item}>{item}</MenuItem>;
-                  })}
-                </Select>
-              </FormControl>
-            </Container>
-          </Container>
           <Container>
-            <Table>
-              {/* ... rest of the code ... */}
-            </Table>
-          </Container>
 
           <Table>
             <TableHead>

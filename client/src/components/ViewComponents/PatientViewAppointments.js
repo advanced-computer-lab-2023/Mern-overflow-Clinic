@@ -26,7 +26,7 @@ import axios from "axios";
 export default function PatientViewAppointments() {
   const [data, setData] = useState([]);
 
-  const id = "6525bfc47ad8f4f09edd6e12";
+  const id = "6529347d1b1e1b92fd454eff";
 
   const fetchTableData = () => {
     axios
@@ -35,6 +35,7 @@ export default function PatientViewAppointments() {
       })
       .then((res) => {
         setData(res.data);
+        console.log(res.data)
       });
   };
 
@@ -53,6 +54,7 @@ export default function PatientViewAppointments() {
           status: status,
         })
         .then((res) => {
+          console.log(res.data)
           setData(res.data);
         })
         .catch(() => setData([]));
@@ -63,6 +65,7 @@ export default function PatientViewAppointments() {
           date: date,
         })
         .then((res) => {
+          console.log(res.data)
           setData(res.data);
         })
         .catch(() => setData([]));
@@ -147,8 +150,8 @@ export default function PatientViewAppointments() {
         <TableBody>
           {data.map((row) => (
             <TableRow key={row.date + row.patient + row.doctor + row.status}>
-              <TableCell>{row.patient}</TableCell>
-              <TableCell>{row.doctor}</TableCell>
+              <TableCell>{row.patient.name}</TableCell>
+              <TableCell>{row.doctor.name}</TableCell>
               <TableCell>{row.duration}</TableCell>
               <TableCell>{row.date}</TableCell>
               <TableCell>{row.status}</TableCell>

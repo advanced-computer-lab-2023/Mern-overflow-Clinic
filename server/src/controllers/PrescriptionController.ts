@@ -24,7 +24,7 @@ const viewPatientPrescription = async (req: Request, res: Response) => {
   try {
     const prescriptions = await Prescription.find({ patient: id });
     if (prescriptions.length === 0) {
-      res.status(404).send("no prescriptions found");
+      res.status(200).json(prescriptions);
     } else {
       res.status(200).json(prescriptions);
     }

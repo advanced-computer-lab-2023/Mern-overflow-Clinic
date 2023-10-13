@@ -24,7 +24,7 @@ export default function DoctorViewPatients() {
   const [Query, setQuery] = useState("");
   const [selectedPatient, setSelectedPatient] = useState({});
 
-  const id = "6526a25ec258c85350a575cd";
+  const id = "65293c2cb5a34d208108cc33";
 
   const fetchTableData = () => {
     axios

@@ -26,17 +26,18 @@ export default function DoctorViewPatients() {
   const [data, setData] = useState([]);
   const [Query, setQuery] = useState("");
   const [selectedDoctor, setSelectedDoctor] = useState({});
-  const [availableSpecialties, setAvailableSpecialties] = useState(["All"]);
+  const [availableSpecialties, setAvailableSpecialties] = useState([]);
 
-  const id = "6525bfc47ad8f4f09edd6e12";
+  const id = "6529347d1b1e1b92fd454eff";
 
   const fetchTableData = () => {
-    axios.get(`http://localhost:8000/doctors`).then((res) => {
+
+    axios.get(`http://localhost:8000/patients/${id}/price`, {params: {id: id} }).then((res) => {
       setData(res.data);
-      let temp = ["All"];
+      let temp = [];
       res.data.map((key) => {
-        if (temp.indexOf(key.speciality) === -1) {
-          temp.push(key.speciality);
+        if (temp.indexOf(key._doc.speciality) === -1) {
+          temp.push(key._doc.speciality);
         }
       });
       setAvailableSpecialties(temp);
@@ -51,38 +52,29 @@ export default function DoctorViewPatients() {
     e.preventDefault();
     let speciality = e.target[0].value;
     let datetime = e.target[2].value;
-    console.log(speciality);
-    console.log(datetime);
+
+    console.log(speciality)
+    console.log(datetime)
 
     if (datetime === "") {
-      if (speciality === "" || speciality === "All") {
-        fetchTableData();
-      } else {
+
         axios
           .post(`http://localhost:8000/doctors/filter`, {
             speciality: speciality,
+            id: id,
           })
           .then((res) => {
             setData(res.data);
-          });
-      }
-    } else if (speciality === "" || speciality === "All") {
-      axios
-        .post(`http://localhost:8000/doctors/filter`, {
-          speciality: "",
-          date: datetime,
-        })
-        .then((res) => {
-          setData(res.data);
-        })
-        .catch(() => setData([]));
+          }); 
     } else {
       axios
         .post(`http://localhost:8000/doctors/filter`, {
           speciality: speciality,
           date: datetime,
+          id: id,
         })
         .then((res) => {
+
           setData(res.data);
         })
         .catch(() => setData([]));
@@ -146,6 +138,16 @@ export default function DoctorViewPatients() {
                   </Button>
                 </FormControl>
               </form>
+
+            <Button
+              fullWidth
+              type="submit"
+              variant="contained"
+              onClick={fetchTableData}
+              sx={{ mt: 3, mb: 2, p: 2, fontWeight: "bold" }}
+            >
+              Clear
+            </Button>
             </Container>
           </Container>
         </Container>
@@ -161,11 +163,11 @@ export default function DoctorViewPatients() {
         <TableBody>
           {data.map(
             (row) =>
-              row.name.toLowerCase().includes(Query.toLowerCase()) && (
+              row._doc.name.toLowerCase().includes(Query.toLowerCase()) && (
                 <TableRow key={row.username}>
-                  <TableCell>{row.name}</TableCell>
-                  <TableCell>{row.speciality}</TableCell>
-                  <TableCell>{row.hourlyRate}</TableCell>
+                  <TableCell>{row._doc.name}</TableCell>
+                  <TableCell>{row._doc.speciality}</TableCell>
+                  <TableCell>{row.sessionPrice}</TableCell>
                   <TableCell>
                     <Button onClick={() => setSelectedDoctor(row)}>
                       Select Doctor
@@ -176,12 +178,12 @@ export default function DoctorViewPatients() {
           )}
         </TableBody>
       </Table>
-      {typeof selectedDoctor.name !== "undefined" && (
+      {typeof selectedDoctor._doc.name !== "undefined" && (
         <List>
-          <ListItem>{"Name: " + selectedDoctor.name}</ListItem>
-          <ListItem>{"Specialty: " + selectedDoctor.speciality}</ListItem>
-          <ListItem>{"Affiliation: " + selectedDoctor.affiliation}</ListItem>
-          <ListItem>{"Education: " + selectedDoctor.education}</ListItem>
+          <ListItem>{"Name: " + selectedDoctor._doc.name}</ListItem>
+          <ListItem>{"Specialty: " + selectedDoctor._doc.speciality}</ListItem>
+          <ListItem>{"Affiliation: " + selectedDoctor._doc.affiliation}</ListItem>
+          <ListItem>{"Education: " + selectedDoctor._doc.education}</ListItem>
         </List>
       )}
     </Container>

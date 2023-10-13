@@ -18,7 +18,8 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 const AddFamilyMember = () => {
-  let id = "6525bfc47ad8f4f09edd6e12";
+  let id = "6529347d1b1e1b92fd454eff";
+  const [errorMessage, setErrorMessage] = useState(false);
   const {
     register,
     handleSubmit,
@@ -32,11 +33,15 @@ const AddFamilyMember = () => {
       .post(`http://localhost:8000/patients/${id}/familyMember`, dataToServer)
       .then((response) => {
         console.log("PUT request successful", response);
+        setErrorMessage(false);
+        window.location.reload();
       })
       .catch((error) => {
         console.log(dataToServer);
         console.error("Error making PUT request", error);
+        setErrorMessage(true);
       });
+    
   };
 
   const handleChange = (event) => {
@@ -144,6 +149,25 @@ const AddFamilyMember = () => {
                   Add Member
                 </Button>
               </Grid>
+              {(errorMessage &&
+                //TODO: 
+      // <Modal
+      //   open={open}
+      //   onClose={setErr}
+      //   aria-labelledby="modal-modal-title"
+      //   aria-describedby="modal-modal-description"
+      // >
+      //   <Box>
+      //     <Typography id="modal-modal-title" variant="h6" component="h2">
+      //       Text in a modal
+      //     </Typography>
+      //     <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+      //       Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+      //     </Typography>
+      //   </Box>
+      // </Modal>
+             <Typography color="red">Family Member should be registered as patient with correct NationalID</Typography>
+              )}
             </Grid>
           </Box>
         </Paper>

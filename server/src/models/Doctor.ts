@@ -10,6 +10,7 @@ export interface IDoctor {
     //gender:string;
     hourlyRate: number;
     affiliation: string;
+    speciality: string;
     education: string;
     status: string;
     speciality: string;
@@ -25,6 +26,7 @@ const doctorShema = new Schema<IDoctor>({
     //gender: { type: String, required: true, lowercase: true, enum: ['male', 'female'] },
     hourlyRate: { type: Number, required: true },
     affiliation: { type: String, required: true , trim: true },
+    speciality: { type: String, required: true , trim: true },
     education: { type: String, required: true , trim: true },
     status: { type: String, required: true , lowercase: true, enum: ['pending', 'accepted', 'rejected'] },
     speciality: { type: String, required: true , trim: true },

@@ -2,25 +2,47 @@ import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import CssBaseline from '@mui/material/CssBaseline';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { TextField, Grid, Button, Box, Container, FormControl, Typography, Divider, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
+import { TextField, Alert, Grid, Button, Box, Container, FormControl, Typography, Divider, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { useForm } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import Avatar from '@mui/material/Avatar';
 import logo from '../../assets/gifs/logo.gif';
 import ContactPageIcon from '@mui/icons-material/ContactPage';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { useState } from 'react';
+import sha256 from 'js-sha256';
+import { useNavigate } from 'react-router-dom';
 
 const defaultTheme = createTheme();
 
 export default function PatientRegister() {
-  const { register, handleSubmit, setError, formState: { errors } } = useForm();
+  const navigate = useNavigate();
+  const { register, handleSubmit, setError, formState: { errors }, control } = useForm();
 
   const onSubmit = data => {
-    console.log("Data to server" + JSON.stringify(data));
+    const dataToServer = { ...data };
+
+    dataToServer["passwordHash"] = sha256(data["password"]);
+    dataToServer["emergencyContact"] = { name: data["EmergencyName"], mobileNumber: data["EmergencyPhone"] };
+    delete dataToServer.EmergencyName
+    delete dataToServer.EmergencyPhone
+    delete dataToServer.password
+    console.log("Data to server" + JSON.stringify(dataToServer));
+    axios.post('http://localhost:8000/patients', dataToServer)
+      .then((response) => {
+        console.log('POST request successful', response);
+        navigate('/patient/family');
+      })
+      .catch((error) => {
+        console.error('Error making POST request', error);
+        alert('Error making POST request: ' + error.message);
+      });
   }
+
   console.log(errors);
 
   const handleChange = (event) => {
@@ -69,6 +91,7 @@ export default function PatientRegister() {
               <ContactPageIcon sx={{ width: 30, height: 30 }} />
             </Avatar>
             <Typography variant="h5" sx={{ fontWeight: "bold", my: 2 }}> Patient Registration </Typography>
+            {/* <Alert severity="error"></Alert> */}
             <Box component="form" onSubmit={handleSubmit(onSubmit)}>
               <Grid container md={12} spacing={2} sx={{ mt: 3 }}>
                 <Grid item xs={12}>
@@ -77,9 +100,9 @@ export default function PatientRegister() {
                     autoFocus
                     id="name"
                     label="Name"
-                    {...register("Name", { required: true, maxLength: 80 })}
-                    error={!!errors["Name"]}
-                    helperText={errors["Name"]?.message}
+                    {...register("name", { required: true, maxLength: 80 })}
+                    error={!!errors["name"]}
+                    helperText={errors["name"]?.message}
                     onBlur={handleChange}
                   />
                 </Grid>
@@ -87,11 +110,35 @@ export default function PatientRegister() {
                 <Grid item xs={12} >
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DemoContainer components={['DatePicker']}>
-                      <DatePicker
-                        disableFuture
-                        label="Date of Birth"
-                        sx={{ width: '100%' }}
+                      <Controller
+                        control={control}
+                        name="dateOfBirth"
+                        render={({ field }) => (
+                          <DatePicker
+                            sx={{ width: "100%" }}
+                            openTo="year"
+                            views={['year', 'month', 'day']}
+                            mask="____-__-__"
+                            format="DD-MM-YYYY"
+                            label="Date of Birth"
+                            inputFormat="DD-MM-YYYY"
+                            value={field.value || null}
+                            onChange={(date) => field.onChange(date)}
+                          >
+                            {({ inputProps, inputRef }) => (
+                              <TextField
+                                {...inputProps}
+                                sx={{ width: "100%" }}
+                                error={!!errors["dateOfBirth"]}
+                                helperText={errors["dateOfBirth"]?.message}
+                                inputRef={inputRef}
+                              />
+                            )}
+                          </DatePicker>
+                        )}
                       />
+
+
                     </DemoContainer>
                   </LocalizationProvider>
                 </Grid>
@@ -102,9 +149,21 @@ export default function PatientRegister() {
                     id="phone"
                     label="Phone"
                     type="tel"
-                    {...register("Phone", { required: true, minLength: 4, maxLength: 12 })}
-                    error={!!errors["Phone"]}
-                    helperText={errors["Phone"]?.message}
+                    {...register("mobileNumber", { required: true, minLength: 8, maxLength: 16 })}
+                    error={!!errors["mobileNumber"]}
+                    helperText={errors["mobileNumber"]?.message}
+                    onBlur={handleChange}
+                  />
+
+                </Grid> <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    id="nationalId"
+                    label="National ID"
+                    type="number"
+                    {...register("nationalId", { required: true, minLength: 8, maxLength: 16 })}
+                    error={!!errors["nationalId"]}
+                    helperText={errors["nationalId"]?.message}
                     onBlur={handleChange}
                   />
                 </Grid>
@@ -115,9 +174,9 @@ export default function PatientRegister() {
                     id="username"
                     type="text"
                     label="Username"
-                    {...register("Username", { required: true, maxLength: 80 })}
-                    error={!!errors["Username"]}
-                    helperText={errors["Username"]?.message}
+                    {...register("username", { required: true, maxLength: 80 })}
+                    error={!!errors["username"]}
+                    helperText={errors["username"]?.message}
                     onBlur={handleChange}
                   />
                 </Grid>
@@ -128,9 +187,9 @@ export default function PatientRegister() {
                     id="email"
                     label="Email"
                     type="email"
-                    {...register("Email", { required: true, maxLength: 80 })}
-                    error={!!errors["Email"]}
-                    helperText={errors["Email"]?.message}
+                    {...register("email", { required: true, maxLength: 80 })}
+                    error={!!errors["email"]}
+                    helperText={errors["email"]?.message}
                     onBlur={handleChange}
                   />
                 </Grid>
@@ -141,27 +200,33 @@ export default function PatientRegister() {
                     id="password"
                     label="Password"
                     type="password"
-                    {...register("Password", { required: true, maxLength: 80 })}
-                    error={!!errors["Password"]}
-                    helperText={errors["Password"]?.message}
+                    {...register("password", { required: true, maxLength: 80 })}
+                    error={!!errors["password"]}
+                    helperText={errors["password"]?.message}
                     onBlur={handleChange}
                   />
                 </Grid>
 
-                <Grid item xs={12} >
+                <Grid item xs={12}>
                   <FormControl sx={{ mt: 2 }}>
                     <FormLabel id="gender-label">Gender</FormLabel>
-                    <RadioGroup
-                      row
-                      defaultValue="male"
-                      id="gender"
-                      name="gender"
-                    >
-                      <FormControlLabel value="male" control={<Radio />} label="Male" />
-                      <FormControlLabel value="female" control={<Radio />} label="Female" />
-                    </RadioGroup>
+                    <Controller
+                      control={control}
+                      name="gender" // Ensure the name matches the one used in RadioGroup
+                      defaultValue="male" // Set the default value if needed
+                      render={({ field }) => (
+                        <RadioGroup
+                          row
+                          {...field} // Spread the field props to RadioGroup
+                        >
+                          <FormControlLabel value="male" control={<Radio />} label="Male" />
+                          <FormControlLabel value="female" control={<Radio />} label="Female" />
+                        </RadioGroup>
+                      )}
+                    />
                   </FormControl>
                 </Grid>
+
                 <Divider sx={{
                   width: '60%',
                   borderWidth: '1px',
@@ -189,7 +254,7 @@ export default function PatientRegister() {
                     fullWidth
                     id="emergencyPhone"
                     label="Phone"
-                    {...register("EmergencyPhone", { required: true, maxLength: 80 })}
+                    {...register("EmergencyPhone", { required: true, minLength: 8, maxLength: 16 })}
                     error={!!errors["EmergencyPhone"]}
                     helperText={errors["EmergencyPhone"]?.message}
                     onBlur={handleChange}

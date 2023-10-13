@@ -7,7 +7,7 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { useForm } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import Avatar from '@mui/material/Avatar';
 import logo from '../../assets/gifs/logo.gif';
 import ContactPageIcon from '@mui/icons-material/ContactPage';
@@ -15,14 +15,31 @@ import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import sha256 from 'js-sha256';
+import { useNavigate } from 'react-router-dom';
 
 const defaultTheme = createTheme();
 
 export default function DoctorRegister() {
-  const { register, handleSubmit, setError, formState: { errors } } = useForm();
+  const navigate = useNavigate();
+  const { register, handleSubmit, setError, formState: { errors }, control } = useForm();
 
   const onSubmit = data => {
-    console.log("Data to server" + JSON.stringify(data));
+    const dataToServer = { ...data };
+
+    dataToServer["passwordHash"] = sha256(data["password"]);
+    delete dataToServer.password
+
+    axios.post('http://localhost:8000/doctors', dataToServer)
+      .then((response) => {
+        console.log('POST request successful', response);
+        navigate('/doctor/profile');
+      })
+      .catch((error) => {
+        console.error('Error making POST request', error);
+        alert('Error making POST request: ' + error.message);
+      });
   }
   console.log(errors);
 
@@ -80,9 +97,9 @@ export default function DoctorRegister() {
                     autoFocus
                     id="name"
                     label="Name"
-                    {...register("Name", { required: true, maxLength: 80 })}
-                    error={!!errors["Name"]}
-                    helperText={errors["Name"]?.message}
+                    {...register("name", { required: true, maxLength: 80 })}
+                    error={!!errors["name"]}
+                    helperText={errors["name"]?.message}
                     onBlur={handleChange}
                   />
                 </Grid>
@@ -90,10 +107,32 @@ export default function DoctorRegister() {
                 <Grid item xs={12} >
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DemoContainer components={['DatePicker']}>
-                      <DatePicker
-                        disableFuture
-                        label="Date of Birth"
-                        sx={{ width: '100%' }}
+                      <Controller
+                        control={control}
+                        name="dateOfBirth"
+                        render={({ field }) => (
+                          <DatePicker
+                            sx={{ width: "100%" }}
+                            openTo="year"
+                            views={['year', 'month', 'day']}
+                            mask="____-__-__"
+                            format="DD-MM-YYYY"
+                            label="Date of Birth"
+                            inputFormat="DD-MM-YYYY"
+                            value={field.value || null}
+                            onChange={(date) => field.onChange(date)}
+                          >
+                            {({ inputProps, inputRef }) => (
+                              <TextField
+                                {...inputProps}
+                                sx={{ width: "100%" }}
+                                error={!!errors["dateOfBirth"]}
+                                helperText={errors["dateOfBirth"]?.message}
+                                inputRef={inputRef}
+                              />
+                            )}
+                          </DatePicker>
+                        )}
                       />
                     </DemoContainer>
                   </LocalizationProvider>
@@ -105,9 +144,9 @@ export default function DoctorRegister() {
                     id="username"
                     type="text"
                     label="Username"
-                    {...register("Username", { required: true, maxLength: 80 })}
-                    error={!!errors["Username"]}
-                    helperText={errors["Username"]?.message}
+                    {...register("username", { required: true, maxLength: 80 })}
+                    error={!!errors["username"]}
+                    helperText={errors["username"]?.message}
                     onBlur={handleChange}
                   />
                 </Grid>
@@ -118,9 +157,9 @@ export default function DoctorRegister() {
                     id="email"
                     label="Email"
                     type="email"
-                    {...register("Email", { required: true, maxLength: 80 })}
-                    error={!!errors["Email"]}
-                    helperText={errors["Email"]?.message}
+                    {...register("email", { required: true, maxLength: 80 })}
+                    error={!!errors["email"]}
+                    helperText={errors["email"]?.message}
                     onBlur={handleChange}
                   />
                 </Grid>
@@ -131,9 +170,9 @@ export default function DoctorRegister() {
                     id="password"
                     label="Password"
                     type="password"
-                    {...register("Password", { required: true, maxLength: 80 })}
-                    error={!!errors["Password"]}
-                    helperText={errors["Password"]?.message}
+                    {...register("password", { required: true, maxLength: 80 })}
+                    error={!!errors["password"]}
+                    helperText={errors["password"]?.message}
                     onBlur={handleChange}
                   />
                 </Grid>
@@ -148,9 +187,9 @@ export default function DoctorRegister() {
                       id="outlined-adornment-amount"
                       startAdornment={<InputAdornment position="start">EGP</InputAdornment>}
                       label="Hourly Rate"
-                      {...register("Rate", { required: true, maxLength: 80 })}
-                      error={!!errors["Rate"]}
-                      helperText={errors["Rate"]?.message}
+                      {...register("hourlyRate", { required: true, maxLength: 80 })}
+                      error={!!errors["hourlyRate"]}
+                      helperText={errors["hourlyRate"]?.message}
                       onBlur={handleChange}
                     />
                   </FormControl>
@@ -162,9 +201,9 @@ export default function DoctorRegister() {
                     id="affilation"
                     label="Affilation (Hospital)"
                     type="text"
-                    {...register("Affilation", { required: true, maxLength: 80 })}
-                    error={!!errors["Affilation"]}
-                    helperText={errors["Affilation"]?.message}
+                    {...register("affiliation", { required: true, maxLength: 80 })}
+                    error={!!errors["affiliation"]}
+                    helperText={errors["affiliation"]?.message}
                     onBlur={handleChange}
                   />
                 </Grid>
@@ -175,9 +214,22 @@ export default function DoctorRegister() {
                     id="education"
                     label="Educational Background"
                     type="text"
-                    {...register("Education", { required: true, maxLength: 80 })}
-                    error={!!errors["Education"]}
-                    helperText={errors["Education"]?.message}
+                    {...register("education", { required: true, maxLength: 80 })}
+                    error={!!errors["education"]}
+                    helperText={errors["education"]?.message}
+                    onBlur={handleChange}
+                  />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    id="speciality"
+                    label="Speciality"
+                    type="text"
+                    {...register("speciality", { required: true, maxLength: 80 })}
+                    error={!!errors["speciality"]}
+                    helperText={errors["speciality"]?.message}
                     onBlur={handleChange}
                   />
                 </Grid>

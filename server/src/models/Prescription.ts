@@ -1,21 +1,18 @@
-import mongoose, { Schema, model, connect } from 'mongoose';
-import dotenv from 'dotenv';
-dotenv.config();
-const mongoUrl: string = process.env.MONGO_URI!;
+import mongoose, { Schema, Types ,model, connect } from 'mongoose';
 
 export interface IPrescription {
-    patient: typeof mongoose.Types.ObjectId;
-    doctor: typeof mongoose.Types.ObjectId;
-    medicine: typeof mongoose.Types.ObjectId[];
+    patient: Types.ObjectId;
+    doctor: Types.ObjectId;
+    medicine:  Types.ObjectId[];
     date: Date;
     filled: boolean;
 }
 
 // 2. Create a Schema corresponding to the document interface.
 const PrescriptionSchema = new Schema<IPrescription>({
-    patient: { type: mongoose.Types.ObjectId, ref: "Patient", required: true },
-    doctor: { type: mongoose.Types.ObjectId, ref: "Doctor", required: true },
-    medicine: [{ type: mongoose.Types.ObjectId, required: true }],
+    patient: { type: Schema.Types.ObjectId, ref: "Patient", required: true },
+    doctor: { type: Schema.Types.ObjectId, ref: "Doctor", required: true },
+    medicine: [{ type: Schema.Types.ObjectId, required: false }],
     date: { type: Date, required: true },
     filled: { type: Boolean, required: true },
 });

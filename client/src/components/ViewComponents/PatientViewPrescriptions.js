@@ -134,14 +134,21 @@ export default function PatientViewPrescriptions() {
             <TableCell key="patient">Patient</TableCell>
             <TableCell key="doctor">Doctor</TableCell>
             <TableCell key="medicine">Medicine</TableCell>
+            <TableCell key="filled">Filled</TableCell>
+            <TableCell key="date">Date</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {data.map((row) => (
-            <TableRow key={row.patient}>
-              <TableCell>{row.patient}</TableCell>
-              <TableCell>{row.doctor}</TableCell>
-              <TableCell>{row.medicine}</TableCell>
+            <TableRow key={row.patient.name}>
+              <TableCell>{row.patient.name}</TableCell>
+              <TableCell>{row.doctor.name}</TableCell>
+              {row.medicine[0] && (
+              <TableCell>{row.medicine[0]}</TableCell>
+              )}
+
+              <TableCell>{row.filled.toString()}</TableCell>
+              <TableCell>{row.date}</TableCell>
               <TableCell>
                 <Button onClick={() => setSelectedPrescription(row)}>
                   Select Prescription
@@ -153,10 +160,10 @@ export default function PatientViewPrescriptions() {
       </Table>
       {typeof selectedPrescription.patient !== "undefined" && (
         <List>
-          <ListItem>{"Patient: " + selectedPrescription.patient}</ListItem>
-          <ListItem>{"Doctor: " + selectedPrescription.doctor}</ListItem>
+          <ListItem>{"Patient: " + selectedPrescription.patient.name}</ListItem>
+          <ListItem>{"Doctor: " + selectedPrescription.doctor.name}</ListItem>
           {selectedPrescription.medicine.map((med) => (
-            <ListItem>{"Medicine: " + med}</ListItem>
+            <ListItem>{"Medicine: " + med.name}</ListItem>
           ))}
           <ListItem>{"Filled: " + selectedPrescription.filled}</ListItem>
           <ListItem>{"Date: " + selectedPrescription.date}</ListItem>

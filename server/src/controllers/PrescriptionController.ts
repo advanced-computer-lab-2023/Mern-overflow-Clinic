@@ -22,7 +22,9 @@ const createPrescription = async (req: Request, res: Response) => {
 const viewPatientPrescription = async (req: Request, res: Response) => {
   const id = req.params.id;
   try {
-    const prescriptions = await Prescription.find({ patient: id });
+    console.log(id)
+    const prescriptions = await Prescription.find({ "patient": id }).populate('doctor').populate('patient');
+    console.log(prescriptions)
     if (prescriptions.length === 0) {
       res.status(200).json(prescriptions);
     } else {
@@ -126,7 +128,7 @@ const filterPrescriptions = async (req: Request, res: Response) => {
       queryConditions.filled = filters.filled;
     }
 
-    const prescriptions = await Prescription.find(queryConditions)
+    const prescriptions = await Prescription.find(queryConditions).populate('doctor').populate('patient')
 
     res.status(200).json(prescriptions);
   } catch (err) {

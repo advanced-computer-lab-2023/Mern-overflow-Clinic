@@ -53,6 +53,8 @@ export default function DoctorViewPatients() {
         })
         .then((res) => {
           setData(res.data);
+        }).catch(() => {
+setData([]);
         });
     }
   };
@@ -143,6 +145,17 @@ export default function DoctorViewPatients() {
               <List>
                 <ListItem>{"Name: " + item.name}</ListItem>
                 <ListItem>{"Mobile Number: " + item.mobileNumber}</ListItem>
+              </List>
+            );
+          })}
+
+          <Typography>Health Records</Typography>
+          {selectedPatient.healthRecords.map((item) => {
+            return (
+              <List>
+                <ListItem>{"Name: " + item.name}</ListItem>
+                <ListItem>{"Diagnosis: " + item.diagnosis}</ListItem>
+                <ListItem>{"Date: " + item.date}</ListItem>
               </List>
             );
           })}

@@ -33,6 +33,9 @@ export default function DoctorViewPatients() {
   const fetchTableData = () => {
 
     axios.get(`http://localhost:8000/patients/${id}/price`, {params: {id: id} }).then((res) => {
+
+
+      console.log(res.data)
       setData(res.data);
       let temp = [];
       res.data.map((key) => {
@@ -178,14 +181,15 @@ export default function DoctorViewPatients() {
           )}
         </TableBody>
       </Table>
-      {typeof selectedDoctor._doc.name !== "undefined" && (
+      {typeof (selectedDoctor._doc) !== "undefined" && (
         <List>
           <ListItem>{"Name: " + selectedDoctor._doc.name}</ListItem>
           <ListItem>{"Specialty: " + selectedDoctor._doc.speciality}</ListItem>
           <ListItem>{"Affiliation: " + selectedDoctor._doc.affiliation}</ListItem>
           <ListItem>{"Education: " + selectedDoctor._doc.education}</ListItem>
         </List>
-      )}
+      )
+      }
     </Container>
   );
 }

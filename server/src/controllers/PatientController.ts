@@ -209,7 +209,8 @@ const listDoctorsBySessionPrice = async (req: Request, res: Response) => {
                         docSessDisc = (packageData.discountOnDoctorSessions / 100) * doctor.hourlyRate;
                     }
                     const sessionPrice = doctor.hourlyRate + (0.1 * doctor.hourlyRate) - docSessDisc;
-                    const ret = { sessionPrice, ...doctor }
+                    const ret = { "sessionPrice": sessionPrice, ...doctor }
+
                     return ret;
                 });
 
@@ -219,7 +220,8 @@ const listDoctorsBySessionPrice = async (req: Request, res: Response) => {
                 const sessionPrices = doctors.map((doctor) => {
                     const sessionPrice = doctor.hourlyRate + (0.1 * doctor.hourlyRate) - docSessDisc;
 
-                    const ret = { sessionPrice, ...doctor }
+                    const ret = { "sessionPrice": sessionPrice, ...doctor }
+
                     return ret;
                 });
                 // const doctors = await doctor.find({});
@@ -274,7 +276,7 @@ const filterDoctor = async (req: Request, res: Response) => {
                         docSessDisc = (packageData.discountOnDoctorSessions / 100) * doctor.hourlyRate;
                     }
                     const sessionPrice = doctor.hourlyRate + (0.1 * doctor.hourlyRate) - docSessDisc;
-                    const ret = { sessionPrice, ...doctor }
+                    const ret = { "sessionPrice": sessionPrice, ...doctor }
 
                     return ret;
                 });
@@ -284,14 +286,12 @@ const filterDoctor = async (req: Request, res: Response) => {
                 var avDocs: any[] = [];
 
                 for (const doc of docRes) {
-                    console.log(doc)
                     const appointmentsForDoctor = await appointment
                         .find({ 'doctor': doc._id })
                         .exec();
 
                     var count = 0;
 
-                    console.log(appointmentsForDoctor)
                     for (const apt of appointmentsForDoctor) {
 
                         if (!apt.status.includes("canceled")) {
@@ -301,12 +301,19 @@ const filterDoctor = async (req: Request, res: Response) => {
                             const startHours = apt.date.getHours();
                             const startMinutes = apt.date.getMinutes();
                             var beforeRange = hoursInput - apt.duration;
+
+                            var afterRange = hoursInput + apt.duration;
+                            console.log(afterRange)
                             if (beforeRange < 0) {
                                 beforeRange = beforeRange + 24
                             }
+
+                            if (afterRange === 24) {
+                                afterRange = afterRange - 24
+                            }
                             console.log(hoursInput + " + " + minutesInput + " + " + startHours + " + " + startMinutes + " + " + beforeRange);
 
-                            if ((beforeRange === startHours && startMinutes > minutesInput) || (hoursInput === startHours && startMinutes < minutesInput)) {
+                            if ((beforeRange === startHours && startMinutes > minutesInput) || (hoursInput === startHours) || (afterRange === startHours && startMinutes < minutesInput)) {
                                 count++;
                                 break;
                             }
@@ -329,8 +336,8 @@ const filterDoctor = async (req: Request, res: Response) => {
                             docSessDisc = (packageData.discountOnDoctorSessions / 100) * doctor.hourlyRate;
                         }
                         const sessionPrice = doctor.hourlyRate + (0.1 * doctor.hourlyRate) - docSessDisc;
-                        const ret = { sessionPrice, ...doctor }
 
+                        const ret = { "sessionPrice": sessionPrice, ...doctor }
                         return ret;
                     });
                     res.status(200).send(doctorsWithSessionPrices);

@@ -257,7 +257,10 @@ const filterDoctor = async (req: Request, res: Response) => {
 
     const packageId = patientFound.package;
     const packageData = await pack.findById(packageId);
-
+    if(req.body.speciality === undefined){
+        res.status(400).send("no speciality was entered");
+        return;
+    }
     const speciality = req.body.speciality.toLowerCase();
     const dateInput = new Date(req.body.date);
 

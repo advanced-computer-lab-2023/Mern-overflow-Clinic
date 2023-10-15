@@ -257,11 +257,14 @@ const filterDoctor = async (req: Request, res: Response) => {
 
     const packageId = patientFound.package;
     const packageData = await pack.findById(packageId);
+
     if(req.body.speciality === undefined){
         res.status(400).send("no speciality was entered");
         return;
     }
     const speciality = req.body.speciality.toLowerCase();
+
+    
     const dateInput = new Date(req.body.date);
 
     //console.log(dateInput.toISOString()); // Ensure dateInput is in ISO format
@@ -272,7 +275,7 @@ const filterDoctor = async (req: Request, res: Response) => {
         if (docRes.length === 0) {
             res.status(404).send("No doctors with this speciality available");
         } else {
-            if (!dateInput) {
+            if (!dateInput || dateInput === undefined) {
                 var docSessDisc = 0;
                 const doctorsWithSessionPrices = docRes.map((doctor) => {
                     if (packageData) {

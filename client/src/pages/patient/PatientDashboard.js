@@ -14,6 +14,19 @@ const PatientDashboard = (props) => {
             <Divider />
             <List>
                 <ListItem disablePadding>
+                    <ListItemButton component={Link} to='/patient/info'>
+                        <ListItemIcon>
+                            <Avatar sx={{ m: 0, bgcolor: 'white', color: 'black', width: 30, height: 30, padding: 0 }}>
+                                <MedicationIcon sx={{ width: 30, height: 30 }} />
+                            </Avatar>
+                        </ListItemIcon>
+                        <ListItemText primary="My Information" />
+                    </ListItemButton>
+                </ListItem>
+            </List>
+            <Divider />
+            <List>
+                <ListItem disablePadding>
                     <ListItemButton component={Link} to='/patient/family'>
                         <ListItemIcon>
                             <Avatar sx={{ m: 0, bgcolor: 'white', color: 'black', width: 30, height: 30, padding: 0 }}>
@@ -64,6 +77,7 @@ const PatientDashboard = (props) => {
                 </ListItem>
             </List>
             <Divider />
+            
         </ButtonAppBar>
     );
 }

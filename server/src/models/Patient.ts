@@ -32,6 +32,7 @@ export interface IPatient {
     prescriptions?: Types.ObjectId[];
     package?: Types.ObjectId;
     healthRecords?: IHealthRecord[];
+    wallet: number;
 }
 
 /*
@@ -126,6 +127,7 @@ const PatientSchema = new Schema<IPatient>({
     dateOfBirth: { type: Date, required: true },
     gender: { type: String, required: true, lowercase: true, enum: ['male', 'female'] },
     mobileNumber: { type: String, required: true, unique: true, min: 8, max: 16, match: [/^(\+\d{8,15}|\d{8,15})$/, "invalid charachters"] },
+    wallet:{ type: Number, required: true , default: 0.0},
     emergencyContact: [
         {
             name: { type: String, required: true, trim: true },

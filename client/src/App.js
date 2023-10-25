@@ -14,7 +14,9 @@ import DoctorManagePatients from './pages/doctor/DoctorManagePatients';
 import PatientManageFamily from './pages/patient/PatientManageFamily';
 import PatientManageDoctors from './pages/patient/PatientManageDoctors';
 import PatientManagePrescriptions from './pages/patient/PatientManagePrescriptions';
+import PatientManageInfo from './pages/patient/PatientManageInfo';
 import PatientManageAppointments from './pages/patient/PatientManageAppointments';
+import DoctorManageInfo from './pages/doctor/DoctorManageInfo'
 import AddFamilyMember from './components/formComponents/AddFamilyMember'
 import {
   createBrowserRouter,
@@ -78,6 +80,10 @@ function App() {
       element: <DoctorManageAppointments />,
     },
     {
+      path: "/doctor/info",
+      element: <DoctorManageInfo />,
+    },
+    {
       path: "/doctor/patients",
       element: <DoctorManagePatients />,
     },
@@ -101,6 +107,11 @@ function App() {
       path: "/patient/prescriptions",
       element: <PatientManagePrescriptions />,
     },
+    {
+      path: "/patient/info",
+      element: <PatientManageInfo />,
+    },
+    
   ]);
 
   return (

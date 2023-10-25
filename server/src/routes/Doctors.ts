@@ -10,6 +10,7 @@ router.use(bodyParser.json());
 router.get("/", doctorController.listDoctors);
 router.post("/filter", patientController.filterDoctor);
 router.get("/:id", doctorController.readDoctor);
+router.get("/:id/wallet", patientController.viewWallet);
 router.get("/:id/patients", doctorController.listDoctorPatients);
 router.get("/:id/registeredPatients", doctorController.listMyPatients);
 router.get("/:id/patients/:pId", doctorController.selectPatient);

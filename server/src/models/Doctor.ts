@@ -13,7 +13,7 @@ export interface IDoctor {
     education: string;
     status: string;
     speciality: string;
-
+    wallet: number;
 }
 
 const doctorShema = new Schema<IDoctor>({
@@ -28,6 +28,7 @@ const doctorShema = new Schema<IDoctor>({
     speciality: { type: String, required: true, trim: true },
     education: { type: String, required: true, trim: true },
     status: { type: String, required: true, lowercase: true, enum: ['pending', 'accepted', 'rejected'] },
+    wallet:{ type: Number, required: true , default: 0.0},
 })
 doctorShema.pre('save', function(next) {
     if (this.isModified('name')) {

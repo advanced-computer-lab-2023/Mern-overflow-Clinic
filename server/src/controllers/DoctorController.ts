@@ -234,6 +234,22 @@ const selectPatientByName = async (req: Request, res: Response) => {
 };
 
 
+const viewWallet = async (req: Request, res: Response) => {
+  const dId = req.params.id;
+
+   const doc = await doctor
+      .findById(dId)
+      .then((doc) => {
+          if (!doc || doc === undefined) {
+              return res.status(404).json({ message: 'Doctor not found' });
+          } else {
+              res.status(200).json(doc.wallet);
+          }
+      }).catch((err) => {
+          res.status(404).send(err);
+      });
+}
+
 
 
 export default {

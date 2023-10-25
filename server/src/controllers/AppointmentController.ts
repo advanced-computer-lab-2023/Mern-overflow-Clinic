@@ -33,7 +33,29 @@ const readAppointment = async (req: Request, res: Response) => {
 };
 
 
-const updateAppointment = async (req: Request, res: Response) => { };
+const updateAppointment = async (req: Request, res: Response) => { 
+  const id = req.params.id
+    try {
+      const appointments = await appointment.find({});
+      
+      for (const apt of appointments) {
+        const appointmentDate = new Date(apt.date);
+        const today = new Date();
+  
+        if (appointmentDate < today && apt.status !== "completed") {
+          apt.status = "completed";
+          await apt.save();
+        }
+      }
+  
+      res.status(200).json({ message: 'Appointments updated successfully' });
+    } catch (err) {
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  };
+  
+  
+  
 
 
 const deleteAppointment = async (req: Request, res: Response) => {
@@ -112,6 +134,7 @@ export default {
   listAllAppointments,
   readAppointment,
   deleteAppointment,
-  filterAppointments
+  filterAppointments,
+  updateAppointment
 };
 

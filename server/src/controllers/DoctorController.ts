@@ -33,7 +33,6 @@ const createDoctor = async (req: Request, res: Response) => {
   })
 };
 
-
 const readDoctor = async (req: Request, res: Response) => {
   const pId = req.params.id;
      const doc = await doctor
@@ -250,7 +249,63 @@ const viewWallet = async (req: Request, res: Response) => {
           res.status(404).send(err);
       });
 }
+const addFreeSlots = async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const startTime = new Date(req.body.date);
+  const currentTime = new Date();
+  try {
+    if(!startTime || startTime ===undefined){
+      return res.status(401).json({ message: 'You have not entered a date.' });
+    }
+    const doc = await doctor.findById(id);
 
+    if (!doc || doc === undefined) {
+      return res.status(404).json({ message: 'Doctor not found.' });
+    }
+
+    if (doc.status !== "accepted") {
+      return res.status(402).json({ message: 'You have not yet been accepted.' });
+    }
+   
+    if(doc.availableSlotsStartTime){
+      for(const dt of doc.availableSlotsStartTime){
+        if( dt.toISOString() === startTime.toISOString()){
+          return res.status(403).json({ message: 'This slot has already been added.' });
+        }
+      }
+    }
+    if (startTime <= currentTime) {
+      return res.status(405).json({ message: 'You cannot use a past date.' });
+    }
+
+    const appointments = await appointment.find({ doctor: id });
+
+    const conflictingAppointments = [];
+    for (const appointment of appointments) {
+      const appointmentStartTime = appointment.date;
+      const appointmentEndTime = new Date(appointmentStartTime.getTime() + (appointment.duration * 60 * 1000)); 
+
+      if (startTime < appointmentEndTime && startTime >= appointmentStartTime) {
+        conflictingAppointments.push(appointment);
+      }
+    }
+
+    if(conflictingAppointments.length !==0){
+      return res.status(406).json({ message: 'You already have an appointment on that date and time' });
+    }
+
+    doc.availableSlotsStartTime?.push(startTime);
+          
+    // Save the updated doctor document
+    const savedDoc = await doc.save();
+
+    // Respond with the saved doctor document
+    res.status(200).send(savedDoc);
+   
+  } catch (err) {
+    res.status(500).send(err);
+  }
+};
 
 
 export default {
@@ -263,5 +318,7 @@ export default {
   selectPatient,
   selectPatientByName,
   listAllMyPatientsUpcoming,
-  listMyPatients
+  listMyPatients,
+  viewWallet,
+  addFreeSlots
 };

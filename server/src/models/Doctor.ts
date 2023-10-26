@@ -14,6 +14,7 @@ export interface IDoctor {
     status: string;
     speciality: string;
     wallet: number;
+    availableSlotsStartTime?: Date[];
 }
 
 const doctorShema = new Schema<IDoctor>({
@@ -29,6 +30,7 @@ const doctorShema = new Schema<IDoctor>({
     education: { type: String, required: true, trim: true },
     status: { type: String, required: true, lowercase: true, enum: ['pending', 'accepted', 'rejected'] },
     wallet:{ type: Number, required: true , default: 0.0},
+    availableSlotsStartTime: { type: [Date], required: false, default: [] },
 })
 doctorShema.pre('save', function(next) {
     if (this.isModified('name')) {

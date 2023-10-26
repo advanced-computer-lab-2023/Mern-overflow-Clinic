@@ -10,8 +10,30 @@ import doctor from "../models/Doctor.js";
 import user from "../models/User.js";
 
 
-const createPatient = async (req: Request, res: Response) => {
+// const uploadedFiles = []; // Initialize an array to hold the uploaded files
 
+//    patient.post('/upload', upload.single('file'), (req, res) => {
+//      if (req.file) {
+//        // If a file was uploaded, add it to the list of uploaded files
+//        uploadedFiles.push({
+//          filename: req.file.originalname,
+//          path: req.file.path,
+//        });
+  
+//        res.json({ message: 'File added successfully' });
+//      } else {
+//        res.status(400).json({ message: 'No file added' });
+//     }
+//    });
+
+
+
+
+
+
+const createPatient = async (req: Request, res: Response) => {
+    //const uploadedFiles = req.files;
+    //req.body.documents = uploadedFiles;
     const entry = user.find({ 'username': req.body.username }).then((document) => {
         if (document.length === 0) {
 

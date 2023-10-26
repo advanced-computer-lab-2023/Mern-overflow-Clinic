@@ -19,20 +19,59 @@ import { useNavigate } from 'react-router-dom';
 
 const defaultTheme = createTheme();
 
+
+  
+
+
 export default function PatientRegister() {
+
+  const [files, setFiles] = useState([]);
+  const formData = new FormData();
+
+
+  const handleFileChange = (e) => {
+    const selectedFiles = e.target.files;
+    const newFilesArray = []; // Copy the current files array
+    
+  for (let i = 0; i < selectedFiles.length; i++) {
+    const file = selectedFiles[i];   
+    formData.append(`file${i}`, file);
+    const fileName = file.name;
+    const filePath = URL.createObjectURL(file);
+    const fileInfo = { filename: fileName, path: filePath };
+    newFilesArray.push(fileInfo);
+  }
+    setFiles(newFilesArray);
+  };
+
+
   const navigate = useNavigate();
   const { register, handleSubmit, setError, formState: { errors }, control } = useForm();
 
   const onSubmit = data => {
-    const dataToServer = { ...data };
-
+    const dataToServer = { ...data};
     dataToServer["passwordHash"] = sha256(data["password"]);
     dataToServer["emergencyContact"] = { name: data["EmergencyName"], mobileNumber: data["EmergencyPhone"] };
     delete dataToServer.EmergencyName
     delete dataToServer.EmergencyPhone
     delete dataToServer.password
-    console.log("Data to server" + JSON.stringify(dataToServer));
-    axios.post('http://localhost:8000/patients', dataToServer)
+    
+    const combinedData = {
+      // dataToServer.name,
+      // dataToServer.email,
+      // dataToServer.nationalId,
+      // dataToServer.dateOfBirth,
+      // dataToServer.gender,
+      // dataToServer.mobileNumber,
+      // dataToServer.emergencyContact
+      ...dataToServer,  // Include the properties from dataToServer
+      files: files,
+    };
+    //dataToServer= JSON.stringify(dataToServer) + JSON.stringify(files);
+    //console.log("Data to server" + JSON.stringify(dataToServer));
+    //console.log("files" + JSON.stringify(files));
+    console.log("data" + JSON.stringify(combinedData));
+    axios.post('http://localhost:8000/patients',combinedData)
       .then((response) => {
         console.log('POST request successful', response);
         navigate('/patient/family');
@@ -261,6 +300,17 @@ export default function PatientRegister() {
                   />
                 </Grid>
               </Grid>
+
+              <Grid>
+      <input type="file" multiple onChange={handleFileChange} />
+      {/* Display the selected files */}
+      <ul>
+        {files.map((file, index) => (
+          <li key={index}>{file.name}</li>
+        ))}
+      </ul>
+    </Grid>
+
               <Button fullWidth type="submit" variant="contained" sx={{ mt: 3, mb: 2, p: 2, fontWeight: 'bold' }}>
                 Submit
               </Button>

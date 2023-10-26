@@ -22,9 +22,9 @@ import cors from 'cors'
 mongoose.set("strictQuery", false);
 
 //App variables
-const MongoURI: string =config.mongo.URL;
+const MongoURI: string =config.mongo.URL || "mongodb+srv://dbuser:987654321@acl.n4q8ykx.mongodb.net/?retryWrites=true&w=majority";
 const app = express();
-const port: number = config.server.port;
+const port: number = config.server.port || 8000;
 app.use(bodyParser.json());
 app.use(cors());
 

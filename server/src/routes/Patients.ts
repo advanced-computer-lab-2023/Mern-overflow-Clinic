@@ -1,22 +1,22 @@
 import express from "express";
 import { Request, Express } from 'express';
-import multer from 'multer';
+//import multer from 'multer';
 import bodyParser from "body-parser";
 import patientController from "../controllers/PatientController.js";
 import prescriptionController from "../controllers/PrescriptionController.js";
 
 
-const storage = multer.diskStorage({
-    // destination: (req: Request, file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
-    //   cb(null, "uploads/"); // Create an 'uploads' folder
-    // },
-    filename: (req: Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) => {
-      const uniqueSuffix = Date.now();
-      cb(null, uniqueSuffix + file.originalname);
-    },
-  });
+// const storage = multer.diskStorage({
+//     // destination: (req: Request, file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
+//     //   cb(null, "uploads/"); // Create an 'uploads' folder
+//     // },
+//     filename: (req: Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) => {
+//       const uniqueSuffix = Date.now();
+//       cb(null, uniqueSuffix + file.originalname);
+//     },
+//   });
   
-  const upload = multer({ storage: storage });
+//   const upload = multer({ storage: storage });
 
 const router = express.Router();
 router.use(bodyParser.json());

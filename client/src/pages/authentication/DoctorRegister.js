@@ -16,12 +16,41 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { useState } from 'react';
 import sha256 from 'js-sha256';
 import { useNavigate } from 'react-router-dom';
 
 const defaultTheme = createTheme();
 
 export default function DoctorRegister() {
+
+  const [files, setFiles] = useState([]);
+  //const formData = new FormData();
+
+
+  const handleFileChange = (e) => {
+    const selectedFiles = e.target.files;
+    const newFilesArray = [...files]; // Copy the current files array
+    
+  for (let i = 0; i < selectedFiles.length; i++) {
+    const file = selectedFiles[i];   
+    //formData.append(`file${i}`, file);
+    const fileName = file.name;
+    const filePath = URL.createObjectURL(file);
+    const fileInfo = { filename: fileName, path: filePath };
+    newFilesArray.push(fileInfo);
+  }
+    setFiles(newFilesArray);
+  };
+
+  function openPDF(e, path) {
+    e.preventDefault(); // Prevent the default behavior of the link (e.g., opening in a new tab)
+    
+    // Open the PDF in a new tab or window using the provided path
+    window.open(path, '_blank');
+  }
+
+
   const navigate = useNavigate();
   const { register, handleSubmit, setError, formState: { errors }, control } = useForm();
 
@@ -31,7 +60,16 @@ export default function DoctorRegister() {
     dataToServer["passwordHash"] = sha256(data["password"]);
     delete dataToServer.password
 
-    axios.post('http://localhost:8000/doctors', dataToServer)
+    const combinedData = {
+      ...dataToServer,  // Include the properties from dataToServer
+      files: files,
+    };
+    //dataToServer= JSON.stringify(dataToServer) + JSON.stringify(files);
+    //console.log("Data to server" + JSON.stringify(dataToServer));
+    //console.log("files" + JSON.stringify(files));
+    console.log("data" + JSON.stringify(combinedData));
+
+    axios.post('http://localhost:8000/doctors', combinedData)
       .then((response) => {
         console.log('POST request successful', response);
         navigate('/doctor/profile');
@@ -233,6 +271,18 @@ export default function DoctorRegister() {
                     onBlur={handleChange}
                   />
                 </Grid>
+
+                <Grid>
+              <input type="file" multiple onChange={handleFileChange} />
+        {
+        <ul>
+          {files.map((file, index) => (
+          <li key={index}>{file.filename}<a href={file.path} target="_blank" onClick={(e) => openPDF(e, file.path)}>view document</a></li>
+          ))}
+      </ul>}
+     
+      
+    </Grid>
 
               </Grid>
               <Button fullWidth type="submit" variant="contained" sx={{ mt: 3, mb: 2, p: 2, fontWeight: 'bold' }}>

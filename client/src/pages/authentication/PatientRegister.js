@@ -13,7 +13,7 @@ import logo from '../../assets/gifs/logo.gif';
 import ContactPageIcon from '@mui/icons-material/ContactPage';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { useState } from 'react';
+//import { useState } from 'react';
 import sha256 from 'js-sha256';
 import { useNavigate } from 'react-router-dom';
 
@@ -25,24 +25,31 @@ const defaultTheme = createTheme();
 
 export default function PatientRegister() {
 
-  const [files, setFiles] = useState([]);
-  const formData = new FormData();
+  // const [files, setFiles] = useState([]);
+  // //const formData = new FormData();
 
 
-  const handleFileChange = (e) => {
-    const selectedFiles = e.target.files;
-    const newFilesArray = []; // Copy the current files array
+  // const handleFileChange = (e) => {
+  //   const selectedFiles = e.target.files;
+  //   const newFilesArray = [...files]; // Copy the current files array
     
-  for (let i = 0; i < selectedFiles.length; i++) {
-    const file = selectedFiles[i];   
-    formData.append(`file${i}`, file);
-    const fileName = file.name;
-    const filePath = URL.createObjectURL(file);
-    const fileInfo = { filename: fileName, path: filePath };
-    newFilesArray.push(fileInfo);
-  }
-    setFiles(newFilesArray);
-  };
+  // for (let i = 0; i < selectedFiles.length; i++) {
+  //   const file = selectedFiles[i];   
+  //   //formData.append(`file${i}`, file);
+  //   const fileName = file.name;
+  //   const filePath = URL.createObjectURL(file);
+  //   const fileInfo = { filename: fileName, path: filePath };
+  //   newFilesArray.push(fileInfo);
+  // }
+  //   setFiles(newFilesArray);
+  // };
+
+  // function openPDF(e, path) {
+  //   e.preventDefault(); // Prevent the default behavior of the link (e.g., opening in a new tab)
+    
+  //   // Open the PDF in a new tab or window using the provided path
+  //   window.open(path, '_blank');
+  // }
 
 
   const navigate = useNavigate();
@@ -56,22 +63,15 @@ export default function PatientRegister() {
     delete dataToServer.EmergencyPhone
     delete dataToServer.password
     
-    const combinedData = {
-      // dataToServer.name,
-      // dataToServer.email,
-      // dataToServer.nationalId,
-      // dataToServer.dateOfBirth,
-      // dataToServer.gender,
-      // dataToServer.mobileNumber,
-      // dataToServer.emergencyContact
-      ...dataToServer,  // Include the properties from dataToServer
-      files: files,
-    };
-    //dataToServer= JSON.stringify(dataToServer) + JSON.stringify(files);
-    //console.log("Data to server" + JSON.stringify(dataToServer));
-    //console.log("files" + JSON.stringify(files));
-    console.log("data" + JSON.stringify(combinedData));
-    axios.post('http://localhost:8000/patients',combinedData)
+    // const combinedData = {
+    //   ...dataToServer,  // Include the properties from dataToServer
+    //   files: files,
+    // };
+    // //dataToServer= JSON.stringify(dataToServer) + JSON.stringify(files);
+    // //console.log("Data to server" + JSON.stringify(dataToServer));
+    // //console.log("files" + JSON.stringify(files));
+    // console.log("data" + JSON.stringify(combinedData));
+    axios.post('http://localhost:8000/patients',dataToServer)
       .then((response) => {
         console.log('POST request successful', response);
         navigate('/patient/family');
@@ -93,6 +93,18 @@ export default function PatientRegister() {
         })
     }
   }
+
+  // fetch("URL_TO_PDF_FILE") // Replace with the URL to your PDF file
+  // .then(response => response.blob())
+  // .then(blob => {
+  //   const blobUrl = URL.createObjectURL(blob);
+  //   const pdfObject = document.createElement('object');
+  //   pdfObject.data = blobUrl;
+  //   pdfObject.type = 'application/pdf';
+  //   pdfObject.width = '100%';
+  //   pdfObject.height = '600';
+  //   document.body.appendChild(pdfObject);
+  // });
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -301,15 +313,18 @@ export default function PatientRegister() {
                 </Grid>
               </Grid>
 
-              <Grid>
-      <input type="file" multiple onChange={handleFileChange} />
-      {/* Display the selected files */}
-      <ul>
-        {files.map((file, index) => (
-          <li key={index}>{file.name}</li>
-        ))}
-      </ul>
-    </Grid>
+              {/* <Grid>
+              <input type="file" multiple onChange={handleFileChange} />
+        {
+        <ul>
+          {files.map((file, index) => (
+          <li key={index}>{file.filename}<a href={file.path} target="_blank" onClick={(e) => openPDF(e, file.path)}>view document</a></li>
+          ))}
+      </ul>}
+     
+      
+    </Grid> */}
+    
 
               <Button fullWidth type="submit" variant="contained" sx={{ mt: 3, mb: 2, p: 2, fontWeight: 'bold' }}>
                 Submit

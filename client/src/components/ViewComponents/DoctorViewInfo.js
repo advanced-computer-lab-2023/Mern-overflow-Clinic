@@ -23,10 +23,10 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
 
-export default function DoctorViewInfo() {
+export default function PatientViewInfo() {
   const [data, setData] = useState([]);
 
-  const id = "652980600250b997003a23ce";
+  const id = "65293c2cb5a34d208108cc33";
 
   const fetchTableData = () => {
       axios
@@ -51,7 +51,7 @@ export default function DoctorViewInfo() {
           <TableRow>
             <TableCell>Doctor Name</TableCell>
             <TableCell>BirthDate</TableCell>
-            <TableCell>Gender</TableCell>
+            <TableCell>Hourly Rate</TableCell>
             <TableCell>Affiliation</TableCell>
             <TableCell>Specialty</TableCell>
             <TableCell>Education</TableCell>
@@ -61,8 +61,14 @@ export default function DoctorViewInfo() {
         <TableBody>
           <TableRow>
             <TableCell>{data.name}</TableCell>
-            <TableCell>{data.dateOfBirth}</TableCell>
-            <TableCell>{data.gender}</TableCell>
+            <TableCell>
+              {new Date(data.dateOfBirth).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
+            </TableCell>
+            <TableCell>{data.hourlyRate}</TableCell>
             <TableCell>{data.affiliation}</TableCell>
             <TableCell>{data.speciality}</TableCell>
             <TableCell>{data.education}</TableCell>

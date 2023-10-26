@@ -61,7 +61,13 @@ import {
               <TableRow>
                 <TableCell>{data.name}</TableCell>
                 <TableCell>{data.nationalId}</TableCell>
-                <TableCell>{data.dateOfBirth}</TableCell>
+                <TableCell>
+                  {new Date(data.dateOfBirth).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
+                </TableCell>
                 <TableCell>{data.gender}</TableCell>
                 <TableCell>{data.mobileNumber}</TableCell>
                 <TableCell>{data.wallet}</TableCell>

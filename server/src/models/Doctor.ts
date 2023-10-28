@@ -11,9 +11,15 @@ export interface IDoctor {
     hourlyRate: number;
     affiliation: string;
     education: string;
+    files: document[];
     status: string;
     speciality: string;
 
+}
+
+interface document {
+    filename: string;
+    path: string;
 }
 
 const doctorShema = new Schema<IDoctor>({
@@ -27,6 +33,12 @@ const doctorShema = new Schema<IDoctor>({
     affiliation: { type: String, required: true, trim: true },
     speciality: { type: String, required: true, trim: true },
     education: { type: String, required: true, trim: true },
+    files: [
+        {
+            filename: { type: String, required: true, trim: true },
+            path: { type: String, required:true, trim: true },
+        }
+    ],
     status: { type: String, required: true, lowercase: true, enum: ['pending', 'accepted', 'rejected'] },
 })
 doctorShema.pre('save', function(next) {

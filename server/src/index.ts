@@ -30,6 +30,7 @@ app.use(cors());
 
 
 
+
 //ROUTERS
 app.use('/auth', authRouter);
 app.use('/doctors', doctorRouter);

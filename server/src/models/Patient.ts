@@ -17,6 +17,11 @@ interface familyMember {
     // package?: typeof mongoose.Types.ObjectId;
 }
 
+interface document {
+    filename: string;
+    path: string;
+}
+
 
 export interface IPatient {
     // username: string;
@@ -28,6 +33,7 @@ export interface IPatient {
     gender: string;
     mobileNumber: string;
     emergencyContact: emergencyContact[];
+    files: document[];
     familyMembers?: familyMember[];
     prescriptions?: Types.ObjectId[];
     package?: Types.ObjectId;
@@ -130,6 +136,12 @@ const PatientSchema = new Schema<IPatient>({
         {
             name: { type: String, required: true, trim: true },
             mobileNumber: { type: String, required: true, min: 8, max: 16, match: [/^(\+\d{8,15}|\d{8,15})$/, "invalid charachters"] },
+        }
+    ],
+    files: [
+        {
+            filename: { type: String, required: true, trim: true },
+            path: { type: String, required:true, trim: true },
         }
     ],
     familyMembers: [

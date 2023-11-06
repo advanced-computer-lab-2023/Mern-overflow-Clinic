@@ -15,6 +15,8 @@ import PatientManageFamily from './pages/patient/PatientManageFamily';
 import PatientManageDoctors from './pages/patient/PatientManageDoctors';
 import PatientManagePrescriptions from './pages/patient/PatientManagePrescriptions';
 import PatientManageAppointments from './pages/patient/PatientManageAppointments';
+import PatientManageDocuments from './pages/patient/PatientManageDocuments';
+
 import AddFamilyMember from './components/formComponents/AddFamilyMember'
 import {
   createBrowserRouter,
@@ -84,6 +86,10 @@ function App() {
     {
       path: "/patient/family",
       element: <PatientManageFamily />,
+    },
+    {
+      path: "/patient/documents",
+      element: <PatientManageDocuments />,
     },
     {
       path: "/patient/family/:id",

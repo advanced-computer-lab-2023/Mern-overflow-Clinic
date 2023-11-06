@@ -29,6 +29,7 @@ router.post("/:id/prescriptionsFilter", prescriptionController.filterPrescriptio
 //
 router.get("/doctors/:dId", patientController.selectDoctor);
 router.get("/:id/relatives", patientController.readFamilyMember);
+router.get("/:id/documents", patientController.readDocuments);
 router.get("/", patientController.listPatients);
 router.get("/:id", patientController.readPatient);
 router.get("/:id/prescriptions", prescriptionController.viewPatientPrescription);
@@ -37,6 +38,7 @@ router.get("/:id/price", patientController.listDoctorsBySessionPrice);
 //POST
 router.post("/", patientController.createPatient);
 router.post("/:id/familyMember", patientController.addFamilyMember);
+router.post("/:id/documents", patientController.addDocument);
 
 
 //DELETE

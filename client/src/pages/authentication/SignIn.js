@@ -24,14 +24,14 @@ export default function SignIn() {
     const onSubmit = data => {
         console.log("Data to server" + JSON.stringify(data));
         if (data.Username.includes("patient")) {
-       navigate("/patient/family"); 
+            navigate("/patient/family");
         }
         else if (data.Username.includes("doctor")) {
 
-       navigate("/doctor/profile"); 
+            navigate("/doctor/profile");
         }
         else if (data.Username.includes("admin")) {
-       navigate("/admin/patients"); 
+            navigate("/admin/patients");
         };
     }
     console.log(errors);
@@ -50,18 +50,12 @@ export default function SignIn() {
         <ThemeProvider theme={defaultTheme}>
             <Grid container component="main" sx={{ height: '100vh' }}>
                 <CssBaseline />
-                <Grid
-                    item
-                    xs={false}
-                    sm={4}
-                    md={7}
-                    sx={{
-                        backgroundSize: 'cover',
-                        backgroundColor: '#d9d9d9',
-                        backgroundPosition: 'center',
-                    }}
-                >
-                    <img src={logo} style={{
+                <Grid item xs={false} sm={4} md={7} sx={{ backgroundSize: 'cover', backgroundColor: '#132629', backgroundPosition: 'center' }}>
+                    <Typography variant="h4" sx={{
+                        color: "white", position: 'fixed',
+                        top: '15%', left: '22%'
+                    }}>El7a2ni Clinic</Typography>
+                    <img src={logo} alt="" style={{
                         height: '50%',
                         position: 'fixed',
                         top: '50%',

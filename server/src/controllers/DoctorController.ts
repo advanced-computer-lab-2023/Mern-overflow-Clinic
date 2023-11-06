@@ -3,7 +3,7 @@ import doctor from "../models/Doctor.js";
 import appointment from "../models/appointment.js";
 import patient from "../models/Patient.js";
 import user from "../models/User.js";
-
+import Contract from "../models/Contract.js";
 
 
 const createDoctor = async (req: Request, res: Response) => {
@@ -307,6 +307,59 @@ const addFreeSlots = async (req: Request, res: Response) => {
   }
 };
 
+const acceptContract = async (req: Request, res: Response) => {
+  const docId = req.params.id;
+  const contractId = req.body.id;
+
+  const contracts = await Contract
+    .find({ 'doctor': docId })
+    .exec();
+  if(contracts.length === 0 || contracts === undefined || !contracts){
+    return res.status(404).send("No contracts found for this doctor.");
+  }
+
+  for(const contract of contracts){
+    if (contract._id.toString() === contractId && contract.status === "pending"){
+      contract.status = "accepted";
+      try {
+        await contract.save();
+        break;
+      } catch (err) {
+        // Handle the error, e.g., log or send an error response.
+        console.error(err);
+        return res.status(500).send("Error saving the contract.");
+      }
+    }
+  }
+
+  res.status(200).send("Contract accepted successfully.");
+
+}
+
+const rejectContract = async (req: Request, res: Response) => {
+  const docId = req.params.id;
+  const contractId = req.body.id;
+
+  const contracts = await Contract
+    .find({ 'doctor': docId })
+    .exec();
+
+  if(contracts.length === 0 || contracts === undefined || !contracts){
+    return res.status(404).send("No contracts found for this doctor.");
+  }
+
+  for(const contract of contracts){
+    if (contract._id.toString() === contractId && contract.status === "pending"){
+      contract.status = "rejected";
+      await contract.save();
+      break;
+    }
+  }
+
+  res.status(200).send("Contract rejected successfully.");
+
+}
+
 
 export default {
   createDoctor,
@@ -320,5 +373,7 @@ export default {
   listAllMyPatientsUpcoming,
   listMyPatients,
   viewWallet,
-  addFreeSlots
+  addFreeSlots,
+  acceptContract,
+  rejectContract,
 };

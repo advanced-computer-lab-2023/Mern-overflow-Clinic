@@ -39,7 +39,7 @@ app.use('/admins', adminRouter);
 app.use('/appointments', appointmentRouter);
 app.use('/prescriptions', prescriptionRouter);
 app.use('/packages', packageRouter);
-app.use('contracts',contractRouter);
+app.use('/contracts',contractRouter);
 
 // //GET
 // app.get("/", (req, res) => {

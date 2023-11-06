@@ -11,13 +11,14 @@ router.use(bodyParser.json());
 
 
 router.get("/",contractController.listAllContracts);
-router.get("/:id",contractController.readContract);
 
 router.post("/",contractController.createContract);
 
 router.put("/",contractController.updateContract);
 
 router.delete("/", contractController.deleteContract);
+
+router.get("/:id",contractController.readContract);
 
 
 export default router;

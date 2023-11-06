@@ -7,6 +7,7 @@ import authRouter from './routes/Auth.js';
 import doctorRouter from './routes/Doctors.js';
 import patientRouter from "./routes/Patients.js"
 import adminRouter from "./routes/Admins.js"
+import contractRouter from "./routes/Contracts.js"
 import appointmentRouter from "./routes/Appointments.js"
 import prescriptionRouter from "./routes/Prescriptions.js"
 import packageRouter from "./routes/Package.js"
@@ -38,12 +39,13 @@ app.use('/admins', adminRouter);
 app.use('/appointments', appointmentRouter);
 app.use('/prescriptions', prescriptionRouter);
 app.use('/packages', packageRouter);
+app.use('contracts',contractRouter);
 
-//GET
-app.get("/", (req, res) => {
-    res.send("hello");
-    console.log("hello, world!");
-});
+// //GET
+// app.get("/", (req, res) => {
+//     res.send("hello");
+//     console.log("hello, world!");
+// });
 
 
 mongoose

@@ -61,6 +61,18 @@ const createPatient = async (req: Request, res: Response) => {
 };
 
 const readPatient = async (req: Request, res: Response) => {
+    const pId = req.params.id;
+     const pat = await patient
+        .findById(pId)
+        .then((pat) => {
+            if (!pat || pat === undefined) {
+                return res.status(404).json({ message: 'Patient not found' });
+            } else {
+                res.status(200).json(pat);
+            }
+        }).catch((err) => {
+            res.status(404).send(err);
+        });
 };
 
 const updatePatient = async (req: Request, res: Response) => { };
@@ -428,7 +440,21 @@ const filterDoctor = async (req: Request, res: Response) => {
     }
 };
 
+const viewWallet = async (req: Request, res: Response) => {
+    const pId = req.params.id;
 
+     const pat = await patient
+        .findById(pId)
+        .then((pat) => {
+            if (!pat || pat === undefined) {
+                return res.status(404).json({ message: 'Patient not found' });
+            } else {
+                res.status(200).json(pat.wallet);
+            }
+        }).catch((err) => {
+            res.status(404).send(err);
+        });
+}
 
 
 
@@ -444,6 +470,7 @@ export default {
     selectDoctorByNameAndSpeciality,
     listDoctorsBySessionPrice,
     filterDoctor,
+    viewWallet,
     readDocuments,
     addDocument
 };

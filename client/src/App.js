@@ -14,7 +14,10 @@ import DoctorManagePatients from './pages/doctor/DoctorManagePatients';
 import PatientManageFamily from './pages/patient/PatientManageFamily';
 import PatientManageDoctors from './pages/patient/PatientManageDoctors';
 import PatientManagePrescriptions from './pages/patient/PatientManagePrescriptions';
+import PatientManageInfo from './pages/patient/PatientManageInfo';
 import PatientManageAppointments from './pages/patient/PatientManageAppointments';
+import DoctorManageInfo from './pages/doctor/DoctorManageInfo'
+import DoctorManageFreeSlots from './pages/doctor/DoctorManageFreeSlots'
 import PatientManageDocuments from './pages/patient/PatientManageDocuments';
 
 import AddFamilyMember from './components/formComponents/AddFamilyMember'
@@ -80,8 +83,16 @@ function App() {
       element: <DoctorManageAppointments />,
     },
     {
+      path: "/doctor/info",
+      element: <DoctorManageInfo />,
+    },
+    {
       path: "/doctor/patients",
       element: <DoctorManagePatients />,
+    },
+    {
+      path: "/doctor/freeSlots",
+      element: <DoctorManageFreeSlots />,
     },
     {
       path: "/patient/family",
@@ -107,6 +118,11 @@ function App() {
       path: "/patient/prescriptions",
       element: <PatientManagePrescriptions />,
     },
+    {
+      path: "/patient/info",
+      element: <PatientManageInfo />,
+    },
+    
   ]);
 
   return (

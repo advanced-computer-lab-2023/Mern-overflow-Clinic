@@ -3,7 +3,7 @@ import doctor from "../models/Doctor.js";
 import appointment from "../models/appointment.js";
 import patient from "../models/Patient.js";
 import user from "../models/User.js";
-
+import Contract from "../models/Contract.js";
 
 
 const createDoctor = async (req: Request, res: Response) => {
@@ -33,20 +33,20 @@ const createDoctor = async (req: Request, res: Response) => {
   })
 };
 
-
 const readDoctor = async (req: Request, res: Response) => {
-  const id = req.params.id;
-  const doc = doctor
-    .find({ "_id": id })
-    .then((doc) => {
-      if (doc.length === 0)
-        res.status(400).send("doctor with this ID is not found");
-      else
-        res.status(200).json(doc);
-    })
-    .catch((err) => {
-      res.status(400).json(err);
-    });
+  const pId = req.params.id;
+     const doc = await doctor
+        .findById(pId)
+        .then((doc) => {
+            if (!doc || doc === undefined) {
+                return res.status(404).json({ message: 'Doctor not found' });
+            } else {
+                res.status(200).json(doc);
+            }
+        }).catch((err) => {
+            res.status(404).send(err);
+        });
+
 };
 
 const isDoctorPending = async (req: Request, res: Response) => {
@@ -234,6 +234,131 @@ const selectPatientByName = async (req: Request, res: Response) => {
 };
 
 
+const viewWallet = async (req: Request, res: Response) => {
+  const dId = req.params.id;
+
+   const doc = await doctor
+      .findById(dId)
+      .then((doc) => {
+          if (!doc || doc === undefined) {
+              return res.status(404).json({ message: 'Doctor not found' });
+          } else {
+              res.status(200).json(doc.wallet);
+          }
+      }).catch((err) => {
+          res.status(404).send(err);
+      });
+}
+const addFreeSlots = async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const startTime = new Date(req.body.date);
+  const currentTime = new Date();
+  try {
+    if(!startTime || startTime ===undefined){
+      return res.status(401).json({ message: 'You have not entered a date.' });
+    }
+    const doc = await doctor.findById(id);
+
+    if (!doc || doc === undefined) {
+      return res.status(404).json({ message: 'Doctor not found.' });
+    }
+
+    if (doc.status !== "accepted") {
+      return res.status(402).json({ message: 'You have not yet been accepted.' });
+    }
+   
+    if(doc.availableSlotsStartTime){
+      for(const dt of doc.availableSlotsStartTime){
+        if( dt.toISOString() === startTime.toISOString()){
+          return res.status(403).json({ message: 'This slot has already been added.' });
+        }
+      }
+    }
+    if (startTime <= currentTime) {
+      return res.status(405).json({ message: 'You cannot use a past date.' });
+    }
+
+    const appointments = await appointment.find({ doctor: id });
+
+    const conflictingAppointments = [];
+    for (const appointment of appointments) {
+      const appointmentStartTime = appointment.date;
+      const appointmentEndTime = new Date(appointmentStartTime.getTime() + (appointment.duration * 60 * 1000)); 
+
+      if (startTime < appointmentEndTime && startTime >= appointmentStartTime) {
+        conflictingAppointments.push(appointment);
+      }
+    }
+
+    if(conflictingAppointments.length !==0){
+      return res.status(406).json({ message: 'You already have an appointment on that date and time' });
+    }
+
+    doc.availableSlotsStartTime?.push(startTime);
+          
+    // Save the updated doctor document
+    const savedDoc = await doc.save();
+
+    // Respond with the saved doctor document
+    res.status(200).send(savedDoc);
+   
+  } catch (err) {
+    res.status(500).send(err);
+  }
+};
+
+const acceptContract = async (req: Request, res: Response) => {
+  const docId = req.params.id;
+  const contractId = req.body.id;
+
+  const contracts = await Contract
+    .find({ 'doctor': docId })
+    .exec();
+  if(contracts.length === 0 || contracts === undefined || !contracts){
+    return res.status(404).send("No contracts found for this doctor.");
+  }
+
+  for(const contract of contracts){
+    if (contract._id.toString() === contractId && contract.status === "pending"){
+      contract.status = "accepted";
+      try {
+        await contract.save();
+        break;
+      } catch (err) {
+        // Handle the error, e.g., log or send an error response.
+        console.error(err);
+        return res.status(500).send("Error saving the contract.");
+      }
+    }
+  }
+
+  res.status(200).send("Contract accepted successfully.");
+
+}
+
+const rejectContract = async (req: Request, res: Response) => {
+  const docId = req.params.id;
+  const contractId = req.body.id;
+
+  const contracts = await Contract
+    .find({ 'doctor': docId })
+    .exec();
+
+  if(contracts.length === 0 || contracts === undefined || !contracts){
+    return res.status(404).send("No contracts found for this doctor.");
+  }
+
+  for(const contract of contracts){
+    if (contract._id.toString() === contractId && contract.status === "pending"){
+      contract.status = "rejected";
+      await contract.save();
+      break;
+    }
+  }
+
+  res.status(200).send("Contract rejected successfully.");
+
+}
 
 
 export default {
@@ -246,5 +371,9 @@ export default {
   selectPatient,
   selectPatientByName,
   listAllMyPatientsUpcoming,
-  listMyPatients
+  listMyPatients,
+  viewWallet,
+  addFreeSlots,
+  acceptContract,
+  rejectContract,
 };

@@ -14,7 +14,10 @@ const login = async (req: Request, res: Response) => {
             return res.status(404).json({ message: 'User not found' });
         }else{
             const token = await TokenUtils.generateToken(user);
-            res.header('Authorization', `Bearer ${token}`);
+            res.cookie('authorization', token, {
+                httpOnly: true, // Make the cookie accessible only via HTTP (not JavaScript)
+                // You can also set other options like 'secure', 'maxAge', 'path', etc.
+            });
             res.status(200).json({ token, user });
         }
         

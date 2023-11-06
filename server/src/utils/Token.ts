@@ -6,7 +6,7 @@ import { UserType, UserTypesNames } from '../enums/UserTypes.js';
 
 export interface TokenPayload {
     userId: string;
-    userRole: string;
+    userRole: UserType;
 }
 
 const generateToken = async (user: HydratedDocument<IUser>) => {

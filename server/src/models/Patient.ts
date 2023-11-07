@@ -8,11 +8,11 @@ interface emergencyContact {
 }
 
 interface familyMember {
-    //name: string;
+    name: string;
     nationalId: string;
     patientId: Types.ObjectId;
-    // age: number;
-    // gender: string;
+   // dateOfBirth: Date;
+    gender: string;
     relation: string;
     // package?: typeof mongoose.Types.ObjectId;
 }
@@ -139,7 +139,7 @@ const PatientSchema = new Schema<IPatient>({
             name: { type: String, required: true, trim: true },
             nationalId: { type: String, required: true },//TODO add validation
             patientId: { type: Schema.Types.ObjectId, ref: "Patient", required: true },
-            age: { type: Number, required: true, min: 0, max: 122 },
+            //dateOfBirth: { type: Date, required: true, min: 0, max: 122 },
             gender: { type: String, required: true, lowercase: true, enum: ['male', 'female'] },
             relation: { type: String, required: true, lowercase: true, enum: ['wife', 'husband', 'child'] },
             // package: { type: mongoose.Types.ObjectId, ref: "Package", required: false },

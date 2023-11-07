@@ -5,16 +5,7 @@ import User, { IUser } from "../models/User.js";
 import TokenUtils from "../utils/Token.js";
 
 const login = async (req: Request, res: Response) => {
-  console.log(req.body);
   const { username, passwordHash } = req.body;
-  console.debug(
-    "DEBUGPRINT[1]: AuthController.ts:11 (after const user: HydratedDocument<IUser> | nu…)" +
-      username,
-  );
-  console.debug(
-    "DEBUGPRINT[2]: AuthController.ts:11 (after const user: HydratedDocument<IUser> | nu…)" +
-      passwordHash,
-  );
 
   try {
     const user: HydratedDocument<IUser> | null = await User.findOne({

@@ -1,6 +1,8 @@
-import mongoose, { Schema, model } from "mongoose";
+import mongoose, { Schema,Types, model } from "mongoose";
 
 export interface IHealthRecord {
+    doctor: Types.ObjectId;
+    patient: Types.ObjectId;
     name: string;
     diagnosis: string;
     date: Date;
@@ -8,6 +10,8 @@ export interface IHealthRecord {
 
 
 const healthRecordSchema = new Schema<IHealthRecord>({
+    doctor: { type: Schema.Types.ObjectId, ref: "Doctor", required: true },
+    patient: { type: Schema.Types.ObjectId, ref: "Patient", required: true },
     name: { type: String, required: true},
     diagnosis: { type: String, required: true},
     date: { type: Date, required: true },

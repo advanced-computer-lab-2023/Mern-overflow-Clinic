@@ -14,6 +14,7 @@ router.get("/:id", appointmentController.readAppointment);
 router.post("/", appointmentController.createAppointment);
 router.post("/filter", appointmentController.filterAppointments);
 router.post("/update" , appointmentController.updateAppointment);
+
 //DELETE
 router.delete("/:id", appointmentController.deleteAppointment);
 

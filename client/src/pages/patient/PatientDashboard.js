@@ -77,7 +77,19 @@ const PatientDashboard = (props) => {
                 </ListItem>
             </List>
             <Divider />
-            
+            <List>
+                <ListItem disablePadding>
+                    <ListItemButton component={Link} to='/patient/linkFamilyMember'>
+                        <ListItemIcon>
+                            <Avatar sx={{ m: 0, bgcolor: 'white', color: 'black', width: 30, height: 30, padding: 0 }}>
+                                <MedicationIcon sx={{ width: 30, height: 30 }} />
+                            </Avatar>
+                        </ListItemIcon>
+                        <ListItemText primary="My Prescriptions" />
+                    </ListItemButton>
+                </ListItem>
+            </List>
+            <Divider />
         </ButtonAppBar>
     );
 }

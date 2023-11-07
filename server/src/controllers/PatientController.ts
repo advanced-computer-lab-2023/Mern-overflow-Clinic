@@ -417,7 +417,7 @@ const linkfamilyMember = async (req: Request, res: Response) => {
               }
                 rPatient.familyMembers?.push(data);
                 const savedPat = await rPatient.save();
-                res.status(200).send(savedPat);
+                return res.status(200).send(savedPat);
             
         }
         if (req.body.email) {
@@ -446,14 +446,13 @@ const linkfamilyMember = async (req: Request, res: Response) => {
             else{
             rPatient.familyMembers?.push(data);
             const savedPat = await rPatient.save();
-            res.status(200).send(savedPat);
+            return res.status(200).send(savedPat);
             }
         }
 
     } catch (error) {
         console.error(error);
-        res.status(400).json({ message: 'No family members found' });
-        return;
+        return res.status(400).json({ message: 'No family members found' });
     }
 }
 

@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios'
 import {  Typography } from '@mui/material';
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 
 
@@ -42,6 +43,7 @@ const PatientManageDocuments = () => {
           .then((res) => {
             console.log(res.data);
             setData(res.data);
+            console.log("data retrieved is: " + JSON.stringify(res.data))
           });
       };
 
@@ -49,9 +51,10 @@ const PatientManageDocuments = () => {
         fetchTableData();
       }, []);
 
-      const handleDelete = (name) => {
-        axios.delete('http://localhost:3001/deleteUser/')
+      const handleDelete = (filename) => {
+        axios.delete(`http://localhost:8000/patients/${id}/documents`, { data: { filename: filename } })
         .then(res => {console.log(res)
+            console.log("fileName is equal to: " + filename);
             window.location.reload()})
         .catch(err => console.log(err))
     }
@@ -66,9 +69,8 @@ const PatientManageDocuments = () => {
                
                <h1>File Upload</h1>
                 <input type="file" onChange={handleFileChange} />
-                <button onClick={handleFileUpload}>Upload</button>
-     
-
+                <button className='btn btn-success' onClick={handleFileUpload}>Upload</button>
+ 
                 <table className='table'>
                     <thead>
                         <tr>
@@ -80,10 +82,10 @@ const PatientManageDocuments = () => {
                         {
                             data.map((file) => {
                                 return  <tr>
-                                    <td>{file.name}</td>
+                                    <td>{file.filename}</td>
                                     <td>
                                         <button className='btn btn-danger'
-                                        onClick={(e) => handleDelete(file.name)}>Delete</button>
+                                        onClick={(e) => handleDelete(file.filename)}>Delete</button>
                                     </td>
                                 </tr>
                             })

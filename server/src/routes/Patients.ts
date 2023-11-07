@@ -43,6 +43,8 @@ router.post("/:id/documents", patientController.addDocument);
 
 //DELETE
 router.delete("/:id", patientController.deletePatient);
+router.delete("/:id/documents", patientController.deleteDocument);
+
 
 
 export default router;

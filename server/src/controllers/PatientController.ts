@@ -178,6 +178,42 @@ const addDocument = async (req: Request, res: Response) => {
     }
 };
 
+const deleteDocument = async (req: Request, res: Response) => {
+    
+    const id = req.params.id;
+    const filename = req.body.filename;
+    console.log("FileName is:" + filename)
+    try {
+        const pat = await patient.findById(id);
+
+        if (!pat) {
+            return res.status(404).json({ message: "Patient not found" });
+        } else {
+
+            
+            // let newFiles = pat.files;
+            // if (newFiles === undefined) {
+            //     newFiles = [];
+            const newFiles= [];
+            if(pat.files !== undefined){
+                for (const file of pat.files){
+                    if(file.filename !== filename){
+                            newFiles.push(file);
+                    }          
+        }
+                    pat.files = newFiles;
+                    await pat.save();   
+                    res.status(200).json(pat); 
+    }
+
+    }
+}
+     catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Server error" });
+    }
+};
+
 const readFamilyMember = async (req: Request, res: Response) => {
     const id = req.params.id;
     console.log(id)
@@ -472,5 +508,6 @@ export default {
     filterDoctor,
     viewWallet,
     readDocuments,
-    addDocument
+    addDocument,
+    deleteDocument
 };

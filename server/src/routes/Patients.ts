@@ -2,7 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import patientController from "../controllers/PatientController.js";
 import prescriptionController from "../controllers/PrescriptionController.js";
-
+import isAuthenticated from "../middlewares/permissions/isAuthenticated.js";
 
 const router = express.Router();
 router.use(bodyParser.json());

@@ -21,7 +21,8 @@ const login = async (req: Request, res: Response) => {
         secure: false,
       });
       const type = user.__t;
-      res.status(200).json({ token, type});
+      const userId = user._id;
+      res.status(200).json({ token, type, userId});
     }
   } catch (error) {
     console.error(error);

@@ -31,7 +31,7 @@ const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
       getDoctor(decodedToken.userId)
         .then((doc) => {
           if (!doc || doc.status != "accepted") {
-            return res
+            return res  
               .status(401)
               .json({ message: "Unauthorized - Invalid token" });
           }

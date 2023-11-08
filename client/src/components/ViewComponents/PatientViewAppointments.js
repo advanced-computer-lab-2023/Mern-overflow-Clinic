@@ -1,15 +1,15 @@
 import {
-  Input,
+  // Input,
   Container,
   Button,
-  List,
-  ListItem,
+  // List,
+  // ListItem,
   Paper,
   FormControl,
   Select,
   InputLabel,
   MenuItem,
-  Typography,
+  // Typography,
 } from "@mui/material";
 
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
@@ -22,16 +22,19 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
+import { useUser } from '../../userContest';
 
 export default function PatientViewAppointments() {
   const [data, setData] = useState([]);
+  const { userId } = useUser();
 
-  const id = "6529347d1b1e1b92fd454eff";
+  // const id = "6529347d1b1e1b92fd454eff";
+  const id = userId;
+  console.log(id);
 
   const fetchTableData = () => {
     axios
-      .get(`http://localhost:8000/appointments`, {
-        params: { id: id },
+      .get(`http://localhost:8000/appointments/${id}/`, {
       })
       .then((res) => {
         setData(res.data);

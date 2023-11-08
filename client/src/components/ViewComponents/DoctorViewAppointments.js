@@ -18,16 +18,18 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
+import { useUser } from '../../userContest';
 
 export default function DoctorViewAppointments() {
   const [data, setData] = useState([]);
+  const { userId } = useUser();
 
-  const id = "65293c2cb5a34d208108cc33";
+  // const id = "65293c2cb5a34d208108cc33";
+  const id = userId;
 
   const fetchTableData = () => {
     axios
-      .get(`http://localhost:8000/appointments`, {
-        params: { id: id },
+      .get(`http://localhost:8000/appointments/${id}`, {
       })
       .then((res) => {
         console.log(res.data)

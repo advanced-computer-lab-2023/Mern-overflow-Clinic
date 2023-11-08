@@ -23,6 +23,7 @@ const createAppointment = async (req: Request, res: Response) => {
 
 const readAppointment = async (req: Request, res: Response) => {
   const id = req.params.id;
+  console.log(id);
   let today = new Date();
   const apt = appointment
     .findById(id)

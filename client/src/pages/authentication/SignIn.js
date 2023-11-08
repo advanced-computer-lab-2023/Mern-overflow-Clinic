@@ -15,15 +15,15 @@ import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { Link } from 'react-router-dom';
 // import ButtonAppBar from '../../components/ButtonAppBar';
 import sha256 from 'js-sha256';
-
+import { useUser } from '../../userContest';
 
 import { useNavigate } from 'react-router-dom';
 const defaultTheme = createTheme();
 
 export default function SignIn() {
+    const { userId, setUserId } = useUser();
     const { register, handleSubmit, setError, formState: { errors } } = useForm();
     const navigate = useNavigate();
-
     const onSubmit = data => {
         data["passwordHash"] = sha256(data["Password"]);
         data["username"] = data["Username"];
@@ -33,9 +33,9 @@ export default function SignIn() {
         axios.post('http://localhost:8000/auth/login', data, { withCredentials: true }).then(response => {
             console.log(response);
             const type = response.data.type;
-            console.log(type);
+            const userId = response.data.userId;
+            setUserId(userId);
             if (type === "Patient") {
-                console.log("here");
                 navigate("/patient/family"); 
             }
             else if (type === "Doctor") {

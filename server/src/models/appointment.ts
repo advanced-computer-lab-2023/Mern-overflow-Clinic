@@ -10,6 +10,7 @@ interface IAppointment {
     date: Date;
     duration: number;
     status:string;
+    appointmentType?:string;
 }
 
 const appointmentSchema = new Schema<IAppointment>({
@@ -19,6 +20,7 @@ const appointmentSchema = new Schema<IAppointment>({
     date: { type: Date, required: true },
     duration: { type: Number, required: true },
     status: { type: String, required: true, lowercase: true, enum: ['upcoming', 'completed','canceled','rescheduled']},
+    appointmentType: { type: String, required: true, lowercase: true, enum: ['regular', 'followup']},
 })
 
 const Appointment = model<IAppointment>('Appointment', appointmentSchema);

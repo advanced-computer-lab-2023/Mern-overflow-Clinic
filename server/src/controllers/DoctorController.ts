@@ -6,6 +6,7 @@ import user from "../models/User.js";
 import Contract from "../models/Contract.js";
 
 
+
 const createDoctor = async (req: Request, res: Response) => {
   req.body.status = "pending";
   const entry = user.find({ 'username': req.body.username }).then((document) => {
@@ -233,7 +234,6 @@ const selectPatientByName = async (req: Request, res: Response) => {
   }
 };
 
-
 const viewWallet = async (req: Request, res: Response) => {
   const dId = req.params.id;
 
@@ -249,6 +249,7 @@ const viewWallet = async (req: Request, res: Response) => {
           res.status(404).send(err);
       });
 }
+
 const addFreeSlots = async (req: Request, res: Response) => {
   const id = req.params.id;
   const startTime = new Date(req.body.date);
@@ -309,17 +310,18 @@ const addFreeSlots = async (req: Request, res: Response) => {
 
 const acceptContract = async (req: Request, res: Response) => {
   const docId = req.params.id;
-  const contractId = req.body.id;
-
+  const contractId = req.body.contractId;
+  console.log(req.body);
   const contracts = await Contract
     .find({ 'doctor': docId })
     .exec();
   if(contracts.length === 0 || contracts === undefined || !contracts){
-    return res.status(404).send("No contracts found for this doctor.");
+    return res.status(404).json({ success: false, message: "No contracts found for this doctor." });
   }
-
   for(const contract of contracts){
+
     if (contract._id.toString() === contractId && contract.status === "pending"){
+      console.log("true");
       contract.status = "accepted";
       try {
         await contract.save();
@@ -327,36 +329,42 @@ const acceptContract = async (req: Request, res: Response) => {
       } catch (err) {
         // Handle the error, e.g., log or send an error response.
         console.error(err);
-        return res.status(500).send("Error saving the contract.");
+        return res.status(500).json({ success: false, message: "Error saving the contract." });
       }
     }
   }
-
-  res.status(200).send("Contract accepted successfully.");
+  console.log("200");
+  res.status(200).json({ success: true, message: "Contract accepted successfully" });
 
 }
 
 const rejectContract = async (req: Request, res: Response) => {
   const docId = req.params.id;
-  const contractId = req.body.id;
+  const contractId = req.body.contractId;
 
   const contracts = await Contract
     .find({ 'doctor': docId })
     .exec();
 
   if(contracts.length === 0 || contracts === undefined || !contracts){
-    return res.status(404).send("No contracts found for this doctor.");
+    return res.status(404).json({ success: false, message: "No contracts found for this doctor." });
   }
 
   for(const contract of contracts){
     if (contract._id.toString() === contractId && contract.status === "pending"){
       contract.status = "rejected";
-      await contract.save();
-      break;
+      try {
+        await contract.save();
+        break;
+      } catch (err) {
+        // Handle the error, e.g., log or send an error response.
+        console.error(err);
+        return res.status(500).json({ success: false, message: "Error saving the contract." });
+      }
     }
   }
 
-  res.status(200).send("Contract rejected successfully.");
+  res.status(200).json({ success: true, message: "Contract accepted successfully" });
 
 }
 
@@ -377,3 +385,5 @@ export default {
   acceptContract,
   rejectContract,
 };
+
+

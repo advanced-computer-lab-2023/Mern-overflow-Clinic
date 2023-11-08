@@ -18,6 +18,7 @@ import PatientManageInfo from './pages/patient/PatientManageInfo';
 import PatientManageAppointments from './pages/patient/PatientManageAppointments';
 import DoctorManageInfo from './pages/doctor/DoctorManageInfo'
 import DoctorManageFreeSlots from './pages/doctor/DoctorManageFreeSlots'
+import DoctorManageContracts from './pages/doctor/DoctorManageContracts'
 import AddHealthRecords from './pages/doctor/DoctorAddHealthRecords'
 import AddFamilyMember from './components/formComponents/linkFamilyMembers'
 import PatientManageFamilyLinks from './pages/patient/PatientManageFamilyLinks';
@@ -121,6 +122,10 @@ function App() {
     {
       path: "/patient/linkFamilyMember",
       element: <PatientManageFamilyLinks />,
+    },
+    {
+      path: "/doctor/contracts",
+      element: <DoctorManageContracts />,
     },
     {
       path: "/doctor/addHealthRecords",

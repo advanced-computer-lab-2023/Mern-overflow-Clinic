@@ -22,12 +22,15 @@ import DoctorManageContracts from './pages/doctor/DoctorManageContracts'
 import AddHealthRecords from './pages/doctor/DoctorAddHealthRecords'
 import AddFamilyMember from './components/formComponents/linkFamilyMembers'
 import PatientManageFamilyLinks from './pages/patient/PatientManageFamilyLinks';
+import PatientBookAppointments from './pages/patient/patientBookAppointment';
 import {
   createBrowserRouter,
   RouterProvider,
+ 
 } from "react-router-dom";
 import AdminEditPackage from './pages/admin/AdminEditPackage';
 import EditDoctorProfile from './components/formComponents/EditDoctorProfile';
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 function App() {
   const router = createBrowserRouter([
@@ -131,7 +134,10 @@ function App() {
       path: "/doctor/addHealthRecords",
       element: <AddHealthRecords/>,
     },
-    
+    {
+      path: "/patient/bookAppointment",
+      element: <PatientManageAppointments/>,
+    },
   ]);
 
   return (

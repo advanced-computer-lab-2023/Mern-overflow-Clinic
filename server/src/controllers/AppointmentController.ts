@@ -19,6 +19,31 @@ const createAppointment = async (req: Request, res: Response) => {
       res.status(400).json(err);
     });
 };
+
+const createAppointmentForFamilyMember = async (req: Request, res: Response) => {
+//   const duration = req.body.duration
+//   const id = req.params.id // patient name
+//   const appointmentDuration = duration || 1;
+
+//   const relation = req.body.relation;
+
+//   const relativeName = req.body.name;
+//   const pati = await patient.findById(id);
+//   if (!pati) {
+//     return res.status(404).json({ error: "Patient not found" });
+//   }
+//   req.body.id = relativeData.patientId;
+//   const newApt = appointment
+//     .create(req.body)
+//     .then((newApt) => {
+//       res.status(200).json(newApt);
+//     })
+//     .catch((err) => {
+//       console.log("error");
+//       res.status(400).json(err);
+//     });
+ }
+
 const createFollowUp = async (req: Request, res: Response) => {
   req.body.duration = 1;
   const newApt = appointment
@@ -170,5 +195,6 @@ export default {
   filterAppointments,
   updateAppointment,
   createFollowUp,
+  createAppointmentForFamilyMember
 };
 

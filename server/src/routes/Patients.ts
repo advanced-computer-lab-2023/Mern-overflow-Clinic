@@ -28,6 +28,7 @@ router.post("/:id/linkfamilyMember", patientController.linkfamilyMember);
 
 
 
+
 //DELETE
 router.delete("/:id", patientController.deletePatient);
 

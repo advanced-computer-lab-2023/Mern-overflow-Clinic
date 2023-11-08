@@ -16,7 +16,7 @@ const generateToken = async (user: HydratedDocument<IUser>) => {
 
   const token = jwt.sign(
     {
-      patientId: user._id,
+      userId: user._id,
       userRole: UserTypesNames.get(user.__t),
     },
     secretKey,

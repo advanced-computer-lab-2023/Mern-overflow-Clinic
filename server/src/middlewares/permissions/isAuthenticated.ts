@@ -19,19 +19,24 @@ declare global {
 }
 
 const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
-  let token, decodedToken;
+  let token, decodedToken: any;
+
   try {
     token = req.cookies.authorization;
 
+    if (!TokenUtils.verifyToken(token)) {
+      return res
+        .status(401)
+        .json({ message: "Unauthorized - Invalid token signature" });
+    }
+
     decodedToken = TokenUtils.decodeToken(token);
 
-    if (!decodedToken) {
-      return res.status(401).json({ message: "Unauthorized - Invalid token" });
-    } else if (decodedToken.userRole === UserType.DOCTOR) {
+    if (decodedToken.userRole === UserType.DOCTOR) {
       getDoctor(decodedToken.userId)
         .then((doc) => {
           if (!doc || doc.status != "accepted") {
-            return res  
+            return res
               .status(401)
               .json({ message: "Unauthorized - Invalid token" });
           }
@@ -41,21 +46,18 @@ const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
           return res.status(500).json({ message: "Internal server error" });
         });
     }
-
-    next();
   } catch {
+    if (!decodedToken) {
+      return res.status(401).json({ message: "Unauthorized - Invalid token" });
+    }
     if (!token) {
       return res
         .status(401)
-        .json({ message: "Unauthorized - No token provided" });// TODO
-    }
-
-    if (!TokenUtils.verifyToken(token)) {
-      return res
-        .status(401)
-        .json({ message: "Unauthorized - Invalid token signature" });
+        .json({ message: "Unauthorized - No token provided" }); // TODO
     }
   }
+
+  next();
 };
 
 const getDoctor = async (

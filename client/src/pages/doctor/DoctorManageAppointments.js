@@ -1,10 +1,10 @@
 import DoctorViewAppointments from "../../components/ViewComponents/DoctorViewAppointments";
-import DoctorDashbaord from "./DoctorDashboard";
+import DoctorDashboard from "./DoctorDashboard";
 
 const DoctorManageAppointments = () => {
   return (
     <>
-      <DoctorDashbaord title="Manage My Appointments" />
+      <DoctorDashboard title="Manage My Appointments" />
       <DoctorViewAppointments />
     </>
   );

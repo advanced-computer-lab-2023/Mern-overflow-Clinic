@@ -8,25 +8,47 @@ const router = express.Router();
 router.use(bodyParser.json());
 
 //GET
-router.get("/doctorsSearch", patientController.selectDoctorByNameAndSpeciality);
+router.get(
+  "/doctorsSearch",
+  isAuthenticated,
+  patientController.selectDoctorByNameAndSpeciality,
+);
 
 //added this new route
-router.post("/:id/prescriptionsFilter", prescriptionController.filterPrescriptions);
+router.post(
+  "/:id/prescriptionsFilter",
+  isAuthenticated,
+  prescriptionController.filterPrescriptions,
+);
 //
-router.get("/doctors/:dId", patientController.selectDoctor);
-router.get("/:id/relatives", patientController.readFamilyMember);
-router.get("/", patientController.listPatients);
-router.get("/:id", patientController.readPatient);
-router.get("/:id/prescriptions", prescriptionController.viewPatientPrescription);
-router.get("/:id/price", patientController.listDoctorsBySessionPrice);
+router.get("/doctors/:dId", isAuthenticated, patientController.selectDoctor);
+router.get(
+  "/:id/relatives",
+  isAuthenticated,
+  patientController.readFamilyMember,
+);
+router.get("/", isAuthenticated, patientController.listPatients);
+router.get("/:id", isAuthenticated, patientController.readPatient);
+router.get(
+  "/:id/prescriptions",
+  isAuthenticated,
+  prescriptionController.viewPatientPrescription,
+);
+router.get(
+  "/:id/price",
+  isAuthenticated,
+  patientController.listDoctorsBySessionPrice,
+);
 
 //POST
-router.post("/", patientController.createPatient);
-router.post("/:id/familyMember", patientController.addFamilyMember);
-
+router.post("/", isAuthenticated, patientController.createPatient);
+router.post(
+  "/:id/familyMember",
+  isAuthenticated,
+  patientController.addFamilyMember,
+);
 
 //DELETE
-router.delete("/:id", patientController.deletePatient);
-
+router.delete("/:id", isAuthenticated, patientController.deletePatient);
 
 export default router;

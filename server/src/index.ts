@@ -24,9 +24,16 @@ const MongoURI: string =
   "mongodb+srv://dbuser:987654321@acl.n4q8ykx.mongodb.net/?retryWrites=true&w=majority";
 const app = express();
 
+const corsOptions = {
+  //To allow requests from client
+  origin: ["http://localhost:3000", "http://127.0.0.1"],
+  credentials: true,
+  exposedHeaders: ["set-cookie"],
+};
+
 const port: number = config.server.port || 8000;
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(cookieParser());
 
 //ROUTERS

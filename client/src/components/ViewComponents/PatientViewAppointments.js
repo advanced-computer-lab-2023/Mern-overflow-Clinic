@@ -22,7 +22,7 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
-import { useUser } from '../../userContest';
+import { useUser } from "../../userContest";
 
 export default function PatientViewAppointments() {
   const [data, setData] = useState([]);
@@ -34,11 +34,10 @@ export default function PatientViewAppointments() {
 
   const fetchTableData = () => {
     axios
-      .get(`http://localhost:8000/appointments/${id}/`, {
-      })
+      .get(`http://localhost:8000/appointments/${id}/`, { params: { id: id } })
       .then((res) => {
         setData(res.data);
-        console.log(res.data)
+        console.log(res.data);
       });
   };
 
@@ -57,7 +56,7 @@ export default function PatientViewAppointments() {
           status: status,
         })
         .then((res) => {
-          console.log(res.data)
+          console.log(res.data);
           setData(res.data);
         })
         .catch(() => setData([]));
@@ -68,7 +67,7 @@ export default function PatientViewAppointments() {
           date: date,
         })
         .then((res) => {
-          console.log(res.data)
+          console.log(res.data);
           setData(res.data);
         })
         .catch(() => setData([]));
@@ -151,15 +150,16 @@ export default function PatientViewAppointments() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((row) => (
-            <TableRow key={row.date + row.patient + row.doctor + row.status}>
-              <TableCell>{row.patient.name}</TableCell>
-              <TableCell>{row.doctor.name}</TableCell>
-              <TableCell>{row.duration}</TableCell>
-              <TableCell>{row.date}</TableCell>
-              <TableCell>{row.status}</TableCell>
-            </TableRow>
-          ))}
+          {data &&
+            data.map((row) => (
+              <TableRow key={row.date + row.patient + row.doctor + row.status}>
+                <TableCell>{row.patient.name}</TableCell>
+                <TableCell>{row.doctor.name}</TableCell>
+                <TableCell>{row.duration}</TableCell>
+                <TableCell>{row.date}</TableCell>
+                <TableCell>{row.status}</TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </Container>

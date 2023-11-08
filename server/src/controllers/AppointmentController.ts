@@ -10,6 +10,7 @@ import { stat } from "fs";
 const createAppointment = async (req: Request, res: Response) => {
   req.body.duration = 1;
   req.body.status = "upcoming";
+  req.body.appointmentType="regular";
   const newApt = appointment
     .create(req.body)
     .then((newApt) => {
@@ -20,7 +21,20 @@ const createAppointment = async (req: Request, res: Response) => {
       res.status(400).json(err);
     });
 };
-
+const createFollowUp = async (req: Request, res: Response) => {
+  req.body.duration = 1;
+  req.body.status = "upcoming";
+  req.body.appointmentType="followup";
+  const newApt = appointment
+    .create(req.body)
+    .then((newApt) => {
+      res.status(200).json(newApt);
+    })
+    .catch((err) => {
+      console.log("error");
+      res.status(400).json(err);
+    });
+};
 const readAppointment = async (req: Request, res: Response) => {
   const id = req.params.id;
   let today = new Date();

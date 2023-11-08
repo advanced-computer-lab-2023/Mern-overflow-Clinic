@@ -10,9 +10,7 @@ router.use(bodyParser.json());
 
 
 
-router.get("/",contractController.listAllContracts);
-
-router.post("/",contractController.createContract);
+router.get("/:id",contractController.listAllDoctorContracts);
 
 router.put("/",contractController.updateContract);
 

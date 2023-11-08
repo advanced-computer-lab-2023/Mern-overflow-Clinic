@@ -7,6 +7,7 @@ import contract from "../models/Contract.js";
 
 const createContract = async (req: Request, res: Response) => {
     req.body.date = Date.now();
+    req.body.admin = req.params.id;
     const newContract = contract
     .create(req.body)
     .then((newContract) => {
@@ -48,9 +49,9 @@ const deleteContract = async (req: Request, res: Response) => {
         });
 }
 
-const listAllContracts = async (req: Request, res: Response) => {
+const listAllDoctorContracts = async (req: Request, res: Response) => {
     const contracts = contract
-    .find()
+    .find({"doctor": req.params.id})
     .then((contracts) => res.status(200).json(contracts))
     .catch((err) => {
       res.status(400).json(err);
@@ -62,5 +63,5 @@ export default {
     readContract,
     updateContract,
     deleteContract,
-    listAllContracts,
+    listAllDoctorContracts,
 }

@@ -85,7 +85,7 @@ const PatientDashboard = (props) => {
                                 <MedicationIcon sx={{ width: 30, height: 30 }} />
                             </Avatar>
                         </ListItemIcon>
-                        <ListItemText primary="My Prescriptions" />
+                        <ListItemText primary="Link Family Members" />
                     </ListItemButton>
                 </ListItem>
             </List>

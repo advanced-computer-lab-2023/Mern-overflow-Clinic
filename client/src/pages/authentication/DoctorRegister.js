@@ -60,6 +60,7 @@ export default function DoctorRegister() {
     dataToServer["passwordHash"] = sha256(data["password"]);
     delete dataToServer.password
 
+    if (files.length === 0) return alert("Please select a file to upload");
     const combinedData = {
       ...dataToServer,  // Include the properties from dataToServer
       files: files,
@@ -266,7 +267,7 @@ export default function DoctorRegister() {
                   />
                 </Grid>
 
-                <Typography variant="h5" sx={{ fontWeight: "normal", my: 2 }}>upload all required documents </Typography>
+                <Typography variant="h4" sx={{ fontWeight: "normal", my: 2 }}>upload all required documents </Typography>
                
                 <Grid>
               <input type="file" multiple onChange={handleFileChange} />

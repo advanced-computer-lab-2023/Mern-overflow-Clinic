@@ -9,7 +9,7 @@ interface IAppointment {
     prescription?: Types.ObjectId;//TODO prescription
     date: Date;
     duration: number;
-    status?:string;
+    status:string;
     appointmentType?:string;
 }
 
@@ -19,8 +19,8 @@ const appointmentSchema = new Schema<IAppointment>({
     prescription: { type: Schema.Types.ObjectId, ref: "Prescription", required: false },
     date: { type: Date, required: true },
     duration: { type: Number, required: true },
-    status: { type: String, required: false, lowercase: true, enum: ['upcoming', 'completed','canceled','rescheduled']},
-    appointmentType: { type: String, required: false, lowercase: true, enum: ['regular', 'followup']},
+    status: { type: String, required: true, lowercase: true, enum: ['upcoming', 'completed','canceled','rescheduled']},
+    appointmentType: { type: String, required: true, lowercase: true, enum: ['regular', 'followup']},
 })
 
 const Appointment = model<IAppointment>('Appointment', appointmentSchema);

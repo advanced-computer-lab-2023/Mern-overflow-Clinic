@@ -9,8 +9,6 @@ import { stat } from "fs";
 
 const createAppointment = async (req: Request, res: Response) => {
   req.body.duration = 1;
-  req.body.status = "upcoming";
-  req.body.appointmentType="regular";
   const newApt = appointment
     .create(req.body)
     .then((newApt) => {
@@ -23,8 +21,6 @@ const createAppointment = async (req: Request, res: Response) => {
 };
 const createFollowUp = async (req: Request, res: Response) => {
   req.body.duration = 1;
-  req.body.status = "upcoming";
-  req.body.appointmentType="followup";
   const newApt = appointment
     .create(req.body)
     .then((newApt) => {
@@ -172,6 +168,7 @@ export default {
   readAppointment,
   deleteAppointment,
   filterAppointments,
-  updateAppointment
+  updateAppointment,
+  createFollowUp,
 };
 

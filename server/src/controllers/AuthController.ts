@@ -22,7 +22,7 @@ const login = async (req: Request, res: Response) => {
       });
       const type = user.__t;
       const userId = user._id;
-      res.status(200).json({ token, type, userId});
+      res.status(200).json({ token, type, userId });
     }
   } catch (error) {
     console.error(error);
@@ -30,12 +30,12 @@ const login = async (req: Request, res: Response) => {
   }
 };
 
-const logout = async (req:Request, res:Response) => {
+const logout = async (req: Request, res: Response) => {
   res.clearCookie("authorization");
-}
+  return res.status(200).json({ message: "Logout Successful" });
+};
 
 export default {
   login,
   logout,
 };
-

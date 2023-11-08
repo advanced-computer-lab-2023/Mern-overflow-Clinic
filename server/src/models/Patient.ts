@@ -33,7 +33,7 @@ export interface IPatient {
     gender: string;
     mobileNumber: string;
     emergencyContact: emergencyContact[];
-    files: document[];
+    files?: document[];
     familyMembers?: familyMember[];
     prescriptions?: Types.ObjectId[];
     package?: Types.ObjectId;
@@ -142,7 +142,7 @@ const PatientSchema = new Schema<IPatient>({
     ],
     files: [
         {
-            filename: { type: String, required: true, trim: true },
+            filename: { type: String, required: true, trim: true, unique:true },
             path: { type: String, required:true, trim: true },
         }
     ],

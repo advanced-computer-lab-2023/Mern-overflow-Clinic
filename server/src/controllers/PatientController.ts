@@ -141,6 +141,79 @@ const addFamilyMember = async (req: Request, res: Response) => {
     }
 };
 
+const addDocument = async (req: Request, res: Response) => {
+    
+    const file = {
+        filename: req.body.filename,
+        path: req.body.path,
+    };
+    
+    const id = req.params.id;
+    console.log(id)
+    console.log("File in BE : " + JSON.stringify(file))
+    try {
+        const pat = await patient.findById(id);
+
+        if (!pat) {
+            return res.status(404).json({ message: "Patient not found" });
+        } else {
+
+            
+            // let newFiles = pat.files;
+            // if (newFiles === undefined) {
+            //     newFiles = [];
+            const newFiles= pat.files;
+            if (newFiles !== undefined)
+                newFiles.push(file);
+
+                pat.files = newFiles;
+                await pat.save();
+    
+                res.status(200).json(pat);           
+        }
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Server error" });
+    }
+};
+
+const deleteDocument = async (req: Request, res: Response) => {
+    
+    const id = req.params.id;
+    const filename = req.body.filename;
+    console.log("FileName is:" + filename)
+    try {
+        const pat = await patient.findById(id);
+
+        if (!pat) {
+            return res.status(404).json({ message: "Patient not found" });
+        } else {
+
+            
+            // let newFiles = pat.files;
+            // if (newFiles === undefined) {
+            //     newFiles = [];
+            const newFiles= [];
+            if(pat.files !== undefined){
+                for (const file of pat.files){
+                    if(file.filename !== filename){
+                            newFiles.push(file);
+                    }          
+        }
+                    pat.files = newFiles;
+                    await pat.save();   
+                    res.status(200).json(pat); 
+    }
+
+    }
+}
+     catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Server error" });
+    }
+};
+
 const readFamilyMember = async (req: Request, res: Response) => {
     const id = req.params.id;
     console.log(id)
@@ -151,6 +224,20 @@ const readFamilyMember = async (req: Request, res: Response) => {
                 res.status(200).json(p.familyMembers);
         })
 
+        .catch((err) => {
+            console.log(err);
+            res.status(400).json(err);
+        });
+};
+
+const readDocuments = async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const p = patient
+        .findById(id)
+        .then((p) => {
+            if (p !== null)
+                res.status(200).json(p.files);
+        })
         .catch((err) => {
             console.log(err);
             res.status(400).json(err);
@@ -419,5 +506,8 @@ export default {
     selectDoctorByNameAndSpeciality,
     listDoctorsBySessionPrice,
     filterDoctor,
-    viewWallet
+    viewWallet,
+    readDocuments,
+    addDocument,
+    deleteDocument
 };

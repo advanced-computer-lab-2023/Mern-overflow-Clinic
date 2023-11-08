@@ -266,12 +266,15 @@ export default function DoctorRegister() {
                   />
                 </Grid>
 
+                <Typography variant="h5" sx={{ fontWeight: "normal", my: 2 }}>upload all required documents </Typography>
+               
                 <Grid>
               <input type="file" multiple onChange={handleFileChange} />
         {
         <ul>
           {files.map((file, index) => (
           <li key={index}>{file.filename}<a href={file.path} target="_blank" onClick={(e) => openPDF(e, file.path)}>view document</a></li>
+          //<img src={file.path} alt="Document" onClick={(e) => openPDF(e, file.path)} style={{ width: '100px', height: '100px' }} />
           ))}
       </ul>}
      

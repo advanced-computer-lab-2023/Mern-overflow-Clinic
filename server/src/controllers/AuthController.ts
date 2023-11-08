@@ -6,22 +6,22 @@ import TokenUtils from "../utils/Token.js";
 
 const login = async (req: Request, res: Response) => {
   const { username, passwordHash } = req.body;
-
+  console.log();
   try {
     const user: HydratedDocument<IUser> | null = await User.findOne({
       username,
       passwordHash,
     });
-
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     } else {
       const token = await TokenUtils.generateToken(user);
       res.cookie("authorization", token, {
         httpOnly: true, // Make the cookie accessible only via HTTP (not JavaScript)
-        // You can also set other options like 'secure', 'maxAge', 'path', etc.
+        secure: false,
       });
-      res.status(200).json({ token, user });
+      const type = user.__t;
+      res.status(200).json({ token, type});
     }
   } catch (error) {
     console.error(error);

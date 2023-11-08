@@ -1,18 +1,21 @@
 import * as React from 'react';
+import axios from "axios";
 import Paper from '@mui/material/Paper';
 import CssBaseline from '@mui/material/CssBaseline';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { TextField, Grid, Button, Box, Container, FormControl, Typography, Divider, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+// import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+// import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useForm } from "react-hook-form"
 import Avatar from '@mui/material/Avatar';
 import logo from '../../assets/gifs/logo.gif';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { Link } from 'react-router-dom';
-import ButtonAppBar from '../../components/ButtonAppBar';
+// import ButtonAppBar from '../../components/ButtonAppBar';
+import sha256 from 'js-sha256';
+
 
 import { useNavigate } from 'react-router-dom';
 const defaultTheme = createTheme();
@@ -22,17 +25,29 @@ export default function SignIn() {
     const navigate = useNavigate();
 
     const onSubmit = data => {
+        data["passwordHash"] = sha256(data["Password"]);
+        data["username"] = data["Username"];
+        delete data.Username;
+        delete data.Password;
         console.log("Data to server" + JSON.stringify(data));
-        if (data.Username.includes("patient")) {
-            navigate("/patient/family");
-        }
-        else if (data.Username.includes("doctor")) {
-
-            navigate("/doctor/profile");
-        }
-        else if (data.Username.includes("admin")) {
-            navigate("/admin/patients");
-        };
+        axios.post('http://localhost:8000/auth/login', data, { withCredentials: true }).then(response => {
+            console.log(response);
+            const type = response.data.type;
+            console.log(type);
+            if (type === "Patient") {
+                console.log("here");
+                navigate("/patient/family"); 
+            }
+            else if (type === "Doctor") {
+         
+                navigate("/doctor/profile"); 
+            }
+            else if (type === "Admin") {
+                navigate("/admin/patients"); 
+            };
+        }).catch(error => {
+            console.error("Error:", error);
+        })
     }
     console.log(errors);
 

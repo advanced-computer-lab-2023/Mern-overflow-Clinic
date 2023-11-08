@@ -1,6 +1,5 @@
 import express from "express";
 import mongoose from "mongoose";
-import axios from "axios";
 import bodyParser from "body-parser";
 import config from "./config/config.js";
 import authRouter from "./routes/Auth.js";

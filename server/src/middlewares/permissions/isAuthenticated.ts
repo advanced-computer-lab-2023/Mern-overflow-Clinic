@@ -20,7 +20,6 @@ declare global {
 
 const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
   let token, decodedToken;
-
   try {
     token = req.cookies.authorization;
 
@@ -48,7 +47,7 @@ const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
     if (!token) {
       return res
         .status(401)
-        .json({ message: "Unauthorized - No token provided" });
+        .json({ message: "Unauthorized - No token provided" });// TODO
     }
 
     if (!TokenUtils.verifyToken(token)) {

@@ -10,7 +10,13 @@ import adminRouter from "./routes/Admins.js"
 import appointmentRouter from "./routes/Appointments.js"
 import prescriptionRouter from "./routes/Prescriptions.js"
 import packageRouter from "./routes/Package.js"
+import CCpaymentRouter from "./routes/Payment.js";
+import walletPaymentRouter from "./routes/WalletPayment.js";
 import cors from 'cors'
+import appointment from "./models/appointment.js";
+import PaymentController from "./controllers/PaymentController.js";
+//const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
+
 
 
 // import isAuthenticated from "./middlewares/permissions/isAuthenticated.js";
@@ -26,7 +32,7 @@ const MongoURI: string =config.mongo.URL || "mongodb+srv://dbuser:987654321@acl.
 const app = express();
 const port: number = config.server.port || 8000;
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors({origin:"https://localhost:3000"}));
 
 
 
@@ -38,6 +44,10 @@ app.use('/admins', adminRouter);
 app.use('/appointments', appointmentRouter);
 app.use('/prescriptions', prescriptionRouter);
 app.use('/packages', packageRouter);
+app.use('/create-checkout-session', CCpaymentRouter);
+app.use('/walletPayment', walletPaymentRouter);
+
+
 
 //GET
 app.get("/", (req, res) => {
@@ -56,5 +66,14 @@ mongoose
         });
     })
     .catch((err) => console.log(err));
+
+
+// Payment part 
+/*const itemsToBePaid = new Map([
+    // assuming user selected an entry appointmnet of his appointmnets and it is passed in the request body 
+        [1,{priceInCents: , name: "appointment fees"}]
+    ])
+/*/
+
 
 export default app;

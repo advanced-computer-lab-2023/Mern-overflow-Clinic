@@ -233,6 +233,23 @@ const selectPatientByName = async (req: Request, res: Response) => {
   }
 };
 
+const viewHealthRecordOfPatient = async (req: Request, res: Response)=>
+  {
+  // assuming in Fe , doctorn gets a table that has all HIS patients and upon selecting a specific entry has the option to view health record of a patient with him 
+  
+  const pid = req.params.id;
+  patient.findById(pid).then(result => {
+    if (result != null)
+      res.status(200).send(result.healthRecords);
+    else
+      res.status(404).send("no health records found ");
+        
+  }).catch(err => res.status(400).send(err));
+};
+
+
+
+
 
 
 
@@ -246,5 +263,6 @@ export default {
   selectPatient,
   selectPatientByName,
   listAllMyPatientsUpcoming,
-  listMyPatients
+  listMyPatients,
+  viewHealthRecordOfPatient
 };

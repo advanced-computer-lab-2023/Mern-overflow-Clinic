@@ -32,6 +32,8 @@ export interface IPatient {
     prescriptions?: Types.ObjectId[];
     package?: Types.ObjectId;
     healthRecords?: IHealthRecord[];
+    wallet?:number
+    
 }
 
 /*
@@ -153,6 +155,7 @@ const PatientSchema = new Schema<IPatient>({
 
         }
     ],
+    wallet: { type: Number, required: false }
 });
 
 PatientSchema.pre('save', function(next) {

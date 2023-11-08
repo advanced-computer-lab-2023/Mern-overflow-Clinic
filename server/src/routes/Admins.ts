@@ -14,6 +14,8 @@ router.get("/requests", adminstratorController.viewRequest)
 
 //POST
 router.post("/", adminstratorController.createAdminstrator);
+router.post("/acceptDoctor/:id", adminstratorController.acceptDoctorRequest);
+router.post("/rejectDoctor/:id", adminstratorController.rejectDoctorRequest);
 
 //DELETE
 router.delete("/:id", adminstratorController.deleteAdmin);

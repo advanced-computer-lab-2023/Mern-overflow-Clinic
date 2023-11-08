@@ -15,6 +15,8 @@ router.get("/:id/registeredPatients", doctorController.listMyPatients);
 router.get("/:id/patients/:pId", doctorController.selectPatient);
 router.get("/:id/search", doctorController.selectPatientByName);
 router.get("/:id/res", doctorController.listAllMyPatientsUpcoming);
+router.get("/:id/healthRecords", doctorController.viewHealthRecordOfPatient);
+
 router.post("/", doctorController.createDoctor);
 router.put("/:id", doctorController.updateDoctor);
 router.delete("/:id", doctorController.deleteDoctor);

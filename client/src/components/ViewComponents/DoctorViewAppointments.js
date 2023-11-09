@@ -28,10 +28,15 @@ export default function DoctorViewAppointments() {
   const id = userId;
 
   const fetchTableData = () => {
-    axios.get(`http://localhost:8000/appointments/${id}`, {}).then((res) => {
-      console.log(res.data);
-      setData(res.data);
-    });
+    axios
+      .get(`http://localhost:8000/appointments/${id}`, {})
+      .then((res) => {
+        console.log(res.data);
+        setData(res.data);
+      })
+      .catch((error) => {
+        console.error("Error getting Appointment data", error);
+      });
   };
 
   useEffect(() => {

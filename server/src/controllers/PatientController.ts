@@ -8,6 +8,7 @@ import app from "../index.js";
 import { relative } from "path";
 import doctor from "../models/Doctor.js";
 import user from "../models/User.js";
+import multer from 'multer';
 
 
 // const uploadedFiles = []; // Initialize an array to hold the uploaded files
@@ -143,14 +144,20 @@ const addFamilyMember = async (req: Request, res: Response) => {
 
 const addDocument = async (req: Request, res: Response) => {
     
-    const file = {
-        filename: req.body.filename,
-        path: req.body.path,
-    };
+    
+    //  const fileInfo = {
+    //      filename: (req.file as Express.Multer.File).originalname,
+    //      path: (req.file as Express.Multer.File).path,
+    //    };
+    
+    const fileInfo = {
+        filename: (req.file as Express.Multer.File).originalname,
+        path: (req.file as Express.Multer.File).path,
+      };
     
     const id = req.params.id;
     console.log(id)
-    console.log("File in BE : " + JSON.stringify(file))
+    console.log("File in BE : " + JSON.stringify(fileInfo))
     try {
         const pat = await patient.findById(id);
 
@@ -164,7 +171,7 @@ const addDocument = async (req: Request, res: Response) => {
             //     newFiles = [];
             const newFiles= pat.files;
             if (newFiles !== undefined)
-                newFiles.push(file);
+                newFiles.push(fileInfo);
 
                 pat.files = newFiles;
                 await pat.save();
@@ -213,6 +220,11 @@ const deleteDocument = async (req: Request, res: Response) => {
         return res.status(500).json({ message: "Server error" });
     }
 };
+
+const readFile = async (req: Request, res: Response) => {
+    const filePath = decodeURIComponent(req.query.path as string);
+}
+
 
 const readFamilyMember = async (req: Request, res: Response) => {
     const id = req.params.id;
@@ -509,5 +521,6 @@ export default {
     viewWallet,
     readDocuments,
     addDocument,
-    deleteDocument
+    deleteDocument,
+    readFile
 };

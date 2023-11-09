@@ -25,19 +25,27 @@ const defaultTheme = createTheme();
 export default function DoctorRegister() {
 
   const [files, setFiles] = useState([]);
+  const [selectedType, setSelectedType] = useState('nationalID');
+  const [allTypes, setAllTypes] = useState([]);
   //const formData = new FormData();
 
+  const handleTypeChange = (event) => {
+    setSelectedType(event.target.value);
+  };
 
   const handleFileChange = (e) => {
+    const updatedTypes = [...allTypes, selectedType];
+    setAllTypes(updatedTypes);
     const selectedFiles = e.target.files;
     const newFilesArray = [...files]; // Copy the current files array
     
   for (let i = 0; i < selectedFiles.length; i++) {
     const file = selectedFiles[i];   
     //formData.append(`file${i}`, file);
+    console.log("file is: " + file);
     const fileName = file.name;
     const filePath = URL.createObjectURL(file);
-    const fileInfo = { filename: fileName, path: filePath };
+    const fileInfo = { filename: fileName, path: filePath, type: selectedType};
     newFilesArray.push(fileInfo);
   }
     setFiles(newFilesArray);
@@ -45,8 +53,7 @@ export default function DoctorRegister() {
 
   function openPDF(e, path) {
     e.preventDefault(); // Prevent the default behavior of the link (e.g., opening in a new tab)
-    
-    // Open the PDF in a new tab or window using the provided path
+    console.log("path is: " + path);
     window.open(path, '_blank');
   }
 
@@ -55,8 +62,29 @@ export default function DoctorRegister() {
   const { register, handleSubmit, setError, formState: { errors }, control } = useForm();
 
   const onSubmit = data => {
-    const dataToServer = { ...data };
+    let count = 3;
+    let nId = true;
+    let mLic = true;
+    let mDeg = true;
+    for (const type of allTypes){
+        if(type === "nationalID" && nId){
+          count--;
+            nId=false;
+        }
+        else if(type === "medical degree" && mDeg){
+          count--;
+          mDeg = false;
+        }
+        else if(type === "medical licenses" && mLic){
+          count--;
+          mLic = false;
+        }
+}
 
+if(count!==0) 
+  return alert("missing uploaded document Types");
+
+    const dataToServer = { ...data };
     dataToServer["passwordHash"] = sha256(data["password"]);
     delete dataToServer.password
 
@@ -266,9 +294,21 @@ export default function DoctorRegister() {
                   />
                 </Grid>
 
-                <Typography variant="h5" sx={{ fontWeight: "normal", my: 2 }}>upload all required documents </Typography>
-               
-                <Grid>
+                <Grid container direction="column">
+  <Grid item>
+    <Typography variant="h5" sx={{ fontWeight: "normal", my: 2 }}>
+      upload all required documents
+    </Typography>
+  </Grid>
+  <Grid item>
+    <label htmlFor="id">document Type:</label>
+    <select id="id" value={selectedType} onChange={handleTypeChange}>
+      <option value="nationalID">nationalID</option>
+      <option value="medical degree">medical degree</option>
+      <option value="medical licenses">medical licenses</option>
+    </select>
+  </Grid>
+  <Grid>
               <input type="file" multiple onChange={handleFileChange} />
         {
         <ul>
@@ -276,10 +316,9 @@ export default function DoctorRegister() {
           <li key={index}>{file.filename}<a href={file.path} target="_blank" onClick={(e) => openPDF(e, file.path)}>view document</a></li>
           //<img src={file.path} alt="Document" onClick={(e) => openPDF(e, file.path)} style={{ width: '100px', height: '100px' }} />
           ))}
-      </ul>}
-     
-      
+      </ul>}    
     </Grid>
+</Grid>
 
               </Grid>
               <Button fullWidth type="submit" variant="contained" sx={{ mt: 3, mb: 2, p: 2, fontWeight: 'bold' }}>

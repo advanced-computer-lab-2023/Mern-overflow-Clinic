@@ -21,6 +21,7 @@ export interface IDoctor {
 interface document {
     filename: string;
     path: string;
+    type: string;
 }
 
 const doctorShema = new Schema<IDoctor>({
@@ -38,6 +39,7 @@ const doctorShema = new Schema<IDoctor>({
         {
             filename: { type: String, required: true, trim: true },
             path: { type: String, required:true, trim: true },
+            type: { type: String, required:true, trim: true },
         }
     ],
     status: { type: String, required: true, lowercase: true, enum: ['pending', 'accepted', 'rejected'] },

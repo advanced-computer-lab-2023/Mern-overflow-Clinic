@@ -78,17 +78,25 @@ const PatientManageAppointments = ({ doctorId }) => {
     };
 
     axios
-      .post(`http://localhost:8000/appointments/createAppointmentsForRelations/${patID}`, appointmentData)
-      .then((res) => {
-        const successMessage = "Appointment booked successfully";
-        setStatusMessage(successMessage);
-      })
-      .catch((error) => {
-        const errorMessage = "Error booking appointment. Please try again.";
-        setStatusMessage(errorMessage);
-        console.error(error);
-      });
-  };
+    .post(`http://localhost:8000/appointments/createAppointmentsForRelations/${patID}`, appointmentData)
+    .then((res) => {
+      const successMessage = "Appointment booked successfully";
+      setStatusMessage(successMessage);
+      setIsSuccess(true); // Set isSuccess to true
+
+      // Reset the form
+      setSelectedDate(""); // Clear selectedDate
+      setSelectedFamilyMember(""); // Clear selectedFamilyMember
+      setSelectedFamilyMemberID(null); // Clear selectedFamilyMemberID
+      setBookForRelative(false);
+    })
+    .catch((error) => {
+      const errorMessage = "Error booking appointment. Please try again.";
+      setStatusMessage(errorMessage);
+      setIsSuccess(false); // Set isSuccess to false
+      console.error(error);
+    });
+};
 
   return (
     <Container maxWidth="lg">
@@ -144,7 +152,7 @@ const PatientManageAppointments = ({ doctorId }) => {
                 border: "1px solid transparent",
                 borderRadius: 5,
                 padding: 2,
-                color: isSuccess ? "green" : "red",
+                color: isSuccess ? "green" : "red", // Display green for success
               }}
             >
               {statusMessage}

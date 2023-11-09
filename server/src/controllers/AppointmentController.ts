@@ -29,12 +29,11 @@ const createAppointmentForFamilyMember = async (req: Request, res: Response) => 
 
   req.body.duration = 1;
   req.body.status = "upcoming"
-  req.body.type = "regular"
+  req.body.appointmentType = "regular"
   const id = req.params.id // patient name;
   const flag = req.body.flag;
   const relation = req.body.relation;
   if(flag){
-    console.log("eneterd")
     console.log(req.body)
     req.body.patient = req.body.relativeId
     const newApt = appointment
@@ -43,11 +42,12 @@ const createAppointmentForFamilyMember = async (req: Request, res: Response) => 
       res.status(200).json(newApt);
     })
     .catch((err) => {
-      console.log("error");
+      console.log(err);
       res.status(400).json(err);
     });
   }
   else {
+    req.body.patient = id;
     console.log(req.body)
     const newApt = appointment
     .create(req.body)
@@ -55,7 +55,7 @@ const createAppointmentForFamilyMember = async (req: Request, res: Response) => 
       res.status(200).json(newApt);
     })
     .catch((err) => {
-      console.log("error");
+      console.log(err);
       res.status(400).json(err);
     });
   }

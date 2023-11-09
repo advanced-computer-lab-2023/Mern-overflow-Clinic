@@ -88,6 +88,7 @@ if(count!==0)
     dataToServer["passwordHash"] = sha256(data["password"]);
     delete dataToServer.password
 
+    if (files.length === 0) return alert("Please select a file to upload");
     const combinedData = {
       ...dataToServer,  // Include the properties from dataToServer
       files: files,

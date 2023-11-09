@@ -52,7 +52,23 @@ const readPatient = async (req: Request, res: Response) => {
             res.status(404).send(err);
         });
 };
-
+const listFamilyMembers = async (req: Request, res: Response) => {
+    const pId = req.params.id;
+     const pat = await patient
+        .findById(pId)
+        .then((pat) => {
+            if (!pat || pat === undefined) {
+                return res.status(404).json({ message: 'Patient not found' });
+            } else {
+                if(pat.familyMembers?.length !==0)
+                    res.status(200).json(pat.familyMembers);
+                else
+                res.status(404).send("no family members");
+            }
+        }).catch((err) => {
+            res.status(404).send(err);
+        });
+};
 const updatePatient = async (req: Request, res: Response) => { };
 
 const deletePatient = async (req: Request, res: Response) => {
@@ -253,6 +269,7 @@ const listDoctorsBySessionPrice = async (req: Request, res: Response) => {
         res.status(500).json(error);
     }
 };
+
 
 
 const filterDoctor = async (req: Request, res: Response) => {
@@ -471,5 +488,6 @@ export default {
     listDoctorsBySessionPrice,
     filterDoctor,
     viewWallet,
-    linkfamilyMember
+    linkfamilyMember,
+    listFamilyMembers
 };

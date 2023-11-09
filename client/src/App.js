@@ -141,8 +141,8 @@ function App() {
       element: <AddHealthRecords/>,
     },
     {
-      path: "/patient/bookAppointment",
-      element: <PatientManageAppointments/>,
+      path: "/patient/bookAppointment/:id",
+      element: <PatientBookAppointments/>,
     },
   ]);
 

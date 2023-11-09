@@ -23,7 +23,10 @@ const createAppointment = async (req: Request, res: Response) => {
     });
 };
 
+
 const createAppointmentForFamilyMember = async (req: Request, res: Response) => {
+  console.log(req.body);
+
 //   const duration = req.body.duration
 //   const id = req.params.id // patient name
 //   const appointmentDuration = duration || 1;

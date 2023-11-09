@@ -23,9 +23,13 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
 
 
 export default function DoctorViewPatients() {
+  const navigate = useNavigate();
+
   const [data, setData] = useState([]);
   const [Query, setQuery] = useState("");
   const [selectedDoctor, setSelectedDoctor] = useState({});
@@ -87,10 +91,16 @@ export default function DoctorViewPatients() {
     }
   };
   const handleSelectDoctor = (selectedDoctor) => {
-    // Construct the URL for the doctor details page in the doctor section
-    const doctorDetailsURL = `/patient/bookAppointment/${selectedDoctor._doc.id}`;
-    window.location.href = doctorDetailsURL;
+    // Construct the URL for the doctor details page in the patient section
+    const doctorDetailsURL = `/patient/bookAppointment`;
+    // Add the 'id' parameter to the URL
+    const doctorDetailsURLWithId = `${doctorDetailsURL}/${selectedDoctor._doc._id}`;
+    
+    // Navigate to the doctor details page with the 'id' parameter
+    navigate(doctorDetailsURLWithId);
   };
+  
+  
   return (
     <Container maxWidth="xl">
       <Paper elevation={3} sx={{ p: "20px", my: "40px", paddingBottom: 5 }}>

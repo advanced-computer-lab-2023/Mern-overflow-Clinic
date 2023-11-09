@@ -4,7 +4,7 @@ import PatientDashboard from "./PatientDashboard";
 const PatientBookAppointments = () => {
   return (
     <>
-      <PatientDashboard title="Doctor details" />
+      <PatientDashboard title="Book An Appointment" />
       <PatientBookAppointment/>
     </>
   );

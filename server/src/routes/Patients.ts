@@ -10,6 +10,7 @@ router.use(bodyParser.json());
 //GET
 router.get("/doctorsSearch", patientController.selectDoctorByNameAndSpeciality);
 router.get("/:id/wallet", patientController.viewWallet);
+router.get("/:id/family", patientController.listFamilyMembers);
 //added this new route
 router.post("/:id/prescriptionsFilter", prescriptionController.filterPrescriptions);
 //

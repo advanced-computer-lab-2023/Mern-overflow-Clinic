@@ -24,28 +24,62 @@ const createAppointment = async (req: Request, res: Response) => {
 };
 
 const createAppointmentForFamilyMember = async (req: Request, res: Response) => {
-//   const duration = req.body.duration
-//   const id = req.params.id // patient name
-//   const appointmentDuration = duration || 1;
+  req.body.duration = 1;
+  req.body.status = "upcoming"
+  req.body.type = "regular"
+  const id = req.params.id // patient name;
+  const flag = req.body.flag;
+  const relation = req.body.relation;
+  if(flag){
+    console.log("eneterd")
+    console.log(req.body)
+    req.body.patient = req.body.relativeId
+    const newApt = appointment
+    .create(req.body)
+    .then((newApt) => {
+      res.status(200).json(newApt);
+    })
+    .catch((err) => {
+      console.log("error");
+      res.status(400).json(err);
+    });
+  }
+  else {
+    console.log(req.body)
+    const newApt = appointment
+    .create(req.body)
+    .then((newApt) => {
+      res.status(200).json(newApt);
+    })
+    .catch((err) => {
+      console.log("error");
+      res.status(400).json(err);
+    });
+  }
+  
+}
 
-//   const relation = req.body.relation;
+// const createAppointmentForFamilyMember = async (req: Request, res: Response) => {
+//   req.body.duration = 1;
+//   req.body.status = "upcoming";
+//   req.body.type = "regular";
+//   const id = req.params.id; // patient name;
+//   const flag = req.body.flag;
+//   const relativeId = req.body.relativeId;
 
-//   const relativeName = req.body.name;
-//   const pati = await patient.findById(id);
-//   if (!pati) {
-//     return res.status(404).json({ error: "Patient not found" });
+//   // Set patient field based on flag and relativeId
+//   req.body.patient = flag ? relativeId : id;
+
+//   try {
+//     const newApt = await appointment.create(req.body);
+//     res.status(200).json(newApt);
+//   } catch (err) {
+//     console.error(err);
+//     res.status(400).json(err);
 //   }
-//   req.body.id = relativeData.patientId;
-//   const newApt = appointment
-//     .create(req.body)
-//     .then((newApt) => {
-//       res.status(200).json(newApt);
-//     })
-//     .catch((err) => {
-//       console.log("error");
-//       res.status(400).json(err);
-//     });
- }
+// };
+
+
 
 const createFollowUp = async (req: Request, res: Response) => {
   req.body.doctor = req.params.id;

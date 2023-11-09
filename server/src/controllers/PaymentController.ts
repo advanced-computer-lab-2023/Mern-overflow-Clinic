@@ -107,13 +107,13 @@ const payCCHealthPackage = async (req: Request, res: Response) =>
   try
   {
     /// assuming health pacakage id is given in req . body 
-    const hPrice = (await healthPackage.findById(req.body.hPId))?.price; // price in pounds 
+    const hPrice = (await healthPackage.findById(req.body.hpId))?.price; // price in pounds 
     
     const hPackagePriceIncents = hPrice ? (hPrice *100) : undefined;
 
        const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
-      mode: "subscription",
+      mode: "payment",
          line_items:
       [
   {

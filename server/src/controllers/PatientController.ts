@@ -456,26 +456,6 @@ const linkfamilyMember = async (req: Request, res: Response) => {
     }
 }
 
-// const linkFamilyMemberByEmail = async (req: Request, res: Response) => {
-//     const patId = req.params.id;
-//     let familyMember: any[] = []; 
-//     let found = false ;
-//     const relation = req.body.relation;
-//     if (relation !== "wife" && relation !== "husband" && relation !== "child") {
-//         return res.status(404).send("cannot add with this relation");
-//     }    
-//     try {
-//         const rPatient = await patient.findById(patId);
-//         if (!rPatient || rPatient === undefined) {
-//             return res.status(404).send("Patient not found");
-//         }
-        
-//     } catch (error) {
-//         console.error(error);
-//         res.status(400).json({ message: 'No family members found' });
-//         return;
-//     }
-// }
 
 
 export default {

@@ -6,6 +6,7 @@ import healthRecordController from "../controllers/HealthRecordController.js";
 import appointmentController from "../controllers/AppointmentController.js";
 const router = express.Router();
 router.use(bodyParser.json());
+router.use(express.json());
 
 router.get("/", doctorController.listDoctors);
 router.post("/filter", patientController.filterDoctor);

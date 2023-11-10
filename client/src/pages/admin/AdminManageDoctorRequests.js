@@ -1,10 +1,10 @@
 import AdminDashboard from "./AdminDashboard";
-import AdminViewDoctors from "../../components/ViewComponents/AdminViewDoctors";
+import AdminViewRequestes from "../../components/ViewComponents/AdminViewRequests"
 const AdminManageDoctorRequests = () => {
   return (
     <>
       <AdminDashboard title="Manage Doctor Registration Requests" />
-      <AdminViewDoctors />
+      <AdminViewRequestes />
     </>
   );
 };

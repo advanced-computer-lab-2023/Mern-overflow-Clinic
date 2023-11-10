@@ -1,6 +1,6 @@
 
 
-import mongoose, {Schema,Types, model} from "mongoose";
+import mongoose, {NumberExpression, Schema,Types, model} from "mongoose";
 
 
 interface IAppointment {
@@ -9,7 +9,8 @@ interface IAppointment {
     prescription?: Types.ObjectId;//TODO prescription
     date: Date;
     duration: number;
-    status:string;
+    status: string;
+    price: number;
     appointmentType?:string;
 }
 
@@ -19,7 +20,8 @@ const appointmentSchema = new Schema<IAppointment>({
     prescription: { type: Schema.Types.ObjectId, ref: "Prescription", required: false },
     date: { type: Date, required: true },
     duration: { type: Number, required: true },
-    status: { type: String, required: true, lowercase: true, enum: ['upcoming', 'completed','canceled','rescheduled']},
+    status: { type: String, required: true, lowercase: true, enum: ['upcoming', 'completed', 'canceled', 'rescheduled'] },
+    price: {type:Number,required:true},
     appointmentType: { type: String, required: true, lowercase: true, enum: ['regular', 'followup']},
 })
 

@@ -19,6 +19,7 @@ router.get("/", patientController.listPatients);
 router.get("/:id", patientController.readPatient);
 router.get("/:id/prescriptions", prescriptionController.viewPatientPrescription);
 router.get("/:id/price", patientController.listDoctorsBySessionPrice);
+router.get("/:id/healthRecords", patientController.viewMyHealthRecords);
 
 //POST
 router.post("/", patientController.createPatient);

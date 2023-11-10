@@ -71,6 +71,59 @@ const listAdminstrators = async (req: Request, res: Response) => {
 			res.status(400).json(err);
 		});
 };
+// LOGINE
+const acceptDoctorRequest = async (req: Request, res: Response) => {
+	// assuming doctor id passed as a parameter whenever entry is clciked from fe 
+	const reqid = req.params.id;
+	// assuming his initial state is pending 
+
+
+
+	const update = {
+		// Define the fields you want to update and their new values
+		status: 'accepted',
+
+	};
+
+	// Set options for the update
+	const options = {
+		new: true, // Return the updated document after the update
+	};
+
+	// Use findOneAndUpdate to find and update the document
+	const filter = { _id: reqid };
+	doctor.findOneAndUpdate(filter, update, options).then(result=>
+		{
+		res.status(200).send("accepted");
+		}
+	).catch(err=>res.status(404).send(err));
+}
+const rejectDoctorRequest = async (req: Request, res: Response) => {
+	// assuming doctor id passed as a parameter whenever entry is clciked from fe 
+	const reqid = req.params.id;
+	// assuming his initial state is pending 
+
+
+
+	const update = {
+		// Define the fields you want to update and their new values
+		status: 'rejected',
+
+	};
+
+	// Set options for the update
+	const options = {
+		new: true, // Return the updated document after the update
+	};
+
+	// Use findOneAndUpdate to find and update the document
+	const filter = { _id: reqid };
+	doctor.findOneAndUpdate(filter, update, options).then(result=>
+		{
+		res.status(200).send("rejected");
+		}
+	).catch(err=>res.status(404).send(err));
+}
 
 
 export default {
@@ -78,7 +131,9 @@ export default {
 	readAdminstrator,
 	updateAdminstrator,
 	deleteAdmin,
-	acceptDoctorRequest: handleDoctorRequest,
+	acceptDoctorRequest,
+	rejectDoctorRequest,
 	viewRequest,
 	listAdminstrators
+
 };

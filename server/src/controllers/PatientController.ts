@@ -367,6 +367,21 @@ const filterDoctor = async (req: Request, res: Response) => {
     }
 };
 
+
+const viewMyHealthRecords = async (req: Request, res: Response) => {
+    // assuming I am a patient and I am already logged in so we can get patient id from session
+    // TO-DO: how do I get it from session ?
+    const pid = req.params.id;
+    patient.findById(pid).then(result => {
+        if (result != null)
+            res.status(200).send(result.healthRecords);
+        else
+            res.status(404).send("no health records found ");
+        
+}).catch(err=>res.status(400).send(err));
+
+}
+
 const viewWallet = async (req: Request, res: Response) => {
     const pId = req.params.id;
 
@@ -490,6 +505,7 @@ export default {
     selectDoctorByNameAndSpeciality,
     listDoctorsBySessionPrice,
     filterDoctor,
+    viewMyHealthRecords,
     viewWallet,
     linkfamilyMember
 };

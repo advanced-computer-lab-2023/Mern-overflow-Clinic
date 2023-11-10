@@ -32,6 +32,8 @@ export default function DoctorViewPatients() {
         params: { id: id },
       })
       .then((res) => {
+        console.log(res.data);
+        console.log("Hererrrrrrrrrrrrreeee: "+(res.data)[1].healthRecords.lenth);
         setData(res.data);
       });
   };
@@ -150,7 +152,11 @@ setData([]);
           })}
 
           <Typography>Health Records</Typography>
-          {selectedPatient.healthRecords.map((item) => {
+
+          <Typography> {`items: ${selectedPatient.healthRecords.lenth}`}</Typography>
+
+
+          {/* {selectedPatient.healthRecords.map((item) => {
             return (
               <List>
                 <ListItem>{"Name: " + item.name}</ListItem>
@@ -158,7 +164,7 @@ setData([]);
                 <ListItem>{"Date: " + item.date}</ListItem>
               </List>
             );
-          })}
+          })} */}
         </List>
       )}
     </Container>

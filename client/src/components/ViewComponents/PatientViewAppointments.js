@@ -161,11 +161,11 @@ export default function PatientViewAppointments() {
               <TableCell>{row.date}</TableCell>
               <TableCell>{row.status}</TableCell>
               <TableCell>
-              <Link to={`/patient/pay/appointment/${row.id}`}>
+              <Link to={`/patient/pay/appointment/${row._id}`}>
                     <IconButton>
                       <PaymentIcon />
                     </IconButton>
-                    </Link>
+              </Link>
                   </TableCell>
                   
             </TableRow>

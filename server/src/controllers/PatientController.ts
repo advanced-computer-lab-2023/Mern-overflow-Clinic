@@ -12,11 +12,11 @@ import user from "../models/User.js";
 
 const createPatient = async (req: Request, res: Response) => {
 
+    console.log(req.body)
     const entry = user.find({ 'username': req.body.username }).then((document) => {
         if (document.length === 0) {
 
-            patient.find({ 'email': req.body.email }).then((emailRes) => {
-
+            patient.find({ 'email': req.body.email }).then((emailRes) => {// TODO rfactor this and test for uniqe mobile number
                 if (emailRes.length !== 0)
                     res.status(404).send("You are already registered , please sign in ");
 
@@ -27,6 +27,7 @@ const createPatient = async (req: Request, res: Response) => {
                             res.status(200).json(newPatient);
                         })
                         .catch((err) => {
+                            console.log(err)
                             res.status(400).json(err);
                         });
                 }

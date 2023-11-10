@@ -21,14 +21,16 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
+import { useUser } from '../../userContest';
 
 export default function DoctorViewPatients() {
   const [data, setData] = useState([]);
   const [Query, setQuery] = useState("");
   const [selectedDoctor, setSelectedDoctor] = useState({});
   const [availableSpecialties, setAvailableSpecialties] = useState([]);
-
-  const id = "6529347d1b1e1b92fd454eff";
+  const { userId } = useUser();
+  // const id = "6529347d1b1e1b92fd454eff";
+  const id = userId;
 
   const fetchTableData = () => {
 

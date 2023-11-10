@@ -1,22 +1,25 @@
 import express from "express";
 import bodyParser from "body-parser";
 import prescriptionController from "../controllers/PrescriptionController.js";
+import isAuthenticated from "../middlewares/permissions/isAuthenticated.js";
 
 const router = express.Router();
 router.use(bodyParser.json());
 
 //GET
-router.get("/:id", prescriptionController.selectPrescription);
+router.get("/:id", isAuthenticated, prescriptionController.selectPrescription);
 
 //POST
-router.post("/", prescriptionController.createPrescription);
+router.post("/", isAuthenticated, prescriptionController.createPrescription);
 
 //PUT
-router.put("/:id", prescriptionController.updatePrescription);
+router.put("/:id", isAuthenticated, prescriptionController.updatePrescription);
 
 //DELETE
-router.delete("/:id", prescriptionController.deletePrescription);
-
-
+router.delete(
+  "/:id",
+  isAuthenticated,
+  prescriptionController.deletePrescription,
+);
 
 export default router;

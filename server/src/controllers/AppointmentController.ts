@@ -2,13 +2,13 @@ import { Request, Response } from "express";
 import doctor from "../models/Doctor.js";
 import appointment from "../models/appointment.js";
 import patient from "../models/Patient.js";
+import Patient from "../models/Patient.js";
 import { stat } from "fs";
-
-
-
 
 const createAppointment = async (req: Request, res: Response) => {
   req.body.duration = 1;
+  req.body.status = "upcoming";
+  req.body.appointmentType="regular";
   const newApt = appointment
     .create(req.body)
     .then((newApt) => {
@@ -20,31 +20,59 @@ const createAppointment = async (req: Request, res: Response) => {
     });
 };
 const createFollowUp = async (req: Request, res: Response) => {
+  req.body.doctor = req.params.id;
   req.body.duration = 1;
-  const newApt = appointment
-    .create(req.body)
-    .then((newApt) => {
-      res.status(200).json(newApt);
+  req.body.status = "upcoming";
+  req.body.appointmentType = "followup";
+  console.log(req.body);
+  // 1. Extract the patient's email from req.body
+  const patientEmail = req.body.email;
+
+  // 2. Search for the patient with the given email in your database
+    Patient.findOne({ email: patientEmail })
+    .then((patient) => {
+      console.log("getting patient");
+      if (!patient) {
+        console.log("error here");
+        return res.status(404).json({ message: 'Patient not found' });
+      }
+      console.log(patient._id);
+      // 3. If a patient with that email is found, set req.body.patient to the _id of the patient
+      req.body.patient = patient._id;
+
+      // 4. Create the follow-up appointment using the updated req.body
+      appointment
+        .create(req.body)
+        .then((newApt) => {
+          console.log("success");
+          res.status(200).json(newApt);
+        })
+        .catch((err) => {
+          console.log("error");
+          res.status(400).json(err);
+        });
     })
     .catch((err) => {
       console.log("error");
       res.status(400).json(err);
     });
 };
+
 const readAppointment = async (req: Request, res: Response) => {
   const id = req.params.id;
+  console.log(id);
   let today = new Date();
   const apt = appointment
     .findById(id)
-    .populate({ path: 'doctor', select: 'name' }).populate({ path: 'patient', select: 'name' })
+    .populate({ path: "doctor", select: "name" })
+    .populate({ path: "patient", select: "name" })
     .then((apt) => {
-      res.status(200).json(apt)
+      return res.status(200).json(apt);
     })
     .catch((err) => {
-      res.status(400).json(err);
+      return res.status(400).json(err);
     });
 };
-
 
 // const updateAppointment = async (req: Request, res: Response) => {
 //   const id = req.params.id;
@@ -57,7 +85,7 @@ const readAppointment = async (req: Request, res: Response) => {
 //         for (const apt of appointment) {
 //           const appointmentDate = new Date(apt.date);
 //           const today = new Date();
-    
+
 //           if (appointmentDate < today && apt.status !== "completed") {
 //             apt.status = "completed";
 //             await apt.save();
@@ -68,11 +96,11 @@ const readAppointment = async (req: Request, res: Response) => {
 //       }
 //     })
 // };
-const updateAppointment = async (req: Request, res: Response) => { 
-const id = req.params.id
+const updateAppointment = async (req: Request, res: Response) => {
+  const id = req.params.id;
   try {
     const appointments = await appointment.find({});
-    
+
     for (const apt of appointments) {
       const appointmentDate = new Date(apt.date);
       const today = new Date();
@@ -83,13 +111,11 @@ const id = req.params.id
       }
     }
 
-    res.status(200).json({ message: 'Appointments updated successfully' });
+    res.status(200).json({ message: "Appointments updated successfully" });
   } catch (err) {
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
-
-
 
 const deleteAppointment = async (req: Request, res: Response) => {
   const id = req.params.id;
@@ -106,7 +132,8 @@ const deleteAppointment = async (req: Request, res: Response) => {
 const listAllAppointments = async (req: Request, res: Response) => {
   const apt = appointment
     .find({})
-    .populate({ path: 'doctor', select: 'name' }).populate({ path: 'patient', select: 'name' })
+    .populate({ path: "doctor", select: "name" })
+    .populate({ path: "patient", select: "name" })
     .then((apt) => res.status(200).json(apt))
     .catch((err) => {
       res.status(400).json(err);
@@ -114,53 +141,58 @@ const listAllAppointments = async (req: Request, res: Response) => {
 };
 
 const filterAppointments = async (req: Request, res: Response) => {
-
   const status = req.body.status;
 
-  if (req.body.date !== undefined && status !== undefined || (req.body.date && status)) {
+  if (
+    (req.body.date !== undefined && status !== undefined) ||
+    (req.body.date && status)
+  ) {
     const inputDate = new Date(req.body.date);
     const apt = appointment
-      .find({ "date": inputDate, "status": status })
-      .populate({ path: 'doctor', select: 'name' }).populate({ path: 'patient', select: 'name' })
+      .find({ date: inputDate, status: status })
+      .populate({ path: "doctor", select: "name" })
+      .populate({ path: "patient", select: "name" })
       .then((apt) => {
-
-        res.status(200).json(apt)
+        res.status(200).json(apt);
       })
       .catch((err) => {
         res.status(400).json(err);
       });
   }
-  if ((req.body.date !== undefined && status === undefined) || (req.body.date && !status)) {
+  if (
+    (req.body.date !== undefined && status === undefined) ||
+    (req.body.date && !status)
+  ) {
     const inputDate = new Date(req.body.date);
     const apt = appointment
-      .find({ "date": inputDate })
+      .find({ date: inputDate })
 
-      .populate({ path: 'doctor', select: 'name' }).populate({ path: 'patient', select: 'name' })
+      .populate({ path: "doctor", select: "name" })
+      .populate({ path: "patient", select: "name" })
       .then((apt) => {
-
-        res.status(200).json(apt)
+        res.status(200).json(apt);
       })
       .catch((err) => {
         res.status(400).json(err);
       });
   }
-  if (req.body.date === undefined && status !== undefined || (!req.body.date && status)) {
+  if (
+    (req.body.date === undefined && status !== undefined) ||
+    (!req.body.date && status)
+  ) {
     const apt = appointment
-      .find({ "status": status })
+      .find({ status: status })
 
-      .populate({ path: 'doctor', select: 'name' }).populate({ path: 'patient', select: 'name' })
+      .populate({ path: "doctor", select: "name" })
+      .populate({ path: "patient", select: "name" })
       .then((apt) => {
-
-        res.status(200).json(apt)
+        res.status(200).json(apt);
       })
       .catch((err) => {
         res.status(400).json(err);
       });
   }
-
 };
-
-
 
 export default {
   createAppointment,
@@ -171,4 +203,3 @@ export default {
   updateAppointment,
   createFollowUp,
 };
-

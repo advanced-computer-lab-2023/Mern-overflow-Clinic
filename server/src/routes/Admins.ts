@@ -10,16 +10,16 @@ const router = express.Router();
 router.use(bodyParser.json());
 
 //GET
-router.get("/", adminstratorController.listAdminstrators)
-router.get("/requests", adminstratorController.viewRequest)
+router.get("/", isAuthenticated, adminstratorController.listAdminstrators);
+router.get("/requests", isAuthenticated, adminstratorController.viewRequest);
 
 //POST
-router.post("/", adminstratorController.createAdminstrator);
+router.post("/", isAuthenticated,adminstratorController.createAdminstrator);
 router.post("/acceptDoctor/:id", adminstratorController.acceptDoctorRequest);
 router.post("/rejectDoctor/:id", adminstratorController.rejectDoctorRequest);
 router.post("/:id/createContract",contractController.createContract);
 
 //DELETE
-router.delete("/:id", adminstratorController.deleteAdmin);
+router.delete("/:id", isAuthenticated, adminstratorController.deleteAdmin);
 
 export default router;

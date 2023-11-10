@@ -32,9 +32,13 @@ export default function PatientRegister() {
     delete dataToServer.EmergencyPhone
     delete dataToServer.password
     console.log("Data to server" + JSON.stringify(dataToServer));
+
     axios.post('http://localhost:8000/patients', dataToServer)
       .then((response) => {
         console.log('POST request successful', response);
+        axios.post("http://localhost:8000/auth/login", {username:dataToServer.username,passwordHash:dataToServer.passwordHash})
+        console.log("coookie created")
+      }).then(()=>{
         navigate('/patient/family');
       })
       .catch((error) => {

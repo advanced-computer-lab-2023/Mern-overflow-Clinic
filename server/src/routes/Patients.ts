@@ -41,7 +41,7 @@ router.get(
 );
 
 //POST
-router.post("/", isAuthenticated, patientController.createPatient);
+router.post("/", patientController.createPatient);
 router.post(
   "/:id/familyMember",
   isAuthenticated,

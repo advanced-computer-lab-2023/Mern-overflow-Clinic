@@ -26,15 +26,23 @@ import PaymentController from "./controllers/PaymentController.js";
 
 
 
+
 mongoose.set("strictQuery", false);
 
 //App variables
 const MongoURI: string =config.mongo.URL || "mongodb+srv://dbuser:987654321@acl.n4q8ykx.mongodb.net/?retryWrites=true&w=majority";
 const app = express();
+
+const corsOptions = {
+    origin: ["http://localhost:3000", "http://127.0.0.1/"],
+    credentials: true,
+    exposedHeaders: ["set-cookie"],
+  };
+app.use(cors(corsOptions));
+
+
 const port: number = config.server.port || 8000;
 app.use(bodyParser.json());
-app.use(cors({origin:"https://localhost:3000"}));
-
 
 
 //ROUTERS

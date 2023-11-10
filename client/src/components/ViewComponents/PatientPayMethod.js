@@ -23,18 +23,37 @@ export default function PatientPayMethod(props) {
         setValue(event.target.value);
     };
 
-    const handleCash = (event) => {
-        props.setPaymentMethod("Cash on Delivery");
-        setCash(true);
-        setCredit(false);
-        setWallet(false);
-    };
+
 
     const handleCredit = (event) => {
         props.setPaymentMethod("Credit Card");
         setCash(false);
         setCredit(true);
         setWallet(false);
+        console.log("appiddddd"+props.appid);
+        {
+            fetch("http://localhost:8000/create-checkout-session/appointments", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    appId: props.appid
+                }),
+            })
+                .then(async res => {
+                    console.log("after fetch");
+                    if (res.ok) return res.json()
+                    const json = await res.json();
+                    return await Promise.reject(json);
+                })
+                .then(({ url }) => {
+                    window.location = url
+                })
+                .catch(e => {
+                    console.error(e.error)
+                })
+        }
 
     };
 
@@ -43,6 +62,22 @@ export default function PatientPayMethod(props) {
         setCash(false);
         setCredit(false);
         setWallet(true);
+        console.log(props.appid)
+        axios.post('http://localhost:8000/walletPayment/appointments', {id:props.appid,pId:"6529347d1b1e1b92fd454eff"}, {
+  headers: {
+    'Content-Type': 'application/json', // Set the content type based on your API requirements
+    // Add other headers as needed
+  },
+})
+  .then(response => {
+    // Handle the success response
+    console.log("Success")
+    console.log('Response:', response.data);
+  })
+  .catch(error => {
+    // Handle the error
+    console.error('Error:', error.response ? error.response.data : error.message);
+  });
     };
 
     return (

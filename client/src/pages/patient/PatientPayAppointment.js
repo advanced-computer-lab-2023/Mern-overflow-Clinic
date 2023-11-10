@@ -6,10 +6,11 @@ import { useParams } from 'react-router-dom';
 const PatientPayAppointment = () => {
     const [paymentMethod, setPaymentMethod] = useState("");
     const { appid } = useParams();
+    
     return (
         <>
             <PatientDashboard title= {`Pay Appointment`} />
-            <PatientPayMethod setPaymentMethod={setPaymentMethod} paymentMethod={paymentMethod} appid />
+            <PatientPayMethod setPaymentMethod={setPaymentMethod} paymentMethod={paymentMethod} appid={appid} />
         </>
     );
 }

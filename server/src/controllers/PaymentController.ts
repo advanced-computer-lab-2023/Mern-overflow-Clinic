@@ -43,11 +43,12 @@ const payCCAppointment = async (req: Request, res: Response) =>
 ] ,
         
        
-      success_url: `http://localhost:3000/patient/apppointments`,
-      cancel_url: `http://localhost:3000/patient/apppointments`,
+      success_url: `http://localhost:3000/patient/appointments`,
+      cancel_url: `http://localhost:3000/patient/appointments`,
     })
     res.json({ url: session.url })
   } catch (e) {
+    console.log(e);
     res.status(500).json(e);
   }
   
@@ -61,7 +62,9 @@ const payWalletAppointment = async (req: Request, res: Response) => {
   // TODO: Display these messages  in the fe
   // assumimg id of user is given through req.body
   //TODO:UPDATE ID to be taken from logined in session
+
   const pId = req.body.pId;
+  
   const pat = await patient.findById(pId);
   const walletValue = (pat)?.wallet;
   if (appPrice!=undefined && walletValue!=undefined)
@@ -87,7 +90,7 @@ const payWalletAppointment = async (req: Request, res: Response) => {
       const updateWallet = await patient.findOneAndUpdate(filter, update, options);
 		
       const newWallet = walletValue && appPrice ? (walletValue - appPrice) : undefined;
-      res.status(200).json("Payment successful , new wallet value :" + newWallet);
+      res.status(200).send("Payment successful , new wallet value :" + newWallet);
     }
   }
   else {

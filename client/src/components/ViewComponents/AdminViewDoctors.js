@@ -1,4 +1,21 @@
-import { Input, InputLabel, TextField, Grid, Select, MenuItem, Button, Box, Container, FormControl, Typography, Divider, FormLabel, RadioGroup, FormControlLabel, Radio } from "@mui/material";
+import {
+  Input,
+  InputLabel,
+  TextField,
+  Grid,
+  Select,
+  MenuItem,
+  Button,
+  Box,
+  Container,
+  FormControl,
+  Typography,
+  Divider,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -7,8 +24,8 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import IconButton from '@mui/material/IconButton';
-import DeleteIcon from '@mui/icons-material/Delete';
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "axios";
 
 const columns = [
@@ -60,42 +77,46 @@ export default function AdminViewDoctors() {
   const [filteredData, setFilteredData] = useState([]);
 
   const fetchTableData = () => {
-    axios.get(`http://localhost:8000/doctors`).then((res) => {
-      let temp = ["No filter"];
-      res.data.map((key) => {
-        if (temp.indexOf(key.speciality) === -1) {
-          temp.push(key.speciality);
-        }
+    axios
+      .get(`http://localhost:8000/doctors`)
+      .then((res) => {
+        let temp = ["No filter"];
+        res.data.map((key) => {
+          if (temp.indexOf(key.speciality) === -1) {
+            temp.push(key.speciality);
+          }
+        });
+
+        setUniqueSpecialties(temp);
+
+        setData(res.data);
+        setFilteredData(res.data);
+      })
+      .catch((error) => {
+        console.error("Error getting Doctor data", error);
       });
-
-      setUniqueSpecialties(temp);
-
-      setData(res.data);
-      setFilteredData(res.data);
-    });
   };
 
   const handleDelete = (id) => {
-    axios.delete(`http://localhost:8000/doctors/${id}`)
+    axios
+      .delete(`http://localhost:8000/doctors/${id}`)
       .then((response) => {
-        console.log('DELETE request successful', response);
+        console.log("DELETE request successful", response);
         fetchTableData();
       })
       .catch((error) => {
-        console.error('Error making DELETE request', error);
+        console.error("Error making DELETE request", error);
       });
-  }
+  };
 
   useEffect(() => {
     fetchTableData();
   }, []);
 
-
   return (
     <Container maxWidth="xl">
-      <Paper elevation={3} sx={{ p: '20px', my: '40px', paddingBottom: 5 }}>
-          <Container>
-
+      <Paper elevation={3} sx={{ p: "20px", my: "40px", paddingBottom: 5 }}>
+        <Container>
           <Table>
             <TableHead>
               <TableRow>
@@ -128,6 +149,5 @@ export default function AdminViewDoctors() {
         </Container>
       </Paper>
     </Container>
-
   );
 }

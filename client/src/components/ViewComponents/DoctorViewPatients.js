@@ -38,6 +38,9 @@ export default function DoctorViewPatients() {
         console.log(res.data);
         console.log("Hererrrrrrrrrrrrreeee: "+(res.data)[1].healthRecords.lenth);
         setData(res.data);
+      })
+      .catch((error) => {
+        console.error("Error getting Patient data", error);
       });
   };
 

@@ -1,19 +1,18 @@
 import React from "react";
 import "./App.css";
-import PatientRegister from "./pages/authentication/PatientRegister";
-import DoctorRegister from "./pages/authentication/DoctorRegister";
-import SignIn from "./pages/authentication/SignIn";
-// import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminManageAdmins from "./pages/admin/AdminManageAdmins";
-import AdminManageDoctors from "./pages/admin/AdminManageDoctors";
-import AdminManagePatients from "./pages/admin/AdminManagePatients";
-import AdminManagePackages from "./pages/admin/AdminManagePackages";
 import AdminManageDoctorRequests from "./pages/admin/AdminManageDoctorRequests";
-import DoctorManageProfile from "./pages/doctor/DoctorManageProfile";
+import AdminManageDoctors from "./pages/admin/AdminManageDoctors";
+import AdminManagePackages from "./pages/admin/AdminManagePackages";
+import AdminManagePatients from "./pages/admin/AdminManagePatients";
+import DoctorRegister from "./pages/authentication/DoctorRegister";
+import PatientRegister from "./pages/authentication/PatientRegister";
+import SignIn from "./pages/authentication/SignIn";
 import DoctorManageAppointments from "./pages/doctor/DoctorManageAppointments";
 import DoctorManagePatients from "./pages/doctor/DoctorManagePatients";
-import PatientManageFamily from "./pages/patient/PatientManageFamily";
+import DoctorManageProfile from "./pages/doctor/DoctorManageProfile";
 import PatientManageDoctors from "./pages/patient/PatientManageDoctors";
+import PatientManageFamily from "./pages/patient/PatientManageFamily";
 import PatientManagePrescriptions from "./pages/patient/PatientManagePrescriptions";
 import PatientManageInfo from './pages/patient/PatientManageInfo';
 import PatientManageAppointments from "./pages/patient/PatientManageAppointments";
@@ -137,7 +136,6 @@ function App() {
       path: "/patient/pay/appointment/:appid",
       element: <PatientPayAppointment/>,
     }
-    
   ]);
 
   return (
@@ -148,4 +146,3 @@ function App() {
 }
 
 export default App;
-

@@ -1,17 +1,24 @@
 import PatientDashboard from "./PatientDashboard";
 import PatientManageFamilyLinks from "../../components/formComponents/linkFamilyMembers";
+import { useUser } from "../../userContest";
 
 const PatientLinkFamily = () => {
+  const { userId, setUserId, userRole, setUserRole } = useUser();
   return (
     <>
-      <PatientDashboard title="Linking My Family Members" />
-      <PatientManageFamilyLinks />
+      {userRole === "Patient" ? (
+        <>
+          <PatientDashboard title="Link My Family Members" />
+          <PatientManageFamilyLinks />
+        </>
+      ) : (
+        <p>Excuse me, are you a Patient?</p>
+      )}
     </>
   );
 };
 
 export default PatientLinkFamily;
-
 
 // import PatientDashboard from "./PatientDashboard";
 // import PatientViewInfo from "../../components/ViewComponents/PatientViewInfo";
@@ -25,3 +32,4 @@ export default PatientLinkFamily;
 //  );
 // }
 // export default PatientManageInfo;
+

@@ -1,12 +1,21 @@
 import PatientDashboard from "./PatientDashboard";
 import PatientViewInfo from "../../components/ViewComponents/PatientViewInfo";
+import { useUser } from "../../userContest";
 
 const PatientManageInfo = () => {
- return (
+  const { userId, setUserId, userRole, setUserRole } = useUser();
+  return (
     <>
-        <PatientDashboard title="My Information" />
-        <PatientViewInfo />
+      {userRole === "Patient" ? (
+        <>
+          <PatientDashboard title="My Information" />
+          <PatientViewInfo />
+        </>
+      ) : (
+        <p>Excuse me, are you a Patient?</p>
+      )}
     </>
- );
-}
+  );
+};
 export default PatientManageInfo;
+

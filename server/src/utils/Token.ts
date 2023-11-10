@@ -10,7 +10,7 @@ export interface TokenPayload {
 }
 
 const generateToken = async (user: HydratedDocument<IUser>) => {
-  const secretKey = config.jwt.secret;
+  const secretKey = "8SfrYRYFiFzUVX4Vpxl41EAQ8c29Aqp+BuqZAA1chsw=";
 
   const expiresIn = "7d";
 

@@ -11,6 +11,10 @@ import {
   MenuItem,
   Typography,
 } from "@mui/material";
+import IconButton from '@mui/material/IconButton';
+import PaymentIcon from '@mui/icons-material/Payment';
+
+import { Link } from 'react-router-dom';
 
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -27,6 +31,7 @@ export default function PatientViewAppointments() {
   const [data, setData] = useState([]);
 
   const id = "6529347d1b1e1b92fd454eff";
+
 
   const fetchTableData = () => {
     axios
@@ -148,13 +153,21 @@ export default function PatientViewAppointments() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((row) => (
+          {data && data.map((row) => (
             <TableRow key={row.date + row.patient + row.doctor + row.status}>
-              <TableCell>{row.patient.name}</TableCell>
-              <TableCell>{row.doctor.name}</TableCell>
+              <TableCell>{row.patient?.name}</TableCell>
+              <TableCell>{row.doctor?.name}</TableCell>
               <TableCell>{row.duration}</TableCell>
               <TableCell>{row.date}</TableCell>
               <TableCell>{row.status}</TableCell>
+              <TableCell>
+              <Link to={`/patient/pay/appointment/${row.id}`}>
+                    <IconButton>
+                      <PaymentIcon />
+                    </IconButton>
+                    </Link>
+                  </TableCell>
+                  
             </TableRow>
           ))}
         </TableBody>

@@ -27,6 +27,7 @@ import {
 } from "react-router-dom";
 import AdminEditPackage from './pages/admin/AdminEditPackage';
 import EditDoctorProfile from './components/formComponents/EditDoctorProfile';
+import PatientPayAppointment from './pages/patient/PatientPayAppointment';
 
 function App() {
   const router = createBrowserRouter([
@@ -126,6 +127,10 @@ function App() {
       path: "/doctor/contracts",
       element: <DoctorManageContracts />,
     },
+    {
+      path: "/patient/pay/appointment/:appid",
+      element: <PatientPayAppointment/>,
+    }
     
   ]);
 

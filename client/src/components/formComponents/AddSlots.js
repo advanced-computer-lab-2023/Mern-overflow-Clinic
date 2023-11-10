@@ -9,15 +9,19 @@ import React, { useState } from "react";
 import axios from "axios";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'; // Import AdapterDayjs from dayjs
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"; // Import AdapterDayjs from dayjs
 import { Typography } from "@mui/material";
+import { useUser } from "../../userContest";
 //import AdapterDateFns from "@mui/x-date-pickers/AdapterDateFns"; // Choose the appropriate date adapter
 
 export default function DoctorAddSlots() {
   const [date, setDate] = useState(null);
   const [message, setMessage] = useState("");
 
-  const id = "65293c2cb5a34d208108cc33";
+  //const id = "65293c2cb5a34d208108cc33";
+
+  const { userId } = useUser();
+  let id = userId;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -34,28 +38,26 @@ export default function DoctorAddSlots() {
       .then((res) => {
         if (res.status === 200) {
           setMessage("Slot added successfully.");
-        } 
-       
+        }
       })
       .catch((error) => {
         if (error.response && error.response.status === 400) {
           setMessage("Bad request. Please check the provided data.");
-        }else if (error.response && error.response.status === 401) {
+        } else if (error.response && error.response.status === 401) {
           setMessage("You have not entered a date.");
         } else if (error.response && error.response.status === 402) {
           setMessage("'You have not yet been accepted or accepted a contract.");
-        }else if (error.response && error.response.status === 403) {
+        } else if (error.response && error.response.status === 403) {
           setMessage("This slot has already been added.");
-        }else if (error.response && error.response.status === 404) {
+        } else if (error.response && error.response.status === 404) {
           setMessage("Error 404: Not Found");
-        }else if (error.response && error.response.status === 405) {
+        } else if (error.response && error.response.status === 405) {
           setMessage("You cannot use a past date.");
-        }else if (error.response && error.response.status === 406){
+        } else if (error.response && error.response.status === 406) {
           setMessage("You already have an appointment on that date and time");
         }
       });
   };
-
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -72,10 +74,10 @@ export default function DoctorAddSlots() {
               type="submit"
               variant="contained"
               fullWidth
-              sx={{ mb: 3, p: 1.8, fontWeight: 'bold', marginTop: 2 }}
+              sx={{ mb: 3, p: 1.8, fontWeight: "bold", marginTop: 2 }}
             >
               Add Slot
-          </Button>
+            </Button>
           </form>
           {message && <div>{message}</div>}
         </Paper>

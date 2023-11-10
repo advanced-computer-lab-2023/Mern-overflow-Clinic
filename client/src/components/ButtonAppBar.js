@@ -56,7 +56,7 @@ export default function ButtonAppBar(props) {
   });
   const navigate = useNavigate();
 
-  const { userId, setUserId } = useUser();
+  const { userId, setUserId, userRole, setUserRole } = useUser();
 
   const toggleDrawer = (anchor, open) => (event) => {
     if (
@@ -75,6 +75,7 @@ export default function ButtonAppBar(props) {
       .then((response) => {
         console.log(response);
         setUserId("");
+        setUserRole("");
         navigate("/signin");
       })
       .catch((error) => {

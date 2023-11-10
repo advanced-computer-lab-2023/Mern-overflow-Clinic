@@ -59,7 +59,7 @@ router.post(
   isAuthenticated,
   appointmentController.createFollowUp,
 );
-router.post("/", isAuthenticated, doctorController.createDoctor);
+router.post("/", doctorController.createDoctor);
 router.put("/:id", isAuthenticated, doctorController.updateDoctor);
 router.delete("/:id", isAuthenticated, doctorController.deleteDoctor);
 

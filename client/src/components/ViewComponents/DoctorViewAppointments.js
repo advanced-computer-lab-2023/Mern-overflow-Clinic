@@ -18,20 +18,24 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
+import { useUser } from "../../userContest";
 
 export default function DoctorViewAppointments() {
   const [data, setData] = useState([]);
+  const { userId } = useUser();
 
-  const id = "65293c2cb5a34d208108cc33";
+  // const id = "65293c2cb5a34d208108cc33";
+  const id = userId;
 
   const fetchTableData = () => {
     axios
-      .get(`http://localhost:8000/appointments`, {
-        params: { id: id },
-      })
+      .get(`http://localhost:8000/appointments/${id}`, {})
       .then((res) => {
-        console.log(res.data)
+        console.log(res.data);
         setData(res.data);
+      })
+      .catch((error) => {
+        console.error("Error getting Appointment data", error);
       });
   };
 
@@ -50,7 +54,7 @@ export default function DoctorViewAppointments() {
           status: status,
         })
         .then((res) => {
-          console.log(res.data)
+          console.log(res.data);
           setData(res.data);
         })
         .catch(() => setData([]));
@@ -143,15 +147,18 @@ export default function DoctorViewAppointments() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((row) => (
-            <TableRow key={row.date + row.patient.name + row.doctor.name + row.status}>
-              <TableCell>{row.patient.name}</TableCell>
-              <TableCell>{row.doctor.name}</TableCell>
-              <TableCell>{row.duration}</TableCell>
-              <TableCell>{row.date}</TableCell>
-              <TableCell>{row.status}</TableCell>
-            </TableRow>
-          ))}
+          {data &&
+            data.map((row) => (
+              <TableRow
+                key={row.date + row.patient.name + row.doctor.name + row.status}
+              >
+                <TableCell>{row.patient.name}</TableCell>
+                <TableCell>{row.doctor.name}</TableCell>
+                <TableCell>{row.duration}</TableCell>
+                <TableCell>{row.date}</TableCell>
+                <TableCell>{row.status}</TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </Container>

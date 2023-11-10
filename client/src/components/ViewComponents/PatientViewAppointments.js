@@ -1,15 +1,15 @@
 import {
-  Input,
+  // Input,
   Container,
   Button,
-  List,
-  ListItem,
+  // List,
+  // ListItem,
   Paper,
   FormControl,
   Select,
   InputLabel,
   MenuItem,
-  Typography,
+  // Typography,
 } from "@mui/material";
 
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
@@ -22,20 +22,25 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
+import { useUser } from "../../userContest";
 
 export default function PatientViewAppointments() {
   const [data, setData] = useState([]);
+  const { userId } = useUser();
 
-  const id = "6529347d1b1e1b92fd454eff";
+  // const id = "6529347d1b1e1b92fd454eff";
+  const id = userId;
+  console.log(id);
 
   const fetchTableData = () => {
     axios
-      .get(`http://localhost:8000/appointments`, {
-        params: { id: id },
-      })
+      .get(`http://localhost:8000/appointments/${id}/`, { params: { id: id } })
       .then((res) => {
         setData(res.data);
-        console.log(res.data)
+        console.log(res.data);
+      })
+      .catch((error) => {
+        console.error("Error getting data", error);
       });
   };
 
@@ -54,7 +59,7 @@ export default function PatientViewAppointments() {
           status: status,
         })
         .then((res) => {
-          console.log(res.data)
+          console.log(res.data);
           setData(res.data);
         })
         .catch(() => setData([]));
@@ -65,7 +70,7 @@ export default function PatientViewAppointments() {
           date: date,
         })
         .then((res) => {
-          console.log(res.data)
+          console.log(res.data);
           setData(res.data);
         })
         .catch(() => setData([]));
@@ -148,15 +153,16 @@ export default function PatientViewAppointments() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((row) => (
-            <TableRow key={row.date + row.patient + row.doctor + row.status}>
-              <TableCell>{row.patient.name}</TableCell>
-              <TableCell>{row.doctor.name}</TableCell>
-              <TableCell>{row.duration}</TableCell>
-              <TableCell>{row.date}</TableCell>
-              <TableCell>{row.status}</TableCell>
-            </TableRow>
-          ))}
+          {data &&
+            data.map((row) => (
+              <TableRow key={row.date + row.patient + row.doctor + row.status}>
+                <TableCell>{row.patient.name}</TableCell>
+                <TableCell>{row.doctor.name}</TableCell>
+                <TableCell>{row.duration}</TableCell>
+                <TableCell>{row.date}</TableCell>
+                <TableCell>{row.status}</TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </Container>

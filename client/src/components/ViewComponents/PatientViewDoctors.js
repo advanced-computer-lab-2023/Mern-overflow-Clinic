@@ -21,30 +21,34 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
+import { useUser } from "../../userContest";
 
 export default function DoctorViewPatients() {
   const [data, setData] = useState([]);
   const [Query, setQuery] = useState("");
   const [selectedDoctor, setSelectedDoctor] = useState({});
   const [availableSpecialties, setAvailableSpecialties] = useState([]);
-
-  const id = "6529347d1b1e1b92fd454eff";
+  const { userId } = useUser();
+  // const id = "6529347d1b1e1b92fd454eff";
+  const id = userId;
 
   const fetchTableData = () => {
-
-    axios.get(`http://localhost:8000/patients/${id}/price`, {params: {id: id} }).then((res) => {
-
-
-      console.log(res.data)
-      setData(res.data);
-      let temp = [];
-      res.data.map((key) => {
-        if (temp.indexOf(key._doc.speciality) === -1) {
-          temp.push(key._doc.speciality);
-        }
+    axios
+      .get(`http://localhost:8000/patients/${id}/price`, { params: { id: id } })
+      .then((res) => {
+        console.log(res.data);
+        setData(res.data);
+        let temp = [];
+        res.data.map((key) => {
+          if (temp.indexOf(key._doc.speciality) === -1) {
+            temp.push(key._doc.speciality);
+          }
+        });
+        setAvailableSpecialties(temp);
+      })
+      .catch((error) => {
+        console.error("Error getting Doctor data", error);
       });
-      setAvailableSpecialties(temp);
-    });
   };
 
   useEffect(() => {
@@ -56,19 +60,21 @@ export default function DoctorViewPatients() {
     let speciality = e.target[0].value;
     let datetime = e.target[2].value;
 
-    console.log(speciality)
-    console.log(datetime)
+    console.log(speciality);
+    console.log(datetime);
 
     if (datetime === "") {
-
-        axios
-          .post(`http://localhost:8000/doctors/filter`, {
-            speciality: speciality,
-            id: id,
-          })
-          .then((res) => {
-            setData(res.data);
-          }); 
+      axios
+        .post(`http://localhost:8000/doctors/filter`, {
+          speciality: speciality,
+          id: id,
+        })
+        .then((res) => {
+          setData(res.data);
+        })
+        .catch((error) => {
+          console.error("Error getting Doctor data", error);
+        });
     } else {
       axios
         .post(`http://localhost:8000/doctors/filter`, {
@@ -77,7 +83,6 @@ export default function DoctorViewPatients() {
           id: id,
         })
         .then((res) => {
-
           setData(res.data);
         })
         .catch(() => setData([]));
@@ -142,15 +147,15 @@ export default function DoctorViewPatients() {
                 </FormControl>
               </form>
 
-            <Button
-              fullWidth
-              type="submit"
-              variant="contained"
-              onClick={fetchTableData}
-              sx={{ mt: 3, mb: 2, p: 2, fontWeight: "bold" }}
-            >
-              Clear
-            </Button>
+              <Button
+                fullWidth
+                type="submit"
+                variant="contained"
+                onClick={fetchTableData}
+                sx={{ mt: 3, mb: 2, p: 2, fontWeight: "bold" }}
+              >
+                Clear
+              </Button>
             </Container>
           </Container>
         </Container>
@@ -181,15 +186,16 @@ export default function DoctorViewPatients() {
           )}
         </TableBody>
       </Table>
-      {typeof (selectedDoctor._doc) !== "undefined" && (
+      {typeof selectedDoctor._doc !== "undefined" && (
         <List>
           <ListItem>{"Name: " + selectedDoctor._doc.name}</ListItem>
           <ListItem>{"Specialty: " + selectedDoctor._doc.speciality}</ListItem>
-          <ListItem>{"Affiliation: " + selectedDoctor._doc.affiliation}</ListItem>
+          <ListItem>
+            {"Affiliation: " + selectedDoctor._doc.affiliation}
+          </ListItem>
           <ListItem>{"Education: " + selectedDoctor._doc.education}</ListItem>
         </List>
-      )
-      }
+      )}
     </Container>
   );
 }

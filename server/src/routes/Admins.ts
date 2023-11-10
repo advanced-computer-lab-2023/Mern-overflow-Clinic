@@ -10,14 +10,18 @@ const router = express.Router();
 router.use(bodyParser.json());
 
 //GET
-router.get("/", adminstratorController.listAdminstrators)
-router.get("/requests", adminstratorController.viewRequest)
+router.get("/", isAuthenticated, adminstratorController.listAdminstrators);
+router.get("/requests", isAuthenticated, adminstratorController.viewRequest);
 
 //POST
-router.post("/", adminstratorController.createAdminstrator);
-router.post("/:id/createContract",contractController.createContract);
+router.post(
+  "/:id/createContract",
+  isAuthenticated,
+  contractController.createContract,
+);
+router.post("/", isAuthenticated, adminstratorController.createAdminstrator);
 
 //DELETE
-router.delete("/:id", adminstratorController.deleteAdmin);
+router.delete("/:id", isAuthenticated, adminstratorController.deleteAdmin);
 
 export default router;

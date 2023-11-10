@@ -1,5 +1,5 @@
 import axios from "axios";
-import sha256 from "js-sha256";
+// import sha256 from "js-sha256";
 import { useForm } from "react-hook-form";
 import {
   Box,
@@ -14,11 +14,15 @@ import {
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import { useParams } from "react-router-dom";
+// import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useUser } from '../../userContest';
 
 const AddFamilyMember = () => {
-  let id = "6529347d1b1e1b92fd454eff";
+  // let id = "6529347d1b1e1b92fd454eff";
+  const { userId } = useUser();
+  let id = userId;
+  console.log(id);
   const [errorMessage, setErrorMessage] = useState(false);
   const {
     register,

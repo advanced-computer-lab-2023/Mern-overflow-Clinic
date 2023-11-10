@@ -22,12 +22,14 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
+import { useUser } from '../../userContest';
 
 export default function PatientViewPrescriptions() {
   const [data, setData] = useState([]);
   const [selectedPrescription, setSelectedPrescription] = useState({});
-
-  const id = "6529347d1b1e1b92fd454eff";
+  const { userId } = useUser();
+  // const id = "6529347d1b1e1b92fd454eff";
+  const id = userId;
 
   const fetchTableData = () => {
     axios

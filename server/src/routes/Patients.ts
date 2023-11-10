@@ -71,7 +71,7 @@ router.get("/", patientController.listPatients);
 router.get("/:id", patientController.readPatient);
 router.get("/:id/prescriptions", prescriptionController.viewPatientPrescription);
 router.get("/:id/price", patientController.listDoctorsBySessionPrice);
-router.get("/:id/getFile", patientController.readFile);
+router.get("/:id/document", patientController.readPath);
 
 //POST
 router.post("/", patientController.createPatient);

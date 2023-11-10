@@ -36,8 +36,8 @@ const app = express();
 const port: number = config.server.port || 8000;
 app.use(bodyParser.json());
 app.use(cors());
-app.use(express.static('uploads'));
-//app.use(express.static(path.join(__dirname, './src/uploads')));
+app.use("/uploads", express.static('./src/uploads'));
+//app.use(express.static(path.join(__dirname, './uploads')));
 
 
 

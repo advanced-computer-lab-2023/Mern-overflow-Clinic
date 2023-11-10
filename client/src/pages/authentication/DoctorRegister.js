@@ -24,31 +24,25 @@ const defaultTheme = createTheme();
 
 export default function DoctorRegister() {
 
-  const [files, setFiles] = useState([]);
+  const [file, setFiles] = useState([]);
   const [selectedType, setSelectedType] = useState('nationalID');
   const [allTypes, setAllTypes] = useState([]);
-  //const formData = new FormData();
+  
 
   const handleTypeChange = (event) => {
     setSelectedType(event.target.value);
   };
 
   const handleFileChange = (e) => {
-    const updatedTypes = [...allTypes, selectedType];
-    setAllTypes(updatedTypes);
-    const selectedFiles = e.target.files;
-    const newFilesArray = [...files]; // Copy the current files array
-    
-  for (let i = 0; i < selectedFiles.length; i++) {
-    const file = selectedFiles[i];   
-    //formData.append(`file${i}`, file);
-    console.log("file is: " + file);
-    const fileName = file.name;
-    const filePath = URL.createObjectURL(file);
-    const fileInfo = { filename: fileName, path: filePath, type: selectedType};
-    newFilesArray.push(fileInfo);
-  }
-    setFiles(newFilesArray);
+    //const updatedTypes = [...allTypes, selectedType];
+   // setAllTypes(updatedTypes);
+   //setFiles(e.target.files);
+   const file = Array.from(e.target.files);
+    setFiles(file);
+    // const selectedFiles = e.target.files;
+    // const newFilesArray = [...files]; 
+  
+    //setFiles(newFilesArray);
   };
 
   function openPDF(e, path) {
@@ -62,43 +56,48 @@ export default function DoctorRegister() {
   const { register, handleSubmit, setError, formState: { errors }, control } = useForm();
 
   const onSubmit = data => {
-    let count = 3;
-    let nId = true;
-    let mLic = true;
-    let mDeg = true;
-    for (const type of allTypes){
-        if(type === "nationalID" && nId){
-          count--;
-            nId=false;
-        }
-        else if(type === "medical degree" && mDeg){
-          count--;
-          mDeg = false;
-        }
-        else if(type === "medical licenses" && mLic){
-          count--;
-          mLic = false;
-        }
-}
+//     let count = 3;
+//     let nId = true;
+//     let mLic = true;
+//     let mDeg = true;
+//     for (const type of allTypes){
+//         if(type === "nationalID" && nId){
+//           count--;
+//             nId=false;
+//         }
+//         else if(type === "medical degree" && mDeg){
+//           count--;
+//           mDeg = false;
+//         }
+//         else if(type === "medical licenses" && mLic){
+//           count--;
+//           mLic = false;
+//         }
+// }
 
-if(count!==0) 
-  return alert("missing uploaded document Types");
-
+// if(count!==0) 
+//   return alert("missing uploaded document Types");
+    console.log("files" + JSON.stringify(file));
+    const formData = new FormData();
+    for (let i = 0; i < file.length; i++) {
+      const f = file[i];   
+      formData.append(`files`, f);
+       console.log("file is: " + JSON.stringify(f));
+    }
     const dataToServer = { ...data };
     dataToServer["passwordHash"] = sha256(data["password"]);
     delete dataToServer.password
 
-    if (files.length === 0) return alert("Please select a file to upload");
-    const combinedData = {
-      ...dataToServer,  // Include the properties from dataToServer
-      files: files,
-    };
+    if (file.length === 0) return alert("Please select a file to upload");
+    formData.append('datatoserver', JSON.stringify(dataToServer));
+    
+    
     //dataToServer= JSON.stringify(dataToServer) + JSON.stringify(files);
-    //console.log("Data to server" + JSON.stringify(dataToServer));
-    //console.log("files" + JSON.stringify(files));
-    console.log("data" + JSON.stringify(combinedData));
+    console.log("Data to server" + JSON.stringify(dataToServer));
+   
+    //console.log("data is :" +  JSON.stringify(Object.fromEntries(formData.entries())));
 
-    axios.post('http://localhost:8000/doctors', combinedData)
+    axios.post('http://localhost:8000/doctors', formData)
       .then((response) => {
         console.log('POST request successful', response);
         navigate('/doctor/profile');
@@ -301,23 +300,23 @@ if(count!==0)
       upload all required documents
     </Typography>
   </Grid>
-  <Grid item>
+  {/* <Grid item>
     <label htmlFor="id">document Type:</label>
     <select id="id" value={selectedType} onChange={handleTypeChange}>
       <option value="nationalID">nationalID</option>
       <option value="medical degree">medical degree</option>
       <option value="medical licenses">medical licenses</option>
     </select>
-  </Grid>
+  </Grid> */}
   <Grid>
               <input type="file" multiple onChange={handleFileChange} />
-        {
+        {/*{
         <ul>
           {files.map((file, index) => (
-          <li key={index}>{file.filename}<a href={file.path} target="_blank" onClick={(e) => openPDF(e, file.path)}>view document</a></li>
-          //<img src={file.path} alt="Document" onClick={(e) => openPDF(e, file.path)} style={{ width: '100px', height: '100px' }} />
+          <li key={index}>{file.name}</li>
+          //< img src={file.path} alt="Document" onClick={(e) => openPDF(e, file.path)} style={{ width: '100px', height: '100px' }} />
           ))}
-      </ul>}    
+      </ul>}     */}
     </Grid>
 </Grid>
 

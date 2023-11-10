@@ -9,6 +9,12 @@ import { relative } from "path";
 import doctor from "../models/Doctor.js";
 import user from "../models/User.js";
 import multer from 'multer';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 
 // const uploadedFiles = []; // Initialize an array to hold the uploaded files
@@ -152,6 +158,7 @@ const addDocument = async (req: Request, res: Response) => {
     
     const fileInfo = {
         filename: (req.file as Express.Multer.File).originalname,
+        //path : path.join(__dirname, 'uploads', (req.file as Express.Multer.File).filename)
         path: (req.file as Express.Multer.File).path,
       };
     
@@ -221,8 +228,16 @@ const deleteDocument = async (req: Request, res: Response) => {
     }
 };
 
-const readFile = async (req: Request, res: Response) => {
-    const filePath = decodeURIComponent(req.query.path as string);
+const readPath = async (req: Request, res: Response) => {
+    
+    //get path of file using path.join and res.send
+    //const id = req.params.id;
+    const filename = req.query.filename  as string;
+    console.log("FileName is:" + filename)
+    
+    const filePath = path.join(__dirname, '../uploads', filename);
+     console.log("FilePath is: " + filePath);
+     res.send(filePath);                             
 }
 
 
@@ -522,5 +537,5 @@ export default {
     readDocuments,
     addDocument,
     deleteDocument,
-    readFile
+    readPath
 };

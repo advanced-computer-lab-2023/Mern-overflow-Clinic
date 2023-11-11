@@ -16,8 +16,11 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useUser } from '../../userContest';
 
 const LinkFamilyMember = () => {
+   const { userId } = useUser();
+  let id = userId;
   const [errorMessage, setErrorMessage] = useState(false);
   const {
     register,
@@ -27,7 +30,7 @@ const LinkFamilyMember = () => {
   } = useForm();
 
   const onSubmit = (data) => {
-    const id = "6529347d1b1e1b92fd454eff";
+   
     axios
       .post(`http://localhost:8000/patients/${id}/linkfamilyMember`, data) // Send the data object with the request
       .then((response) => {

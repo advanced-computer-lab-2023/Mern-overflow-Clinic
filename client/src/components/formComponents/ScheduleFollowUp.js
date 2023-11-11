@@ -12,9 +12,11 @@ import {
 import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
+import { useUser } from '../../userContest';
 
 const ScheduleFollowUp = () => {
-    let id = "65293c2cb5a34d208108cc33";
+    const { userId } = useUser();
+    let id = userId;
     const [email, setEmail] = useState("");
     const [price, setPrice] = useState("");
     const [date, setDate] = useState("");

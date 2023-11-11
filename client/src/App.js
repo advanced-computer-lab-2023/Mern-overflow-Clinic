@@ -17,11 +17,11 @@ import PatientManageDoctors from "./pages/patient/PatientManageDoctors";
 import PatientManagePrescriptions from "./pages/patient/PatientManagePrescriptions";
 import PatientManageInfo from './pages/patient/PatientManageInfo';
 import PatientManageAppointments from "./pages/patient/PatientManageAppointments";
-// import DoctorManageInfo from './pages/doctor/DoctorManageInfo'
+import DoctorManageInfo from './pages/doctor/DoctorManageInfo'
 import DoctorManageFreeSlots from './pages/doctor/DoctorManageFreeSlots'
 import DoctorManageContracts from './pages/doctor/DoctorManageContracts'
 import DoctorManageFollowUp from './pages/doctor/DoctorManageFollowUp'
-
+import PatientBookAppointments from "./pages/patient/patientBookAppointment"
 import AddHealthRecords from './pages/doctor/DoctorAddHealthRecords'
 import AddFamilyMember from './components/formComponents/linkFamilyMembers'
 import PatientManageFamilyLinks from './pages/patient/PatientManageFamilyLinks';

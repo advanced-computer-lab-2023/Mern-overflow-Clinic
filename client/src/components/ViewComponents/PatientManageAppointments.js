@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { useParams } from 'react-router-dom';
-
+import { useUser } from '../../userContest';
 
 const PatientManageAppointments = ({ doctorId }) => {
   const { id } = useParams();
@@ -29,8 +29,9 @@ const PatientManageAppointments = ({ doctorId }) => {
   const [statusMessage, setStatusMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
   const [docID, setDocID] = useState(id); // Initialize docID with the doctorId prop
-
-  const patID = "6529362d1b1e1b92fd454f12"; // Replace with the actual patient ID
+  const { userId } = useUser();
+  let patID = userId;
+  //const patID = "6529362d1b1e1b92fd454f12"; // Replace with the actual patient ID
 
   useEffect(() => {
     if (bookForRelative) {

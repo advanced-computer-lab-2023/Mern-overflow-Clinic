@@ -22,12 +22,14 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
+import { useUser } from '../../userContest';
 
 export default function PatientViewInfo() {
   const [data, setData] = useState([]);
 
-  const id = "65293c2cb5a34d208108cc33";
-
+  //const id = "65293c2cb5a34d208108cc33";
+  const { userId } = useUser();
+  let id = userId;
   const fetchTableData = () => {
       axios
         .get(`http://localhost:8000/doctors/${id}`)

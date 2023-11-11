@@ -3,11 +3,14 @@ import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 import { useForm } from "react-hook-form"
-import { useEffect, useState } from "react";
 import axios from 'axios';
+import { useEffect, useState } from "react";
+import { useUser } from '../../userContest';
 
 const EditDoctorProfile = () => {
-    let  id  = "65293c2cb5a34d208108cc33"; 
+    const { userId } = useUser();
+    let id = userId;
+    //let  id  = "65293c2cb5a34d208108cc33"; 
     const { register, handleSubmit, setError, formState: { errors } } = useForm();
     const [email, setEmail] = useState("");
     const [hourlyRate, setHourlyRate] = useState("");

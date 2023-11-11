@@ -5,19 +5,23 @@ import {
   InputLabel,
   Button,
 } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
 import axios from "axios";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'; // Import AdapterDayjs from dayjs
 import { Typography } from "@mui/material";
 //import AdapterDateFns from "@mui/x-date-pickers/AdapterDateFns"; // Choose the appropriate date adapter
+import { useEffect, useState } from "react";
+import { useUser } from '../../userContest';
 
 export default function DoctorAddSlots() {
   const [date, setDate] = useState(null);
   const [message, setMessage] = useState("");
+  const { userId } = useUser();
+  let id = userId;
 
-  const id = "65293c2cb5a34d208108cc33";
+  //const id = "65293c2cb5a34d208108cc33";
 
   const handleSubmit = (e) => {
     e.preventDefault();

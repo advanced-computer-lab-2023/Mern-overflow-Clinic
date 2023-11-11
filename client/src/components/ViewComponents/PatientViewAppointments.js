@@ -30,7 +30,7 @@ export default function PatientViewAppointments() {
 
   // const id = "6529347d1b1e1b92fd454eff";
   const id = userId;
-  console.log(id);
+  //console.log(id);
 
   const fetchTableData = () => {
     axios

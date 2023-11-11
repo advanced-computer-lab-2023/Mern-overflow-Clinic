@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useUser } from '../../userContest';
 
 const ContractPage = ({ match }) => {
-  const id = "65293c2cb5a34d208108cc33";
+  const { userId } = useUser();
+  let id = userId;
+
+  //const id = "65293c2cb5a34d208108cc33";
   const [contracts, setContracts] = useState([]);
   const [selectedContractId, setSelectedContractId] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);

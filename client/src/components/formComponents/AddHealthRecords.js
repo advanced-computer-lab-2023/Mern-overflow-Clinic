@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
   Container,
   Paper,
@@ -9,11 +8,16 @@ import {
 } from "@mui/material";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import { useEffect, useState } from "react";
+import { useUser } from '../../userContest';
 
 const AddHealthRecord = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const [date, setDate] = useState(null);
-  const id = "65293c2cb5a34d208108cc33"; // Doctor ID
+  const { userId } = useUser();
+  let id = userId;
+
+
 
   const onSubmit = (data) => {
     const requestData = {

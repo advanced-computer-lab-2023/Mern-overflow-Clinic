@@ -12,6 +12,7 @@ import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import fs from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -171,15 +172,14 @@ const addDocument = async (req: Request, res: Response) => {
         if (!pat) {
             return res.status(404).json({ message: "Patient not found" });
         } else {
-
-            
-            // let newFiles = pat.files;
-            // if (newFiles === undefined) {
-            //     newFiles = [];
-            const newFiles= pat.files;
-            if (newFiles !== undefined)
+            if(pat.files !== undefined){
+                const existingFile = pat.files.find(file => file.filename === fileInfo.filename);
+                if (existingFile) {
+                    return res.status(400).json({ message: "Filename already exists in the patient's files" });
+                }
+            }
+                const newFiles= pat.files || [];
                 newFiles.push(fileInfo);
-
                 pat.files = newFiles;
                 await pat.save();
     
@@ -219,6 +219,14 @@ const deleteDocument = async (req: Request, res: Response) => {
                     await pat.save();   
                     res.status(200).json(pat); 
     }
+    const filePath = `./src/uploads/` + filename;
+            fs.unlink(filePath, (err) => {
+                if (err) {
+                    console.error(err);
+                    return res.status(500).json({ message: "Error deleting file from server" });
+                }
+            })
+    
 
     }
 }

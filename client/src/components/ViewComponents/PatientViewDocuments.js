@@ -39,8 +39,13 @@ const PatientViewDocuments = () => {
       })
       .catch((error) => {
         console.log(JSON.stringify(formData));
-        console.error("Error making PUT request", error);
-        alert('Error making POST request: ' + error.message);
+        if (error.response && error.response.status === 400 && error.response.data.message === "Filename already exists in the patient's files") {
+          alert(error.response.data.message);
+        }
+        else{
+          console.error("Error making PUT request", error);
+          alert('Error making POST request: ' + error.message);
+        }
       });
   };
 
@@ -65,7 +70,9 @@ const PatientViewDocuments = () => {
         .then(res => {console.log(res)
             console.log("fileName is equal to: " + filename);
             window.location.reload()})
-        .catch(err => console.log(err))
+            .catch(err => {
+              console.log(err);
+          });
     }
 
      function openPDF(e, filename) {

@@ -1,10 +1,10 @@
-import DoctorDashbaord from "./DoctorDashboard";
+import DoctorDashboard from "./DoctorDashboard";
 import EditDoctorProfile from "../../components/formComponents/EditDoctorProfile";
 
 const DoctorManageProfile = () => {
     return (
         <>
-            <DoctorDashbaord title="Manage My Profile" />
+            <DoctorDashboard title="Manage My Profile" />
             <EditDoctorProfile />
         </>
     );

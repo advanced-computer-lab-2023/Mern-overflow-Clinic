@@ -22,6 +22,7 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
+import { useUser } from '../../userContest';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
@@ -34,8 +35,9 @@ export default function DoctorViewPatients() {
   const [Query, setQuery] = useState("");
   const [selectedDoctor, setSelectedDoctor] = useState({});
   const [availableSpecialties, setAvailableSpecialties] = useState([]);
-  //const history = useHistory();
-  const id = "6529347d1b1e1b92fd454eff";
+  const { userId } = useUser();
+  // const id = "6529347d1b1e1b92fd454eff";
+  const id = userId;
 
   const fetchTableData = () => {
 

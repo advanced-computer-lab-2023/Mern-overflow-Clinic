@@ -12,9 +12,9 @@ import {
   Typography,
 } from "@mui/material";
 
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+// import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+// import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+// import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import React, { useEffect, useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -22,11 +22,15 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
+import { useUser } from '../../userContest';
 
 export default function PatientViewFamilyMembers() {
   const [data, setData] = useState([]);
+  const { userId } = useUser();
 
-  const id = "6529347d1b1e1b92fd454eff";
+  // const id = "6529347d1b1e1b92fd454eff";
+  const id = userId;
+  console.log(id);
 
   const fetchTableData = () => {
     axios

@@ -14,11 +14,11 @@ router.get("/", adminstratorController.listAdminstrators);
 router.get("/requests", adminstratorController.viewRequest);
 
 //POST
-router.post(
-  "/:id/createContract",
-  contractController.createContract,
-);
+router.post("/:id/createContract", contractController.createContract);
+
 router.post("/", adminstratorController.createAdminstrator);
+router.post("/acceptDoctorRequest", adminstratorController.acceptDoctorRequest);
+router.post("/rejectDoctorRequest", adminstratorController.rejectDoctorRequest);
 
 //DELETE
 router.delete("/:id", adminstratorController.deleteAdmin);

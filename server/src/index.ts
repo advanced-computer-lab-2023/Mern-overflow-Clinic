@@ -21,8 +21,7 @@ mongoose.set("strictQuery", false);
 
 //App variables
 const MongoURI: string =
-  config.mongo.URL ||
-  "mongodb+srv://dbuser:987654321@acl.n4q8ykx.mongodb.net/?retryWrites=true&w=majority";
+  config.mongo.URL ;
 const app = express();
 
 const corsOptions = {
@@ -32,7 +31,7 @@ const corsOptions = {
   exposedHeaders: ["set-cookie"],
 };
 
-const port: number = config.server.port || 8000;
+const port: number = config.server.port ;
 app.use(bodyParser.json());
 app.use(cors(corsOptions));
 app.use(cookieParser());

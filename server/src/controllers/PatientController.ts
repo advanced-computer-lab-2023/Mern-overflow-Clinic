@@ -11,7 +11,7 @@ import user from "../models/User.js";
 
 
 const createPatient = async (req: Request, res: Response) => {
-
+    
     const entry = user.find({ 'username': req.body.username }).then((document) => {
         if (document.length === 0) {
 

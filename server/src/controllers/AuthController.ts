@@ -7,11 +7,14 @@ import TokenUtils from "../utils/Token.js";
 const login = async (req: Request, res: Response) => {
   const { username, passwordHash } = req.body;
   console.log();
+  console.log({ username, passwordHash });
+
   try {
     const user: HydratedDocument<IUser> | null = await User.findOne({
-      username,
-      passwordHash,
+      username: username.trim(),
+      passwordHash: passwordHash.trim(),
     });
+    console.log(user);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     } else {

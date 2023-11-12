@@ -28,10 +28,9 @@ const PatientManageAppointments = ({ doctorId }) => {
   const [selectedDate, setSelectedDate] = useState("");
   const [statusMessage, setStatusMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
-  const [docID, setDocID] = useState(id); // Initialize docID with the doctorId prop
+  const [docID, setDocID] = useState(id);
   const { userId } = useUser();
   let patID = userId;
-  //const patID = "6529362d1b1e1b92fd454f12"; // Replace with the actual patient ID
 
   useEffect(() => {
     if (bookForRelative) {
@@ -39,7 +38,7 @@ const PatientManageAppointments = ({ doctorId }) => {
         axios
           .get(`http://localhost:8000/patients/${patID}/family`)
           .then((res) => {
-            setFamilyMembers(res.data);
+            setFamilyMembers(res.data || []); // Check if res.data is null
           })
           .catch((error) => {
             console.error(error);
@@ -61,43 +60,45 @@ const PatientManageAppointments = ({ doctorId }) => {
     const selectedName = e.target.value;
     const selectedMember = familyMembers.find((member) => member.name === selectedName);
     const selectedID = selectedMember ? selectedMember._id : null;
-    //const selectedID = "123343423214ggs";
     setSelectedFamilyMember(selectedName);
     setSelectedFamilyMemberID(selectedID);
   };
 
   const handleBookingAppointment = () => {
-    if (!bookForRelative) {
-      setSelectedFamilyMemberID(null);
+    if (!bookForRelative || !selectedFamilyMemberID || !selectedDate) {
+      // Check for necessary values before making the appointment
+      setStatusMessage("Please fill in all required fields.");
+      setIsSuccess(false);
+      return;
     }
 
     const appointmentData = {
       doctor: docID,
       relativeId: selectedFamilyMemberID,
-      date:selectedDate,
+      date: selectedDate,
       flag: bookForRelative,
     };
 
     axios
-    .post(`http://localhost:8000/appointments/createAppointmentsForRelations/${patID}`, appointmentData)
-    .then((res) => {
-      const successMessage = "Appointment booked successfully";
-      setStatusMessage(successMessage);
-      setIsSuccess(true); // Set isSuccess to true
+      .post(`http://localhost:8000/appointments/createAppointmentsForRelations/${patID}`, appointmentData)
+      .then((res) => {
+        const successMessage = "Appointment booked successfully";
+        setStatusMessage(successMessage);
+        setIsSuccess(true);
 
-      // Reset the form
-      setSelectedDate(""); // Clear selectedDate
-      setSelectedFamilyMember(""); // Clear selectedFamilyMember
-      setSelectedFamilyMemberID(null); // Clear selectedFamilyMemberID
-      setBookForRelative(false);
-    })
-    .catch((error) => {
-      const errorMessage = "Error booking appointment. Please try again.";
-      setStatusMessage(errorMessage);
-      setIsSuccess(false); // Set isSuccess to false
-      console.error(error);
-    });
-};
+        // Reset the form
+        setSelectedDate("");
+        setSelectedFamilyMember("");
+        setSelectedFamilyMemberID(null);
+        setBookForRelative(false);
+      })
+      .catch((error) => {
+        const errorMessage = "Error booking appointment. Please try again.";
+        setStatusMessage(errorMessage);
+        setIsSuccess(false);
+        console.error(error);
+      });
+  };
 
   return (
     <Container maxWidth="lg">

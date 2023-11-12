@@ -28,15 +28,13 @@ export default function PatientViewAppointments() {
   const [data, setData] = useState([]);
   const { userId } = useUser();
 
-  // const id = "6529347d1b1e1b92fd454eff";
   const id = userId;
-  //console.log(id);
 
   const fetchTableData = () => {
     axios
       .get(`http://localhost:8000/appointments/${id}/`, { params: { id: id } })
       .then((res) => {
-        setData(res.data);
+        setData(res.data || []); // Check if res.data is null or undefined
         console.log(res.data);
       })
       .catch((error) => {
@@ -55,23 +53,23 @@ export default function PatientViewAppointments() {
 
     if (date === "") {
       axios
-        .post(`http://localhost:8000/appointments/filter`, {
+        .post(`http://localhost:8000/appointments/${id}/filter`, {
           status: status,
         })
         .then((res) => {
           console.log(res.data);
-          setData(res.data);
+          setData(res.data || []); // Check if res.data is null or undefined
         })
         .catch(() => setData([]));
     } else {
       axios
-        .post(`http://localhost:8000/appointments/filter`, {
+        .post(`http://localhost:8000/appointments/${id}/filter`, {
           status: status,
           date: date,
         })
         .then((res) => {
           console.log(res.data);
-          setData(res.data);
+          setData(res.data || []); // Check if res.data is null or undefined
         })
         .catch(() => setData([]));
     }
@@ -143,28 +141,28 @@ export default function PatientViewAppointments() {
         </Container>
       </Paper>
       <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell key="patient">Patient</TableCell>
-            <TableCell key="doctor">Doctor</TableCell>
-            <TableCell key="duration">Duration</TableCell>
-            <TableCell key="date">Date</TableCell>
-            <TableCell key="status">Status</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data &&
-            data.map((row) => (
-              <TableRow key={row.date + row.patient + row.doctor + row.status}>
-                <TableCell>{row.patient.name}</TableCell>
-                <TableCell>{row.doctor.name}</TableCell>
-                <TableCell>{row.duration}</TableCell>
-                <TableCell>{row.date}</TableCell>
-                <TableCell>{row.status}</TableCell>
-              </TableRow>
-            ))}
-        </TableBody>
-      </Table>
+          <TableHead>
+            <TableRow>
+              <TableCell key="patient">Patient</TableCell>
+              <TableCell key="doctor">Doctor</TableCell>
+              <TableCell key="duration">Duration</TableCell>
+              <TableCell key="date">Date</TableCell>
+              <TableCell key="status">Status</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data &&
+              data.map((row) => (
+                <TableRow key={row.date + (row.patient?.name || "") + (row.doctor?.name || "") + row.status}>
+                  <TableCell>{row.patient?.name || 'N/A'}</TableCell>
+                  <TableCell>{row.doctor?.name || 'N/A'}</TableCell>
+                  <TableCell>{row.duration}</TableCell>
+                  <TableCell>{row.date}</TableCell>
+                  <TableCell>{row.status}</TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
     </Container>
   );
 }

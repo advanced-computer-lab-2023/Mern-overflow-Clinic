@@ -3,6 +3,7 @@ import doctor from "../models/Doctor.js";
 import appointment from "../models/appointment.js";
 import patient from "../models/Patient.js";
 import Patient from "../models/Patient.js";
+import Users from "../models/User.js";
 import { stat } from "fs";
 
 const createAppointment = async (req: Request, res: Response) => {
@@ -204,14 +205,27 @@ const listAllAppointments = async (req: Request, res: Response) => {
 
 const filterAppointments = async (req: Request, res: Response) => {
   const status = req.body.status;
-
+  const id = req.params.id;
+  console.log(req.body);
+  console.log(id);
+  var doc;
+  const pat = await Patient.findById(id).exec();
+  if(!pat || pat ===undefined){
+    //return res.status(404).send("no user found");
+    doc =await doctor.findById(id).exec();
+    if(!doc || doc ===undefined){
+      return res.status(404).send("no user found with this ID");
+    }
+  }
+  
   if (
     (req.body.date !== undefined && status !== undefined) ||
     (req.body.date && status)
   ) {
     const inputDate = new Date(req.body.date);
-    const apt = appointment
-      .find({ date: inputDate, status: status })
+    if (pat){
+      const apt = appointment
+      .find({ date: inputDate, status: status, patient: id })
       .populate({ path: "doctor", select: "name" })
       .populate({ path: "patient", select: "name" })
       .then((apt) => {
@@ -220,6 +234,20 @@ const filterAppointments = async (req: Request, res: Response) => {
       .catch((err) => {
         res.status(400).json(err);
       });
+
+    }else{
+      const apt = appointment
+      .find({ date: inputDate, status: status, doctor: id })
+      .populate({ path: "doctor", select: "name" })
+      .populate({ path: "patient", select: "name" })
+      .then((apt) => {
+        res.status(200).json(apt);
+      })
+      .catch((err) => {
+        res.status(400).json(err);
+  });
+    }
+    
   }
   if (
     (req.body.date !== undefined && status === undefined) ||

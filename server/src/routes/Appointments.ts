@@ -13,7 +13,7 @@ router.get("/:id", isAuthenticated, appointmentController.readAppointment);
 //POST
 router.post("/", isAuthenticated, appointmentController.createAppointment);
 router.post(
-  "/filter",
+  "/:id/filter",
   isAuthenticated,
   appointmentController.filterAppointments,
 );

@@ -68,10 +68,12 @@ export default function PatientRegister() {
 
         setUserId(userId);
         setUserRole("Patient");
-        axios.post("http://localhost:8000/auth/login", {username:dataToServer.username,passwordHash:dataToServer.passwordHash});
-        
+        axios.post("http://localhost:8000/auth/login", {
+          username: dataToServer.username,
+          passwordHash: dataToServer.passwordHash,
+        });
       })
-      .then(()=>{
+      .then(() => {
         navigate("/patient/family");
       })
       .catch((error) => {
@@ -391,4 +393,3 @@ export default function PatientRegister() {
     </ThemeProvider>
   );
 }
-

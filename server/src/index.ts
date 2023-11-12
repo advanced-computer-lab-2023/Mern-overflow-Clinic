@@ -6,6 +6,7 @@ import authRouter from "./routes/Auth.js";
 import doctorRouter from "./routes/Doctors.js";
 import patientRouter from "./routes/Patients.js";
 import adminRouter from "./routes/Admins.js";
+import contractRouter from "./routes/Contracts.js"
 import appointmentRouter from "./routes/Appointments.js";
 import prescriptionRouter from "./routes/Prescriptions.js";
 import packageRouter from "./routes/Package.js";
@@ -20,8 +21,7 @@ mongoose.set("strictQuery", false);
 
 //App variables
 const MongoURI: string =
-  config.mongo.URL ||
-  "mongodb+srv://dbuser:987654321@acl.n4q8ykx.mongodb.net/?retryWrites=true&w=majority";
+  config.mongo.URL ;
 const app = express();
 
 const corsOptions = {
@@ -31,7 +31,7 @@ const corsOptions = {
   exposedHeaders: ["set-cookie"],
 };
 
-const port: number = config.server.port || 8000;
+const port: number = config.server.port ;
 app.use(bodyParser.json());
 app.use(cors(corsOptions));
 app.use(cookieParser());
@@ -44,12 +44,12 @@ app.use("/admins", adminRouter);
 app.use("/appointments", appointmentRouter);
 app.use("/prescriptions", prescriptionRouter);
 app.use("/packages", packageRouter);
-// app.use("/contracts", contractRouter);
+app.use('/contracts',contractRouter);
 
 // //GET
 // app.get("/", (req, res) => {
-//     res.send("hello");
-//     console.log("hello, world!");
+//   res.send("hello");
+//   console.log("hello, world!");
 // });
 
 mongoose

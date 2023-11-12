@@ -8,6 +8,7 @@ import isAuthenticated from "../middlewares/permissions/isAuthenticated.js";
 
 const router = express.Router();
 router.use(bodyParser.json());
+router.use(express.json());
 
 router.get("/", isAuthenticated, doctorController.listDoctors);
 router.post("/filter", isAuthenticated, patientController.filterDoctor);

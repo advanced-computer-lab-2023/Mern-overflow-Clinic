@@ -11,7 +11,7 @@ import user from "../models/User.js";
 
 
 const createPatient = async (req: Request, res: Response) => {
-
+    
     const entry = user.find({ 'username': req.body.username }).then((document) => {
         if (document.length === 0) {
 
@@ -40,6 +40,7 @@ return res.status(400).send("username taken , please choose another one ");
 
 const readPatient = async (req: Request, res: Response) => {
     const pId = req.params.id;
+    console.log(pId);
      const pat = await patient
         .findById(pId)
         .then((pat) => {
@@ -52,7 +53,23 @@ return res.status(200).json(pat);
 return res.status(404).send(err);
         });
 };
-
+const listFamilyMembers = async (req: Request, res: Response) => {
+    const pId = req.params.id;
+     const pat = await patient
+        .findById(pId)
+        .then((pat) => {
+            if (!pat || pat === undefined) {
+                return res.status(404).json({ message: 'Patient not found' });
+            } else {
+                if(pat.familyMembers?.length !==0)
+                    res.status(200).json(pat.familyMembers);
+                else
+                res.status(404).send("no family members");
+            }
+        }).catch((err) => {
+            res.status(404).send(err);
+        });
+};
 const updatePatient = async (req: Request, res: Response) => { };
 
 const deletePatient = async (req: Request, res: Response) => {
@@ -253,6 +270,7 @@ return res.status(200).json(sessionPrices); // Send the response after the loop 
 return res.status(500).json(error);
     }
 };
+
 
 
 const filterDoctor = async (req: Request, res: Response) => {
@@ -456,26 +474,6 @@ const linkfamilyMember = async (req: Request, res: Response) => {
     }
 }
 
-// const linkFamilyMemberByEmail = async (req: Request, res: Response) => {
-//     const patId = req.params.id;
-//     let familyMember: any[] = []; 
-//     let found = false ;
-//     const relation = req.body.relation;
-//     if (relation !== "wife" && relation !== "husband" && relation !== "child") {
-//         return res.status(404).send("cannot add with this relation");
-//     }    
-//     try {
-//         const rPatient = await patient.findById(patId);
-//         if (!rPatient || rPatient === undefined) {
-//             return res.status(404).send("Patient not found");
-//         }
-        
-//     } catch (error) {
-//         console.error(error);
-//         res.status(400).json({ message: 'No family members found' });
-//         return;
-//     }
-// }
 
 
 export default {
@@ -491,5 +489,6 @@ export default {
     listDoctorsBySessionPrice,
     filterDoctor,
     viewWallet,
-    linkfamilyMember
+    linkfamilyMember,
+    listFamilyMembers
 };

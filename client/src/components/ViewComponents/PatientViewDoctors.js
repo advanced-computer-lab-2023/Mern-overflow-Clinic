@@ -11,6 +11,7 @@ import {
   MenuItem,
   Typography,
 } from "@mui/material";
+//import { useHistory } from 'react-router-dom';
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -21,9 +22,15 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
-import { useUser } from "../../userContest";
+import { useUser } from '../../userContest';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
+
 
 export default function DoctorViewPatients() {
+  const navigate = useNavigate();
+
   const [data, setData] = useState([]);
   const [Query, setQuery] = useState("");
   const [selectedDoctor, setSelectedDoctor] = useState({});
@@ -88,7 +95,17 @@ export default function DoctorViewPatients() {
         .catch(() => setData([]));
     }
   };
-
+  const handleSelectDoctor = (selectedDoctor) => {
+    // Construct the URL for the doctor details page in the patient section
+    const doctorDetailsURL = `/patient/bookAppointment`;
+    // Add the 'id' parameter to the URL
+    const doctorDetailsURLWithId = `${doctorDetailsURL}/${selectedDoctor._doc._id}`;
+    
+    // Navigate to the doctor details page with the 'id' parameter
+    navigate(doctorDetailsURLWithId);
+  };
+  
+  
   return (
     <Container maxWidth="xl">
       <Paper elevation={3} sx={{ p: "20px", my: "40px", paddingBottom: 5 }}>
@@ -177,8 +194,8 @@ export default function DoctorViewPatients() {
                   <TableCell>{row._doc.speciality}</TableCell>
                   <TableCell>{row.sessionPrice}</TableCell>
                   <TableCell>
-                    <Button onClick={() => setSelectedDoctor(row)}>
-                      Select Doctor
+                    <Button onClick={() => handleSelectDoctor(row)}>
+                     Book An Appointment
                     </Button>
                   </TableCell>
                 </TableRow>

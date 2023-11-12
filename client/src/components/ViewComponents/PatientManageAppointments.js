@@ -65,27 +65,33 @@ const PatientManageAppointments = ({ doctorId }) => {
   };
 
   const handleBookingAppointment = () => {
-    if (!bookForRelative || !selectedFamilyMemberID || !selectedDate) {
+    if (!selectedDate) {
       // Check for necessary values before making the appointment
       setStatusMessage("Please fill in all required fields.");
       setIsSuccess(false);
       return;
     }
-
+  
+    if (bookForRelative && !selectedFamilyMemberID) {
+      setStatusMessage("Please select a family member.");
+      setIsSuccess(false);
+      return;
+    }
+  
     const appointmentData = {
       doctor: docID,
       relativeId: selectedFamilyMemberID,
       date: selectedDate,
       flag: bookForRelative,
     };
-
+  
     axios
       .post(`http://localhost:8000/appointments/createAppointmentsForRelations/${patID}`, appointmentData)
       .then((res) => {
         const successMessage = "Appointment booked successfully";
         setStatusMessage(successMessage);
         setIsSuccess(true);
-
+  
         // Reset the form
         setSelectedDate("");
         setSelectedFamilyMember("");
@@ -99,6 +105,7 @@ const PatientManageAppointments = ({ doctorId }) => {
         console.error(error);
       });
   };
+  
 
   return (
     <Container maxWidth="lg">

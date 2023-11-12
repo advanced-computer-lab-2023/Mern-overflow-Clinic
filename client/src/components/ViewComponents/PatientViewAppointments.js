@@ -50,10 +50,11 @@ export default function PatientViewAppointments() {
     e.preventDefault();
     let status = e.target[0].value;
     let date = e.target[2].value;
+    let route = `http://localhost:8000/appointments/filter/${id}`
 
     if (date === "") {
       axios
-        .post(`http://localhost:8000/appointments/${id}/filter`, {
+        .post(route, {
           status: status,
         })
         .then((res) => {
@@ -63,7 +64,7 @@ export default function PatientViewAppointments() {
         .catch(() => setData([]));
     } else {
       axios
-        .post(`http://localhost:8000/appointments/${id}/filter`, {
+        .post(route, {
           status: status,
           date: date,
         })
@@ -73,6 +74,15 @@ export default function PatientViewAppointments() {
         })
         .catch(() => setData([]));
     }
+  };
+  const handleViewAll = () => {
+    // Fetch all appointments with the state attribute
+    axios
+      .get(`http://localhost:8000/appointments/all/${id}`)
+      .then((res) => {
+        setData(res.data || []);
+      })
+      .catch(() => setData([]));
   };
   return (
     <Container maxWidth="xl">
@@ -140,6 +150,14 @@ export default function PatientViewAppointments() {
           </Container>
         </Container>
       </Paper>
+      <Button
+        fullWidth
+        variant="contained"
+        onClick={handleViewAll}
+        sx={{ mt: 3, mb: 2, p: 2, fontWeight: "bold" }}
+      >
+        View All
+      </Button>
       <Table>
           <TableHead>
             <TableRow>
@@ -156,7 +174,7 @@ export default function PatientViewAppointments() {
                 <TableRow key={row.date + (row.patient?.name || "") + (row.doctor?.name || "") + row.status}>
                   <TableCell>{row.patient?.name || 'N/A'}</TableCell>
                   <TableCell>{row.doctor?.name || 'N/A'}</TableCell>
-                  <TableCell>{row.duration}</TableCell>
+                  <TableCell>{row.duration + " hour"}</TableCell>
                   <TableCell>{row.date}</TableCell>
                   <TableCell>{row.status}</TableCell>
                 </TableRow>

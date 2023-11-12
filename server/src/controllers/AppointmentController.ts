@@ -209,6 +209,7 @@ const filterAppointments = async (req: Request, res: Response) => {
   console.log(req.body);
   console.log(id);
   var doc;
+
   const pat = await Patient.findById(id).exec();
   if(!pat || pat ===undefined){
     //return res.status(404).send("no user found");
@@ -229,11 +230,14 @@ const filterAppointments = async (req: Request, res: Response) => {
       .populate({ path: "doctor", select: "name" })
       .populate({ path: "patient", select: "name" })
       .then((apt) => {
+        console.log(apt);
         res.status(200).json(apt);
+        
       })
       .catch((err) => {
         res.status(400).json(err);
       });
+      //console.log(apt);
 
     }else{
       const apt = appointment
@@ -241,11 +245,14 @@ const filterAppointments = async (req: Request, res: Response) => {
       .populate({ path: "doctor", select: "name" })
       .populate({ path: "patient", select: "name" })
       .then((apt) => {
+        console.log(apt);
         res.status(200).json(apt);
+        
       })
       .catch((err) => {
         res.status(400).json(err);
-  });
+      });
+      
     }
     
   }
@@ -254,8 +261,9 @@ const filterAppointments = async (req: Request, res: Response) => {
     (req.body.date && !status)
   ) {
     const inputDate = new Date(req.body.date);
-    const apt = appointment
-      .find({ date: inputDate })
+    if(pat){
+      const apt = appointment
+      .find({ date: inputDate , patient: id})
 
       .populate({ path: "doctor", select: "name" })
       .populate({ path: "patient", select: "name" })
@@ -265,13 +273,30 @@ const filterAppointments = async (req: Request, res: Response) => {
       .catch((err) => {
         res.status(400).json(err);
       });
+
+    }else{
+      const apt = appointment
+      .find({ date: inputDate , doctor: id})
+
+      .populate({ path: "doctor", select: "name" })
+      .populate({ path: "patient", select: "name" })
+      .then((apt) => {
+        res.status(200).json(apt);
+      })
+      .catch((err) => {
+        res.status(400).json(err);
+      });
+    }
+    
   }
   if (
     (req.body.date === undefined && status !== undefined) ||
     (!req.body.date && status)
   ) {
-    const apt = appointment
-      .find({ status: status })
+
+    if(pat){
+      const apt = appointment
+      .find({ status: status ,patient:id})
 
       .populate({ path: "doctor", select: "name" })
       .populate({ path: "patient", select: "name" })
@@ -281,8 +306,89 @@ const filterAppointments = async (req: Request, res: Response) => {
       .catch((err) => {
         res.status(400).json(err);
       });
+    }else{
+      const apt = appointment
+      .find({ status: status ,doctor:id})
+
+      .populate({ path: "doctor", select: "name" })
+      .populate({ path: "patient", select: "name" })
+      .then((apt) => {
+        res.status(200).json(apt);
+      })
+      .catch((err) => {
+        res.status(400).json(err);
+      });
+    }
+   
   }
 };
+
+const getAllAppointments = async (req: Request, res: Response) => {
+  const id = req.params.id;
+  var doc;
+  const pat = await Patient.findById(id).exec();
+  if(!pat || pat ===undefined){
+    //return res.status(404).send("no user found");
+    doc =await doctor.findById(id).exec();
+    if(!doc || doc ===undefined){
+      return res.status(404).send("no user found with this ID");
+    }
+  }
+
+  if(pat){
+    const currentDate = new Date();
+
+    const apt = appointment
+      .find({"patient": id})
+      .populate({ path: "doctor", select: "name" })
+      .populate({ path: "patient", select: "name" })
+      .then((appointments) => {
+        if (appointments.length === 0) {
+          // No appointments found for the patient
+          return res.status(200).json([]);
+        }
+    
+        // Add a new attribute 'state' based on the date comparison
+        const updatedAppointments = appointments.map((apt) => {
+          const aptDate = new Date(apt.date);
+          const state = aptDate < currentDate ? 'past' : 'upcoming';
+          return { ...apt.toObject(), state };
+        });
+    
+        res.status(200).json(updatedAppointments);
+      })
+      .catch((err) => {
+        res.status(400).json(err);
+      });
+  }else{
+    const currentDate = new Date();
+
+    const apt = appointment
+      .find({"doctor": id})
+      .populate({ path: "doctor", select: "name" })
+      .populate({ path: "patient", select: "name" })
+      .then((appointments) => {
+        if (appointments.length === 0) {
+          // No appointments found for the patient
+          return res.status(200).json([]);
+        }
+
+        // Add a new attribute 'state' based on the date comparison
+        const updatedAppointments = appointments.map((apt) => {
+          const aptDate = new Date(apt.date);
+          const state = aptDate < currentDate ? 'past' : 'upcoming';
+          return { ...apt.toObject(), state };
+        });
+
+        res.status(200).json(updatedAppointments);
+      })
+      .catch((err) => {
+        res.status(400).json(err);
+      });
+  }
+
+
+}
 
 export default {
   createAppointment,
@@ -292,5 +398,6 @@ export default {
   filterAppointments,
   updateAppointment,
   createFollowUp,
-  createAppointmentForFamilyMember
+  createAppointmentForFamilyMember,
+  getAllAppointments
 };

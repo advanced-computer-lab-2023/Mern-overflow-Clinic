@@ -70,6 +70,15 @@ export default function DoctorViewAppointments() {
         .catch(() => setData([]));
     }
   };
+  const handleViewAll = () => {
+    // Fetch all appointments with the state attribute
+    axios
+      .get(`http://localhost:8000/appointments/all/${id}`)
+      .then((res) => {
+        setData(res.data || []);
+      })
+      .catch(() => setData([]));
+  };
   return (
     <Container maxWidth="xl">
       <Paper elevation={3} sx={{ p: "20px", my: "40px", paddingBottom: 5 }}>
@@ -136,31 +145,37 @@ export default function DoctorViewAppointments() {
           </Container>
         </Container>
       </Paper>
+      <Button
+        fullWidth
+        variant="contained"
+        onClick={handleViewAll}
+        sx={{ mt: 3, mb: 2, p: 2, fontWeight: "bold" }}
+      >
+        View All
+      </Button>
       <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell key="patient">Patient</TableCell>
-            <TableCell key="doctor">Doctor</TableCell>
-            <TableCell key="duration">Duration</TableCell>
-            <TableCell key="date">Date</TableCell>
-            <TableCell key="status">Status</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data &&
-            data.map((row) => (
-              <TableRow
-                key={row.date + row.patient.name + row.doctor.name + row.status}
-              >
-                <TableCell>{row.patient.name}</TableCell>
-                <TableCell>{row.doctor.name}</TableCell>
-                <TableCell>{row.duration}</TableCell>
-                <TableCell>{row.date}</TableCell>
-                <TableCell>{row.status}</TableCell>
-              </TableRow>
-            ))}
-        </TableBody>
-      </Table>
+          <TableHead>
+            <TableRow>
+              <TableCell key="patient">Patient</TableCell>
+              <TableCell key="doctor">Doctor</TableCell>
+              <TableCell key="duration">Duration</TableCell>
+              <TableCell key="date">Date</TableCell>
+              <TableCell key="status">Status</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data &&
+              data.map((row) => (
+                <TableRow key={row.date + (row.patient?.name || "") + (row.doctor?.name || "") + row.status}>
+                  <TableCell>{row.patient?.name || 'N/A'}</TableCell>
+                  <TableCell>{row.doctor?.name || 'N/A'}</TableCell>
+                  <TableCell>{row.duration + " hour"}</TableCell>
+                  <TableCell>{row.date}</TableCell>
+                  <TableCell>{row.status}</TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
     </Container>
   );
 }

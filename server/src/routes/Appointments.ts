@@ -12,15 +12,23 @@ router.get("/:id", isAuthenticated, appointmentController.readAppointment);
 
 //POST
 router.post("/", isAuthenticated, appointmentController.createAppointment);
-router.post(
-  "/filter",
+router.post("/filter/:id",
   isAuthenticated,
   appointmentController.filterAppointments,
+);
+router.get("/all/:id",
+  isAuthenticated,
+  appointmentController.getAllAppointments,
 );
 router.post(
   "/update",
   isAuthenticated,
   appointmentController.updateAppointment,
+);
+router.post(
+  "/createAppointmentsForRelations/:id",
+  isAuthenticated,
+  appointmentController.createAppointmentForFamilyMember,
 );
 
 //DELETE

@@ -19,6 +19,8 @@ import { useEffect, useState } from "react";
 import { useUser } from "../../userContest";
 
 const LinkFamilyMember = () => {
+   const { userId } = useUser();
+  let id = userId;
   const [errorMessage, setErrorMessage] = useState(false);
   const {
     register,
@@ -26,9 +28,6 @@ const LinkFamilyMember = () => {
     setError,
     formState: { errors },
   } = useForm();
-
-  const { userId } = useUser();
-  let id = userId;
 
   const onSubmit = (data) => {
     //    const id = "6529347d1b1e1b92fd454eff";

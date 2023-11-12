@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import { useUser } from "../../userContest";
+import axios from "axios";
 
 const ContractPage = ({ match }) => {
-  //const id = "65293c2cb5a34d208108cc33";
-
+  axios.defaults.withCredentials = true;
   const { userId } = useUser();
   let id = userId;
   const [contracts, setContracts] = useState([]);
@@ -13,9 +13,10 @@ const ContractPage = ({ match }) => {
   const [errorMessage, setErrorMessage] = useState(null);
   const fetchContracts = () => {
     // Fetch contract data from your backend API using the `match.params.id`.
-    fetch(`http://localhost:8000/contracts/${id}`)
-      .then((response) => response.json())
-      .then((data) => setContracts(data))
+    axios.get(`http://localhost:8000/contracts/${id}`)
+      .then((data) => {
+        setContracts(data.data)
+      })
       .catch((error) => {
         setErrorMessage("Error fetching contract data");
         console.error("Error fetching contract data:", error);
@@ -46,16 +47,7 @@ const ContractPage = ({ match }) => {
         });
         setContracts(updatedContracts);
 
-        const response = await fetch(
-          `http://localhost:8000/doctors/${id}/acceptContract`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ contractId: selectedContractId }),
-          },
-        );
+        const response = await axios.put(`http://localhost:8000/doctors/${id}/acceptContract`,JSON.stringify({ contractId: selectedContractId }));
 
         if (response.ok) {
           const data = await response.json();
@@ -87,16 +79,7 @@ const ContractPage = ({ match }) => {
         });
         setContracts(updatedContracts);
 
-        const response = await fetch(
-          `http://localhost:8000/doctors/${id}/rejectContract`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ contractId: selectedContractId }),
-          },
-        );
+        const response = await axios.put(`http://localhost:8000/doctors/${id}/rejectContract`,JSON.stringify({ contractId: selectedContractId }));
 
         if (response.status === 200) {
           const data = await response.json();

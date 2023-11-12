@@ -32,11 +32,8 @@ export default function PatientViewAppointments() {
   const [data, setData] = useState([]);
   const { userId } = useUser();
 
-<<<<<<< HEAD
-=======
   // const id = "6529347d1b1e1b92fd454eff";
   console.log(userId+"hello");
->>>>>>> manage-doctor-req
   const id = userId;
 
   const fetchTableData = () => {
@@ -169,7 +166,6 @@ export default function PatientViewAppointments() {
         View All
       </Button>
       <Table>
-<<<<<<< HEAD
           <TableHead>
             <TableRow>
               <TableCell key="patient">Patient</TableCell>
@@ -192,38 +188,6 @@ export default function PatientViewAppointments() {
               ))}
           </TableBody>
         </Table>
-=======
-        <TableHead>
-          <TableRow>
-            <TableCell key="patient">Patient</TableCell>
-            <TableCell key="doctor">Doctor</TableCell>
-            <TableCell key="duration">Duration</TableCell>
-            <TableCell key="date">Date</TableCell>
-            <TableCell key="status">Status</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data && data.map((row) => (
-            <TableRow key={row.date + row.patient + row.doctor + row.status}>
-              <TableCell>{row.patient?.name}</TableCell>
-              <TableCell>{row.doctor?.name}</TableCell>
-              <TableCell>{row.duration}</TableCell>
-              <TableCell>{row.date}</TableCell>
-              <TableCell>{row.status}</TableCell>
-              <TableCell>
-                
-              <Link to={row.status=="upcoming"?`/patient/pay/appointment/${row._id}`:undefined}>
-                    <IconButton disabled={!(row.status=="upcoming")}>
-                      <PaymentIcon />
-                    </IconButton>
-              </Link>
-                  </TableCell>
-                  
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
->>>>>>> manage-doctor-req
     </Container>
   );
 }

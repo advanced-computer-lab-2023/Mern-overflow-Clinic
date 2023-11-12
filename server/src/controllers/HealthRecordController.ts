@@ -27,7 +27,7 @@ import { error } from "console";
 //     }
 // }
 const createHealthRecord = async (req: Request, res: Response) => {
-    console.log("I am working");
+ 
 
     try {
         const patientEmail = req.body.email;
@@ -35,6 +35,7 @@ const createHealthRecord = async (req: Request, res: Response) => {
 
         // If patient not found, return a 404 status
         if (!patientData) {
+            console.log("here");
             return res.status(404).json({ error: "Patient not found" });
         }
 
@@ -56,6 +57,7 @@ const createHealthRecord = async (req: Request, res: Response) => {
 
         // If patient not found, return a 404 status
         if (!updatedPatient) {
+
              res.status(404).json({ error: "Patient not found" });
         }
 

@@ -1,26 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import { useUser } from "../../userContest";
 
 const ContractPage = ({ match }) => {
-  //const id = "65293c2cb5a34d208108cc33";
-
   const { userId } = useUser();
   let id = userId;
   const [contracts, setContracts] = useState([]);
   const [selectedContractId, setSelectedContractId] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
-  const fetchContracts = () => {
-    // Fetch contract data from your backend API using the `match.params.id`.
-    fetch(`http://localhost:8000/contracts/${id}`)
-      .then((response) => response.json())
-      .then((data) => setContracts(data))
-      .catch((error) => {
-        setErrorMessage("Error fetching contract data");
-        console.error("Error fetching contract data:", error);
-      });
+
+  const fetchContracts = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8000/contracts/${id}`);
+      setContracts(response.data || []);
+    } catch (error) {
+      setErrorMessage("Error fetching contract data");
+      console.error("Error fetching contract data:", error);
+    }
   };
+
   useEffect(() => {
     fetchContracts();
   }, [id]);
@@ -37,7 +37,6 @@ const ContractPage = ({ match }) => {
   const handleAccept = async () => {
     if (selectedContractId) {
       try {
-        // Immediately update the status to 'accepting'
         const updatedContracts = contracts.map((contract) => {
           if (contract._id === selectedContractId) {
             contract.status = "accepted";
@@ -46,30 +45,21 @@ const ContractPage = ({ match }) => {
         });
         setContracts(updatedContracts);
 
-        const response = await fetch(
+        const response = await axios.put(
           `http://localhost:8000/doctors/${id}/acceptContract`,
           {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ contractId: selectedContractId }),
-          },
+            contractId: selectedContractId,
+          }
         );
 
-        if (response.ok) {
-          const data = await response.json();
-          if (data.success) {
-            setSuccessMessage("Contract accepted successfully");
-            fetchContracts();
-          } else {
-            setErrorMessage("Error accepting contract 1");
-          }
+        if (response.data.success) {
+          setSuccessMessage("Contract accepted successfully");
+          fetchContracts();
         } else {
-          setErrorMessage(`HTTP error! Status: ${response.status}`);
+          setErrorMessage("Error accepting contract");
         }
       } catch (error) {
-        setErrorMessage(`Error accepting contract 2: ${error}`);
+        setErrorMessage("Error accepting contract");
         console.error("Error accepting contract:", error);
       }
     }
@@ -78,7 +68,6 @@ const ContractPage = ({ match }) => {
   const handleReject = async () => {
     if (selectedContractId) {
       try {
-        // Immediately update the status to 'rejecting'
         const updatedContracts = contracts.map((contract) => {
           if (contract._id === selectedContractId) {
             contract.status = "rejected";
@@ -87,27 +76,18 @@ const ContractPage = ({ match }) => {
         });
         setContracts(updatedContracts);
 
-        const response = await fetch(
+        const response = await axios.put(
           `http://localhost:8000/doctors/${id}/rejectContract`,
           {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ contractId: selectedContractId }),
-          },
+            contractId: selectedContractId,
+          }
         );
 
-        if (response.status === 200) {
-          const data = await response.json();
-          if (data.success) {
-            setSuccessMessage("Contract rejected successfully");
-            fetchContracts();
-          } else {
-            setErrorMessage("Error rejecting contract");
-          }
+        if (response.data.success) {
+          setSuccessMessage("Contract rejected successfully");
+          fetchContracts();
         } else {
-          setErrorMessage(`HTTP error! Status: ${response.status}`);
+          setErrorMessage("Error rejecting contract");
         }
       } catch (error) {
         setErrorMessage("Error rejecting contract");

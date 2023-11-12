@@ -143,6 +143,9 @@ function App() {
     {
       path: "/auth/resetpassword",
       element: <ResetPassword />,
+     
+    },
+    {
       path: "/doctor/addHealthRecords",
       element: <AddHealthRecords/>,
     },

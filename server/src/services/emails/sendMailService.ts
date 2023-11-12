@@ -21,7 +21,7 @@ class SendEmailsService {
         };
 
         return new Promise((resolve, reject) => {
-            this.transporter.sendMail(mailOptions, (error, info) => {
+            this.transporter.sendMail(mailOptions, (error:any, info:any) => {
                 if (error) {
                     console.error(error);
                     reject(error);

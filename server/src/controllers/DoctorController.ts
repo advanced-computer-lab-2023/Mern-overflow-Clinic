@@ -272,6 +272,17 @@ const addFreeSlots = async (req: Request, res: Response) => {
         .json({ message: "You have not yet been accepted." });
     }
 
+    const cont = await Contract.find({"doctor":id}).exec();
+    if(!cont || cont === undefined){
+      return res.status(404).send("no contracts found");
+    }
+    if(cont.length ===0){
+      return res.status(404).send("no contracts found");
+    }
+    if(cont[0].status !== "accepted"){
+      return res.status(400).send("Doctor has not accepted the contract, can't add slots");
+    }
+
     if (doc.availableSlotsStartTime) {
       for (const dt of doc.availableSlotsStartTime) {
         if (dt.toISOString() === startTime.toISOString()) {

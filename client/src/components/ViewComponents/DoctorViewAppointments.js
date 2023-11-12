@@ -50,7 +50,7 @@ export default function DoctorViewAppointments() {
 
     if (date === "") {
       axios
-        .post(`http://localhost:8000/appointments/filter`, {
+        .post(`http://localhost:8000/appointments/filter/${id}`, {
           status: status,
         })
         .then((res) => {
@@ -60,7 +60,7 @@ export default function DoctorViewAppointments() {
         .catch(() => setData([]));
     } else {
       axios
-        .post(`http://localhost:8000/appointments/filter`, {
+        .post(`http://localhost:8000/appointments/filter/${id}`, {
           status: status,
           date: date,
         })
@@ -104,7 +104,7 @@ export default function DoctorViewAppointments() {
                 >
                   <MenuItem value="upcoming">Upcoming</MenuItem>
                   <MenuItem value="completed">Completed</MenuItem>
-                  <MenuItem value="canceled">Canceled</MenuItem>
+                  <MenuItem value="cancelled">Cancelled</MenuItem>
                   <MenuItem value="rescheduled">Rescheduled</MenuItem>
                 </Select>
               </FormControl>

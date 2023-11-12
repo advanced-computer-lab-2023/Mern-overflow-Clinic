@@ -18,22 +18,22 @@ const createPatient = async (req: Request, res: Response) => {
             patient.find({ 'email': req.body.email }).then((emailRes) => {
 
                 if (emailRes.length !== 0)
-                    res.status(404).send("You are already registered , please sign in ");
+return res.status(404).send("You are already registered , please sign in ");
 
                 else {
                     const newPatient = patient
                         .create(req.body)
                         .then((newPatient) => {
-                            res.status(200).json(newPatient);
+return res.status(200).json(newPatient);
                         })
                         .catch((err) => {
-                            res.status(400).json(err);
+return res.status(400).json(err);
                         });
                 }
             })
         }
         else if (document.length !== 0)
-            res.status(400).send("username taken , please choose another one ");
+return res.status(400).send("username taken , please choose another one ");
     })
 
 };
@@ -47,10 +47,10 @@ const readPatient = async (req: Request, res: Response) => {
             if (!pat || pat === undefined) {
                 return res.status(404).json({ message: 'Patient not found' });
             } else {
-                res.status(200).json(pat);
+return res.status(200).json(pat);
             }
         }).catch((err) => {
-            res.status(404).send(err);
+return res.status(404).send(err);
         });
 };
 const listFamilyMembers = async (req: Request, res: Response) => {
@@ -77,10 +77,10 @@ const deletePatient = async (req: Request, res: Response) => {
     const pat = patient
         .findByIdAndDelete({ _id: id })
         .then((pat) => {
-            res.status(200).json(pat);
+return res.status(200).json(pat);
         })
         .catch((err) => {
-            res.status(400).json(err);
+return res.status(400).json(err);
         });
 };
 
@@ -89,7 +89,7 @@ const listPatients = async (req: Request, res: Response) => {
         .find({})
         .then((pat) => res.status(200).json(pat))
         .catch((err) => {
-            res.status(400).json(err);
+return res.status(400).json(err);
         });
 };
 
@@ -127,7 +127,7 @@ const addFamilyMember = async (req: Request, res: Response) => {
             pat.familyMembers = newRelatives;
             await pat.save();
 
-            res.status(200).json(pat);
+return res.status(200).json(pat);
         }
 
     } catch (err) {
@@ -143,12 +143,12 @@ const readFamilyMember = async (req: Request, res: Response) => {
         .findById(id)
         .then((p) => {
             if (p !== null)
-                res.status(200).json(p.familyMembers);
+return res.status(200).json(p.familyMembers);
         })
 
         .catch((err) => {
             console.log(err);
-            res.status(400).json(err);
+return res.status(400).json(err);
         });
 };
 
@@ -162,10 +162,10 @@ const selectDoctor = async (req: Request, res: Response) => {
             if (!docs) {
                 return res.status(404).json({ message: 'Doctor not found' });
             } else {
-                res.status(200).json(docs);
+return res.status(200).json(docs);
             }
         }).catch((err) => {
-            res.status(404).send(err);
+return res.status(404).send(err);
         });
 };
 
@@ -207,14 +207,14 @@ const selectDoctorByNameAndSpeciality = async (req: Request, res: Response) => {
                 }
 
                 if (spc) {
-                    res.status(200).json(docs2);
+return res.status(200).json(docs2);
                 } else {
-                    res.status(200).json(docs);
+return res.status(200).json(docs);
                 }
             }
         }
     } catch (err) {
-        res.status(400).json(err);
+return res.status(400).json(err);
     }
 };
 
@@ -243,7 +243,7 @@ const listDoctorsBySessionPrice = async (req: Request, res: Response) => {
                     return ret;
                 });
 
-                res.status(200).json(sessionPrices); // Send the response after the loop is done
+return res.status(200).json(sessionPrices); // Send the response after the loop is done
             } else {
                 const doctors = await doctor.find({});
                 const sessionPrices = doctors.map((doctor) => {
@@ -263,11 +263,11 @@ const listDoctorsBySessionPrice = async (req: Request, res: Response) => {
                 // );
 
 
-                res.status(200).json(sessionPrices); // Send the response after the loop is done
+return res.status(200).json(sessionPrices); // Send the response after the loop is done
             }
         }
     } catch (error) {
-        res.status(500).json(error);
+return res.status(500).json(error);
     }
 };
 
@@ -289,7 +289,7 @@ const filterDoctor = async (req: Request, res: Response) => {
     const packageData = await pack.findById(packageId);
 
     if(req.body.speciality === undefined){
-        res.status(400).send("no speciality was entered");
+return res.status(400).send("no speciality was entered");
         return;
     }
     const speciality = req.body.speciality.toLowerCase();
@@ -303,7 +303,7 @@ const filterDoctor = async (req: Request, res: Response) => {
         const docRes = await doctor.find({ 'speciality': speciality });
 
         if (docRes.length === 0) {
-            res.status(404).send("No doctors with this speciality available");
+return res.status(404).send("No doctors with this speciality available");
         } else {
             if (!dateInput || dateInput === undefined) {
                 var docSessDisc = 0;
@@ -316,7 +316,7 @@ const filterDoctor = async (req: Request, res: Response) => {
 
                     return ret;
                 });
-                res.status(200).send(doctorsWithSessionPrices);
+return res.status(200).send(doctorsWithSessionPrices);
             } else {
                 var resDocs: any[] = [];
                 var avDocs: any[] = [];
@@ -362,7 +362,7 @@ const filterDoctor = async (req: Request, res: Response) => {
                 }
 
                 if (avDocs.length === 0) {
-                    res.status(404).send("No doctors within this speciality are available at this date/time");
+return res.status(404).send("No doctors within this speciality are available at this date/time");
                 } else {
                     console.log("hey");
 
@@ -376,12 +376,12 @@ const filterDoctor = async (req: Request, res: Response) => {
                         const ret = { "sessionPrice": sessionPrice, ...doctor }
                         return ret;
                     });
-                    res.status(200).send(doctorsWithSessionPrices);
+return res.status(200).send(doctorsWithSessionPrices);
                 }
             }
         }
     } catch (err) {
-        res.status(404).send(err);
+return res.status(404).send(err);
     }
 };
 
@@ -394,10 +394,10 @@ const viewWallet = async (req: Request, res: Response) => {
             if (!pat || pat === undefined) {
                 return res.status(404).json({ message: 'Patient not found' });
             } else {
-                res.status(200).json(pat.wallet);
+return res.status(200).json(pat.wallet);
             }
         }).catch((err) => {
-            res.status(404).send(err);
+return res.status(404).send(err);
         });
 }
 

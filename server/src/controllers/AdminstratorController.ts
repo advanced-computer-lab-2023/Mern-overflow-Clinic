@@ -14,15 +14,15 @@ const createAdminstrator = async (req: Request, res: Response) => {
 			const newAdmin = adminstrator
 				.create(req.body)
 				.then((newAdmin) => {
-					res.status(200).json(newAdmin);
+return res.status(200).json(newAdmin);
 				})
 				.catch((err) => {
-					res.status(400).json(err);
+return res.status(400).json(err);
 				});
 
 		}
 		else if (document.length !== 0)
-			res.status(400).send("username taken , please choose another one ");
+return res.status(400).send("username taken , please choose another one ");
 	})
 }
 
@@ -35,10 +35,10 @@ const deleteAdmin = async (req: Request, res: Response) => {
 	const newAdminstrator = adminstrator
 		.findByIdAndDelete({ _id: id })
 		.then((newAdminstrator) => {
-			res.status(200).json(newAdminstrator);
+return res.status(200).json(newAdminstrator);
 		})
 		.catch((err) => {
-			res.status(400).json(err);
+return res.status(400).json(err);
 		});
 };
 
@@ -52,10 +52,10 @@ const viewRequest = async (req: Request, res: Response) => {
 				if (doctors[i].status === "pending") newDoctors.push(doctors[i]);
 			}
 
-			res.status(200).json(newDoctors);
+return res.status(200).json(newDoctors);
 		})
 		.catch((err) => {
-			res.status(400).json(err);
+return res.status(400).json(err);
 		});
 };
 
@@ -68,7 +68,7 @@ const listAdminstrators = async (req: Request, res: Response) => {
 		.find({})
 		.then((admns) => res.status(200).json(admns))
 		.catch((err) => {
-			res.status(400).json(err);
+return res.status(400).json(err);
 		});
 };
 

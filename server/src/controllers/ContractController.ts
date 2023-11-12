@@ -11,10 +11,10 @@ const createContract = async (req: Request, res: Response) => {
     const newContract = contract
     .create(req.body)
     .then((newContract) => {
-        res.status(200).json(newContract);
+return res.status(200).json(newContract);
     })
     .catch((err) => {
-        res.status(400).json(err);
+return res.status(400).json(err);
     });
 }
 
@@ -26,10 +26,10 @@ const readContract = async (req: Request, res: Response) => {
             if (!cont || cont === undefined) {
                 return res.status(404).json({ message: 'Contract not found' });
             } else {
-                res.status(200).json(cont);
+return res.status(200).json(cont);
             }
         }).catch((err) => {
-            res.status(404).send(err);
+return res.status(404).send(err);
         });
 }
 
@@ -42,10 +42,10 @@ const deleteContract = async (req: Request, res: Response) => {
     const cont = contract
         .findByIdAndDelete({ _id: id })
         .then((cont) => {
-        res.status(200).json(cont);
+return res.status(200).json(cont);
         })
         .catch((err) => {
-        res.status(400).json(err);
+return res.status(400).json(err);
         });
 }
 
@@ -54,7 +54,7 @@ const listAllDoctorContracts = async (req: Request, res: Response) => {
     .find({"doctor": req.params.id})
     .then((contracts) => res.status(200).json(contracts))
     .catch((err) => {
-      res.status(400).json(err);
+return res.status(400).json(err);
     });
 }
 

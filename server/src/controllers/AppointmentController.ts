@@ -13,11 +13,11 @@ const createAppointment = async (req: Request, res: Response) => {
   const newApt = appointment
     .create(req.body)
     .then((newApt) => {
-      res.status(200).json(newApt);
+return res.status(200).json(newApt);
     })
     .catch((err) => {
       console.log("error");
-      res.status(400).json(err);
+return res.status(400).json(err);
     });
 };
 
@@ -108,16 +108,16 @@ const createFollowUp = async (req: Request, res: Response) => {
         .create(req.body)
         .then((newApt) => {
           console.log("success");
-          res.status(200).json(newApt);
+return res.status(200).json(newApt);
         })
         .catch((err) => {
           console.log("error");
-          res.status(400).json(err);
+return res.status(400).json(err);
         });
     })
     .catch((err) => {
       console.log("error");
-      res.status(400).json(err);
+return res.status(400).json(err);
     });
 };
 
@@ -174,9 +174,9 @@ const updateAppointment = async (req: Request, res: Response) => {
       }
     }
 
-    res.status(200).json({ message: "Appointments updated successfully" });
+return res.status(200).json({ message: "Appointments updated successfully" });
   } catch (err) {
-    res.status(500).json({ message: "Internal server error" });
+return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -185,10 +185,10 @@ const deleteAppointment = async (req: Request, res: Response) => {
   const apt = appointment
     .findByIdAndDelete({ _id: id })
     .then((apt) => {
-      res.status(200).json(apt);
+return res.status(200).json(apt);
     })
     .catch((err) => {
-      res.status(400).json(err);
+return res.status(400).json(err);
     });
 };
 
@@ -199,7 +199,7 @@ const listAllAppointments = async (req: Request, res: Response) => {
     .populate({ path: "patient", select: "name" })
     .then((apt) => res.status(200).json(apt))
     .catch((err) => {
-      res.status(400).json(err);
+return res.status(400).json(err);
     });
 };
 
@@ -245,12 +245,13 @@ const filterAppointments = async (req: Request, res: Response) => {
       .populate({ path: "doctor", select: "name" })
       .populate({ path: "patient", select: "name" })
       .then((apt) => {
+
         console.log(apt);
         res.status(200).json(apt);
         
       })
       .catch((err) => {
-        res.status(400).json(err);
+return res.status(400).json(err);
       });
       
     }
@@ -281,10 +282,10 @@ const filterAppointments = async (req: Request, res: Response) => {
       .populate({ path: "doctor", select: "name" })
       .populate({ path: "patient", select: "name" })
       .then((apt) => {
-        res.status(200).json(apt);
+return res.status(200).json(apt);
       })
       .catch((err) => {
-        res.status(400).json(err);
+return res.status(400).json(err);
       });
     }
     
@@ -313,10 +314,10 @@ const filterAppointments = async (req: Request, res: Response) => {
       .populate({ path: "doctor", select: "name" })
       .populate({ path: "patient", select: "name" })
       .then((apt) => {
-        res.status(200).json(apt);
+return res.status(200).json(apt);
       })
       .catch((err) => {
-        res.status(400).json(err);
+return res.status(400).json(err);
       });
     }
    

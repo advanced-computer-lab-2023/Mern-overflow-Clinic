@@ -16,6 +16,10 @@ import PatientManageAppointments from "./pages/patient/PatientManageAppointments
 import PatientManageDoctors from "./pages/patient/PatientManageDoctors";
 import PatientManageInfo from "./pages/patient/PatientManageInfo";
 import PatientManagePrescriptions from "./pages/patient/PatientManagePrescriptions";
+import ChangePassword from "./pages/authentication/ChangePassword";
+import ResetPassword from "./pages/authentication/ResetPassword";
+
+
 import DoctorManageFreeSlots from './pages/doctor/DoctorManageFreeSlots'
 import DoctorManageContracts from './pages/doctor/DoctorManageContracts'
 import DoctorManageFollowUp from './pages/doctor/DoctorManageFollowUp'
@@ -133,6 +137,12 @@ function App() {
       element: <DoctorManageFollowUp />,
     },
     {
+      path: "/auth/changepassword",
+      element: <ChangePassword />,
+    },
+    {
+      path: "/auth/resetpassword",
+      element: <ResetPassword />,
       path: "/doctor/addHealthRecords",
       element: <AddHealthRecords/>,
     },

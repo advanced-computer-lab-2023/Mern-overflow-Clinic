@@ -10,7 +10,7 @@ const router = express.Router();
 router.use(bodyParser.json());
 
 //GET
-router.get("/", isAuthenticated, adminstratorController.listAdminstrators);
+router.get("/", isAuthenticated,isAuthorized([UserType.ADMINSTARTOR]), adminstratorController.listAdminstrators);
 router.get("/requests", isAuthenticated, adminstratorController.viewRequest);
 
 //POST

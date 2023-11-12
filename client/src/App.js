@@ -19,6 +19,8 @@ import PatientManageDoctors from "./pages/patient/PatientManageDoctors";
 import PatientManageFamily from "./pages/patient/PatientManageFamily";
 import PatientManageInfo from "./pages/patient/PatientManageInfo";
 import PatientManagePrescriptions from "./pages/patient/PatientManagePrescriptions";
+import ChangePassword from "./pages/authentication/ChangePassword";
+import ResetPassword from "./pages/authentication/ResetPassword";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AdminEditPackage from "./pages/admin/AdminEditPackage";
@@ -133,6 +135,14 @@ function App() {
     {
       path: "/doctor/followups",
       element: <DoctorManageFollowUp />,
+    },
+    {
+      path: "/auth/changepassword",
+      element: <ChangePassword />,
+    },
+    {
+      path: "/auth/resetpassword",
+      element: <ResetPassword />,
     },
   ]);
 

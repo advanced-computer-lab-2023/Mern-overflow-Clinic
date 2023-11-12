@@ -8,9 +8,9 @@ const createPackage = async (req: Request, res: Response) => {
     const newPackage = await pack.create(req.body);
 
     let updatedPackage:any = newPackage; // Initialize with the newly created package
-    res.status(200).json(updatedPackage);
+return res.status(200).json(updatedPackage);
   } catch (err) {
-    res.status(400).json(err);
+return res.status(400).json(err);
   }
 };
 
@@ -20,7 +20,7 @@ const listPackages = async (req: Request, res: Response) => {
     .find({})
     .then((pkjs) => res.status(200).json(pkjs))
     .catch((err) => {
-      res.status(400).json(err);
+return res.status(400).json(err);
     });
 }
 
@@ -31,7 +31,7 @@ const readPackage = async (req: Request, res: Response) => {
     .findById(id)
     .then((pkj) => res.status(200).json(pkj))
     .catch((err) => {
-      res.status(400).json(err);
+return res.status(400).json(err);
     });
 };
 
@@ -56,11 +56,11 @@ const updatePackage = async (req: Request, res: Response) => {
     .findOneAndUpdate(query, update, { new: true })
     .then((pkj) => {
       if (pkj) {
-        res.status(200).send(pkj);
+return res.status(200).send(pkj);
       }
     })
     .catch((error) => {
-      res.status(400).send(error);
+return res.status(400).send(error);
     });
 
 };
@@ -71,10 +71,10 @@ const deletePackage = async (req: Request, res: Response) => {
   const pkg = pack
     .findByIdAndDelete({ _id: id })
     .then((pkg) => {
-      res.status(200).json(pkg);
+return res.status(200).json(pkg);
     })
     .catch((err) => {
-      res.status(400).json(err);
+return res.status(400).json(err);
     });
 };
 

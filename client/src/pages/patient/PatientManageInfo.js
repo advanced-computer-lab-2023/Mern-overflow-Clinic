@@ -18,4 +18,3 @@ const PatientManageInfo = () => {
   );
 };
 export default PatientManageInfo;
-

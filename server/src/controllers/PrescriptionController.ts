@@ -12,10 +12,10 @@ const createPrescription = async (req: Request, res: Response) => {
 
     const newPrescription = await Prescription.create(newPrescriptionData);
 
-    res.status(200).json(newPrescription);
+return res.status(200).json(newPrescription);
   } catch (error) {
     console.log("error");
-    res.status(400).json(error);
+return res.status(400).json(error);
   }
 };
 
@@ -26,12 +26,12 @@ const viewPatientPrescription = async (req: Request, res: Response) => {
     const prescriptions = await Prescription.find({ "patient": id }).populate('doctor').populate('patient');
     console.log(prescriptions)
     if (prescriptions.length === 0) {
-      res.status(200).json(prescriptions);
+return res.status(200).json(prescriptions);
     } else {
-      res.status(200).json(prescriptions);
+return res.status(200).json(prescriptions);
     }
   } catch (err) {
-    res.status(400).json(err);
+return res.status(400).json(err);
   }
 };
 
@@ -47,11 +47,11 @@ const updatePrescription = async (req: Request, res: Response) => {
     .findOneAndUpdate(query, update, { new: true })
     .then((updatedPrescription) => {
       if (updatedPrescription) {
-        res.status(200).send(updatedPrescription);
+return res.status(200).send(updatedPrescription);
       }
     })
     .catch((error) => {
-      res.status(400).send(error);
+return res.status(400).send(error);
     });
 }
 
@@ -60,10 +60,10 @@ const deletePrescription = async (req: Request, res: Response) => {
   const prescription = Prescription
     .findByIdAndDelete({ _id: id })
     .then((prescription) => {
-      res.status(200).json(prescription);
+return res.status(200).json(prescription);
     })
     .catch((err) => {
-      res.status(400).json(err);
+return res.status(400).json(err);
     });
 }
 const selectPrescription = async (req: Request, res: Response) => {
@@ -72,7 +72,7 @@ const selectPrescription = async (req: Request, res: Response) => {
     .findById(id)
     .then((pres) => res.status(200).json(pres))
     .catch((err) => {
-      res.status(400).json(err);
+return res.status(400).json(err);
     });
 }
 
@@ -130,9 +130,9 @@ const filterPrescriptions = async (req: Request, res: Response) => {
 
     const prescriptions = await Prescription.find(queryConditions).populate('doctor').populate('patient')
 
-    res.status(200).json(prescriptions);
+return res.status(200).json(prescriptions);
   } catch (err) {
-    res.status(400).json(err);
+return res.status(400).json(err);
   }
 };
 

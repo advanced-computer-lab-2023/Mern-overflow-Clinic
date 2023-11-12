@@ -35,11 +35,19 @@ const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
     if (decodedToken.userRole === UserType.DOCTOR) {
       getDoctor(decodedToken.userId)
         .then((doc) => {
+          console.debug(
+            "DEBUGPRINT[9]: isAuthenticated.ts:38: doc.status=",
+            doc?.status,
+          );
           if (!doc || doc.status != "accepted") {
             return res
               .status(401)
               .json({ message: "Unauthorized - Invalid token" });
           }
+          console.debug(
+            "DEBUGPRINT[9]: isAuthenticated.ts:38: doc.status=",
+            doc?.status,
+          );
         })
         .catch((error) => {
           console.error(error);
@@ -48,6 +56,7 @@ const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
     }
   } catch {
     if (!decodedToken) {
+      console.log("UNAUTHORIZED");
       return res.status(401).json({ message: "Unauthorized - Invalid token" });
     }
     if (!token) {
@@ -57,6 +66,7 @@ const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
     }
   }
 
+  console.log("SHOULDN't GO TO NEXT");
   next();
 };
 

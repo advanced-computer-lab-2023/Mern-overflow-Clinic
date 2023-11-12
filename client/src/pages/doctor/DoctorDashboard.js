@@ -184,6 +184,28 @@ const DoctorDashboard = (props) => {
               </ListItemButton>
             </ListItem>
           </List>
+          <List>
+            <ListItem disablePadding>
+              <ListItemButton component={Link} to="/auth/changepassword">
+                <ListItemIcon>
+                  <Avatar
+                    sx={{
+                      m: 0,
+                      bgcolor: "white",
+                      color: "black",
+                      width: 30,
+                      height: 30,
+                      padding: 0,
+                    }}
+                  >
+                    <PeopleIcon sx={{ width: 30, height: 30 }} />
+                  </Avatar>
+                </ListItemIcon>
+                <ListItemText primary="Change My Password" />
+              </ListItemButton>
+            </ListItem>
+          </List>
+
           <Divider />
         </ButtonAppBar>
       ) : (

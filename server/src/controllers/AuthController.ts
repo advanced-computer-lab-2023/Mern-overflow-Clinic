@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { HydratedDocument } from "mongoose";
 import User, { IUser } from "../models/User.js";
 import TokenUtils from "../utils/Token.js";
+import jwt from "jsonwebtoken";
+import config from "../config/config.js";
 import sendMailService from "../services/emails/sendMailService.js";
 
 const login = async (req: Request, res: Response) => {

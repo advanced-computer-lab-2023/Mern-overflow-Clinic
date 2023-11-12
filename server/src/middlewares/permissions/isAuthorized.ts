@@ -5,8 +5,7 @@ import { UserType } from '../../enums/UserTypes.js';
 
 const isAuthorized = (requiredRoles: UserType[]) => {
     return async (req: Request, res: Response, next: NextFunction) => {
-        const token = req.header('Authorization')?.replace('Bearer ', '');
-
+        const token = req.cookies.authorization;
         if (!token) {
             return res.status(401).json({ message: 'Unauthorized - No token provided' });
         }

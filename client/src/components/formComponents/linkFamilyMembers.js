@@ -16,7 +16,7 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useUser } from '../../userContest';
+import { useUser } from "../../userContest";
 
 const LinkFamilyMember = () => {
    const { userId } = useUser();
@@ -30,21 +30,20 @@ const LinkFamilyMember = () => {
   } = useForm();
 
   const onSubmit = (data) => {
-   
+    //    const id = "6529347d1b1e1b92fd454eff";
+
     axios
       .post(`http://localhost:8000/patients/${id}/linkfamilyMember`, data) // Send the data object with the request
       .then((response) => {
         console.log("POST request successful", response);
         setErrorMessage(false);
         window.location.reload();
-
       })
       .catch((error) => {
         console.error("Error making POST request", error);
         setErrorMessage(true);
       });
   };
-  
 
   const handleChange = (event) => {
     if (errors[event.target.name]) {
@@ -80,7 +79,10 @@ const LinkFamilyMember = () => {
                 <TextField
                   id="mobileNumber"
                   label="Mobile Number"
-                  {...register("mobileNumber", { required: true, maxLength: 80 })}
+                  {...register("mobileNumber", {
+                    required: true,
+                    maxLength: 80,
+                  })}
                   error={!!errors["mobileNumber"]}
                   helperText={errors["mobileNumber"]?.message}
                   fullWidth
@@ -118,8 +120,27 @@ const LinkFamilyMember = () => {
                   Link Member
                 </Button>
               </Grid>
-              {(errorMessage &&
-             <Typography color="red">Patient Linked as a Family Member should be registered as patient with correct Mobile Number</Typography>
+              {errorMessage && (
+                //TODO:
+                // <Modal
+                //   open={open}
+                //   onClose={setErr}
+                //   aria-labelledby="modal-modal-title"
+                //   aria-describedby="modal-modal-description"
+                // >
+                //   <Box>
+                //     <Typography id="modal-modal-title" variant="h6" component="h2">
+                //       Text in a modal
+                //     </Typography>
+                //     <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                //       Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+                //     </Typography>
+                //   </Box>
+                // </Modal>
+                <Typography color="red">
+                  Patient Linked as a Family Member should be registered as
+                  patient with correct Mobile Number
+                </Typography>
               )}
             </Grid>
           </Box>
@@ -130,4 +151,3 @@ const LinkFamilyMember = () => {
 };
 
 export default LinkFamilyMember;
-

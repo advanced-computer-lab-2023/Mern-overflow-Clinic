@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { useUser } from '../../userContest';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useUser } from "../../userContest";
 
 const ContractPage = ({ match }) => {
+  //const id = "65293c2cb5a34d208108cc33";
+
   const { userId } = useUser();
   let id = userId;
-
-  //const id = "65293c2cb5a34d208108cc33";
   const [contracts, setContracts] = useState([]);
   const [selectedContractId, setSelectedContractId] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
@@ -17,8 +17,8 @@ const ContractPage = ({ match }) => {
       .then((response) => response.json())
       .then((data) => setContracts(data))
       .catch((error) => {
-        setErrorMessage('Error fetching contract data');
-        console.error('Error fetching contract data:', error);
+        setErrorMessage("Error fetching contract data");
+        console.error("Error fetching contract data:", error);
       });
   };
   useEffect(() => {
@@ -26,11 +26,11 @@ const ContractPage = ({ match }) => {
   }, [id]);
 
   const formatMarkup = (value) => {
-    return value + '%';
+    return value + "%";
   };
 
   const formatDate = (date) => {
-    const options = { day: 'numeric', month: 'long', year: 'numeric' };
+    const options = { day: "numeric", month: "long", year: "numeric" };
     return new Date(date).toLocaleDateString(undefined, options);
   };
 
@@ -40,34 +40,37 @@ const ContractPage = ({ match }) => {
         // Immediately update the status to 'accepting'
         const updatedContracts = contracts.map((contract) => {
           if (contract._id === selectedContractId) {
-            contract.status = 'accepted';
+            contract.status = "accepted";
           }
           return contract;
         });
         setContracts(updatedContracts);
 
-        const response = await fetch(`http://localhost:8000/doctors/${id}/acceptContract`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
+        const response = await fetch(
+          `http://localhost:8000/doctors/${id}/acceptContract`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ contractId: selectedContractId }),
           },
-          body: JSON.stringify({ contractId: selectedContractId }),
-        });
+        );
 
         if (response.ok) {
           const data = await response.json();
           if (data.success) {
-            setSuccessMessage('Contract accepted successfully');
+            setSuccessMessage("Contract accepted successfully");
             fetchContracts();
           } else {
-            setErrorMessage('Error accepting contract 1');
+            setErrorMessage("Error accepting contract 1");
           }
         } else {
           setErrorMessage(`HTTP error! Status: ${response.status}`);
         }
       } catch (error) {
         setErrorMessage(`Error accepting contract 2: ${error}`);
-        console.error('Error accepting contract:', error);
+        console.error("Error accepting contract:", error);
       }
     }
   };
@@ -78,34 +81,37 @@ const ContractPage = ({ match }) => {
         // Immediately update the status to 'rejecting'
         const updatedContracts = contracts.map((contract) => {
           if (contract._id === selectedContractId) {
-            contract.status = 'rejected';
+            contract.status = "rejected";
           }
           return contract;
         });
         setContracts(updatedContracts);
 
-        const response = await fetch(`http://localhost:8000/doctors/${id}/rejectContract`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
+        const response = await fetch(
+          `http://localhost:8000/doctors/${id}/rejectContract`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ contractId: selectedContractId }),
           },
-          body: JSON.stringify({ contractId: selectedContractId }),
-        });
+        );
 
         if (response.status === 200) {
           const data = await response.json();
           if (data.success) {
-            setSuccessMessage('Contract rejected successfully');
+            setSuccessMessage("Contract rejected successfully");
             fetchContracts();
           } else {
-            setErrorMessage('Error rejecting contract');
+            setErrorMessage("Error rejecting contract");
           }
         } else {
           setErrorMessage(`HTTP error! Status: ${response.status}`);
         }
       } catch (error) {
-        setErrorMessage('Error rejecting contract');
-        console.error('Error rejecting contract:', error);
+        setErrorMessage("Error rejecting contract");
+        console.error("Error rejecting contract:", error);
       }
     }
   };
@@ -113,7 +119,9 @@ const ContractPage = ({ match }) => {
   return (
     <div style={styles.container}>
       <h1 style={styles.header}>Doctor's Contracts</h1>
-      {successMessage && <div style={styles.successMessage}>{successMessage}</div>}
+      {successMessage && (
+        <div style={styles.successMessage}>{successMessage}</div>
+      )}
       {errorMessage && <div style={styles.errorMessage}>{errorMessage}</div>}
       <table style={styles.contractTable}>
         <thead>
@@ -154,16 +162,10 @@ const ContractPage = ({ match }) => {
                   </>
                 ) : (
                   <>
-                    <button
-                      style={styles.acceptButtonDimmed}
-                      disabled
-                    >
+                    <button style={styles.acceptButtonDimmed} disabled>
                       Accept
                     </button>
-                    <button
-                      style={styles.rejectButtonDimmed}
-                      disabled
-                    >
+                    <button style={styles.rejectButtonDimmed} disabled>
                       Reject
                     </button>
                   </>
@@ -179,61 +181,60 @@ const ContractPage = ({ match }) => {
 
 const styles = {
   container: {
-    textAlign: 'center',
-    margin: '20px',
+    textAlign: "center",
+    margin: "20px",
   },
   header: {
-    fontSize: '1.5rem',
+    fontSize: "1.5rem",
   },
   contractTable: {
-    width: '100%',
-    borderCollapse: 'collapse',
+    width: "100%",
+    borderCollapse: "collapse",
   },
   contractRow: {
-    borderTop:'15px solid transparent',
-   
+    borderTop: "15px solid transparent",
   },
   acceptButton: {
-    backgroundColor: 'green',
-    color: 'white',
-    padding: '5px 10px',
-    border: 'none',
-    cursor: 'pointer',
-    marginRight: '5px',
-    transition: 'background-color 0.3s',
+    backgroundColor: "green",
+    color: "white",
+    padding: "5px 10px",
+    border: "none",
+    cursor: "pointer",
+    marginRight: "5px",
+    transition: "background-color 0.3s",
   },
   rejectButton: {
-    backgroundColor: 'red',
-    color: 'white',
-    padding: '5px 10px',
-    border: 'none',
-    cursor: 'pointer',
-    transition: 'background-color 0.3s',
+    backgroundColor: "red",
+    color: "white",
+    padding: "5px 10px",
+    border: "none",
+    cursor: "pointer",
+    transition: "background-color 0.3s",
   },
   acceptButtonDimmed: {
-    backgroundColor: 'lightgreen',
-    color: 'white',
-    padding: '5px 10px',
-    border: 'none',
-    cursor: 'not-allowed',
-    marginRight: '5px',
+    backgroundColor: "lightgreen",
+    color: "white",
+    padding: "5px 10px",
+    border: "none",
+    cursor: "not-allowed",
+    marginRight: "5px",
   },
   rejectButtonDimmed: {
-    backgroundColor: 'lightcoral',
-    color: 'white',
-    padding: '5px 10px',
-    border: 'none',
-    cursor: 'not-allowed',
+    backgroundColor: "lightcoral",
+    color: "white",
+    padding: "5px 10px",
+    border: "none",
+    cursor: "not-allowed",
   },
   successMessage: {
-    backgroundColor: 'lightgreen',
-    padding: '1rem',
-    margin: '1rem',
+    backgroundColor: "lightgreen",
+    padding: "1rem",
+    margin: "1rem",
   },
   errorMessage: {
-    backgroundColor: 'lightcoral',
-    padding: '1rem',
-    margin: '1rem',
+    backgroundColor: "lightcoral",
+    padding: "1rem",
+    margin: "1rem",
   },
 };
 

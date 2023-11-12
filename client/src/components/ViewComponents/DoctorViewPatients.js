@@ -36,6 +36,9 @@ export default function DoctorViewPatients() {
       })
       .then((res) => {
         setData(res.data);
+      })
+      .catch((error) => {
+        console.error("Error getting Patient data", error);
       });
   };
 

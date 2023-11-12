@@ -8,7 +8,7 @@ import { stat } from "fs";
 const createAppointment = async (req: Request, res: Response) => {
   req.body.duration = 1;
   req.body.status = "upcoming";
-  req.body.appointmentType="regular";
+  req.body.appointmentType = "regular";
   const newApt = appointment
     .create(req.body)
     .then((newApt) => {
@@ -91,12 +91,12 @@ const createFollowUp = async (req: Request, res: Response) => {
   const patientEmail = req.body.email;
 
   // 2. Search for the patient with the given email in your database
-    Patient.findOne({ email: patientEmail })
+  Patient.findOne({ email: patientEmail })
     .then((patient) => {
       console.log("getting patient");
       if (!patient) {
         console.log("error here");
-        return res.status(404).json({ message: 'Patient not found' });
+        return res.status(404).json({ message: "Patient not found" });
       }
       console.log(patient._id);
       // 3. If a patient with that email is found, set req.body.patient to the _id of the patient

@@ -22,7 +22,7 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
-import { useUser } from '../../userContest';
+import { useUser } from "../../userContest";
 
 export default function PatientViewFamilyMembers() {
   const [data, setData] = useState([]);
@@ -40,6 +40,9 @@ export default function PatientViewFamilyMembers() {
       .then((res) => {
         console.log(res.data);
         setData(res.data);
+      })
+      .catch((error) => {
+        console.error("Error getting Doctor data", error);
       });
   };
 

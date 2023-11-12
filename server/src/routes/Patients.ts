@@ -13,8 +13,8 @@ router.get(
   isAuthenticated,
   patientController.selectDoctorByNameAndSpeciality,
 );
-router.get("/:id/wallet", patientController.viewWallet);
 router.get("/:id/family", patientController.listFamilyMembers);
+router.get("/:id/wallet", isAuthenticated, patientController.viewWallet);
 //added this new route
 router.post(
   "/:id/prescriptionsFilter",
@@ -42,13 +42,17 @@ router.get(
 );
 
 //POST
-router.post("/", isAuthenticated, patientController.createPatient);
+router.post("/", patientController.createPatient);
 router.post(
   "/:id/familyMember",
   isAuthenticated,
   patientController.addFamilyMember,
 );
-
+router.post(
+  "/:id/linkfamilyMember",
+  isAuthenticated,
+  patientController.linkfamilyMember,
+);
 
 //DELETE
 router.delete("/:id", isAuthenticated, patientController.deletePatient);

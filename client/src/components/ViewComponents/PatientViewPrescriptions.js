@@ -22,7 +22,7 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
-import { useUser } from '../../userContest';
+import { useUser } from "../../userContest";
 
 export default function PatientViewPrescriptions() {
   const [data, setData] = useState([]);
@@ -38,6 +38,9 @@ export default function PatientViewPrescriptions() {
       })
       .then((res) => {
         setData(res.data);
+      })
+      .catch((error) => {
+        console.error("Error getting Doctor data", error);
       });
   };
 
@@ -141,23 +144,22 @@ export default function PatientViewPrescriptions() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((row) => (
-            <TableRow key={row.patient.name}>
-              <TableCell>{row.patient.name}</TableCell>
-              <TableCell>{row.doctor.name}</TableCell>
-              {row.medicine[0] && (
-              <TableCell>{row.medicine[0]}</TableCell>
-              )}
+          {data &&
+            data.map((row) => (
+              <TableRow key={row.patient?.name}>
+                <TableCell>{row.patient?.name}</TableCell>
+                <TableCell>{row.doctor?.name}</TableCell>
+                {row.medicine[0] && <TableCell>{row.medicine[0]}</TableCell>}
 
-              <TableCell>{row.filled.toString()}</TableCell>
-              <TableCell>{row.date}</TableCell>
-              <TableCell>
-                <Button onClick={() => setSelectedPrescription(row)}>
-                  Select Prescription
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
+                <TableCell>{row.filled.toString()}</TableCell>
+                <TableCell>{row.date}</TableCell>
+                <TableCell>
+                  <Button onClick={() => setSelectedPrescription(row)}>
+                    Select Prescription
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
       {typeof selectedPrescription.patient !== "undefined" && (

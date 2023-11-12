@@ -31,6 +31,9 @@ export default function AdminViewPatients() {
       .get(`http://localhost:8000/patients`)
       .then((res) => {
         setData(res.data);
+      })
+      .catch((error) => {
+        console.error("Error getting Patient data", error);
       });
   };
 

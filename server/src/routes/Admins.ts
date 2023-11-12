@@ -14,8 +14,12 @@ router.get("/", isAuthenticated, adminstratorController.listAdminstrators);
 router.get("/requests", isAuthenticated, adminstratorController.viewRequest);
 
 //POST
+router.post(
+  "/:id/createContract",
+  isAuthenticated,
+  contractController.createContract,
+);
 router.post("/", isAuthenticated, adminstratorController.createAdminstrator);
-router.post("/:id/createContract",contractController.createContract);
 
 //DELETE
 router.delete("/:id", isAuthenticated, adminstratorController.deleteAdmin);

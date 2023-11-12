@@ -40,6 +40,7 @@ const createPatient = async (req: Request, res: Response) => {
 
 const readPatient = async (req: Request, res: Response) => {
     const pId = req.params.id;
+    console.log(pId);
      const pat = await patient
         .findById(pId)
         .then((pat) => {

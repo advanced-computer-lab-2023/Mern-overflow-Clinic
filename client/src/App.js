@@ -1,23 +1,21 @@
 import React from "react";
 import "./App.css";
-import PatientRegister from "./pages/authentication/PatientRegister";
-import DoctorRegister from "./pages/authentication/DoctorRegister";
-import SignIn from "./pages/authentication/SignIn";
-// import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminManageAdmins from "./pages/admin/AdminManageAdmins";
-import AdminManageDoctors from "./pages/admin/AdminManageDoctors";
-import AdminManagePatients from "./pages/admin/AdminManagePatients";
-import AdminManagePackages from "./pages/admin/AdminManagePackages";
 import AdminManageDoctorRequests from "./pages/admin/AdminManageDoctorRequests";
-import DoctorManageProfile from "./pages/doctor/DoctorManageProfile";
+import AdminManageDoctors from "./pages/admin/AdminManageDoctors";
+import AdminManagePackages from "./pages/admin/AdminManagePackages";
+import AdminManagePatients from "./pages/admin/AdminManagePatients";
+import DoctorRegister from "./pages/authentication/DoctorRegister";
+import PatientRegister from "./pages/authentication/PatientRegister";
+import SignIn from "./pages/authentication/SignIn";
 import DoctorManageAppointments from "./pages/doctor/DoctorManageAppointments";
+import DoctorManageInfo from "./pages/doctor/DoctorManageInfo";
 import DoctorManagePatients from "./pages/doctor/DoctorManagePatients";
-import PatientManageFamily from "./pages/patient/PatientManageFamily";
-import PatientManageDoctors from "./pages/patient/PatientManageDoctors";
-import PatientManagePrescriptions from "./pages/patient/PatientManagePrescriptions";
-import PatientManageInfo from './pages/patient/PatientManageInfo';
+import DoctorManageProfile from "./pages/doctor/DoctorManageProfile";
 import PatientManageAppointments from "./pages/patient/PatientManageAppointments";
-import DoctorManageInfo from './pages/doctor/DoctorManageInfo'
+import PatientManageDoctors from "./pages/patient/PatientManageDoctors";
+import PatientManageInfo from "./pages/patient/PatientManageInfo";
+import PatientManagePrescriptions from "./pages/patient/PatientManagePrescriptions";
 import DoctorManageFreeSlots from './pages/doctor/DoctorManageFreeSlots'
 import DoctorManageContracts from './pages/doctor/DoctorManageContracts'
 import DoctorManageFollowUp from './pages/doctor/DoctorManageFollowUp'
@@ -27,6 +25,7 @@ import AddFamilyMember from './components/formComponents/linkFamilyMembers'
 import PatientManageFamilyLinks from './pages/patient/PatientManageFamilyLinks';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AdminEditPackage from "./pages/admin/AdminEditPackage";
+import PatientManageFamily from "./pages/patient/PatientManageFamily";
 // import EditDoctorProfile from './components/formComponents/EditDoctorProfile';
 import axios from "axios";
 function App() {
@@ -151,4 +150,3 @@ function App() {
 }
 
 export default App;
-

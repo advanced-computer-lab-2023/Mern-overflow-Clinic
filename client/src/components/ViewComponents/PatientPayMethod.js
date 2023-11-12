@@ -8,6 +8,7 @@ import StarIcon from '@mui/icons-material/Star';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import PaymentsIcon from '@mui/icons-material/Payments';
+import { useUser } from "../../userContest";
 
 export default function PatientPayMethod(props) {
     const [data, setData] = useState([]);
@@ -18,12 +19,25 @@ export default function PatientPayMethod(props) {
     const [cash, setCash] = useState(false);
     const [credit, setCredit] = useState(false);
     const [wallet, setWallet] = useState(false);
+    const [errorOpen, setErrorOpen] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [successOpen, setSuccessOpen] = useState(false);
+    const [successMessage, setSuccessMessage] = useState('');
+
+    const { userId } = useUser();
+    const id = userId;
 
     const handleChange = (event) => {
         setValue(event.target.value);
     };
 
-
+    const handleSuccessClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSuccessOpen(false);
+        setErrorOpen(false);
+    };
 
     const handleCredit = (event) => {
         props.setPaymentMethod("Credit Card");
@@ -63,7 +77,7 @@ export default function PatientPayMethod(props) {
         setCredit(false);
         setWallet(true);
         console.log(props.appid)
-        axios.post('http://localhost:8000/walletPayment/appointments', {id:props.appid,pId:"6529347d1b1e1b92fd454eff"}, {
+        axios.post('http://localhost:8000/walletPayment/appointments', {id:props.appid,pId:id}, {
   headers: {
     'Content-Type': 'application/json', // Set the content type based on your API requirements
     // Add other headers as needed
@@ -73,15 +87,29 @@ export default function PatientPayMethod(props) {
     // Handle the success response
     console.log("Success")
     console.log('Response:', response.data);
+    setSuccessMessage(response.data)
+    setSuccessOpen(true);
   })
   .catch(error => {
     // Handle the error
     console.error('Error:', error.response ? error.response.data : error.message);
+    setErrorMessage(JSON.stringify(error.response ? error.response.data : error.message))
+    setErrorOpen(true);
   });
     };
 
     return (
         <Container maxWidth="md">
+            <Snackbar open={errorOpen} autoHideDuration={3000} onClose={handleSuccessClose}>
+                <Alert elevation={6} variant="filled" onClose={handleSuccessClose}  severity="error">
+                    {errorMessage}
+                </Alert>
+            </Snackbar>
+            <Snackbar open={successOpen} autoHideDuration={3000} onClose={handleSuccessClose}>
+                <Alert elevation={6} variant="filled" onClose={handleSuccessClose} severity="success">
+                    {successMessage}
+                </Alert>
+            </Snackbar>
             <Paper elevation={3} sx={{ p: '20px', my: '40px', paddingBottom: 5 }}>
                 {loading ? (
                     <CircularProgress sx={{ mt: '30px' }} />

@@ -33,6 +33,7 @@ export default function PatientViewAppointments() {
   const { userId } = useUser();
 
   // const id = "6529347d1b1e1b92fd454eff";
+  console.log(userId+"hello");
   const id = userId;
   console.log(id);
 
@@ -61,6 +62,7 @@ export default function PatientViewAppointments() {
       axios
         .post(`http://localhost:8000/appointments/filter`, {
           status: status,
+          id:id
         })
         .then((res) => {
           console.log(res.data);
@@ -105,7 +107,7 @@ export default function PatientViewAppointments() {
                 >
                   <MenuItem value="upcoming">Upcoming</MenuItem>
                   <MenuItem value="completed">Completed</MenuItem>
-                  <MenuItem value="canceled">Canceled</MenuItem>
+                  <MenuItem value="cancelled">Cancelled</MenuItem>
                   <MenuItem value="rescheduled">Rescheduled</MenuItem>
                 </Select>
               </FormControl>
@@ -165,8 +167,9 @@ export default function PatientViewAppointments() {
               <TableCell>{row.date}</TableCell>
               <TableCell>{row.status}</TableCell>
               <TableCell>
-              <Link to={`/patient/pay/appointment/${row._id}`}>
-                    <IconButton>
+                
+              <Link to={row.status=="upcoming"?`/patient/pay/appointment/${row._id}`:undefined}>
+                    <IconButton disabled={!(row.status=="upcoming")}>
                       <PaymentIcon />
                     </IconButton>
               </Link>

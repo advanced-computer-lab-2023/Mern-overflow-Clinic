@@ -74,6 +74,8 @@ export default function AdminViewDoctors() {
 
       setData(res.data);
       setFilteredData(res.data);
+    }).catch(()=>{
+      
     });
   };
 

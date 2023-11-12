@@ -60,10 +60,11 @@ const createFollowUp = async (req: Request, res: Response) => {
 
 const readAppointment = async (req: Request, res: Response) => {
   const id = req.params.id;
-  console.log(id);
+
+  console.log("Appointment print"+id);
   let today = new Date();
   const apt = appointment
-    .findById(id)
+    .find({patient:id})
     .populate({ path: "doctor", select: "name" })
     .populate({ path: "patient", select: "name" })
     .then((apt) => {
@@ -142,14 +143,15 @@ const listAllAppointments = async (req: Request, res: Response) => {
 
 const filterAppointments = async (req: Request, res: Response) => {
   const status = req.body.status;
-
+  const pId = req.body.id;
+  console.log("hello  "+status+pId);
   if (
     (req.body.date !== undefined && status !== undefined) ||
     (req.body.date && status)
   ) {
     const inputDate = new Date(req.body.date);
     const apt = appointment
-      .find({ date: inputDate, status: status })
+      .find({ date: inputDate, status: status,patient:pId })
       .populate({ path: "doctor", select: "name" })
       .populate({ path: "patient", select: "name" })
       .then((apt) => {
@@ -165,7 +167,7 @@ const filterAppointments = async (req: Request, res: Response) => {
   ) {
     const inputDate = new Date(req.body.date);
     const apt = appointment
-      .find({ date: inputDate })
+      .find({ date: inputDate, patient:pId })
 
       .populate({ path: "doctor", select: "name" })
       .populate({ path: "patient", select: "name" })
@@ -181,7 +183,7 @@ const filterAppointments = async (req: Request, res: Response) => {
     (!req.body.date && status)
   ) {
     const apt = appointment
-      .find({ status: status })
+      .find({ status: status, patient:pId  })
 
       .populate({ path: "doctor", select: "name" })
       .populate({ path: "patient", select: "name" })

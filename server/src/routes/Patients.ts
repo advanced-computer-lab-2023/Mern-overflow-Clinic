@@ -13,6 +13,7 @@ router.get(
   isAuthenticated,
   patientController.selectDoctorByNameAndSpeciality,
 );
+router.get("/:id/family", patientController.listFamilyMembers);
 router.get("/:id/wallet", isAuthenticated, patientController.viewWallet);
 //added this new route
 router.post(

@@ -8,6 +8,10 @@ router.use(bodyParser.json());
 
 router.post("/login", authController.login);
 router.post("/logout", isAuthenticated, authController.logout);
+// router.post("/forgot", PasswordResetTokenController.sendPasswordResetToken);
+// router.get("/reset", PasswordResetTokenController.validatePasswordResetToken);
+router.post("/reset", authController.resetPassword);
+// router.post("/change", authenticated, AuthController.changePassword);
 
 export default router;
 

@@ -59,8 +59,8 @@ const changePassword = async (req: Request, res: Response) => {
 };
 
 const resetPassword = async (req: Request, res: Response) => {
-	const to = req.body;
-	console.log(to);
+	const to = req.body.to;
+	
 	sendMailService.sendMail(to ,"test","test");
 }
 

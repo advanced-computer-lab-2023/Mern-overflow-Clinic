@@ -79,24 +79,24 @@ export default function AdminViewDoctors() {
 
 
   const handleAccept = (id) => {
-    axios.delete(`http://localhost:8000/doctors/${id}`)
+    axios.post(`http://localhost:8000/admins/acceptDoctorRequest`,{id:id})
       .then((response) => {
-        console.log('DELETE request successful', response);
+        console.log('POST request successful', response);
         fetchTableData();
       })
       .catch((error) => {
-        console.error('Error making DELETE request', error);
+        console.error('Error making POST request', error);
       });
   }
 
   const handleReject= (id) => {
-    axios.delete(`http://localhost:8000/doctors/${id}`)
+    axios.post(`http://localhost:8000/admins/rejectDoctorRequest`,{id:id})
       .then((response) => {
-        console.log('DELETE request successful', response);
+        console.log('POST request successful', response);
         fetchTableData();
       })
       .catch((error) => {
-        console.error('Error making DELETE request', error);
+        console.error('Error making POST request', error);
       });
   }
 

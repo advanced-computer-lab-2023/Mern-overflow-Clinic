@@ -44,6 +44,7 @@ export default function SignIn() {
         console.log(response);
         const type = response.data.type;
         const userId = response.data.userId;
+        console.log(type);
         setUserId(userId);
         if (type === "Patient") {
           setUserRole("Patient");
@@ -51,7 +52,7 @@ export default function SignIn() {
         } else if (type === "Doctor") {
           setUserRole("Doctor");
           navigate("/doctor/profile");
-        } else if (type === "Admin") {
+        } else if (type === "Adminstrator") {
           setUserRole("Admin");
           navigate("/admin/patients");
         }

@@ -37,12 +37,16 @@ const logout = async (req: Request, res: Response) => {
 
 const changePassword = async (req: Request, res: Response) => {
 	const newPasswordHash = req.body.newPasswordHash;
+	const oldPassswordHash = req.body.oldPassswordHash;
 	const token = req.cookies.authorization;
 	const decodedToken = TokenUtils.decodeToken(token); // TODO handle verification before decoding
 	try{
 		const user = await User.findById(decodedToken?.userId);
 		if (!user) {
 			return res.status(404).json({ message: "User not found" });
+		}
+		if(user.passwordHash!= oldPassswordHash){
+			return res.status(200).json({ message: "wrong password" });
 		}
 		user.passwordHash = newPasswordHash;
 		await user.save();

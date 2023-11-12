@@ -22,7 +22,6 @@ const isAuthenticated = async (req: Request, res: Response, next: NextFunction) 
 	let token, decodedToken: any;
 	try {
 		token = req.cookies.authorization;
-
 		if (!TokenUtils.verifyToken(token)) {
 			return res
 				.status(401)

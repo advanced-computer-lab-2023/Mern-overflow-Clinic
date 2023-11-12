@@ -26,7 +26,7 @@ import axios from "axios";
 export default function PatientViewFamilyMembers() {
   const [data, setData] = useState([]);
 
-  const id = "6529347d1b1e1b92fd454eff";
+  const id = "655089b786a7e9fff5d1d36a";
 
   const fetchTableData = () => {
     axios

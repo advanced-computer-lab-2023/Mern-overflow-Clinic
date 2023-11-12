@@ -19,6 +19,7 @@ import PatientManageAppointments from './pages/patient/PatientManageAppointments
 import DoctorManageInfo from './pages/doctor/DoctorManageInfo'
 import DoctorManageFreeSlots from './pages/doctor/DoctorManageFreeSlots'
 import PatientManageDocuments from './pages/patient/PatientManageDocuments';
+import PatientManagePackages from './pages/patient/PatientManagePackages';
 
 import AddFamilyMember from './components/formComponents/AddFamilyMember'
 import {
@@ -101,6 +102,10 @@ function App() {
     {
       path: "/patient/documents",
       element: <PatientManageDocuments />,
+    },
+    {
+      path: "/patient/packages",
+      element: <PatientManagePackages />,
     },
     {
       path: "/patient/family/:id",

@@ -37,91 +37,13 @@ export interface IPatient {
     familyMembers?: familyMember[];
     prescriptions?: Types.ObjectId[];
     package?: Types.ObjectId;
+    //packageSubscribed?: Types.ObjectId;
+    subscribedToPackage?: boolean;
+    packageRenewalDate?: Date;
     healthRecords?: Types.ObjectId[];
     wallet: number;
 }
 
-/*
-function validateNationalId(nationalId: string, dateOfBirth: Date, gender: string): boolean {
-    // Check if the national ID is a valid ObjectId
-    if (!mongoose.Types.ObjectId.isValid(nationalId)) {
-        return false;
-    }
-
-    // Check if the national ID is exactly 14 characters long
-    if (nationalId.length !== 14) {
-        return false;
-    }
-
-    // Check if the first digit corresponds to the century of dateOfBirth where 2 => 20th century
-    const year = dateOfBirth.getFullYear();
-    const centuryDigit = nationalId.charAt(0);
-    if (parseInt(centuryDigit) !== Math.floor(year / 100) - 18) {
-        return false;
-    }
-    
-    // Check if the second and third digits correspond to the year of dateOfBirth
-    const yearDigits = nationalId.substring(1, 3);
-    if (parseInt(yearDigits) !== year % 100) {
-        return false;
-    }
-
-    // Check if the fourth and fifth digits correspond to the month of dateOfBirth
-    const month = dateOfBirth.getMonth() + 1;
-    const monthDigits = nationalId.substring(3, 5);
-    if (parseInt(monthDigits) !== month) {
-        return false;
-    }
-
-    // Check if the sixth and seventh digits correspond to the day of dateOfBirth
-    const day = dateOfBirth.getDate();
-    const dayDigits = nationalId.substring(5, 7);
-    if (parseInt(dayDigits) !== day) {
-        return false;
-    }
-
-    // Check if the thirteenth digit corresponds to gender, where odd is male and even is female
-    const genderDigit = parseInt(nationalId.charAt(12));
-    if ((gender === 'male' && genderDigit % 2 === 0) || (gender === 'female' && genderDigit % 2 !== 0)) {
-        return false;
-    }
-    
-    return true;
-}
-*/
-
-function validateNationalId (nationalId: string, age: number, gender: string): boolean {
-    // Check if the national ID is a valid ObjectId
-    if (!mongoose.Types.ObjectId.isValid(nationalId)) {
-        return false;
-    }
-
-    // Check if the national ID is exactly 14 characters long
-    if (nationalId.length !== 14) {
-        return false;
-    }
-
-    // Check if digits 2 through 6 correspond to the birth date
-    const year = nationalId.substring(1, 3);
-    const month = nationalId.substring(3, 5);
-    const day = nationalId.substring(5, 7);
-    const birthDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-    const today = new Date();
-    const ageDiff = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    const dayDiff = today.getDate() - birthDate.getDate();
-    if (ageDiff < age || (ageDiff === age && monthDiff < 0) || (ageDiff === age && monthDiff === 0 && dayDiff < 0)) {
-        return false;
-    }
-
-    // Check if the thirteenth digit corresponds to gender, where odd is male and even is female
-    const genderDigit = parseInt(nationalId.charAt(12));
-    if ((gender === 'male' && genderDigit % 2 === 0) || (gender === 'female' && genderDigit % 2 !== 0)) {
-        return false;
-    }
-
-    return true;
-}
 
 // 2. Create a Schema corresponding to the document interface.
 const PatientSchema = new Schema<IPatient>({
@@ -159,6 +81,9 @@ const PatientSchema = new Schema<IPatient>({
     ],
     prescriptions: [{ type: Schema.Types.ObjectId, ref: "Prescription", required: false }],
     package: { type: Schema.Types.ObjectId, ref: "Package", required: false },
+    //packageSubscribed: { type: Number, required: false },
+    subscribedToPackage: { type: Boolean, required: false },
+    packageRenewalDate: { type: Date, required: false },
     healthRecords: [{ type: Schema.Types.ObjectId, ref: "HealthRecords", required: false }],
 });
 

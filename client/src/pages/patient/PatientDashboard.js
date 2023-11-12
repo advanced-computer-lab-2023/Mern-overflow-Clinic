@@ -78,7 +78,6 @@ const PatientDashboard = (props) => {
                 </ListItem>
             </List>
             <Divider />
-            
             <List>
                 <ListItem disablePadding>
                     <ListItemButton component={Link} to='/patient/documents'>
@@ -88,6 +87,19 @@ const PatientDashboard = (props) => {
                             </Avatar>
                         </ListItemIcon>
                         <ListItemText primary="My Documents" />
+                    </ListItemButton>
+                </ListItem>
+            </List>
+            <Divider />
+            <List>
+                <ListItem disablePadding>
+                    <ListItemButton component={Link} to='/patient/packages'>
+                        <ListItemIcon>
+                            <Avatar sx={{ m: 0, bgcolor: 'white', color: 'black', width: 30, height: 30, padding: 0 }}>
+                                <FileIcon sx={{ width: 30, height: 30 }} />
+                            </Avatar>
+                        </ListItemIcon>
+                        <ListItemText primary="My Packages" />
                     </ListItemButton>
                 </ListItem>
             </List>

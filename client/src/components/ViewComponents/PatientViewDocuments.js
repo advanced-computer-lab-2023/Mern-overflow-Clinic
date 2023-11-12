@@ -2,12 +2,12 @@ import React, {useState, useEffect} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios'
 import {  Typography } from '@mui/material';
-import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 
 const PatientManageDocuments = () => {
-    const id = "6529347d1b1e1b92fd454eff";
+    const id = "655089b786a7e9fff5d1d36a";
     const [data, setData] = useState([]);
     const [files, setFiles] = useState([]);
 

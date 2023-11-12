@@ -34,16 +34,21 @@ router.get("/", patientController.listPatients);
 router.get("/:id", patientController.readPatient);
 router.get("/:id/prescriptions", prescriptionController.viewPatientPrescription);
 router.get("/:id/price", patientController.listDoctorsBySessionPrice);
+router.get("/:id/packages", patientController.listPatientPackages);
 
 //POST
 router.post("/", patientController.createPatient);
 router.post("/:id/familyMember", patientController.addFamilyMember);
 router.post("/:id/documents", patientController.addDocument);
+router.post("/:id/packages/:packageId", patientController.addPackage);
+router.post("/:id/packages/:pId/:packageId", patientController.addPackageToFamMem);
 
 
 //DELETE
 router.delete("/:id", patientController.deletePatient);
 router.delete("/:id/documents", patientController.deleteDocument);
+router.delete("/:id/packages", patientController.deletePackage);
+router.delete("/:id/packages/:pId", patientController.deletePackageFromFamMem);
 
 
 

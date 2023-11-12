@@ -14,6 +14,7 @@ import DoctorManagePatients from "./pages/doctor/DoctorManagePatients";
 import DoctorManageProfile from "./pages/doctor/DoctorManageProfile";
 import PatientManageAppointments from "./pages/patient/PatientManageAppointments";
 import PatientManageDoctors from "./pages/patient/PatientManageDoctors";
+import PatientManageFamily from "./pages/patient/PatientManageFamily";
 import PatientManageInfo from "./pages/patient/PatientManageInfo";
 import PatientManagePrescriptions from "./pages/patient/PatientManagePrescriptions";
 import ChangePassword from "./pages/authentication/ChangePassword";
@@ -31,7 +32,8 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AdminEditPackage from "./pages/admin/AdminEditPackage";
 import PatientManageFamily from "./pages/patient/PatientManageFamily";
 // import EditDoctorProfile from './components/formComponents/EditDoctorProfile';
-import axios from "axios";
+import axios from "axios";import PatientPayAppointment from './pages/patient/PatientPayAppointment';
+
 function App() {
   axios.defaults.withCredentials = true;
 
@@ -136,6 +138,10 @@ function App() {
       path: "/doctor/followups",
       element: <DoctorManageFollowUp />,
     },
+    {
+      path: "/patient/pay/appointment/:appid",
+      element: <PatientPayAppointment/>,
+    }
     {
       path: "/auth/changepassword",
       element: <ChangePassword />,

@@ -31,8 +31,9 @@ export interface IPatient {
     familyMembers?: familyMember[];
     prescriptions?: Types.ObjectId[];
     package?: Types.ObjectId;
-    healthRecords?: Types.ObjectId[];
-    wallet: number;
+    healthRecords?: IHealthRecord[];
+    wallet?:number
+    
 }
 
 /*
@@ -127,7 +128,6 @@ const PatientSchema = new Schema<IPatient>({
     dateOfBirth: { type: Date, required: true },
     gender: { type: String, required: true, lowercase: true, enum: ['male', 'female'] },
     mobileNumber: { type: String, required: true, unique: true, min: 8, max: 16, match: [/^(\+\d{8,15}|\d{8,15})$/, "invalid charachters"] },
-    wallet:{ type: Number, required: true , default: 0.0},
     emergencyContact: [
         {
             name: { type: String, required: true, trim: true },
@@ -147,7 +147,15 @@ const PatientSchema = new Schema<IPatient>({
     ],
     prescriptions: [{ type: Schema.Types.ObjectId, ref: "Prescription", required: false }],
     package: { type: Schema.Types.ObjectId, ref: "Package", required: false },
-    healthRecords: [{ type: Schema.Types.ObjectId, ref: "HealthRecords", required: false }],
+    healthRecords: [
+        {
+            name: { type: String, required: true, },
+            diagnosis: { type: String, required: true },
+            date: { type: Date, required: true },
+
+        }
+    ],
+    wallet: { type: Number, required: false }
 });
 
 PatientSchema.pre('save', function(next) {

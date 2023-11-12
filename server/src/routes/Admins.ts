@@ -11,17 +11,16 @@ router.use(bodyParser.json());
 
 //GET
 router.get("/", isAuthenticated,isAuthorized([UserType.ADMINSTARTOR]), adminstratorController.listAdminstrators);
-router.get("/requests", isAuthenticated, adminstratorController.viewRequest);
+router.get("/requests", isAuthenticated,isAuthorized([UserType.ADMINSTARTOR]), adminstratorController.viewRequest);
 
 //POST
-router.post(
-  "/:id/createContract",
-  isAuthenticated,
-  contractController.createContract,
-);
-router.post("/", isAuthenticated, adminstratorController.createAdminstrator);
+router.post("/:id/createContract", isAuthenticated,isAuthorized([UserType.ADMINSTARTOR]),contractController.createContract);
+
+router.post("/", isAuthenticated,isAuthorized([UserType.ADMINSTARTOR]),adminstratorController.createAdminstrator);
+router.post("/acceptDoctorRequest",isAuthenticated,isAuthorized([UserType.ADMINSTARTOR]),isAuthenticated,isAuthorized([UserType.ADMINSTARTOR]), adminstratorController.acceptDoctorRequest);
+router.post("/rejectDoctorRequest", isAuthenticated,isAuthorized([UserType.ADMINSTARTOR]),adminstratorController.rejectDoctorRequest);
 
 //DELETE
-router.delete("/:id", isAuthenticated, adminstratorController.deleteAdmin);
+router.delete("/:id", isAuthenticated,isAuthorized([UserType.ADMINSTARTOR]),adminstratorController.deleteAdmin);
 
 export default router;

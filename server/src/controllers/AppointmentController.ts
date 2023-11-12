@@ -123,10 +123,11 @@ return res.status(400).json(err);
 
 const readAppointment = async (req: Request, res: Response) => {
   const id = req.params.id;
-  console.log(id);
+
+  console.log("Appointment print"+id);
   let today = new Date();
   const apt = appointment
-    .findById(id)
+    .find({patient:id})
     .populate({ path: "doctor", select: "name" })
     .populate({ path: "patient", select: "name" })
     .then((apt) => {

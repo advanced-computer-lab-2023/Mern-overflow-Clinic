@@ -11,12 +11,12 @@ import user from "../models/User.js";
 
 
 const createPatient = async (req: Request, res: Response) => {
-    
+
+    console.log(req.body)
     const entry = user.find({ 'username': req.body.username }).then((document) => {
         if (document.length === 0) {
 
-            patient.find({ 'email': req.body.email }).then((emailRes) => {
-
+            patient.find({ 'email': req.body.email }).then((emailRes) => {// TODO rfactor this and test for uniqe mobile number
                 if (emailRes.length !== 0)
 return res.status(404).send("You are already registered , please sign in ");
 
@@ -27,7 +27,8 @@ return res.status(404).send("You are already registered , please sign in ");
 return res.status(200).json(newPatient);
                         })
                         .catch((err) => {
-return res.status(400).json(err);
+                            console.log(err)
+                            res.status(400).json(err);
                         });
                 }
             })
@@ -381,9 +382,24 @@ return res.status(200).send(doctorsWithSessionPrices);
             }
         }
     } catch (err) {
-return res.status(404).send(err);
+        res.status(404).send(err);
     }
 };
+
+
+const viewMyHealthRecords = async (req: Request, res: Response) => {
+    // assuming I am a patient and I am already logged in so we can get patient id from session
+    // TO-DO: how do I get it from session ?
+    const pid = req.params.id;
+    patient.findById(pid).then(result => {
+        if (result != null)
+            res.status(200).send(result.healthRecords);
+        else
+            res.status(404).send("no health records found ");
+        
+}).catch(err=>res.status(400).send(err));
+
+}
 
 const viewWallet = async (req: Request, res: Response) => {
     const pId = req.params.id;
@@ -488,6 +504,7 @@ export default {
     selectDoctorByNameAndSpeciality,
     listDoctorsBySessionPrice,
     filterDoctor,
+    viewMyHealthRecords,
     viewWallet,
     linkfamilyMember,
     listFamilyMembers

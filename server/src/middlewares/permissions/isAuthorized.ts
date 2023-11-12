@@ -16,11 +16,13 @@ const isAuthorized = (requiredRoles: UserType[]) => {
         
         const decodedToken = TokenUtils.decodeToken(token);
 
+
+
         if (!decodedToken) {
             return res.status(401).json({ message: 'Unauthorized - Invalid token' });
         }
 
-        if (!requiredRoles.includes(Number(decodedToken.userRole))) {
+        if (!(requiredRoles.includes(Number(decodedToken.userRole)))) {
             return res.status(403).json({ message: 'Forbidden - Insufficient permissions' });
         }
         

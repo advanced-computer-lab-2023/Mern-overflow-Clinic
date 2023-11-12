@@ -58,17 +58,27 @@ export default function PatientRegister() {
     delete dataToServer.password;
 
     console.log("Data to server" + JSON.stringify(dataToServer));
+
     axios
       .post("http://localhost:8000/patients", dataToServer)
+
       .then((response) => {
         console.log("POST request successful", response);
         const userId = response.data.userId;
 
         setUserId(userId);
         setUserRole("Patient");
+<<<<<<< HEAD
         axios.post("http://localhost:8000/auth/login", { username: dataToServer.username, passwordHash: dataToServer.passwordHash }).then((response) => {
           navigate("/patient/family");
         })
+=======
+        axios.post("http://localhost:8000/auth/login", {username:dataToServer.username,passwordHash:dataToServer.passwordHash});
+        
+      })
+      .then(()=>{
+        navigate("/patient/family");
+>>>>>>> manage-doctor-req
       })
       .catch((error) => {
         console.error("Error making POST request", error);

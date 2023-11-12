@@ -64,66 +64,62 @@ const changePassword = async (req: Request, res: Response) => {
   return res.status(200).json({ message: "changed password succesfully" });
 };
 
-const resetPassword = async (req: Request, res: Response) => {
-  const to = req.body;
-  console.log(to);
-  sendMailService.sendMail(to, "test", "test");
-};
-
 const requestPasswordReset = async (req: Request, res: Response) => {
-	const email = req.body.email;
+  const email = req.body.email;
 
-	try {
-		const user: HydratedDocument<IUser> | null = await User.findOne({ email });
+  try {
+    const user: HydratedDocument<IUser> | null = await User.findOne({ email });
 
-		if (!user) {
-			return res.status(404).json({ message: 'User not found' });
-		}
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-		const token = jwt.sign({ userId: user._id }, config.jwt.secret, { expiresIn: '5m' });
+    const token = jwt.sign({ userId: user._id }, config.jwt.secret, {
+      expiresIn: "5m",
+    });
 
-		const subject = 'Password Reset Token';
-		const html = `<p>Click the following link to reset your password: <a href="http://localhost:3000/reset-password/${token}">Reset Password</a></p>`;
-		let mail: string = "";
+    const subject = "Password Reset Token";
+    const html = `<p>Click the following link to reset your password: <a href="http://localhost:3000/auth/resetpassword?token=${token}">Reset Password</a></p>`;
 
-		// sendMailService.sendMail(mail, subject, html);
-		res.status(200).json({ message: 'Password reset token sent successfully' });
-	} catch (error) {
-		console.error(error);
-		res.status(500).json({ message: 'Internal server error' });
-	}
+    sendMailService.sendMail(email, subject, html);
+    return res
+      .status(200)
+      .json({ message: "Password reset token sent successfully" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 const resetPasswordWithToken = async (req: Request, res: Response) => {
-	const token = req.cookies.authorization;
-	const  newPassword  = req.body.newPassword;
+  const token = req.body.token;
+  const newPasswordHash = req.body.newPassword;
 
-	try {
-		const decodedToken: any = jwt.verify(token, config.jwt.secret);
+  try {
+    const decodedToken: any = TokenUtils.decodeToken(token);
 
-		if (!decodedToken || !decodedToken.userId) {
-			return res.status(401).json({ message: 'Invalid or expired token' });
-		}
+    if (!decodedToken) {
+      return res.status(401).json({ message: "Invalid or expired token" });
+    }
 
-		// Update the user's password in the database
-		const user = await User.findByIdAndUpdate(decodedToken.userId, { password: newPassword });
+    const user = await User.findById(decodedToken?.userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    user.passwordHash = newPasswordHash;
+    await user.save();
 
-		if (!user) {
-			return res.status(404).json({ message: 'User not found' });
-		}
-
-		res.status(200).json({ message: 'Password reset successfully' });
-	} catch (error) {
-		console.error(error);
-		res.status(401).json({ message: 'Invalid or expired token' });
-	}
+    return res.status(200).json({ message: "Password reset successfully" });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).json({ message: "Invalid or expired token" });
+  }
 };
 
 export default {
-	login,
-	logout,
-	changePassword,
-	requestPasswordReset,
-	resetPasswordWithToken,
+  login,
+  logout,
+  changePassword,
+  requestPasswordReset,
+  resetPasswordWithToken,
 };
-

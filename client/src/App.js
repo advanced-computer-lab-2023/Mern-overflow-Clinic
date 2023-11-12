@@ -21,6 +21,7 @@ import PatientManageInfo from "./pages/patient/PatientManageInfo";
 import PatientManagePrescriptions from "./pages/patient/PatientManagePrescriptions";
 import ChangePassword from "./pages/authentication/ChangePassword";
 import ResetPassword from "./pages/authentication/ResetPassword";
+import ForgotPassword from "./pages/authentication/ForgotPassword";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AdminEditPackage from "./pages/admin/AdminEditPackage";
@@ -143,6 +144,10 @@ function App() {
     {
       path: "/auth/resetpassword",
       element: <ResetPassword />,
+    },
+    {
+      path: "/auth/forgotpassword",
+      element: <ForgotPassword />,
     },
   ]);
 

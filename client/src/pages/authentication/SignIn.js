@@ -169,6 +169,16 @@ export default function SignIn() {
               >
                 Sign In
               </Button>
+              <Button
+                fullWidth
+                type="submit"
+                variant="contained"
+                sx={{ mt: 3, mb: 2, p: 2, fontWeight: "bold" }}
+                component={Link}
+                to="/auth/forgotpassword"
+              >
+                Forgot Password
+              </Button>
             </Box>
 
             <Typography

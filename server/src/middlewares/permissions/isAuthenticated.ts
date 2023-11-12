@@ -22,10 +22,7 @@ const isAuthenticated = async (req: Request, res: Response, next: NextFunction) 
 	let token, decodedToken: any;
 	try {
 		token = req.cookies.authorization;
-		console.log(req.cookies);
-		console.log(token);
 		if (!TokenUtils.verifyToken(token)) {
-			console.log("bad token");
 			return res
 				.status(401)
 				.json({ message: "Unauthorized - Invalid token signature" });
@@ -34,10 +31,8 @@ const isAuthenticated = async (req: Request, res: Response, next: NextFunction) 
 		decodedToken = TokenUtils.decodeToken(token);
 
 		if (decodedToken.userRole === UserType.DOCTOR) {
-			console.log("is a doctor")
 			try {
 				const doc = await doctor.findById(decodedToken.userId).exec();
-				console.log(doc?.status)
 				if (!doc || doc.status !== "accepted") {
 				  return res.status(401).json({ message: "Unauthorized - Invalid token" });
 				}

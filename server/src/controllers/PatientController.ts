@@ -8,6 +8,14 @@ import app from "../index.js";
 import { relative } from "path";
 import doctor from "../models/Doctor.js";
 import user from "../models/User.js";
+import multer from 'multer';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import fs from 'fs';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 
 // const uploadedFiles = []; // Initialize an array to hold the uploaded files
@@ -143,29 +151,35 @@ const addFamilyMember = async (req: Request, res: Response) => {
 
 const addDocument = async (req: Request, res: Response) => {
     
-    const file = {
-        filename: req.body.filename,
-        path: req.body.path,
-    };
+    
+    //  const fileInfo = {
+    //      filename: (req.file as Express.Multer.File).originalname,
+    //      path: (req.file as Express.Multer.File).path,
+    //    };
+    
+    const fileInfo = {
+        filename: (req.file as Express.Multer.File).originalname,
+        //path : path.join(__dirname, 'uploads', (req.file as Express.Multer.File).filename)
+        path: (req.file as Express.Multer.File).path,
+      };
     
     const id = req.params.id;
     console.log(id)
-    console.log("File in BE : " + JSON.stringify(file))
+    console.log("File in BE : " + JSON.stringify(fileInfo))
     try {
         const pat = await patient.findById(id);
 
         if (!pat) {
             return res.status(404).json({ message: "Patient not found" });
         } else {
-
-            
-            // let newFiles = pat.files;
-            // if (newFiles === undefined) {
-            //     newFiles = [];
-            const newFiles= pat.files;
-            if (newFiles !== undefined)
-                newFiles.push(file);
-
+            if(pat.files !== undefined){
+                const existingFile = pat.files.find(file => file.filename === fileInfo.filename);
+                if (existingFile) {
+                    return res.status(400).json({ message: "Filename already exists in the patient's files" });
+                }
+            }
+                const newFiles= pat.files || [];
+                newFiles.push(fileInfo);
                 pat.files = newFiles;
                 await pat.save();
     
@@ -205,6 +219,14 @@ const deleteDocument = async (req: Request, res: Response) => {
                     await pat.save();   
                     res.status(200).json(pat); 
     }
+    const filePath = `./src/uploads/` + filename;
+            fs.unlink(filePath, (err) => {
+                if (err) {
+                    console.error(err);
+                    return res.status(500).json({ message: "Error deleting file from server" });
+                }
+            })
+    
 
     }
 }
@@ -213,6 +235,19 @@ const deleteDocument = async (req: Request, res: Response) => {
         return res.status(500).json({ message: "Server error" });
     }
 };
+
+const readPath = async (req: Request, res: Response) => {
+    
+    //get path of file using path.join and res.send
+    //const id = req.params.id;
+    const filename = req.query.filename  as string;
+    console.log("FileName is:" + filename)
+    
+    const filePath = path.join(__dirname, '../uploads', filename);
+     console.log("FilePath is: " + filePath);
+     res.send(filePath);                             
+}
+
 
 const readFamilyMember = async (req: Request, res: Response) => {
     const id = req.params.id;
@@ -727,5 +762,6 @@ export default {
     viewWallet,
     readDocuments,
     addDocument,
-    deleteDocument
+    deleteDocument,
+    readPath
 };

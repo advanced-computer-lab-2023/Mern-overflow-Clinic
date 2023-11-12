@@ -4,21 +4,44 @@ import appointment from "../models/appointment.js";
 import patient from "../models/Patient.js";
 import user from "../models/User.js";
 import Contract from "../models/Contract.js";
+import fs from 'fs';
 
 
 const createDoctor = async (req: Request, res: Response) => {
-  req.body.status = "pending";
-  const entry = user.find({ 'username': req.body.username }).then((document) => {
+  const data = req.body.datatoserver;
+  const dataToServer = JSON.parse(data);
+  console.log("im here")
+  const entry = user.find({ 'username': dataToServer.username }).then((document) => {
     if (document.length === 0) {
 
-      doctor.find({ 'email': req.body.email }).then((emailRes) => {
+      doctor.find({ 'email': dataToServer.email }).then((emailRes) => {
 
         if (emailRes.length !== 0)
           res.status(404).send("You are already registered , please sign in ");
 
         else {
+          const files = req.files as Express.Multer.File[];       
+          console.log("Files:", files);
+          console.log('additional Field: ' + data);
+          console.log('additional Field2: ' + dataToServer.name);
+          const documents = []; 
+          if(files!== undefined){
+            for (const file of files){
+              const fileInfo = {
+                filename: file.originalname,
+                path: file.path,
+            };
+            documents.push(fileInfo);
+        }
+      }
+      console.log("DOCUMENTS: " + JSON.stringify(documents));
+      dataToServer.status = "pending";
+
+      dataToServer.files = documents;
+
+      console.log("Modified Data:", JSON.stringify(dataToServer));  
           const newDoctor = doctor
-            .create(req.body)
+            .create(dataToServer)
             .then((newDoctor) => {
               res.status(200).json(newDoctor);
             })
@@ -94,6 +117,17 @@ const deleteDoctor = async (req: Request, res: Response) => {
     .findByIdAndDelete({ _id: id })
     .then((doc) => {
       res.status(200).json(doc);
+      if(doc !==null){
+        for(const file of doc.files){
+            const filePath = `./src/uploads/` + file.filename;
+            fs.unlink(filePath, (err) => {
+                if (err) {
+                    console.error(err);
+                    return res.status(500).json({ message: "Error deleting file from server" });
+                 }
+              })
+            }
+          }
     })
     .catch((err) => {
       res.status(400).json(err);
@@ -103,6 +137,15 @@ const deleteDoctor = async (req: Request, res: Response) => {
 const listDoctors = async (req: Request, res: Response) => {
   const doctors = doctor
     .find({ "status": "accepted" })
+    .then((doctors) => res.status(200).json(doctors))
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+};
+
+const listPendingDoctors = async (req: Request, res: Response) => {
+  const doctors = doctor
+    .find({ "status": "pending" })
     .then((doctors) => res.status(200).json(doctors))
     .catch((err) => {
       res.status(400).json(err);
@@ -376,4 +419,5 @@ export default {
   addFreeSlots,
   acceptContract,
   rejectContract,
+  listPendingDoctors,
 };

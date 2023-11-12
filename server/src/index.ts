@@ -13,6 +13,13 @@ import prescriptionRouter from "./routes/Prescriptions.js"
 import packageRouter from "./routes/Package.js"
 import cors from 'cors'
 
+import path from 'path'
+import { fileURLToPath } from 'url';
+
+
+
+
+
 
 // import isAuthenticated from "./middlewares/permissions/isAuthenticated.js";
 // import isAuthorized from "./middlewares/permissions/isAuthorized.js";
@@ -23,11 +30,15 @@ import cors from 'cors'
 mongoose.set("strictQuery", false);
 
 //App variables
+const __dirname = process.cwd();
 const MongoURI: string =config.mongo.URL || "mongodb+srv://dbuser:987654321@acl.n4q8ykx.mongodb.net/?retryWrites=true&w=majority";
 const app = express();
 const port: number = config.server.port || 8000;
 app.use(bodyParser.json());
 app.use(cors());
+app.use("/uploads", express.static('./src/uploads'));
+//app.use(express.static(path.join(__dirname, './uploads')));
+
 
 
 

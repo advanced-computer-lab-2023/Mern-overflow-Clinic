@@ -6,32 +6,43 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 
-const PatientManageDocuments = () => {
-    const id = "655089b786a7e9fff5d1d36a";
+const PatientViewDocuments = () => {
+    const id = "6529347d1b1e1b92fd454eff";
     const [data, setData] = useState([]);
-    const [files, setFiles] = useState([]);
+    const [file, setFile] = useState([]);
+
 
   const handleFileChange = (e) => {
-    setFiles(e.target.files);
+    setFile(e.target.files[0]);
+     //setFile(e.target.files[0]);
   };
 
   const handleFileUpload = async () => {
-    const file = files[0];   
-    if (!file) return alert("Please select a file to upload");
-    const fileName = file.name;
-    const filePath = URL.createObjectURL(file);
-    const fileInfo = { filename: fileName, path: filePath };
+    //  const files = file;   
+    //  const fileName = files.name;
+    //  const filePath = URL.createObjectURL(files);
+    //  const fileInfo = { filename: fileName, path: filePath };
+    if (file.length === 0) return alert("Please select a file to upload");
+    const formData = new FormData();
+    console.log("file is equal to: " + JSON.stringify(file));
+    formData.append('file', file);
+    console.log("formData is equal to: " + JSON.stringify(formData));
 
     axios
-      .post(`http://localhost:8000/patients/${id}/documents`, fileInfo)
+      .post(`http://localhost:8000/patients/${id}/documents`, formData)
       .then((response) => {
         console.log("PUT request successful", response);
         window.location.reload();
       })
       .catch((error) => {
-        console.log(JSON.stringify(fileInfo));
-        console.error("Error making PUT request", error);
-        alert('Error making POST request: ' + error.message);
+        console.log(JSON.stringify(formData));
+        if (error.response && error.response.status === 400 && error.response.data.message === "Filename already exists in the patient's files") {
+          alert(error.response.data.message);
+        }
+        else{
+          console.error("Error making PUT request", error);
+          alert('Error making POST request: ' + error.message);
+        }
       });
   };
 
@@ -56,8 +67,50 @@ const PatientManageDocuments = () => {
         .then(res => {console.log(res)
             console.log("fileName is equal to: " + filename);
             window.location.reload()})
-        .catch(err => console.log(err))
+            .catch(err => {
+              console.log(err);
+          });
     }
+
+     function openPDF(e, filename) {
+          e.preventDefault();
+          console.log("filename is equal to: " + filename);
+          // axios.get(`http://localhost:8000/uploads/` + filename)
+          // .then(res => {            
+          //   console.log("fileName is equal to: " + filename);
+          //   console.log("res.data is equal to: " + res.data);
+          //   console.log("res.data.path is equal to: " + res.data.path);
+          //   window.open(res.data, '_blank');
+          //   //window.location.reload();
+          // })
+          // .catch(err => console.log(err))         
+          const path = `http://localhost:8000/uploads/` + filename;
+          window.open(path, '_blank');        
+     }
+    
+
+    // function openPDF(e,path) {
+      
+    
+    //   const pdfPath = path;
+    
+    //   pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
+    
+    //   const onDocumentLoadSuccess = ({ numPages }) => {
+    //     setNumPages(numPages);
+    //   };
+    
+    //   return (
+    //     <div>
+    //       <Document file={pdfPath} onLoadSuccess={onDocumentLoadSuccess}>
+    //         <Page pageNumber={pageNumber} />
+    //       </Document>
+    //       <p>
+    //         Page {pageNumber} of {numPages}
+    //       </p>
+    //     </div>
+    //   );
+    // };
 
 
     return (
@@ -75,6 +128,7 @@ const PatientManageDocuments = () => {
                     <thead>
                         <tr>
                             <th>FileName</th>
+                            <th>View document</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -83,6 +137,11 @@ const PatientManageDocuments = () => {
                             data.map((file) => {
                                 return  <tr>
                                     <td>{file.filename}</td>
+                                    <td>
+                                        { <button className='btn btn-primary'
+                                        onClick={(e) => openPDF(e, file.filename)}>View</button> }
+                                        {/* //<a href = {file.path} target = "_blank">View</a> */}
+                                    </td>
                                     <td>
                                         <button className='btn btn-danger'
                                         onClick={(e) => handleDelete(file.filename)}>Delete</button>
@@ -100,4 +159,4 @@ const PatientManageDocuments = () => {
 
 };
 
-export default PatientManageDocuments;
+export default PatientViewDocuments;

@@ -20,19 +20,18 @@ import PatientManagePrescriptions from "./pages/patient/PatientManagePrescriptio
 import ChangePassword from "./pages/authentication/ChangePassword";
 import ResetPassword from "./pages/authentication/ResetPassword";
 
-
-import DoctorManageFreeSlots from './pages/doctor/DoctorManageFreeSlots'
-import DoctorManageContracts from './pages/doctor/DoctorManageContracts'
-import DoctorManageFollowUp from './pages/doctor/DoctorManageFollowUp'
-import PatientBookAppointments from "./pages/patient/patientBookAppointment"
-import AddHealthRecords from './pages/doctor/DoctorAddHealthRecords'
-import AddFamilyMember from './components/formComponents/linkFamilyMembers'
-import PatientManageFamilyLinks from './pages/patient/PatientManageFamilyLinks';
+import DoctorManageFreeSlots from "./pages/doctor/DoctorManageFreeSlots";
+import DoctorManageContracts from "./pages/doctor/DoctorManageContracts";
+import DoctorManageFollowUp from "./pages/doctor/DoctorManageFollowUp";
+import PatientBookAppointments from "./pages/patient/patientBookAppointment";
+import AddHealthRecords from "./pages/doctor/DoctorAddHealthRecords";
+import AddFamilyMember from "./components/formComponents/linkFamilyMembers";
+import PatientManageFamilyLinks from "./pages/patient/PatientManageFamilyLinks";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AdminEditPackage from "./pages/admin/AdminEditPackage";
-import PatientManageFamily from "./pages/patient/PatientManageFamily";
 // import EditDoctorProfile from './components/formComponents/EditDoctorProfile';
-import axios from "axios";import PatientPayAppointment from './pages/patient/PatientPayAppointment';
+import axios from "axios";
+import PatientPayAppointment from "./pages/patient/PatientPayAppointment";
 
 function App() {
   axios.defaults.withCredentials = true;
@@ -140,8 +139,8 @@ function App() {
     },
     {
       path: "/patient/pay/appointment/:appid",
-      element: <PatientPayAppointment/>,
-    }
+      element: <PatientPayAppointment />,
+    },
     {
       path: "/auth/changepassword",
       element: <ChangePassword />,
@@ -149,15 +148,14 @@ function App() {
     {
       path: "/auth/resetpassword",
       element: <ResetPassword />,
-     
     },
     {
       path: "/doctor/addHealthRecords",
-      element: <AddHealthRecords/>,
+      element: <AddHealthRecords />,
     },
     {
       path: "/patient/bookAppointment/:id",
-      element: <PatientBookAppointments/>,
+      element: <PatientBookAppointments />,
     },
   ]);
 

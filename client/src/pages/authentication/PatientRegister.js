@@ -68,17 +68,13 @@ export default function PatientRegister() {
 
         setUserId(userId);
         setUserRole("Patient");
-<<<<<<< HEAD
-        axios.post("http://localhost:8000/auth/login", { username: dataToServer.username, passwordHash: dataToServer.passwordHash }).then((response) => {
-          navigate("/patient/family");
-        })
-=======
-        axios.post("http://localhost:8000/auth/login", {username:dataToServer.username,passwordHash:dataToServer.passwordHash});
-        
+        axios.post("http://localhost:8000/auth/login", {
+          username: dataToServer.username,
+          passwordHash: dataToServer.passwordHash,
+        });
       })
-      .then(()=>{
+      .then(() => {
         navigate("/patient/family");
->>>>>>> manage-doctor-req
       })
       .catch((error) => {
         console.error("Error making POST request", error);
@@ -397,4 +393,3 @@ export default function PatientRegister() {
     </ThemeProvider>
   );
 }
-

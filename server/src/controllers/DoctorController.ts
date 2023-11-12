@@ -34,11 +34,9 @@ const createDoctor = async (req: Request, res: Response) => {
 
 const readDoctor = async (req: Request, res: Response) => {
   const pId = req.params.id;
-  console.debug("DEBUGPRINT[8]: DoctorController.ts:38: pId=", pId);
   const doc = await doctor
     .findById(pId)
     .then((doc) => {
-      console.debug("DEBUGPRINT[7]: DoctorController.ts:39: doc=", doc);
       if (!doc || doc === undefined) {
         return res.status(404).json({ message: "Doctor not found" });
       } else {

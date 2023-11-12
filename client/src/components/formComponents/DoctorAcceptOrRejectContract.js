@@ -2,10 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useUser } from "../../userContest";
-import axios from "axios";
 
 const ContractPage = ({ match }) => {
-  axios.defaults.withCredentials = true;
   const { userId } = useUser();
   let id = userId;
   const [contracts, setContracts] = useState([]);
@@ -160,6 +158,7 @@ const ContractPage = ({ match }) => {
     </div>
   );
 };
+
 
 const styles = {
   container: {

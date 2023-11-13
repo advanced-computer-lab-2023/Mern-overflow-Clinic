@@ -5,7 +5,7 @@ import patient from "../models/Patient.js";
 import Patient from "../models/Patient.js";
 import Users from "../models/User.js";
 import { stat } from "fs";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
 
 const createAppointment = async (req: Request, res: Response) => {
   req.body.duration = 1;
@@ -14,22 +14,24 @@ const createAppointment = async (req: Request, res: Response) => {
   const newApt = appointment
     .create(req.body)
     .then((newApt) => {
-return res.status(200).json(newApt);
+      return res.status(200).json(newApt);
     })
     .catch((err) => {
       console.log("error");
-return res.status(400).json(err);
+      return res.status(400).json(err);
     });
 };
 
-
-const createAppointmentForFamilyMember = async (req: Request, res: Response) => {
+const createAppointmentForFamilyMember = async (
+  req: Request,
+  res: Response
+) => {
   try {
     console.log(req.body);
     const docID = req.body.doctor;
     req.body.duration = 1;
-    req.body.status = 'upcoming';
-    req.body.appointmentType = 'regular';
+    req.body.status = "upcoming";
+    req.body.appointmentType = "regular";
     const id = req.params.id; // patient name;
     const flag = req.body.flag;
     const relation = req.body.relation;
@@ -41,21 +43,19 @@ const createAppointmentForFamilyMember = async (req: Request, res: Response) => 
       // Get the doctor and remove the date from availableStartTimeSlots
       
       var doctorObj = await doctor.findById(docID);
-      if (!doctorObj || doctorObj===undefined) {
-        return res.status(404).json({ message: 'Doctor not found' });
+      if (!doctorObj || doctorObj === undefined) {
+        return res.status(404).json({ message: "Doctor not found" });
       }
 
       const dateToRemove = new Date(req.body.date); // Replace with the actual date
 
-// Assuming availableStartTimeSlots is an array of Date objects
-      if(doctorObj.availableSlotsStartTime !== undefined)
-       { 
-        doctorObj.availableSlotsStartTime = doctorObj.availableSlotsStartTime.filter(
-          (slot) => slot.getTime() !== dateToRemove.getTime()
-        );
+      // Assuming availableStartTimeSlots is an array of Date objects
+      if (doctorObj.availableSlotsStartTime !== undefined) {
+        doctorObj.availableSlotsStartTime =
+          doctorObj.availableSlotsStartTime.filter(
+            (slot) => slot.getTime() !== dateToRemove.getTime()
+          );
       }
-
-
 
       // Update the doctor in the database
       await doctor.findByIdAndUpdate(docID, {
@@ -70,27 +70,24 @@ const createAppointmentForFamilyMember = async (req: Request, res: Response) => 
       console.log(req.body);
 
       var doctorObj = await doctor.findById(docID);
-      if (!doctorObj || doctorObj===undefined) {
-        return res.status(404).json({ message: 'Doctor not found' });
+      if (!doctorObj || doctorObj === undefined) {
+        return res.status(404).json({ message: "Doctor not found" });
       }
 
       const dateToRemove = new Date(req.body.date); // Replace with the actual date
 
-// Assuming availableStartTimeSlots is an array of Date objects
-      if(doctorObj.availableSlotsStartTime !== undefined)
-       { 
-        doctorObj.availableSlotsStartTime = doctorObj.availableSlotsStartTime.filter(
-          (slot) => slot.getTime() !== dateToRemove.getTime()
-        );
+      // Assuming availableStartTimeSlots is an array of Date objects
+      if (doctorObj.availableSlotsStartTime !== undefined) {
+        doctorObj.availableSlotsStartTime =
+          doctorObj.availableSlotsStartTime.filter(
+            (slot) => slot.getTime() !== dateToRemove.getTime()
+          );
       }
-
-
 
       // Update the doctor in the database
       await doctor.findByIdAndUpdate(docID, {
         $set: { availableStartTimeSlots: doctorObj.availableSlotsStartTime },
       });
-
 
       // Create the new appointment
       const newApt = await appointment.create(req.body);
@@ -122,8 +119,6 @@ const createAppointmentForFamilyMember = async (req: Request, res: Response) => 
 //   }
 // };
 
-
-
 const createFollowUp = async (req: Request, res: Response) => {
   req.body.doctor = req.params.id;
   req.body.duration = 1;
@@ -150,26 +145,26 @@ const createFollowUp = async (req: Request, res: Response) => {
         .create(req.body)
         .then((newApt) => {
           console.log("success");
-return res.status(200).json(newApt);
+          return res.status(200).json(newApt);
         })
         .catch((err) => {
           console.log("error");
-return res.status(400).json(err);
+          return res.status(400).json(err);
         });
     })
     .catch((err) => {
       console.log("error");
-return res.status(400).json(err);
+      return res.status(400).json(err);
     });
 };
 
 const readAppointment = async (req: Request, res: Response) => {
   const id = req.params.id;
 
-  console.log("Appointment print"+id);
+  console.log("Appointment print" + id);
   let today = new Date();
   const apt = appointment
-    .find({patient:id})
+    .find({ patient: id })
     .populate({ path: "doctor", select: "name" })
     .populate({ path: "patient", select: "name" })
     .then((apt) => {
@@ -217,9 +212,11 @@ const updateAppointment = async (req: Request, res: Response) => {
       }
     }
 
-return res.status(200).json({ message: "Appointments updated successfully" });
+    return res
+      .status(200)
+      .json({ message: "Appointments updated successfully" });
   } catch (err) {
-return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -228,10 +225,10 @@ const deleteAppointment = async (req: Request, res: Response) => {
   const apt = appointment
     .findByIdAndDelete({ _id: id })
     .then((apt) => {
-return res.status(200).json(apt);
+      return res.status(200).json(apt);
     })
     .catch((err) => {
-return res.status(400).json(err);
+      return res.status(400).json(err);
     });
 };
 
@@ -242,7 +239,7 @@ const listAllAppointments = async (req: Request, res: Response) => {
     .populate({ path: "patient", select: "name" })
     .then((apt) => res.status(200).json(apt))
     .catch((err) => {
-return res.status(400).json(err);
+      return res.status(400).json(err);
     });
 };
 
@@ -254,124 +251,126 @@ const filterAppointments = async (req: Request, res: Response) => {
   var doc;
 
   const pat = await Patient.findById(id).exec();
-  if(!pat || pat ===undefined){
+  if (!pat || pat === undefined) {
     //return res.status(404).send("no user found");
-    doc =await doctor.findById(id).exec();
-    if(!doc || doc ===undefined){
+    doc = await doctor.findById(id).exec();
+    if (!doc || doc === undefined) {
       return res.status(404).send("no user found with this ID");
     }
   }
-  
+
   if (
     (req.body.date !== undefined && status !== undefined) ||
     (req.body.date && status)
   ) {
-   //const iDate = dayjs(req.body.date, 'MM/DD/YYYY hh:mm A').toDate();
-  // const inputDate = dayjs(iDate, 'MM/DD/YYYY hh:mm A').format('YYYY-MM-DDTHH:mm:ss.SSSZ');
-    var iDate = new Date(req.body.date);
-    let inputDate = iDate.toISOString()
-    // let newDate = convertUTCDateToLocalDate(iDate);
-    // console.log(newDate)
+    // const iDate = dayjs(req.body.date, 'MM/DD/YYYY hh:mm A').toDate();
+    // const inputDate = dayjs(iDate, 'MM/DD/YYYY hh:mm A').format('YYYY-MM-DDTHH:mm:ss.SSSZ');
+    let iDate = new Date(req.body.date);
+    let userTimezoneOffset = iDate.getTimezoneOffset() * 60000;
 
-    if (pat){
+    let utcDate = new Date(iDate.getTime() - userTimezoneOffset).toISOString();
+
+    let inputDate = utcDate;
+
+    console.log(req.body.date);
+    console.debug(
+      "DEBUGPRINT[3]: AppointmentController.ts:270: userTimezoneOffset=",
+      userTimezoneOffset
+    );
+    console.log(iDate);
+
+    console.log(inputDate);
+    console.log(utcDate);
+    if (pat) {
       const apt = appointment
-      .find({ date: inputDate, status: status, patient: id })
-      .populate({ path: "doctor", select: "name" })
-      .populate({ path: "patient", select: "name" })
-      .then((apt) => {
-        console.log(apt);
-        res.status(200).json(apt);
-        
-      })
-      .catch((err) => {
-        res.status(400).json(err);
-      });
+        .find({ date: inputDate, status: status, patient: id })
+        .populate({ path: "doctor", select: "name" })
+        .populate({ path: "patient", select: "name" })
+        .then((apt) => {
+          console.log(apt);
+          res.status(200).json(apt);
+        })
+        .catch((err) => {
+          res.status(400).json(err);
+        });
       //console.log(apt);
-
-    }else{
+    } else {
       const apt = appointment
-      .find({ date: inputDate, status: status, doctor: id })
-      .populate({ path: "doctor", select: "name" })
-      .populate({ path: "patient", select: "name" })
-      .then((apt) => {
-
-        console.log(apt);
-        res.status(200).json(apt);
-        
-      })
-      .catch((err) => {
-return res.status(400).json(err);
-      });
-      
+        .find({ date: inputDate, status: status, doctor: id })
+        .populate({ path: "doctor", select: "name" })
+        .populate({ path: "patient", select: "name" })
+        .then((apt) => {
+          console.log(apt);
+          res.status(200).json(apt);
+        })
+        .catch((err) => {
+          return res.status(400).json(err);
+        });
     }
-    
   }
   if (
     (req.body.date !== undefined && status === undefined) ||
     (req.body.date && !status)
   ) {
-    const iDate = dayjs(req.body.date, 'MM/DD/YYYY hh:mm A').toDate();
-    const inputDate = dayjs(iDate, 'MM/DD/YYYY hh:mm A').format('YYYY-MM-DDTHH:mm:ss.SSSZ');
-    if(pat){
+    const iDate = dayjs(req.body.date, "MM/DD/YYYY hh:mm A").toDate();
+    const inputDate = dayjs(iDate, "MM/DD/YYYY hh:mm A").format(
+      "YYYY-MM-DDTHH:mm:ss.SSSZ"
+    );
+    if (pat) {
       const apt = appointment
-      .find({ date: inputDate , patient: id})
+        .find({ date: inputDate, patient: id })
 
-      .populate({ path: "doctor", select: "name" })
-      .populate({ path: "patient", select: "name" })
-      .then((apt) => {
-        res.status(200).json(apt);
-      })
-      .catch((err) => {
-        res.status(400).json(err);
-      });
-
-    }else{
+        .populate({ path: "doctor", select: "name" })
+        .populate({ path: "patient", select: "name" })
+        .then((apt) => {
+          res.status(200).json(apt);
+        })
+        .catch((err) => {
+          res.status(400).json(err);
+        });
+    } else {
       const apt = appointment
-      .find({ date: inputDate , doctor: id})
+        .find({ date: inputDate, doctor: id })
 
-      .populate({ path: "doctor", select: "name" })
-      .populate({ path: "patient", select: "name" })
-      .then((apt) => {
-return res.status(200).json(apt);
-      })
-      .catch((err) => {
-return res.status(400).json(err);
-      });
+        .populate({ path: "doctor", select: "name" })
+        .populate({ path: "patient", select: "name" })
+        .then((apt) => {
+          return res.status(200).json(apt);
+        })
+        .catch((err) => {
+          return res.status(400).json(err);
+        });
     }
-    
   }
   if (
     (req.body.date === undefined && status !== undefined) ||
     (!req.body.date && status)
   ) {
-
-    if(pat){
+    if (pat) {
       const apt = appointment
-      .find({ status: status ,patient:id})
+        .find({ status: status, patient: id })
 
-      .populate({ path: "doctor", select: "name" })
-      .populate({ path: "patient", select: "name" })
-      .then((apt) => {
-        res.status(200).json(apt);
-      })
-      .catch((err) => {
-        res.status(400).json(err);
-      });
-    }else{
+        .populate({ path: "doctor", select: "name" })
+        .populate({ path: "patient", select: "name" })
+        .then((apt) => {
+          res.status(200).json(apt);
+        })
+        .catch((err) => {
+          res.status(400).json(err);
+        });
+    } else {
       const apt = appointment
-      .find({ status: status ,doctor:id})
+        .find({ status: status, doctor: id })
 
-      .populate({ path: "doctor", select: "name" })
-      .populate({ path: "patient", select: "name" })
-      .then((apt) => {
-        console.log(apt);
-return res.status(200).json(apt);
-      })
-      .catch((err) => {
-return res.status(400).json(err);
-      });
+        .populate({ path: "doctor", select: "name" })
+        .populate({ path: "patient", select: "name" })
+        .then((apt) => {
+          return res.status(200).json(apt);
+        })
+        .catch((err) => {
+          return res.status(400).json(err);
+        });
     }
-   
   }
 };
 
@@ -379,19 +378,19 @@ const getAllAppointments = async (req: Request, res: Response) => {
   const id = req.params.id;
   var doc;
   const pat = await Patient.findById(id).exec();
-  if(!pat || pat ===undefined){
+  if (!pat || pat === undefined) {
     //return res.status(404).send("no user found");
-    doc =await doctor.findById(id).exec();
-    if(!doc || doc ===undefined){
+    doc = await doctor.findById(id).exec();
+    if (!doc || doc === undefined) {
       return res.status(404).send("no user found with this ID");
     }
   }
 
-  if(pat){
+  if (pat) {
     const currentDate = new Date();
 
     const apt = appointment
-      .find({"patient": id})
+      .find({ patient: id })
       .populate({ path: "doctor", select: "name" })
       .populate({ path: "patient", select: "name" })
       .then((appointments) => {
@@ -399,24 +398,24 @@ const getAllAppointments = async (req: Request, res: Response) => {
           // No appointments found for the patient
           return res.status(200).json([]);
         }
-    
+
         // Add a new attribute 'state' based on the date comparison
         const updatedAppointments = appointments.map((apt) => {
           const aptDate = new Date(apt.date);
-          const state = aptDate < currentDate ? 'past' : 'upcoming';
+          const state = aptDate < currentDate ? "past" : "upcoming";
           return { ...apt.toObject(), state };
         });
-    
+
         res.status(200).json(updatedAppointments);
       })
       .catch((err) => {
         res.status(400).json(err);
       });
-  }else{
+  } else {
     const currentDate = new Date();
 
     const apt = appointment
-      .find({"doctor": id})
+      .find({ doctor: id })
       .populate({ path: "doctor", select: "name" })
       .populate({ path: "patient", select: "name" })
       .then((appointments) => {
@@ -428,7 +427,7 @@ const getAllAppointments = async (req: Request, res: Response) => {
         // Add a new attribute 'state' based on the date comparison
         const updatedAppointments = appointments.map((apt) => {
           const aptDate = new Date(apt.date);
-          const state = aptDate < currentDate ? 'past' : 'upcoming';
+          const state = aptDate < currentDate ? "past" : "upcoming";
           return { ...apt.toObject(), state };
         });
 
@@ -438,20 +437,7 @@ const getAllAppointments = async (req: Request, res: Response) => {
         res.status(400).json(err);
       });
   }
-
-
-}
-
-function convertUTCDateToLocalDate(date:any) {
-  var newDate = new Date(date.getTime()+date.getTimezoneOffset() ,601000);
-
-  var offset = date.getTimezoneOffset() / 60;
-  var hours = date.getHours();
-
-  newDate.setHours(hours - offset);
-
-  return newDate;
-}
+};
 
 export default {
   createAppointment,
@@ -463,5 +449,4 @@ export default {
   createFollowUp,
   createAppointmentForFamilyMember,
   getAllAppointments,
-  
 };

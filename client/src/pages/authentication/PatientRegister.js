@@ -34,6 +34,10 @@ import { useUser } from "../../userContest";
 
 const defaultTheme = createTheme();
 
+
+  
+
+
 export default function PatientRegister() {
   const { userId, setUserId, userRole, setUserRole } = useUser();
   const navigate = useNavigate();
@@ -46,8 +50,7 @@ export default function PatientRegister() {
   } = useForm();
 
   const onSubmit = (data) => {
-    const dataToServer = { ...data };
-
+    const dataToServer = { ...data};
     dataToServer["passwordHash"] = sha256(data["password"]);
     dataToServer["emergencyContact"] = {
       name: data["EmergencyName"],

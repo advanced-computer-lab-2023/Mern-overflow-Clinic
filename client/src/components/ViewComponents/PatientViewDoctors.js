@@ -28,7 +28,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 
-export default function DoctorViewPatients() {
+export default function PatientViewDoctors() {
   const navigate = useNavigate();
 
   const [data, setData] = useState([]);
@@ -36,7 +36,7 @@ export default function DoctorViewPatients() {
   const [selectedDoctor, setSelectedDoctor] = useState({});
   const [availableSpecialties, setAvailableSpecialties] = useState([]);
   const { userId } = useUser();
-  // const id = "6529347d1b1e1b92fd454eff";
+  // const id = "655089b786a7e9fff5d1d36a";
   const id = userId;
 
   const fetchTableData = () => {

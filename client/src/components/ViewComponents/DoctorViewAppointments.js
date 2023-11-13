@@ -180,9 +180,17 @@ export default function DoctorViewAppointments() {
         <TableBody>
           {data &&
             data.map((row) => (
-              <TableRow key={row.date + (row.patient?.name || "") + (row.doctor?.name || "") + row.status}>
-                <TableCell>{row.patient?.name || 'N/A'}</TableCell>
-                <TableCell>{row.doctor?.name || 'N/A'}</TableCell>
+              <TableRow
+                key={
+                  row.date +
+                  (row.patient?.name || "") +
+                  (row.doctor?.name || "") +
+                  row.status +
+                  Math.random()
+                }
+              >
+                <TableCell>{row.patient?.name || "N/A"}</TableCell>
+                <TableCell>{row.doctor?.name || "N/A"}</TableCell>
                 <TableCell>{row.duration + " hour"}</TableCell>
                 <TableCell>{row.date}</TableCell>
                 <TableCell>{row.status}</TableCell>

@@ -15,8 +15,8 @@ const healthRecordSchema = new Schema<IHealthRecord>({
     date: { type: Date, required: false },
 })
 
-const healthRecord = model<IHealthRecord>('healthRecord', healthRecordSchema);
+const healthRecord = model<IHealthRecord>('HealthRecords', healthRecordSchema);
 
 
-export default mongoose.model<IHealthRecord>('healthRecord', healthRecordSchema);
+export default mongoose.model<IHealthRecord>('HealthRecords', healthRecordSchema);
 

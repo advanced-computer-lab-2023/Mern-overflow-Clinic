@@ -119,6 +119,16 @@ export default function AdminViewPackages(props) {
                   Discount For Family
                 </TableCell>
                 <TableCell
+                  key="subscription"
+                  sx={{
+                    fontWeight: "bold",
+                    borderTop: "1px solid #ccc",
+                    borderRight: "1px solid #ccc",
+                  }}
+                >
+                  Subscription Period
+                </TableCell>
+                <TableCell
                   colSpan={2}
                   key="details"
                   sx={{
@@ -142,6 +152,7 @@ export default function AdminViewPackages(props) {
                       <TableCell>{row.discountOnDoctorSessions}%</TableCell>
                       <TableCell>{row.discountOnMedicine}%</TableCell>
                       <TableCell>{row.discountForFamily}%</TableCell>
+                      <TableCell>{row.subscriptionPeriod} days</TableCell>
                       <TableCell sx={{ textAlign: "center" }}>
                         <IconButton onClick={() => handleClickEdit(row._id)}>
                           <EditIcon />

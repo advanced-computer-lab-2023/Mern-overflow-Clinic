@@ -8,9 +8,9 @@ const createPackage = async (req: Request, res: Response) => {
     const newPackage = await pack.create(req.body);
 
     let updatedPackage:any = newPackage; // Initialize with the newly created package
-return res.status(200).json(updatedPackage);
+    return res.status(200).json(updatedPackage);
   } catch (err) {
-return res.status(400).json(err);
+    return res.status(400).json(err);
   }
 };
 
@@ -44,6 +44,7 @@ const updatePackage = async (req: Request, res: Response) => {
   const discountOnDoctorSessions = req.body.discountOnDoctorSessions;
   const discountOnMedicine = req.body.discountOnMedicine;
   const discountForFamily = req.body.discountForFamily;
+  const subscriptionPeriod = req.body.subscriptionPeriod;
 
   const update: { [key: string]: any } = {};
   if (name !==undefined) update["name"] = name;
@@ -51,16 +52,17 @@ const updatePackage = async (req: Request, res: Response) => {
   if (discountOnDoctorSessions !==undefined) update["discountOnDoctorSessions"] = discountOnDoctorSessions;
   if (discountOnMedicine !==undefined) update["discountOnMedicine"] = discountOnMedicine;
   if (discountForFamily !==undefined) update["discountForFamily"] = discountForFamily;
+  if (subscriptionPeriod !==undefined) update["subscriptionPeriod"] = subscriptionPeriod;
 
   pack
     .findOneAndUpdate(query, update, { new: true })
     .then((pkj) => {
       if (pkj) {
-return res.status(200).send(pkj);
+        return res.status(200).send(pkj);
       }
     })
     .catch((error) => {
-return res.status(400).send(error);
+      return res.status(400).send(error);
     });
 
 };

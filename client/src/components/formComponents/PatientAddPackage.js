@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useUser } from '../../userContest';
 
 const PatientAddPackage = () => {
   const [subscriptionType, setSubscriptionType] = useState('Yourself');
@@ -10,7 +11,9 @@ const PatientAddPackage = () => {
   const [packageInfo, setPackageInfo] = useState({});
   const [subscriptionResult, setSubscriptionResult] = useState('');
 
-  const id = "655089b786a7e9fff5d1d36a";
+  const { userId } = useUser();
+  let id = userId;
+  // const id = "655089b786a7e9fff5d1d36a";
 
   useEffect(() => {
     // Fetch family members from MongoDB

@@ -8,6 +8,7 @@ import fs from 'fs';
 
 const createDoctor = async (req: Request, res: Response) => {
   const data = req.body.datatoserver;
+  console.log("DATA: " + JSON.stringify(data));
   const dataToServer = JSON.parse(data);
   console.log("im here")
   const entry = user.find({ 'username': dataToServer.username }).then((document) => {
@@ -168,32 +169,6 @@ const listPendingDoctors = async (req: Request, res: Response) => {
     .then((doctors) => res.status(200).json(doctors))
     .catch((err) => {
       return res.status(400).json(err);
-    });
-};
-
-const listSlots = async (req: Request, res: Response) => {
-  const id = req.params.id;
-  const doctors = doctor
-    .findById(id)
-    .then((doctors) => {
-      console.log("sjhkshkshkjs");
-      if(doctors?.status === "accepted"){
-        console.log("in the if");
-        console.log(doctors.availableSlotsStartTime);
-        res.status(200).json(doctors.availableSlotsStartTime);
-      }
-    })
-    .catch((err) => {
-      return res.status(400).json(err);
-    });
-};
-
-const listPendingDoctors = async (req: Request, res: Response) => {
-  const doctors = doctor
-    .find({ "status": "pending" })
-    .then((doctors) => res.status(200).json(doctors))
-    .catch((err) => {
-      res.status(400).json(err);
     });
 };
 

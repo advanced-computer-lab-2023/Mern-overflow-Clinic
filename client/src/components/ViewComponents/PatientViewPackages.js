@@ -24,6 +24,7 @@ import {
   import axios from "axios";
   import styled from "styled-components";
   import { set } from "react-hook-form";
+  import { useUser } from '../../userContest';
 
   export default function PatientViewPackages() {
     const [data, setData] = useState([]);
@@ -35,8 +36,10 @@ import {
     const [selectedFamPacArr, setSelectedFamPacArr] = useState([]);
     const [selectedFamRelArr, setSelectedFamRelArr] = useState({});
   
-    const id = "655089b786a7e9fff5d1d36a";
-    const packageId = "65508f6474b689a4652ca2de";
+    const { userId } = useUser();
+    let id = userId;
+    // const id = "655089b786a7e9fff5d1d36a";
+    // const packageId = "65508f6474b689a4652ca2de";
 
     const handleCancelling = () => {
       axios

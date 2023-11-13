@@ -56,27 +56,6 @@ export default function DoctorRegister() {
   const { register, handleSubmit, setError, formState: { errors }, control } = useForm();
 
   const onSubmit = data => {
-//     let count = 3;
-//     let nId = true;
-//     let mLic = true;
-//     let mDeg = true;
-//     for (const type of allTypes){
-//         if(type === "nationalID" && nId){
-//           count--;
-//             nId=false;
-//         }
-//         else if(type === "medical degree" && mDeg){
-//           count--;
-//           mDeg = false;
-//         }
-//         else if(type === "medical licenses" && mLic){
-//           count--;
-//           mLic = false;
-//         }
-// }
-
-// if(count!==0) 
-//   return alert("missing uploaded document Types");
     console.log("files" + JSON.stringify(file));
     const formData = new FormData();
     for (let i = 0; i < file.length; i++) {

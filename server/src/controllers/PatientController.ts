@@ -299,20 +299,6 @@ return res.status(400).json(err);
         });
 };
 
-const readDocuments = async (req: Request, res: Response) => {
-    const id = req.params.id;
-    const p = patient
-        .findById(id)
-        .then((p) => {
-            if (p !== null)
-                res.status(200).json(p.files);
-        })
-        .catch((err) => {
-            console.log(err);
-            res.status(400).json(err);
-        });
-};
-
 const selectDoctor = async (req: Request, res: Response) => {
 
     const dId = req.params.dId;
@@ -329,7 +315,6 @@ return res.status(200).json(docs);
 return res.status(404).send(err);
         });
 };
-
 
 const selectDoctorByNameAndSpeciality = async (req: Request, res: Response) => {
     const doctorName = req.body.doctorName.toLowerCase();
@@ -379,6 +364,46 @@ return res.status(400).json(err);
     }
 };
 
+// const listPatientPackages = async (req: Request, res: Response) => {
+//     // console.log("LIST PATIENT PACKAGES");
+//     try {
+
+//         const pId = req.params.id;
+//         const patientFound = await patient.findById(pId);
+//         if (!patientFound) {
+//             // console.log("NO PATIENT");
+//             return res.status(404).json({ error: 'Patient not found' });
+//         } else {
+//             if (patientFound.package == undefined) {
+//                 // console.log("NO PACKAGE");
+//                 return res.status(404).json({ error: 'Patient does not have a package subscription' });
+//             }
+//             else {
+//                 const packageId = patientFound.package;
+//                 // console.log("GIHI: "+ patientFound._id);
+//                 let packages = [{"patientId": patientFound._id, "packageId": packageId, "relation": "self"}];
+//                 if (patientFound.familyMembers) {
+//                     for (const famMem of patientFound.familyMembers) {
+//                         const famMemPatient = await patient.findById(famMem.patientId);
+//                         if (famMemPatient) {
+//                             if (famMemPatient.package) {
+//                                 const famMemPackage = await pack.findById(famMemPatient.package);
+//                                 if (famMemPackage) {
+//                                     packages.push({"patientId": famMemPatient._id, "packageId": famMemPackage._id, "relation": famMem.relation});
+//                                 }
+//                             }
+//                         }
+//                     }
+//                 }
+
+//                 res.status(200).json(packages);
+//             }
+//         }
+//     } catch (err) {
+//         res.status(500).json(err);
+//     }
+// };
+
 const listPatientPackages = async (req: Request, res: Response) => {
     // console.log("LIST PATIENT PACKAGES");
     try {
@@ -419,6 +444,38 @@ const listPatientPackages = async (req: Request, res: Response) => {
     }
 };
 
+// const addPackage = async (req: Request, res: Response) => {
+//     try {
+//         const pId = req.params.id;
+//         const patientFound = await patient.findById(pId);
+//         if (!patientFound) {
+//             return res.status(404).json({ error: 'Patient not found' });
+//         } else {
+//             if (patientFound.package !== undefined && patientFound.subscribedToPackage) {
+//                 return res.status(400).json({ error: 'Patient already has a package' });
+//             } else {
+//                 const packageId = req.params.packageId;
+//                 const packageData = await pack.findById(packageId);
+//                 if (!packageData) {
+//                     return res.status(404).json({ error: 'Package not found' });
+//                 } else {
+//                     patientFound.package = packageData._id;
+//                     patientFound.subscribedToPackage = true;
+//                     //patientFound.packageSubscribed = packageId;
+//                     const today = new Date();
+//                     const renewalDate = new Date(today.getTime() + packageData.subscriptionPeriod * 24 * 60 * 60 * 1000);
+//                     // console.log("RENEWAL DATE: " + renewalDate);
+//                     patientFound.packageRenewalDate = renewalDate;
+//                     await patientFound.save();
+//                     res.status(200).json("Package added successfully");
+//                 }
+//             }
+//         }
+//     } catch (err) {
+//         res.status(500).json(err);
+//     }
+// };
+
 const addPackage = async (req: Request, res: Response) => {
     try {
         const pId = req.params.id;
@@ -450,6 +507,65 @@ const addPackage = async (req: Request, res: Response) => {
         res.status(500).json(err);
     }
 };
+
+// const addPackageToFamMem = async (req: Request, res: Response) => {
+//     try {
+//         const pId = req.params.id;
+//         const patientFound = await patient.findById(pId);
+//         if (!patientFound) {
+//             console.log("LINE 390");
+//             return res.status(404).json({ error: 'Patient not found' });
+//         } else {
+//             const familyMemberId = req.params.pId;
+//             if (patientFound.familyMembers === undefined) {
+//                 return res.status(400).json({ error: 'Patient has no family members' });
+//             }
+//             const familyMemberPatient = await patient.findById(familyMemberId);
+//             console.log("FAM MEM PATIENT: " + familyMemberPatient);
+//             console.log("FAM MEM PATIENT ID: " + familyMemberId);
+//             let flag = false;
+//             if (!familyMemberPatient) {
+//                 console.log("LINE 400");
+//                 return res.status(404).json({ error: 'Family member not found' });
+//             }
+//             console.log("FAM MEM PATIENT: " + familyMemberPatient);
+//             for (const famMem of patientFound.familyMembers) {
+//                 console.log("FAM MEM: " + famMem);
+//                 if (famMem.patientId.toString() === familyMemberPatient._id.toString()) {
+//                     console.log("FAM MEM FOUND");
+//                     flag = true;
+//                 }
+//             }
+//             if (!flag || !familyMemberPatient) {
+//                 console.log("LINE 412");
+//                 return res.status(404).json({ error: 'Family member not found' });
+//             } else {
+//                 if (familyMemberPatient.package !== undefined && familyMemberPatient.subscribedToPackage) {
+//                     return res.status(400).json({ error: 'Family member already has a package' });
+//                 } else {
+//                     const packageId = req.params.packageId;
+//                     const packageData = await pack.findById(packageId);
+//                     if (!packageData) {
+//                         console.log("LINE 421");
+//                         return res.status(404).json({ error: 'Package not found' });
+//                     } else {
+//                         familyMemberPatient.package = packageData._id;
+//                         familyMemberPatient.subscribedToPackage = true;
+//                         //familyMemberPatient.packageSubscribed = packageId;
+//                         const today = new Date();
+//                         const renewalDate = new Date(today.setDate(today.getDate() + packageData.subscriptionPeriod));
+//                         familyMemberPatient.packageRenewalDate = renewalDate;
+//                         await familyMemberPatient.save();
+//                         await patientFound.save();
+//                         res.status(200).json("Package added successfully");
+//                     }
+//                 }
+//             }
+//         }
+//     } catch (err) {
+//         res.status(500).json(err);
+//     }
+// };
 
 const addPackageToFamMem = async (req: Request, res: Response) => {
     try {
@@ -507,137 +623,6 @@ const addPackageToFamMem = async (req: Request, res: Response) => {
         }
     } catch (err) {
         res.status(400).json(err);
-    }
-};
-
-const listPatientPackages = async (req: Request, res: Response) => {
-    // console.log("LIST PATIENT PACKAGES");
-    try {
-
-        const pId = req.params.id;
-        const patientFound = await patient.findById(pId);
-        if (!patientFound) {
-            // console.log("NO PATIENT");
-            return res.status(404).json({ error: 'Patient not found' });
-        } else {
-            if (patientFound.package == undefined) {
-                // console.log("NO PACKAGE");
-                return res.status(404).json({ error: 'Patient does not have a package subscription' });
-            }
-            else {
-                const packageId = patientFound.package;
-                // console.log("GIHI: "+ patientFound._id);
-                let packages = [{"patientId": patientFound._id, "packageId": packageId, "relation": "self"}];
-                if (patientFound.familyMembers) {
-                    for (const famMem of patientFound.familyMembers) {
-                        const famMemPatient = await patient.findById(famMem.patientId);
-                        if (famMemPatient) {
-                            if (famMemPatient.package) {
-                                const famMemPackage = await pack.findById(famMemPatient.package);
-                                if (famMemPackage) {
-                                    packages.push({"patientId": famMemPatient._id, "packageId": famMemPackage._id, "relation": famMem.relation});
-                                }
-                            }
-                        }
-                    }
-                }
-
-                res.status(200).json(packages);
-            }
-        }
-    } catch (err) {
-        res.status(500).json(err);
-    }
-};
-
-const addPackage = async (req: Request, res: Response) => {
-    try {
-        const pId = req.params.id;
-        const patientFound = await patient.findById(pId);
-        if (!patientFound) {
-            return res.status(404).json({ error: 'Patient not found' });
-        } else {
-            if (patientFound.package !== undefined && patientFound.subscribedToPackage) {
-                return res.status(400).json({ error: 'Patient already has a package' });
-            } else {
-                const packageId = req.params.packageId;
-                const packageData = await pack.findById(packageId);
-                if (!packageData) {
-                    return res.status(404).json({ error: 'Package not found' });
-                } else {
-                    patientFound.package = packageData._id;
-                    patientFound.subscribedToPackage = true;
-                    //patientFound.packageSubscribed = packageId;
-                    const today = new Date();
-                    const renewalDate = new Date(today.getTime() + packageData.subscriptionPeriod * 24 * 60 * 60 * 1000);
-                    // console.log("RENEWAL DATE: " + renewalDate);
-                    patientFound.packageRenewalDate = renewalDate;
-                    await patientFound.save();
-                    res.status(200).json("Package added successfully");
-                }
-            }
-        }
-    } catch (err) {
-        res.status(500).json(err);
-    }
-};
-
-const addPackageToFamMem = async (req: Request, res: Response) => {
-    try {
-        const pId = req.params.id;
-        const patientFound = await patient.findById(pId);
-        if (!patientFound) {
-            console.log("LINE 390");
-            return res.status(404).json({ error: 'Patient not found' });
-        } else {
-            const familyMemberId = req.params.pId;
-            if (patientFound.familyMembers === undefined) {
-                return res.status(400).json({ error: 'Patient has no family members' });
-            }
-            const familyMemberPatient = await patient.findById(familyMemberId);
-            console.log("FAM MEM PATIENT: " + familyMemberPatient);
-            console.log("FAM MEM PATIENT ID: " + familyMemberId);
-            let flag = false;
-            if (!familyMemberPatient) {
-                console.log("LINE 400");
-                return res.status(404).json({ error: 'Family member not found' });
-            }
-            console.log("FAM MEM PATIENT: " + familyMemberPatient);
-            for (const famMem of patientFound.familyMembers) {
-                console.log("FAM MEM: " + famMem);
-                if (famMem.patientId.toString() === familyMemberPatient._id.toString()) {
-                    console.log("FAM MEM FOUND");
-                    flag = true;
-                }
-            }
-            if (!flag || !familyMemberPatient) {
-                console.log("LINE 412");
-                return res.status(404).json({ error: 'Family member not found' });
-            } else {
-                if (familyMemberPatient.package !== undefined && familyMemberPatient.subscribedToPackage) {
-                    return res.status(400).json({ error: 'Family member already has a package' });
-                } else {
-                    const packageId = req.params.packageId;
-                    const packageData = await pack.findById(packageId);
-                    if (!packageData) {
-                        console.log("LINE 421");
-                        return res.status(404).json({ error: 'Package not found' });
-                    } else {
-                        familyMemberPatient.package = packageData._id;
-                        familyMemberPatient.subscribedToPackage = true;
-                        //familyMemberPatient.packageSubscribed = packageId;
-                        const today = new Date();
-                        const renewalDate = new Date(today.setDate(today.getDate() + packageData.subscriptionPeriod));
-                        familyMemberPatient.packageRenewalDate = renewalDate;
-                        await familyMemberPatient.save();
-                        await patientFound.save();
-                        res.status(200).json("Package added successfully");
-                    }
-                }
-            }
-        }
-    } catch (err) {
-        res.status(500).json(err);
     }
 };
 

@@ -18,13 +18,16 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
+import { useUser } from "../../userContest";
 
 export default function DoctorViewPatients() {
   const [data, setData] = useState([]);
   const [Query, setQuery] = useState("");
   const [selectedPatient, setSelectedPatient] = useState({});
+  const { userId } = useUser();
 
-  const id = "65293c2cb5a34d208108cc33";
+  // const id = "65293c2cb5a34d208108cc33";
+  const id = userId;
 
   const fetchTableData = () => {
     axios
@@ -32,7 +35,12 @@ export default function DoctorViewPatients() {
         params: { id: id },
       })
       .then((res) => {
+        console.log(res.data);
+        console.log("Hererrrrrrrrrrrrreeee: "+(res.data)[1].healthRecords.lenth);
         setData(res.data);
+      })
+      .catch((error) => {
+        console.error("Error getting Patient data", error);
       });
   };
 
@@ -53,8 +61,9 @@ export default function DoctorViewPatients() {
         })
         .then((res) => {
           setData(res.data);
-        }).catch(() => {
-setData([]);
+        })
+        .catch(() => {
+          setData([]);
         });
     }
   };
@@ -150,7 +159,11 @@ setData([]);
           })}
 
           <Typography>Health Records</Typography>
-          {selectedPatient.healthRecords.map((item) => {
+
+          <Typography> {`items: ${selectedPatient.healthRecords.lenth}`}</Typography>
+
+
+          {/* {selectedPatient.healthRecords.map((item) => {
             return (
               <List>
                 <ListItem>{"Name: " + item.name}</ListItem>
@@ -158,7 +171,7 @@ setData([]);
                 <ListItem>{"Date: " + item.date}</ListItem>
               </List>
             );
-          })}
+          })} */}
         </List>
       )}
     </Container>

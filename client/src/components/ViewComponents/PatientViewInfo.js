@@ -22,11 +22,14 @@ import {
   import TableHead from "@mui/material/TableHead";
   import TableRow from "@mui/material/TableRow";
   import axios from "axios";
-  
+  import { useParams } from 'react-router-dom';
+  import { useUser } from '../../userContest';
+
   export default function PatientViewInfo() {
     const [data, setData] = useState([]);
-  
-    const id = "655089b786a7e9fff5d1d36a";
+    const { userId } = useUser();
+    let id = userId;
+    //const id = "655089b786a7e9fff5d1d36a";
   
     const fetchTableData = () => {
         axios

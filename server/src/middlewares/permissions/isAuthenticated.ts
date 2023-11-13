@@ -1,60 +1,59 @@
-import { Request, Response, NextFunction } from 'express';
-import TokenUtils from '../../utils/Token.js';
+import { Request, Response, NextFunction } from "express";
+import TokenUtils from "../../utils/Token.js";
 import doctor, { IDoctor } from "../../models/Doctor.js";
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument } from "mongoose";
+import { UserType, UserTypesNames } from "../../enums/UserTypes.js";
 
-// Define the type for your payload, which should match what you used in generating tokens.
 interface TokenPayload {
-    patientId: string; // Adjust the payload structure if needed.
+	userId: string;
+	userRole: UserType;
 }
 
-// Extend the Request interface to include the patientId property.
 declare global {
-    namespace Express {
-        interface Request {
-            patientId?: string;
-        }
-    }
+	namespace Express {
+		interface Request {
+			userId: string;
+			userRole: UserType;
+		}
+	}
 }
 
-const isAuthenticated = (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => {
-    // Get the token from the request header or wherever you're sending it.
-    const token = req.header('Authorization')?.replace('Bearer ', '');
-    if (!token) {
-        // If no token is provided, return an error response.
-        return res.status(401).json({ message: 'Unauthorized - No token provided' });
-    }
+const isAuthenticated = async (req: Request, res: Response, next: NextFunction) => {
+	let token, decodedToken: any;
+	try {
+		token = req.cookies.authorization;
+		if (!TokenUtils.verifyToken(token)) {
+			return res
+				.status(401)
+				.json({ message: "Unauthorized - Invalid token signature" });
+		}
 
-    if (!TokenUtils.verifyToken(token)) {
-        return res.status(401).json({ message: 'Unauthorized - Invalid token signature' });
-    }
+		decodedToken = TokenUtils.decodeToken(token);
 
-    const decodedToken = TokenUtils.decodeToken(token);
+		if (decodedToken.userRole === UserType.DOCTOR) {
+			try {
+				const doc = await doctor.findById(decodedToken.userId).exec();
+				if (!doc || doc.status !== "accepted") {
+				  return res.status(401).json({ message: "Unauthorized - Invalid token" });
+				}
+			  } catch (error) {
+				console.error(error);
+				return res.status(500).json({ message: "Internal server error" });
+			  }	
+		}
+	} catch {
+		if (!decodedToken) {
+			return res.status(401).json({ message: "Unauthorized - Invalid token" });
+		}
+		if (!token) {
+			return res
+				.status(401)
+				.json({ message: "Unauthorized - No token provided" }); // TODO
+		}
+	}
 
-    if (!decodedToken) {
-        return res.status(401).json({ message: 'Unauthorized - Invalid token' });
-    } else if(decodedToken.userRole === "2") {
-        getDoctor(decodedToken.userId)
-            .then((doc) => {
-                if (!doc || doc.status != "accepted") {
-                    return res.status(401).json({ message: 'Unauthorized - Invalid token' });
-                }
-            })
-            .catch((error) => {
-                console.error(error);
-                return res.status(500).json({ message: 'Internal server error' });
-            });
-    }
-    next();
+	next();
 };
 
-const getDoctor = async (id: string): Promise<HydratedDocument<IDoctor> | null> => {
-    const doc: HydratedDocument<IDoctor> | null = await doctor.findById(id).exec();
-    return doc;
-}
 
 export default isAuthenticated;

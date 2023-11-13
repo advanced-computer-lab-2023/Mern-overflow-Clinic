@@ -6,7 +6,9 @@ import multer from 'multer';
 import { Request, Response, NextFunction } from 'express';
 import fs from 'fs';
 import path from 'path';
-
+import healthRecordController from "../controllers/HealthRecordController.js";
+import appointmentController from "../controllers/AppointmentController.js";
+import isAuthenticated from "../middlewares/permissions/isAuthenticated.js";
 
 const router = express.Router();
 router.use(bodyParser.json());
@@ -66,7 +68,63 @@ const storage = multer.diskStorage({
 //     });
 //   };
 
+router.use(express.json());
 
+router.get("/", isAuthenticated, doctorController.listDoctors);
+router.post("/filter", isAuthenticated, patientController.filterDoctor);
+router.get("/:id/slots", isAuthenticated, doctorController.listSlots);
+router.get("/:id/completedAppointments", isAuthenticated, doctorController.listCompletedPatients);
+router.get("/:id", isAuthenticated, doctorController.readDoctor);
+router.get("/:id/wallet", isAuthenticated, doctorController.viewWallet);
+router.put(
+  "/:id/acceptContract",
+  isAuthenticated,
+  doctorController.acceptContract,
+);
+router.put(
+  "/:id/rejectContract",
+  isAuthenticated,
+  doctorController.rejectContract,
+);
+router.put("/:id/addSlots", isAuthenticated, doctorController.addFreeSlots);
+router.get(
+  "/:id/patients",
+  isAuthenticated,
+  doctorController.listDoctorPatients,
+);
+router.get(
+  "/:id/registeredPatients",
+  isAuthenticated,
+  doctorController.listMyPatients,
+);
+router.get(
+  "/:id/patients/:pId",
+  isAuthenticated,
+  doctorController.selectPatient,
+);
+router.get(
+  "/:id/search",
+  isAuthenticated,
+  doctorController.selectPatientByName,
+);
+router.get(
+  "/:id/res",
+  isAuthenticated,
+  doctorController.listAllMyPatientsUpcoming,
+);
+router.post(
+  "/:id/addHealthRecord",
+  isAuthenticated,
+  healthRecordController.createHealthRecord,
+);
+router.post(
+  "/:id/createFollowup",
+  isAuthenticated,
+  appointmentController.createFollowUp,
+);
+router.post("/", doctorController.createDoctor);
+router.put("/:id", isAuthenticated, doctorController.updateDoctor);
+router.delete("/:id", isAuthenticated, doctorController.deleteDoctor);
 router.get("/", doctorController.listDoctors);
 router.get("/pendingDoctors", doctorController.listPendingDoctors);
 router.post("/filter", patientController.filterDoctor);

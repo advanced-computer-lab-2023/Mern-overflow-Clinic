@@ -8,11 +8,11 @@ interface emergencyContact {
 }
 
 interface familyMember {
-    //name: string;
+    name: string;
     nationalId: string;
     patientId: Types.ObjectId;
-    // age: number;
-    // gender: string;
+   // dateOfBirth: Date;
+    gender: string;
     relation: string;
     // package?: typeof mongoose.Types.ObjectId;
 }
@@ -40,8 +40,9 @@ export interface IPatient {
     //packageSubscribed?: Types.ObjectId;
     subscribedToPackage?: boolean;
     packageRenewalDate?: Date;
-    healthRecords?: Types.ObjectId[];
-    wallet: number;
+    healthRecords?: IHealthRecord[];
+    wallet?:number
+    
 }
 
 
@@ -55,7 +56,6 @@ const PatientSchema = new Schema<IPatient>({
     dateOfBirth: { type: Date, required: true },
     gender: { type: String, required: true, lowercase: true, enum: ['male', 'female'] },
     mobileNumber: { type: String, required: true, unique: true, min: 8, max: 16, match: [/^(\+\d{8,15}|\d{8,15})$/, "invalid charachters"] },
-    wallet:{ type: Number, required: true , default: 0.0},
     emergencyContact: [
         {
             name: { type: String, required: true, trim: true },
@@ -73,7 +73,7 @@ const PatientSchema = new Schema<IPatient>({
             name: { type: String, required: true, trim: true },
             nationalId: { type: String, required: true },//TODO add validation
             patientId: { type: Schema.Types.ObjectId, ref: "Patient", required: true },
-            age: { type: Number, required: true, min: 0, max: 122 },
+            //dateOfBirth: { type: Date, required: true, min: 0, max: 122 },
             gender: { type: String, required: true, lowercase: true, enum: ['male', 'female'] },
             relation: { type: String, required: true, lowercase: true, enum: ['wife', 'husband', 'child'] },
             // package: { type: mongoose.Types.ObjectId, ref: "Package", required: false },
@@ -84,7 +84,15 @@ const PatientSchema = new Schema<IPatient>({
     //packageSubscribed: { type: Number, required: false },
     subscribedToPackage: { type: Boolean, required: false },
     packageRenewalDate: { type: Date, required: false },
-    healthRecords: [{ type: Schema.Types.ObjectId, ref: "HealthRecords", required: false }],
+    healthRecords: [
+        {
+            name: { type: String, required: true, },
+            diagnosis: { type: String, required: true },
+            date: { type: Date, required: true },
+
+        }
+    ],
+    wallet: { type: Number, required: false }
 });
 
 PatientSchema.pre('save', function(next) {

@@ -100,7 +100,9 @@ export default function DoctorRegister() {
     axios.post('http://localhost:8000/doctors', formData)
       .then((response) => {
         console.log('POST request successful', response);
-        navigate('/doctor/profile');
+        axios.post("http://localhost:8000/auth/login", { username: dataToServer.username, passwordHash: dataToServer.passwordHash }).then((response) => {
+          navigate("/doctor/profile");
+        })
       })
       .catch((error) => {
         console.error('Error making POST request', error);

@@ -1,44 +1,32 @@
-import {
-  Input,
-  Container,
-  Button,
-  List,
-  ListItem,
-  Paper,
-  FormControl,
-  Select,
-  InputLabel,
-  MenuItem,
-  Typography,
-} from "@mui/material";
+import { Container } from "@mui/material";
 
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import React, { useEffect, useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useUser } from "../../userContest";
 
 export default function PatientViewInfo() {
   const [data, setData] = useState([]);
 
-  const id = "65293c2cb5a34d208108cc33";
+  //  const id = "65293c2cb5a34d208108cc33";
 
+  const { userId } = useUser();
+  let id = userId;
   const fetchTableData = () => {
-      axios
-        .get(`http://localhost:8000/doctors/${id}`)
-        .then((res) => {
-          setData(res.data);
-          console.log(res.data);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    };
+    axios
+      .get(`http://localhost:8000/doctors/${id}`)
+      .then((res) => {
+        setData(res.data);
+        console.log(res.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   useEffect(() => {
     fetchTableData();
@@ -62,10 +50,10 @@ export default function PatientViewInfo() {
           <TableRow>
             <TableCell>{data.name}</TableCell>
             <TableCell>
-              {new Date(data.dateOfBirth).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
+              {new Date(data.dateOfBirth).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
               })}
             </TableCell>
             <TableCell>{data.hourlyRate}</TableCell>

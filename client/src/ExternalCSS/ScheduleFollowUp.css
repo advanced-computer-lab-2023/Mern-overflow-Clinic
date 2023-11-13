@@ -1,0 +1,18 @@
+/* ScheduleFollowUp.css */
+
+.error-message {
+    border: 1px solid red;
+    background-color: #ffcccc;
+    padding: 10px;
+    margin: 10px 0;
+  }
+  
+  .success-message {
+    border: 1px solid green;
+    background-color: #ccffcc;
+    padding: 10px;
+    margin: 10px 0;
+  }
+  
+  /* Add more styling rules as needed */
+  

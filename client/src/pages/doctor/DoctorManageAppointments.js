@@ -1,11 +1,19 @@
 import DoctorViewAppointments from "../../components/ViewComponents/DoctorViewAppointments";
-import DoctorDashbaord from "./DoctorDashboard";
+import DoctorDashboard from "./DoctorDashboard";
+import { useUser } from "../../userContest";
 
 const DoctorManageAppointments = () => {
+  const { userId, setUserId, userRole, setUserRole } = useUser();
   return (
     <>
-      <DoctorDashbaord title="Manage My Appointments" />
-      <DoctorViewAppointments />
+      {userRole === "Doctor" ? (
+        <>
+          <DoctorDashboard title="Manage My Appointments" />
+          <DoctorViewAppointments />
+        </>
+      ) : (
+        <p>Excuse me, are you a Doctor?</p>
+      )}
     </>
   );
 };

@@ -11,6 +11,7 @@ import {
   MenuItem,
   Typography,
 } from "@mui/material";
+//import { useHistory } from 'react-router-dom';
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -21,30 +22,40 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
+import { useUser } from '../../userContest';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
+
 
 export default function DoctorViewPatients() {
+  const navigate = useNavigate();
+
   const [data, setData] = useState([]);
   const [Query, setQuery] = useState("");
   const [selectedDoctor, setSelectedDoctor] = useState({});
   const [availableSpecialties, setAvailableSpecialties] = useState([]);
-
-  const id = "655089b786a7e9fff5d1d36a";
+  const { userId } = useUser();
+  // const id = "655089b786a7e9fff5d1d36a";
+  const id = userId;
 
   const fetchTableData = () => {
-
-    axios.get(`http://localhost:8000/patients/${id}/price`, {params: {id: id} }).then((res) => {
-
-
-      console.log(res.data)
-      setData(res.data);
-      let temp = [];
-      res.data.map((key) => {
-        if (temp.indexOf(key._doc.speciality) === -1) {
-          temp.push(key._doc.speciality);
-        }
+    axios
+      .get(`http://localhost:8000/patients/${id}/price`, { params: { id: id } })
+      .then((res) => {
+        console.log(res.data);
+        setData(res.data);
+        let temp = [];
+        res.data.map((key) => {
+          if (temp.indexOf(key._doc.speciality) === -1) {
+            temp.push(key._doc.speciality);
+          }
+        });
+        setAvailableSpecialties(temp);
+      })
+      .catch((error) => {
+        console.error("Error getting Doctor data", error);
       });
-      setAvailableSpecialties(temp);
-    });
   };
 
   useEffect(() => {
@@ -56,19 +67,21 @@ export default function DoctorViewPatients() {
     let speciality = e.target[0].value;
     let datetime = e.target[2].value;
 
-    console.log(speciality)
-    console.log(datetime)
+    console.log(speciality);
+    console.log(datetime);
 
     if (datetime === "") {
-
-        axios
-          .post(`http://localhost:8000/doctors/filter`, {
-            speciality: speciality,
-            id: id,
-          })
-          .then((res) => {
-            setData(res.data);
-          }); 
+      axios
+        .post(`http://localhost:8000/doctors/filter`, {
+          speciality: speciality,
+          id: id,
+        })
+        .then((res) => {
+          setData(res.data);
+        })
+        .catch((error) => {
+          console.error("Error getting Doctor data", error);
+        });
     } else {
       axios
         .post(`http://localhost:8000/doctors/filter`, {
@@ -77,13 +90,22 @@ export default function DoctorViewPatients() {
           id: id,
         })
         .then((res) => {
-
           setData(res.data);
         })
         .catch(() => setData([]));
     }
   };
-
+  const handleSelectDoctor = (selectedDoctor) => {
+    // Construct the URL for the doctor details page in the patient section
+    const doctorDetailsURL = `/patient/bookAppointment`;
+    // Add the 'id' parameter to the URL
+    const doctorDetailsURLWithId = `${doctorDetailsURL}/${selectedDoctor._doc._id}`;
+    
+    // Navigate to the doctor details page with the 'id' parameter
+    navigate(doctorDetailsURLWithId);
+  };
+  
+  
   return (
     <Container maxWidth="xl">
       <Paper elevation={3} sx={{ p: "20px", my: "40px", paddingBottom: 5 }}>
@@ -142,15 +164,15 @@ export default function DoctorViewPatients() {
                 </FormControl>
               </form>
 
-            <Button
-              fullWidth
-              type="submit"
-              variant="contained"
-              onClick={fetchTableData}
-              sx={{ mt: 3, mb: 2, p: 2, fontWeight: "bold" }}
-            >
-              Clear
-            </Button>
+              <Button
+                fullWidth
+                type="submit"
+                variant="contained"
+                onClick={fetchTableData}
+                sx={{ mt: 3, mb: 2, p: 2, fontWeight: "bold" }}
+              >
+                Clear
+              </Button>
             </Container>
           </Container>
         </Container>
@@ -172,8 +194,8 @@ export default function DoctorViewPatients() {
                   <TableCell>{row._doc.speciality}</TableCell>
                   <TableCell>{row.sessionPrice}</TableCell>
                   <TableCell>
-                    <Button onClick={() => setSelectedDoctor(row)}>
-                      Select Doctor
+                    <Button onClick={() => handleSelectDoctor(row)}>
+                     Book An Appointment
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -181,15 +203,16 @@ export default function DoctorViewPatients() {
           )}
         </TableBody>
       </Table>
-      {typeof (selectedDoctor._doc) !== "undefined" && (
+      {typeof selectedDoctor._doc !== "undefined" && (
         <List>
           <ListItem>{"Name: " + selectedDoctor._doc.name}</ListItem>
           <ListItem>{"Specialty: " + selectedDoctor._doc.speciality}</ListItem>
-          <ListItem>{"Affiliation: " + selectedDoctor._doc.affiliation}</ListItem>
+          <ListItem>
+            {"Affiliation: " + selectedDoctor._doc.affiliation}
+          </ListItem>
           <ListItem>{"Education: " + selectedDoctor._doc.education}</ListItem>
         </List>
-      )
-      }
+      )}
     </Container>
   );
 }

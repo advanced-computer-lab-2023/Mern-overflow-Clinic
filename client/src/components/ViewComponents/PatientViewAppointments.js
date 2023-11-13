@@ -1,16 +1,20 @@
 import {
-  Input,
+  // Input,
   Container,
   Button,
-  List,
-  ListItem,
+  // List,
+  // ListItem,
   Paper,
   FormControl,
   Select,
   InputLabel,
   MenuItem,
-  Typography,
+  // Typography,
 } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import PaymentIcon from "@mui/icons-material/Payment";
+
+import { Link } from "react-router-dom";
 
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -22,20 +26,25 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
+import { useUser } from "../../userContest";
 
 export default function PatientViewAppointments() {
   const [data, setData] = useState([]);
+  const { userId } = useUser();
 
-  const id = "655089b786a7e9fff5d1d36a";
+  // const id = "655089b786a7e9fff5d1d36a";
+  console.log(userId + "hello");
+  const id = userId;
 
   const fetchTableData = () => {
     axios
-      .get(`http://localhost:8000/appointments`, {
-        params: { id: id },
-      })
+      .get(`http://localhost:8000/appointments/${id}/`, { params: { id: id } })
       .then((res) => {
-        setData(res.data);
-        console.log(res.data)
+        setData(res.data || []); // Check if res.data is null or undefined
+        console.log(res.data);
+      })
+      .catch((error) => {
+        console.error("Error getting data", error);
       });
   };
 
@@ -47,29 +56,40 @@ export default function PatientViewAppointments() {
     e.preventDefault();
     let status = e.target[0].value;
     let date = e.target[2].value;
+    let route = `http://localhost:8000/appointments/filter/${id}`;
 
     if (date === "") {
       axios
-        .post(`http://localhost:8000/appointments/filter`, {
+        .post(route, {
           status: status,
+          id: id,
         })
         .then((res) => {
-          console.log(res.data)
-          setData(res.data);
+          console.log(res.data);
+          setData(res.data || []); // Check if res.data is null or undefined
         })
         .catch(() => setData([]));
     } else {
       axios
-        .post(`http://localhost:8000/appointments/filter`, {
+        .post(route, {
           status: status,
           date: date,
         })
         .then((res) => {
-          console.log(res.data)
-          setData(res.data);
+          console.log(res.data);
+          setData(res.data || []); // Check if res.data is null or undefined
         })
         .catch(() => setData([]));
     }
+  };
+  const handleViewAll = () => {
+    // Fetch all appointments with the state attribute
+    axios
+      .get(`http://localhost:8000/appointments/all/${id}`)
+      .then((res) => {
+        setData(res.data || []);
+      })
+      .catch(() => setData([]));
   };
   return (
     <Container maxWidth="xl">
@@ -96,7 +116,7 @@ export default function PatientViewAppointments() {
                 >
                   <MenuItem value="upcoming">Upcoming</MenuItem>
                   <MenuItem value="completed">Completed</MenuItem>
-                  <MenuItem value="canceled">Canceled</MenuItem>
+                  <MenuItem value="cancelled">Cancelled</MenuItem>
                   <MenuItem value="rescheduled">Rescheduled</MenuItem>
                 </Select>
               </FormControl>
@@ -137,6 +157,14 @@ export default function PatientViewAppointments() {
           </Container>
         </Container>
       </Paper>
+      <Button
+        fullWidth
+        variant="contained"
+        onClick={handleViewAll}
+        sx={{ mt: 3, mb: 2, p: 2, fontWeight: "bold" }}
+      >
+        View All
+      </Button>
       <Table>
         <TableHead>
           <TableRow>
@@ -148,15 +176,34 @@ export default function PatientViewAppointments() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((row) => (
-            <TableRow key={row.date + row.patient + row.doctor + row.status}>
-              <TableCell>{row.patient.name}</TableCell>
-              <TableCell>{row.doctor.name}</TableCell>
-              <TableCell>{row.duration}</TableCell>
-              <TableCell>{row.date}</TableCell>
-              <TableCell>{row.status}</TableCell>
-            </TableRow>
-          ))}
+          {data &&
+            data.map((row) => (
+              <TableRow
+                key={
+                  row.date +
+                  (row.patient?.name || "") +
+                  (row.doctor?.name || "") +
+                  row.status
+                }
+              >
+                <TableCell>{row.patient?.name || "N/A"}</TableCell>
+                <TableCell>{row.doctor?.name || "N/A"}</TableCell>
+                <TableCell>{row.duration + " hour"}</TableCell>
+                <TableCell>{row.date}</TableCell>
+                <TableCell>{row.status}</TableCell>
+                <Link
+                  to={
+                    row.status == "upcoming"
+                      ? `/patient/pay/appointment/${row._id}`
+                      : undefined
+                  }
+                >
+                  <IconButton disabled={!(row.status == "upcoming")}>
+                    <PaymentIcon />
+                  </IconButton>
+                </Link>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </Container>

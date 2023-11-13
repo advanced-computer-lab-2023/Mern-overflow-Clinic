@@ -5,22 +5,7 @@ import cors from 'cors';
 import bodyParser from "body-parser";
 import patientController from "../controllers/PatientController.js";
 import prescriptionController from "../controllers/PrescriptionController.js";
-
-
-// const storage = multer.diskStorage({
-//     // destination: (req: Request, file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
-//     //   cb(null, "uploads/"); // Create an 'uploads' folder
-//     // },
-//     filename: (req: Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) => {
-//       const uniqueSuffix = Date.now();
-//       cb(null, uniqueSuffix + file.originalname);
-//     },
-//   });
-  
-  // const upload = multer({ storage: storage });
-
-
-
+import isAuthenticated from "../middlewares/permissions/isAuthenticated.js";
 
 const router = express.Router();
 router.use(bodyParser.json());
@@ -59,35 +44,43 @@ router.use(bodyParser.json());
 // });
 
 //GET
-router.get("/doctorsSearch", patientController.selectDoctorByNameAndSpeciality);
-router.get("/:id/wallet", patientController.viewWallet);
+router.get(
+  "/doctorsSearch",
+  isAuthenticated,
+  patientController.selectDoctorByNameAndSpeciality,
+);
+router.get("/:id/family", patientController.listFamilyMembers);
+router.get("/:id/wallet", isAuthenticated, patientController.viewWallet);
 //added this new route
-router.post("/:id/prescriptionsFilter", prescriptionController.filterPrescriptions);
+router.post(
+  "/:id/prescriptionsFilter",
+  isAuthenticated,
+  prescriptionController.filterPrescriptions,
+);
 //
-router.get("/doctors/:dId", patientController.selectDoctor);
-router.get("/:id/relatives", patientController.readFamilyMember);
+router.get("/doctors/:dId", isAuthenticated, patientController.selectDoctor);
+router.get("/:id/relatives", isAuthenticated, patientController.readFamilyMember);
 router.get("/:id/documents", patientController.readDocuments);
-router.get("/", patientController.listPatients);
-router.get("/:id", patientController.readPatient);
-router.get("/:id/prescriptions", prescriptionController.viewPatientPrescription);
-router.get("/:id/price", patientController.listDoctorsBySessionPrice);
+router.get("/", isAuthenticated, patientController.listPatients);
+router.get("/:id", isAuthenticated, patientController.readPatient);
+router.get("/:id/prescriptions", isAuthenticated, prescriptionController.viewPatientPrescription);
+router.get("/:id/price", isAuthenticated, patientController.listDoctorsBySessionPrice);
 router.get("/:id/packages", patientController.listPatientPackages);
 router.get("/:id/document", patientController.readPath);
 
 //POST
 router.post("/", patientController.createPatient);
-router.post("/:id/familyMember", patientController.addFamilyMember);
+router.post("/:id/familyMember", isAuthenticated, patientController.addFamilyMember);
 router.post("/:id/documents", upload.single('file'), patientController.addDocument);
 router.post("/:id/packages/:packageId", patientController.addPackage);
 router.post("/:id/packages/:pId/:packageId", patientController.addPackageToFamMem);
-
+router.post("/:id/linkfamilyMember", isAuthenticated, patientController.linkfamilyMember);
 
 //DELETE
-router.delete("/:id", patientController.deletePatient);
+router.delete("/:id", isAuthenticated, patientController.deletePatient);
 router.delete("/:id/documents", patientController.deleteDocument);
 router.delete("/:id/packages", patientController.deletePackage);
 router.delete("/:id/packages/:pId", patientController.deletePackageFromFamMem);
-
 
 
 export default router;

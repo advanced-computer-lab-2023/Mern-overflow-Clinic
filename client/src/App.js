@@ -19,7 +19,7 @@ import PatientManageInfo from "./pages/patient/PatientManageInfo";
 import PatientManagePrescriptions from "./pages/patient/PatientManagePrescriptions";
 import ChangePassword from "./pages/authentication/ChangePassword";
 import ResetPassword from "./pages/authentication/ResetPassword";
-
+import ForgotPassword from "./pages/authentication/ForgotPassword";
 import DoctorManageFreeSlots from "./pages/doctor/DoctorManageFreeSlots";
 import DoctorManageContracts from "./pages/doctor/DoctorManageContracts";
 import DoctorManageFollowUp from "./pages/doctor/DoctorManageFollowUp";
@@ -33,6 +33,8 @@ import AdminEditPackage from "./pages/admin/AdminEditPackage";
 // import EditDoctorProfile from './components/formComponents/EditDoctorProfile';
 import axios from "axios";
 import PatientPayAppointment from "./pages/patient/PatientPayAppointment";
+import NotFoundPage from "./NotFoundPage";
+
 
 function App() {
   axios.defaults.withCredentials = true;
@@ -158,6 +160,20 @@ function App() {
       path: "/patient/bookAppointment/:id",
       element: <PatientBookAppointments />,
     },
+    {
+      path: "/auth/changepassword",
+      element: <ChangePassword />,
+    },
+    {
+      path: "/auth/resetpassword",
+      element: <ResetPassword />,
+    },
+    {
+      path: "/auth/forgotpassword",
+      element: <ForgotPassword />,
+    },
+
+    { path: "*", element: <NotFoundPage /> },
   ]);
 
   return (

@@ -39,7 +39,7 @@ export default function SignIn() {
     delete data.Username;
     delete data.Password;
     console.log("Data to server" + JSON.stringify(data));
-    
+
     axios
       .post("http://localhost:8000/auth/login", data)
       .then((response) => {
@@ -170,6 +170,16 @@ export default function SignIn() {
                 sx={{ mt: 3, mb: 2, p: 2, fontWeight: "bold" }}
               >
                 Sign In
+              </Button>
+              <Button
+                fullWidth
+                type="submit"
+                variant="contained"
+                sx={{ mt: 3, mb: 2, p: 2, fontWeight: "bold" }}
+                component={Link}
+                to="/auth/forgotpassword"
+              >
+                Forgot Password
               </Button>
             </Box>
 

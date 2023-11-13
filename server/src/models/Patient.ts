@@ -26,7 +26,7 @@ interface document {
 export interface IPatient {
     // username: string;
     name: string;
-    email: string;
+    // email: string;
     nationalId: string;
     // passwordHash: string;
     dateOfBirth: Date;
@@ -50,7 +50,7 @@ export interface IPatient {
 const PatientSchema = new Schema<IPatient>({
     // username: { type: String, required: true, unique: true },
     name: { type: String, required: true, trim: true },
-    email: { type: String, required: true, unique: true, match: [/\S+@\S+\.\S+/, "invalid email"], },
+    // email: { type: String, required: true, unique: true, match: [/\S+@\S+\.\S+/, "invalid email"], },
     nationalId: { type: String, required: true },
     // passwordHash: { type: String, required: true },
     dateOfBirth: { type: Date, required: true },
@@ -98,9 +98,6 @@ const PatientSchema = new Schema<IPatient>({
 PatientSchema.pre('save', function(next) {
     if (this.isModified('name')) {
         this.name = this.name.toLowerCase();
-    }
-    if (this.isModified('email')) {
-        this.email = this.email.toLowerCase();
     }
 
     next();

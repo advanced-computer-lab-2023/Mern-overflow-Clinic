@@ -68,8 +68,7 @@ const changePassword = async (req: Request, res: Response) => {
 };
 
 const requestPasswordReset = async (req: Request, res: Response) => {
-  const email = req.body.email;
-
+  const email :string = req.body.email.toLowerCase();
   try {
     const user: HydratedDocument<IUser> | null = await User.findOne({ email });
 
@@ -95,10 +94,10 @@ const requestPasswordReset = async (req: Request, res: Response) => {
 const resetPasswordWithToken = async (req: Request, res: Response) => {
   const token = req.body.token;
   const newPasswordHash = req.body.newPassword;
-
+  console.log(token, newPasswordHash)
   try {
     const decodedToken: any = jwt.verify(token, config.jwt.secret);
-
+    
     if (!decodedToken) {
       return res.status(401).json({ message: "Invalid or expired token" });
     }

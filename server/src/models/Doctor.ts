@@ -4,7 +4,7 @@ import User from "./User.js";
 export interface IDoctor {
     // username:string;
     name: string;
-    email: string;
+    // email: string;
     // passwordHash: string;
     dateOfBirth: Date;
     //gender:string;
@@ -26,7 +26,7 @@ interface document {
 const doctorShema = new Schema<IDoctor>({
     // username: { type: String, required: true , unique: true },
     name: { type: String, required: true, trim: true },
-    email: { type: String, required: true, match: [/\S+@\S+\.\S+/, "invalid email"], },
+    // email: { type: String, required: true, match: [/\S+@\S+\.\S+/, "invalid email"], },
     // passwordHash:{ type: String, required: true },
     dateOfBirth: { type: Date, required: true },
     //gender: { type: String, required: true, lowercase: true, enum: ['male', 'female'] },
@@ -47,9 +47,6 @@ const doctorShema = new Schema<IDoctor>({
 doctorShema.pre('save', function(next) {
     if (this.isModified('name')) {
         this.name = this.name.toLowerCase();
-    }
-    if (this.isModified('email')) {
-        this.email = this.email.toLowerCase();
     }
     if (this.isModified('speciality')) {
         this.speciality = this.speciality.toLowerCase();

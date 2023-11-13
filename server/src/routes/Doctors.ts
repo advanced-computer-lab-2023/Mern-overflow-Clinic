@@ -34,6 +34,7 @@ router.get("/:id/slots", isAuthenticated, doctorController.listSlots);
 router.get("/:id/completedAppointments", isAuthenticated, doctorController.listCompletedPatients);
 router.get("/:id", isAuthenticated, doctorController.readDoctor);
 router.get("/:id/wallet", isAuthenticated, doctorController.viewWallet);
+router.get("/:id/slots", isAuthenticated, doctorController.listSlots);
 router.put(
   "/:id/acceptContract",
   isAuthenticated,

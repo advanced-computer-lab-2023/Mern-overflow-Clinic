@@ -19,6 +19,14 @@ import TableRow from "@mui/material/TableRow";
 import axios from "axios";
 import dayjs from "dayjs"; // Import dayjs for date manipulation
 import { useUser } from "../../userContest";
+// Importing React Router Link
+import { Link } from 'react-router-dom';
+
+// Importing Material-UI Components
+import IconButton from '@mui/material/IconButton';
+import PaymentIcon from '@mui/icons-material/Payment';
+
+
 
 export default function DoctorViewAppointments() {
   const [data, setData] = useState([]);
@@ -180,6 +188,15 @@ export default function DoctorViewAppointments() {
                 <TableCell>{row.date}</TableCell>
                 <TableCell>{row.status}</TableCell>
                 <TableCell>{calculateState(row.date)}</TableCell>
+
+                <TableCell>
+                
+              <Link to={row.status=="upcoming"?`/patient/pay/appointment/${row._id}`:undefined}>
+                    <IconButton disabled={!(row.status=="upcoming")}>
+                      <PaymentIcon />
+                    </IconButton>
+              </Link>
+                  </TableCell>
               </TableRow>
             ))}
         </TableBody>

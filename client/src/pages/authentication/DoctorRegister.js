@@ -28,6 +28,8 @@ export default function DoctorRegister() {
   const [selectedType, setSelectedType] = useState('nationalID');
   const [allTypes, setAllTypes] = useState([]);
   
+  const navigate = useNavigate();
+  const { register, handleSubmit, setError, formState: { errors }, control } = useForm();
 
   const handleTypeChange = (event) => {
     setSelectedType(event.target.value);
@@ -52,8 +54,6 @@ export default function DoctorRegister() {
   }
 
 
-  const navigate = useNavigate();
-  const { register, handleSubmit, setError, formState: { errors }, control } = useForm();
 
   const onSubmit = data => {
     console.log("files" + JSON.stringify(file));
@@ -80,7 +80,7 @@ export default function DoctorRegister() {
       .then((response) => {
         console.log('POST request successful', response);
         axios.post("http://localhost:8000/auth/login", { username: dataToServer.username, passwordHash: dataToServer.passwordHash }).then((response) => {
-          navigate("/doctor/profile");
+          navigate("/");
         })
       })
       .catch((error) => {

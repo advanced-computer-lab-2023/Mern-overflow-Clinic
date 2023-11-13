@@ -66,7 +66,8 @@ import {
     }
   
     const fetchTableData = async () => {
-      axios
+
+      await axios
         .get(`http://localhost:8000/patients/${id}/packages`, {
            params: { id: id },
         })
@@ -130,27 +131,27 @@ import {
                     params: { id: PackageId },
                   })
                   .then((res) => {
-                    console.log("Package res.data = "+JSON.stringify(res.data));
+                    // console.log("Package res.data = "+JSON.stringify(res.data));
                     familyMembersPackageData.push(res.data);
-                    setSelectedFamPacArr([...selectedFamPacArr, res.data]);
-                    console.log("familyMembersPackageData HII = "+JSON.stringify(familyMembersPackageData));
+                    // setSelectedFamPacArr([...selectedFamPacArr, res.data]);
+                    // console.log("familyMembersPackageData HII = "+JSON.stringify(familyMembersPackageData));
                     // console.log("selected package is " + res.data.name);
                   });
                 familyMembersRelationData.push(Relation);
-                console.log("familyMembers LOWW = "+JSON.stringify(familyMembersData));
-                console.log("familyMembersPackageData LOWW = "+JSON.stringify(familyMembersPackageData));
+                // console.log("familyMembers LOWW = "+JSON.stringify(familyMembersData));
+                // console.log("familyMembersPackageData LOWW = "+JSON.stringify(familyMembersPackageData));
               }
               // console.log("familyMembersDataArr = "+familyMembersDataArr);
               // console.log("familyMembersData = "+familyMembersData);
               // console.log("familyMembersPackageData = "+familyMembersPackageData);
               // console.log("familyMembersRelationData = "+familyMembersRelationData);
-              console.log("selectedFamPackkkArrBef = "+JSON.stringify(familyMembersPackageData));
-              console.log("selectedFamArrBef = "+JSON.stringify(familyMembersData));
+              // console.log("selectedFamPackkkArrBef = "+JSON.stringify(familyMembersPackageData));
+              // console.log("selectedFamArrBef = "+JSON.stringify(familyMembersData));
               setSelectedFamArr(familyMembersData);
-              // setSelectedFamPacArr(familyMembersPackageData);
+              setSelectedFamPacArr(familyMembersPackageData);
               setSelectedFamRelArr(familyMembersRelationData);
-              console.log("selectedFamPackkkArr = "+JSON.stringify(familyMembersPackageData));
-              console.log("selectedFamArr = "+JSON.stringify(familyMembersData));
+              // console.log("selectedFamPackkkArr = "+JSON.stringify(familyMembersPackageData));
+              // console.log("selectedFamArr = "+JSON.stringify(familyMembersData));
             }
 
         }).catch((err) => {

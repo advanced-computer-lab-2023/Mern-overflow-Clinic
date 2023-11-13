@@ -28,7 +28,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 
-export default function DoctorViewPatients() {
+export default function PatientViewDoctors() {
   const navigate = useNavigate();
 
   const [data, setData] = useState([]);

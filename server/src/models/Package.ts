@@ -16,7 +16,7 @@ const packageSchema = new Schema<IPackage>({
     discountOnDoctorSessions: {type: Number, required: true, min:0, max:100},
     discountOnMedicine: {type: Number, required: true, min:0, max:100},
     discountForFamily: {type: Number, required: true, min:0, max:100},
-    subscriptionPeriod: {type: Number, required: true, min:0, max:100},
+    subscriptionPeriod: {type: Number, required: true, min:0, max:1000}
 })
 
 

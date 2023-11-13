@@ -420,6 +420,11 @@ const listPatientPackages = async (req: Request, res: Response) => {
             }
             else {
                 const packageId = patientFound.package;
+                if (patientFound.subscribedToPackage === true && (patientFound.packageRenewalDate && new Date(patientFound.packageRenewalDate).getTime() < new Date().getTime())) {
+                    patientFound.subscribedToPackage = false;
+                    await patientFound.save();
+                    return res.status(404).json({ error: 'Patient package subscription has expired' });
+                }
                 // console.log("GIHI: "+ patientFound._id);
                 let packages = [{"patientId": patientFound._id, "packageId": packageId, "relation": "self"}];
                 if (patientFound.familyMembers) {
@@ -428,6 +433,11 @@ const listPatientPackages = async (req: Request, res: Response) => {
                         if (famMemPatient) {
                             if (famMemPatient.package) {
                                 const famMemPackage = await pack.findById(famMemPatient.package);
+                                if (famMemPatient.subscribedToPackage === true && (famMemPatient.packageRenewalDate && new Date(famMemPatient.packageRenewalDate).getTime() < new Date().getTime())) {
+                                    famMemPatient.subscribedToPackage = false;
+                                    await famMemPatient.save();
+                                    return res.status(404).json({ error: 'Family member package subscription has expired' });
+                                }
                                 if (famMemPackage) {
                                     packages.push({"patientId": famMemPatient._id, "packageId": famMemPackage._id, "relation": famMem.relation});
                                 }
@@ -483,7 +493,7 @@ const addPackage = async (req: Request, res: Response) => {
         if (!patientFound) {
             return res.status(404).json({ error: 'Patient not found' });
         } else {
-            if (patientFound.package !== undefined && patientFound.subscribedToPackage) {
+            if (patientFound.package !== undefined && patientFound.subscribedToPackage && (patientFound.packageRenewalDate && new Date(patientFound.packageRenewalDate).getTime() > new Date().getTime())) {
                 return res.status(400).json({ error: 'Patient already has a package' });
             } else {
                 const packageId = req.params.packageId;
@@ -722,7 +732,7 @@ const listDoctorsBySessionPrice = async (req: Request, res: Response) => {
                 const packageId = patientFound.package;
                 const packageData = await pack.findById(packageId);
 
-                const doctors = await doctor.find({});
+                const doctors = await doctor.find({"status": "accepted"});
                 const sessionPrices = doctors.map((doctor) => {
                     if (packageData) {
                         docSessDisc = (packageData.discountOnDoctorSessions / 100) * doctor.hourlyRate;
@@ -733,9 +743,9 @@ const listDoctorsBySessionPrice = async (req: Request, res: Response) => {
                     return ret;
                 });
 
-return res.status(200).json(sessionPrices); // Send the response after the loop is done
+                return res.status(200).json(sessionPrices); // Send the response after the loop is done
             } else {
-                const doctors = await doctor.find({});
+                const doctors = await doctor.find({"status": "accepted"});
                 const sessionPrices = doctors.map((doctor) => {
                     const sessionPrice = doctor.hourlyRate + (0.1 * doctor.hourlyRate) - docSessDisc;
 
@@ -753,7 +763,7 @@ return res.status(200).json(sessionPrices); // Send the response after the loop 
                 // );
 
 
-return res.status(200).json(sessionPrices); // Send the response after the loop is done
+                return res.status(200).json(sessionPrices); // Send the response after the loop is done
             }
         }
     } catch (error) {
@@ -779,8 +789,7 @@ const filterDoctor = async (req: Request, res: Response) => {
     const packageData = await pack.findById(packageId);
 
     if(req.body.speciality === undefined){
-return res.status(400).send("no speciality was entered");
-        return;
+        return res.status(400).send("no speciality was entered");
     }
     const speciality = req.body.speciality.toLowerCase();
 
@@ -793,7 +802,7 @@ return res.status(400).send("no speciality was entered");
         const docRes = await doctor.find({ 'speciality': speciality });
 
         if (docRes.length === 0) {
-return res.status(404).send("No doctors with this speciality available");
+            return res.status(404).send("No doctors with this speciality available");
         } else {
             if (!dateInput || dateInput === undefined) {
                 var docSessDisc = 0;
@@ -806,7 +815,7 @@ return res.status(404).send("No doctors with this speciality available");
 
                     return ret;
                 });
-return res.status(200).send(doctorsWithSessionPrices);
+                return res.status(200).send(doctorsWithSessionPrices);
             } else {
                 var resDocs: any[] = [];
                 var avDocs: any[] = [];
@@ -852,7 +861,7 @@ return res.status(200).send(doctorsWithSessionPrices);
                 }
 
                 if (avDocs.length === 0) {
-return res.status(404).send("No doctors within this speciality are available at this date/time");
+                    return res.status(404).send("No doctors within this speciality are available at this date/time");
                 } else {
                     console.log("hey");
 
@@ -866,7 +875,7 @@ return res.status(404).send("No doctors within this speciality are available at 
                         const ret = { "sessionPrice": sessionPrice, ...doctor }
                         return ret;
                     });
-return res.status(200).send(doctorsWithSessionPrices);
+                    return res.status(200).send(doctorsWithSessionPrices);
                 }
             }
         }
@@ -899,10 +908,10 @@ const viewWallet = async (req: Request, res: Response) => {
             if (!pat || pat === undefined) {
                 return res.status(404).json({ message: 'Patient not found' });
             } else {
-return res.status(200).json(pat.wallet);
+                return res.status(200).json(pat.wallet);
             }
         }).catch((err) => {
-return res.status(404).send(err);
+            return res.status(404).send(err);
         });
 }
 

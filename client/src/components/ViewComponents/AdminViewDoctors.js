@@ -82,7 +82,7 @@ export default function AdminViewDoctors() {
   const [filteredData, setFilteredData] = useState([]);
 
   const fetchTableData = () => {
-    axios.get(`http://localhost:8000/doctors/pendingDoctors`)
+    axios.get(`http://localhost:8000/doctors`)
       .then((res) => {
         let temp = ["No filter"];
         res.data.map((key) => {
@@ -140,12 +140,13 @@ export default function AdminViewDoctors() {
                   <TableCell>{row.speciality}</TableCell>
                   <TableCell>{row.hourlyRate}</TableCell>
                   <TableCell>{
-        <ul>
-          {row.files.map((file, index) => (
-          <li key={index}>{file.filename}
-          <a href = {`http://localhost:8000/uploads/` + file.filename} target = "_blank">            View</a></li>
-          ))}
-      </ul>}</TableCell>
+                    <ul>
+                      {row.files.map((file, index) => (
+                      <li key={index}>{file.filename}
+                      <a href = {`http://localhost:8000/uploads/` + file.filename} target = "_blank">            View</a></li>
+                      ))}
+                    </ul>}
+                  </TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleDelete(row._id)}>
                       <DeleteIcon />

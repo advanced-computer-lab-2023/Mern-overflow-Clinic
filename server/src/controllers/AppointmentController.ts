@@ -23,42 +23,82 @@ return res.status(400).json(err);
 
 
 const createAppointmentForFamilyMember = async (req: Request, res: Response) => {
-  console.log(req.body);
+  try {
+    console.log(req.body);
+    const docID = req.body.doctor;
+    req.body.duration = 1;
+    req.body.status = 'upcoming';
+    req.body.appointmentType = 'regular';
+    const id = req.params.id; // patient name;
+    const flag = req.body.flag;
+    const relation = req.body.relation;
 
-  req.body.duration = 1;
-  req.body.status = "upcoming"
-  req.body.appointmentType = "regular"
-  const id = req.params.id // patient name;
-  const flag = req.body.flag;
-  const relation = req.body.relation;
-  if(flag){
-    console.log(req.body)
-    req.body.patient = req.body.relativeId
-    const newApt = appointment
-    .create(req.body)
-    .then((newApt) => {
-      res.status(200).json(newApt);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(400).json(err);
-    });
+    if (flag) {
+      console.log(req.body);
+      req.body.patient = req.body.relativeId;
+
+      // Get the doctor and remove the date from availableStartTimeSlots
+      var doctorObj = await doctor.findById(docID);
+      if (!doctorObj || doctorObj===undefined) {
+        return res.status(404).json({ message: 'Doctor not found' });
+      }
+
+      const dateToRemove = new Date(req.body.date); // Replace with the actual date
+
+// Assuming availableStartTimeSlots is an array of Date objects
+      if(doctorObj.availableSlotsStartTime !== undefined)
+       { 
+        doctorObj.availableSlotsStartTime = doctorObj.availableSlotsStartTime.filter(
+          (slot) => slot.getTime() !== dateToRemove.getTime()
+        );
+      }
+
+
+
+      // Update the doctor in the database
+      await doctor.findByIdAndUpdate(docID, {
+        $set: { availableStartTimeSlots: doctorObj.availableSlotsStartTime },
+      });
+
+      // Create the new appointment
+      const newApt = await appointment.create(req.body);
+      return res.status(200).json(newApt);
+    } else {
+      req.body.patient = id;
+      console.log(req.body);
+
+      var doctorObj = await doctor.findById(docID);
+      if (!doctorObj || doctorObj===undefined) {
+        return res.status(404).json({ message: 'Doctor not found' });
+      }
+
+      const dateToRemove = new Date(req.body.date); // Replace with the actual date
+
+// Assuming availableStartTimeSlots is an array of Date objects
+      if(doctorObj.availableSlotsStartTime !== undefined)
+       { 
+        doctorObj.availableSlotsStartTime = doctorObj.availableSlotsStartTime.filter(
+          (slot) => slot.getTime() !== dateToRemove.getTime()
+        );
+      }
+
+
+
+      // Update the doctor in the database
+      await doctor.findByIdAndUpdate(docID, {
+        $set: { availableStartTimeSlots: doctorObj.availableSlotsStartTime },
+      });
+
+
+      // Create the new appointment
+      const newApt = await appointment.create(req.body);
+      return res.status(200).json(newApt);
+    }
+  } catch (err) {
+    console.error(err);
+    return res.status(400).json(err);
   }
-  else {
-    req.body.patient = id;
-    console.log(req.body)
-    const newApt = appointment
-    .create(req.body)
-    .then((newApt) => {
-      res.status(200).json(newApt);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(400).json(err);
-    });
-  }
-  
-}
+};
 
 // const createAppointmentForFamilyMember = async (req: Request, res: Response) => {
 //   req.body.duration = 1;
@@ -392,6 +432,8 @@ const getAllAppointments = async (req: Request, res: Response) => {
 
 }
 
+
+
 export default {
   createAppointment,
   listAllAppointments,
@@ -401,5 +443,6 @@ export default {
   updateAppointment,
   createFollowUp,
   createAppointmentForFamilyMember,
-  getAllAppointments
+  getAllAppointments,
+  
 };

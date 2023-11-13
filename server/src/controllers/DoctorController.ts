@@ -420,6 +420,24 @@ const rejectContract = async (req: Request, res: Response) => {
     .json({ success: true, message: "Contract accepted successfully" });
 };
 
+const listSlots = async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const doctors = doctor
+    .findById(id)
+    .then((doctors) => {
+      //console.log("sjhkshkshkjs");
+      if(doctors?.status === "accepted"){
+        //console.log("in the if");
+        //console.log(doctors.availableSlotsStartTime);
+        res.status(200).json(doctors.availableSlotsStartTime);
+      }
+    })
+    .catch((err) => {
+      return res.status(400).json(err);
+    });
+};
+
+
 export default {
   createDoctor,
   readDoctor,
@@ -436,4 +454,5 @@ export default {
   addFreeSlots,
   acceptContract,
   rejectContract,
+  listSlots,
 };

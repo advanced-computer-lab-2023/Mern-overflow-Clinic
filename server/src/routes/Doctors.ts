@@ -14,6 +14,7 @@ router.get("/", isAuthenticated, doctorController.listDoctors);
 router.post("/filter", isAuthenticated, patientController.filterDoctor);
 router.get("/:id", isAuthenticated, doctorController.readDoctor);
 router.get("/:id/wallet", isAuthenticated, doctorController.viewWallet);
+router.get("/:id/slots", isAuthenticated, doctorController.listSlots);
 router.put(
   "/:id/acceptContract",
   isAuthenticated,

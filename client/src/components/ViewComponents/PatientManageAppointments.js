@@ -16,8 +16,8 @@ import {
   MenuItem,
 } from "@mui/material";
 import axios from "axios";
-import { useParams } from 'react-router-dom';
-import { useUser } from '../../userContest';
+import { useParams } from "react-router-dom";
+import { useUser } from "../../userContest";
 
 const PatientManageAppointments = ({ doctorId }) => {
   const { id } = useParams();
@@ -25,12 +25,28 @@ const PatientManageAppointments = ({ doctorId }) => {
   const [familyMembers, setFamilyMembers] = useState([]);
   const [selectedFamilyMember, setSelectedFamilyMember] = useState("");
   const [selectedFamilyMemberID, setSelectedFamilyMemberID] = useState(null);
-  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedSlot, setSelectedSlot] = useState("");
+  const [slots, setSlots] = useState([]);
   const [statusMessage, setStatusMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
   const [docID, setDocID] = useState(id);
   const { userId } = useUser();
+  const [price, setPrice] = useState(""); // New state for price
   let patID = userId;
+
+  useEffect(() => {
+    // Fetch available slots when the component mounts
+    const fetchSlots = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8000/doctors/${docID}/slots`);
+        setSlots(response.data);
+      } catch (error) {
+        console.error("Error fetching slots:", error);
+      }
+    };
+
+    fetchSlots();
+  }, [docID]);
 
   useEffect(() => {
     if (bookForRelative) {
@@ -49,6 +65,14 @@ const PatientManageAppointments = ({ doctorId }) => {
     }
   }, [bookForRelative]);
 
+  useEffect(() => {
+    console.log("Slots:", slots); // Log the slots array
+  }, [slots]);
+
+  const handlePriceChange = (e) => {
+    setPrice(e.target.value);
+  };
+
   const handleBookForRelativeChange = (e) => {
     setBookForRelative(e.target.checked);
     if (!e.target.checked) {
@@ -64,39 +88,52 @@ const PatientManageAppointments = ({ doctorId }) => {
     setSelectedFamilyMemberID(selectedID);
   };
 
+  const handleSlotChange = (e) => {
+    const selectedValue = e.target.value;
+    console.log("Selected Slot:", selectedValue);
+    setSelectedSlot(selectedValue);
+  };
+
   const handleBookingAppointment = () => {
-    if (!selectedDate) {
-      // Check for necessary values before making the appointment
-      setStatusMessage("Please fill in all required fields.");
+    if (!selectedSlot) {
+      setStatusMessage("Please select a time slot.");
       setIsSuccess(false);
       return;
     }
-  
+
     if (bookForRelative && !selectedFamilyMemberID) {
       setStatusMessage("Please select a family member.");
       setIsSuccess(false);
       return;
     }
-  
+
+    if (!price) {
+      setStatusMessage("Please enter a price.");
+      setIsSuccess(false);
+      return;
+    }
+
     const appointmentData = {
       doctor: docID,
       relativeId: selectedFamilyMemberID,
-      date: selectedDate,
+      date: selectedSlot,
       flag: bookForRelative,
+      price: price, // Include price in the appointment data
     };
-  
+
     axios
       .post(`http://localhost:8000/appointments/createAppointmentsForRelations/${patID}`, appointmentData)
       .then((res) => {
         const successMessage = "Appointment booked successfully";
         setStatusMessage(successMessage);
         setIsSuccess(true);
-  
+
         // Reset the form
-        setSelectedDate("");
+        setSelectedSlot("");
         setSelectedFamilyMember("");
         setSelectedFamilyMemberID(null);
         setBookForRelative(false);
+        setPrice(""); // Clear the price after successful booking
       })
       .catch((error) => {
         const errorMessage = "Error booking appointment. Please try again.";
@@ -105,7 +142,6 @@ const PatientManageAppointments = ({ doctorId }) => {
         console.error(error);
       });
   };
-  
 
   return (
     <Container maxWidth="lg">
@@ -124,16 +160,33 @@ const PatientManageAppointments = ({ doctorId }) => {
             }
             label="Booking for a relative?"
           />
-          <TextField
-            sx={{ mb: 3 }}
-            type="date"
-            label=""
-            fullWidth
-            required
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-            inputProps={{ min: new Date().toISOString().split("T")[0] }}
-          />
+          <FormControl sx={{ mb: 3 }} fullWidth>
+            <InputLabel htmlFor="slot-select">Select a Time Slot</InputLabel>
+            <Select
+              labelId="slot-select-label"
+              id="slot-select"
+              value={selectedSlot}
+              onChange={handleSlotChange}
+              label="Time Slot"
+            >
+              {slots.map((slot) => (
+                <MenuItem key={slot} value={slot}>
+                  {`${formatDate(new Date(slot))} - ${formatDate(addOneHour(new Date(slot)))}`}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl sx={{ mb: 3 }} fullWidth>
+            <InputLabel htmlFor="price-input">Enter Price</InputLabel>
+            <OutlinedInput
+              id="price-input"
+              type="number"
+              value={price}
+              onChange={handlePriceChange}
+              startAdornment={<InputAdornment position="start">EGP</InputAdornment>}
+              label="Price"
+            />
+          </FormControl>
 
           {bookForRelative && (
             <FormControl sx={{ mb: 3 }} fullWidth>
@@ -169,19 +222,32 @@ const PatientManageAppointments = ({ doctorId }) => {
           )}
         </Box>
         <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            mt: 2,
-          }}
-        >
-          <Button variant="contained" onClick={handleBookingAppointment}>
-            Book
-          </Button>
-        </Box>
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              mt: 2,
+            }}
+          >
+            <Button variant="contained" onClick={handleBookingAppointment}>
+              Book
+            </Button>
+          </Box>
       </Paper>
     </Container>
   );
 };
 
 export default PatientManageAppointments;
+
+// Helper function to format date
+const formatDate = (dateString) => {
+  const options = { hour: "numeric", minute: "numeric", hour12: true };
+  return new Date(dateString).toLocaleTimeString("en-US", options);
+};
+
+// Helper function to add one hour to a date string
+const addOneHour = (date) => {
+  const newDate = new Date(date);
+  newDate.setHours(newDate.getHours() + 1);
+  return newDate;
+};

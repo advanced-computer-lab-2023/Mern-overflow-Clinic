@@ -23,6 +23,7 @@ import PeopleIcon from "@mui/icons-material/People";
 import { Link } from "react-router-dom";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useUser } from "../../userContest";
+import PasswordIcon from "@mui/icons-material/Password";
 
 const DoctorDashboard = (props) => {
   const { userId, setUserId, userRole, setUserRole } = useUser();
@@ -198,7 +199,7 @@ const DoctorDashboard = (props) => {
                       padding: 0,
                     }}
                   >
-                    <PeopleIcon sx={{ width: 30, height: 30 }} />
+                    <PasswordIcon sx={{ width: 30, height: 30 }} />
                   </Avatar>
                 </ListItemIcon>
                 <ListItemText primary="Change My Password" />

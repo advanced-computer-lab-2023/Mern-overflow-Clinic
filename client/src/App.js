@@ -20,14 +20,13 @@ import ChangePassword from "./pages/authentication/ChangePassword";
 import ResetPassword from "./pages/authentication/ResetPassword";
 import ForgotPassword from "./pages/authentication/ForgotPassword";
 
-
-import DoctorManageFreeSlots from './pages/doctor/DoctorManageFreeSlots'
-import DoctorManageContracts from './pages/doctor/DoctorManageContracts'
-import DoctorManageFollowUp from './pages/doctor/DoctorManageFollowUp'
-import PatientBookAppointments from "./pages/patient/patientBookAppointment"
-import AddHealthRecords from './pages/doctor/DoctorAddHealthRecords'
-import AddFamilyMember from './components/formComponents/linkFamilyMembers'
-import PatientManageFamilyLinks from './pages/patient/PatientManageFamilyLinks';
+import DoctorManageFreeSlots from "./pages/doctor/DoctorManageFreeSlots";
+import DoctorManageContracts from "./pages/doctor/DoctorManageContracts";
+import DoctorManageFollowUp from "./pages/doctor/DoctorManageFollowUp";
+import PatientBookAppointments from "./pages/patient/patientBookAppointment";
+import AddHealthRecords from "./pages/doctor/DoctorAddHealthRecords";
+import AddFamilyMember from "./components/formComponents/linkFamilyMembers";
+import PatientManageFamilyLinks from "./pages/patient/PatientManageFamilyLinks";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AdminEditPackage from "./pages/admin/AdminEditPackage";
 import PatientManageFamily from "./pages/patient/PatientManageFamily";
@@ -144,12 +143,14 @@ function App() {
     {
       path: "/auth/resetpassword",
       element: <ResetPassword />,
+    },
+    {
       path: "/doctor/addHealthRecords",
-      element: <AddHealthRecords/>,
+      element: <AddHealthRecords />,
     },
     {
       path: "/patient/bookAppointment/:id",
-      element: <PatientBookAppointments/>,
+      element: <PatientBookAppointments />,
     },
     {
       path: "/auth/forgotpassword",

@@ -24,6 +24,7 @@ import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import TodayIcon from "@mui/icons-material/Today";
 import { Link } from "react-router-dom";
 import { useUser } from "../../userContest";
+import PasswordIcon from "@mui/icons-material/Password";
 
 const PatientDashboard = (props) => {
   const { userId, setUserId, userRole, setUserRole } = useUser();
@@ -177,7 +178,7 @@ const PatientDashboard = (props) => {
                       padding: 0,
                     }}
                   >
-                    <MedicationIcon sx={{ width: 30, height: 30 }} />
+                    <PasswordIcon sx={{ width: 30, height: 30 }} />
                   </Avatar>
                 </ListItemIcon>
                 <ListItemText primary="Change My Password" />

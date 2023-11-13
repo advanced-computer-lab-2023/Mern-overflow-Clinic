@@ -28,7 +28,7 @@ export default function DoctorViewAppointments() {
 
   const fetchTableData = () => {
     axios
-      .get(`http://localhost:8000/appointments/${id}`, {})
+      .get(`http://localhost:8000/appointments/all/${id}`, {})
       .then((res) => {
         console.log(res.data);
         setData(res.data);
@@ -62,7 +62,7 @@ export default function DoctorViewAppointments() {
         })
         .then((res) => {
           console.log(res.data);
-          
+
           setData(res.data);
           console.log(data);
         })
@@ -74,21 +74,11 @@ export default function DoctorViewAppointments() {
           date: date,
         })
         .then((res) => {
-          
           setData(res.data);
-          console.log(date)
+          console.log(date);
         })
         .catch(() => setData([]));
     }
-  };
-
-  const handleViewAll = () => {
-    axios
-      .get(`http://localhost:8000/appointments/all/${id}`)
-      .then((res) => {
-        setData(res.data || []);
-      })
-      .catch(() => setData([]));
   };
 
   return (
@@ -124,7 +114,6 @@ export default function DoctorViewAppointments() {
               <FormControl fullWidth>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DateTimePicker
-                  
                     slotProps={{
                       actionBar: {
                         actions: ["accept", "clear"],
@@ -161,7 +150,7 @@ export default function DoctorViewAppointments() {
       <Button
         fullWidth
         variant="contained"
-        onClick={handleViewAll}
+        onClick={fetchTableData}
         sx={{ mt: 3, mb: 2, p: 2, fontWeight: "bold" }}
       >
         View All
@@ -197,7 +186,7 @@ export default function DoctorViewAppointments() {
                 <TableCell>{calculateState(row.date)}</TableCell>
               </TableRow>
             ))}
-            {console.log(data)}
+          {console.log(data)}
         </TableBody>
       </Table>
     </Container>

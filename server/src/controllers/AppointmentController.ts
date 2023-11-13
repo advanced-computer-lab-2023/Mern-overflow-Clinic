@@ -24,7 +24,7 @@ const createAppointment = async (req: Request, res: Response) => {
 
 const createAppointmentForFamilyMember = async (
   req: Request,
-  res: Response
+  res: Response,
 ) => {
   try {
     console.log(req.body);
@@ -41,7 +41,7 @@ const createAppointmentForFamilyMember = async (
       req.body.patient = req.body.relativeId;
 
       // Get the doctor and remove the date from availableStartTimeSlots
-      
+
       var doctorObj = await doctor.findById(docID);
       if (!doctorObj || doctorObj === undefined) {
         return res.status(404).json({ message: "Doctor not found" });
@@ -53,7 +53,7 @@ const createAppointmentForFamilyMember = async (
       if (doctorObj.availableSlotsStartTime !== undefined) {
         doctorObj.availableSlotsStartTime =
           doctorObj.availableSlotsStartTime.filter(
-            (slot) => slot.getTime() !== dateToRemove.getTime()
+            (slot) => slot.getTime() !== dateToRemove.getTime(),
           );
       }
 
@@ -80,7 +80,7 @@ const createAppointmentForFamilyMember = async (
       if (doctorObj.availableSlotsStartTime !== undefined) {
         doctorObj.availableSlotsStartTime =
           doctorObj.availableSlotsStartTime.filter(
-            (slot) => slot.getTime() !== dateToRemove.getTime()
+            (slot) => slot.getTime() !== dateToRemove.getTime(),
           );
       }
 
@@ -272,15 +272,6 @@ const filterAppointments = async (req: Request, res: Response) => {
 
     let inputDate = utcDate;
 
-    console.log(req.body.date);
-    console.debug(
-      "DEBUGPRINT[3]: AppointmentController.ts:270: userTimezoneOffset=",
-      userTimezoneOffset
-    );
-    console.log(iDate);
-
-    console.log(inputDate);
-    console.log(utcDate);
     if (pat) {
       const apt = appointment
         .find({ date: inputDate, status: status, patient: id })
@@ -312,10 +303,12 @@ const filterAppointments = async (req: Request, res: Response) => {
     (req.body.date !== undefined && status === undefined) ||
     (req.body.date && !status)
   ) {
-    const iDate = dayjs(req.body.date, "MM/DD/YYYY hh:mm A").toDate();
-    const inputDate = dayjs(iDate, "MM/DD/YYYY hh:mm A").format(
-      "YYYY-MM-DDTHH:mm:ss.SSSZ"
-    );
+    let iDate = new Date(req.body.date);
+    let userTimezoneOffset = iDate.getTimezoneOffset() * 60000;
+
+    let utcDate = new Date(iDate.getTime() - userTimezoneOffset).toISOString();
+
+    let inputDate = utcDate;
     if (pat) {
       const apt = appointment
         .find({ date: inputDate, patient: id })

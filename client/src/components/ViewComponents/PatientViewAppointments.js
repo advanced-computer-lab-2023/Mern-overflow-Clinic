@@ -28,7 +28,7 @@ export default function DoctorViewAppointments() {
 
   const fetchTableData = () => {
     axios
-      .get(`http://localhost:8000/appointments/${id}`, {})
+      .get(`http://localhost:8000/appointments/all/${id}`, {})
       .then((res) => {
         console.log(res.data);
         setData(res.data);
@@ -75,15 +75,6 @@ export default function DoctorViewAppointments() {
         })
         .catch(() => setData([]));
     }
-  };
-
-  const handleViewAll = () => {
-    axios
-      .get(`http://localhost:8000/appointments/all/${id}`)
-      .then((res) => {
-        setData(res.data || []);
-      })
-      .catch(() => setData([]));
   };
 
   return (
@@ -155,7 +146,7 @@ export default function DoctorViewAppointments() {
       <Button
         fullWidth
         variant="contained"
-        onClick={handleViewAll}
+        onClick={fetchTableData}
         sx={{ mt: 3, mb: 2, p: 2, fontWeight: "bold" }}
       >
         View All
@@ -174,9 +165,16 @@ export default function DoctorViewAppointments() {
         <TableBody>
           {data &&
             data.map((row) => (
-              <TableRow key={row.date + (row.patient?.name || "") + (row.doctor?.name || "") + row.status}>
-                <TableCell>{row.patient?.name || 'N/A'}</TableCell>
-                <TableCell>{row.doctor?.name || 'N/A'}</TableCell>
+              <TableRow
+                key={
+                  row.date +
+                  (row.patient?.name || "") +
+                  (row.doctor?.name || "") +
+                  row.status
+                }
+              >
+                <TableCell>{row.patient?.name || "N/A"}</TableCell>
+                <TableCell>{row.doctor?.name || "N/A"}</TableCell>
                 <TableCell>{row.duration + " hour"}</TableCell>
                 <TableCell>{row.date}</TableCell>
                 <TableCell>{row.status}</TableCell>

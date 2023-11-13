@@ -39,6 +39,7 @@ const createAppointmentForFamilyMember = async (req: Request, res: Response) => 
       req.body.patient = req.body.relativeId;
 
       // Get the doctor and remove the date from availableStartTimeSlots
+      
       var doctorObj = await doctor.findById(docID);
       if (!doctorObj || doctorObj===undefined) {
         return res.status(404).json({ message: 'Doctor not found' });
@@ -265,10 +266,12 @@ const filterAppointments = async (req: Request, res: Response) => {
     (req.body.date !== undefined && status !== undefined) ||
     (req.body.date && status)
   ) {
-   // const iDate = dayjs(req.body.date, 'MM/DD/YYYY hh:mm A').toDate();
-    // const inputDate = dayjs(iDate, 'MM/DD/YYYY hh:mm A').format('YYYY-MM-DDTHH:mm:ss.SSSZ');
-     var iDate = new Date(req.body.date);
-    const inputDate = iDate.toISOString()
+   //const iDate = dayjs(req.body.date, 'MM/DD/YYYY hh:mm A').toDate();
+  // const inputDate = dayjs(iDate, 'MM/DD/YYYY hh:mm A').format('YYYY-MM-DDTHH:mm:ss.SSSZ');
+    var iDate = new Date(req.body.date);
+    let inputDate = iDate.toISOString()
+    // let newDate = convertUTCDateToLocalDate(iDate);
+    // console.log(newDate)
 
     if (pat){
       const apt = appointment
@@ -361,6 +364,7 @@ return res.status(400).json(err);
       .populate({ path: "doctor", select: "name" })
       .populate({ path: "patient", select: "name" })
       .then((apt) => {
+        console.log(apt);
 return res.status(200).json(apt);
       })
       .catch((err) => {
@@ -438,7 +442,16 @@ const getAllAppointments = async (req: Request, res: Response) => {
 
 }
 
+function convertUTCDateToLocalDate(date:any) {
+  var newDate = new Date(date.getTime()+date.getTimezoneOffset() ,601000);
 
+  var offset = date.getTimezoneOffset() / 60;
+  var hours = date.getHours();
+
+  newDate.setHours(hours - offset);
+
+  return newDate;
+}
 
 export default {
   createAppointment,

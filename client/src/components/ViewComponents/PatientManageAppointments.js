@@ -60,16 +60,19 @@ const PatientManageAppointments = ({ doctorId }) => {
         axios
           .get(`http://localhost:8000/patients/${patID}/family`)
           .then((res) => {
-            setFamilyMembers(res.data || []);
+            const data = res.data || [];
+            console.log("Fetched Family Members:", data);
+            setFamilyMembers(data);
           })
           .catch((error) => {
             console.error(error);
           });
       };
-
+  
       fetchFamilyMembers();
     }
-  }, [bookForRelative]);
+  }, [bookForRelative, patID]);
+  
 
   useEffect(() => {
     console.log("Slots:", slots); // Log the slots array
@@ -89,11 +92,22 @@ const PatientManageAppointments = ({ doctorId }) => {
   const handleFamilyMemberChange = (e) => {
     const selectedName = e.target.value;
     const selectedMember = familyMembers.find((member) => member.name === selectedName);
-    const selectedID = selectedMember ? selectedMember._id : null;
-    setSelectedFamilyMember(selectedName);
-    setSelectedFamilyMemberID(selectedID);
+  
+    console.log("Selected Name:", selectedName);
+    console.log("Selected Member:", selectedMember);
+  
+    if (selectedMember) {
+      setSelectedFamilyMember(selectedMember.name);
+      setSelectedFamilyMemberID(selectedMember.patientId); // Assuming _id is the correct property for the member's identifier
+    } else {
+      console.log("Member not found");
+      setSelectedFamilyMember("");
+      setSelectedFamilyMemberID(null);
+    }
   };
-
+  
+  
+  
   const handleSlotChange = (e) => {
     const selectedValue = e.target.value;
     console.log("Selected Slot:", selectedValue);
@@ -133,7 +147,7 @@ const PatientManageAppointments = ({ doctorId }) => {
         const successMessage = "Appointment booked successfully";
         setStatusMessage(successMessage);
         setIsSuccess(true);
-
+        console.log(appointmentData)
         // Reset the form
         setSelectedSlot("");
         setSelectedFamilyMember("");
@@ -203,14 +217,18 @@ const PatientManageAppointments = ({ doctorId }) => {
                 labelId="family-member-select-label"
                 id="family-member-select"
                 value={selectedFamilyMember}
+               
                 onChange={handleFamilyMemberChange}
                 label="Family Member"
               >
                 {familyMembers.map((member) => (
                   <MenuItem key={member.name} value={member.name}>
                     {member.name}
+                    {console.log(member)}
                   </MenuItem>
                 ))}
+                {console.log(selectedFamilyMember)}
+                
               </Select>
             </FormControl>
           )}

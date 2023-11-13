@@ -53,6 +53,7 @@ export default function DoctorViewAppointments() {
     e.preventDefault();
     let status = e.target[0].value;
     let date = e.target[2].value;
+    //date = dayjs(date).toISOString();
 
     if (date === "") {
       axios
@@ -61,7 +62,9 @@ export default function DoctorViewAppointments() {
         })
         .then((res) => {
           console.log(res.data);
+          
           setData(res.data);
+          console.log(data);
         })
         .catch(() => setData([]));
     } else {
@@ -71,7 +74,9 @@ export default function DoctorViewAppointments() {
           date: date,
         })
         .then((res) => {
+          
           setData(res.data);
+          console.log(date)
         })
         .catch(() => setData([]));
     }
@@ -119,6 +124,7 @@ export default function DoctorViewAppointments() {
               <FormControl fullWidth>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DateTimePicker
+                  
                     slotProps={{
                       actionBar: {
                         actions: ["accept", "clear"],
@@ -183,6 +189,7 @@ export default function DoctorViewAppointments() {
                 <TableCell>{calculateState(row.date)}</TableCell>
               </TableRow>
             ))}
+            {console.log(data)}
         </TableBody>
       </Table>
     </Container>

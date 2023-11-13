@@ -6,18 +6,43 @@ import {
   Box,
   TextField,
   FormControl,
-  OutlinedInput,
   InputLabel,
-  InputAdornment,
-  Button,
-  Checkbox,
-  FormControlLabel,
   Select,
   MenuItem,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  FormControlLabel,
+  Checkbox
 } from "@mui/material";
 import axios from "axios";
 import { useParams } from 'react-router-dom';
 import { useUser } from '../../userContest';
+
+const AvailableSlotsTable = ({ availableSlots }) => (
+  <TableContainer component={Paper} sx={{ mt: 4 }}>
+    <Table>
+      <TableHead>
+        <TableRow>
+          <TableCell>Date</TableCell>
+          <TableCell>Time Slot</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {availableSlots.map((slot) => (
+          <TableRow key={slot.id}>
+            <TableCell>{slot.date}</TableCell>
+            <TableCell>{slot.time}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  </TableContainer>
+);
 
 const PatientManageAppointments = ({ doctorId }) => {
   const { id } = useParams();
@@ -31,6 +56,7 @@ const PatientManageAppointments = ({ doctorId }) => {
   const [docID, setDocID] = useState(id);
   const { userId } = useUser();
   let patID = userId;
+  const [availableSlots, setAvailableSlots] = useState([]);
 
   useEffect(() => {
     if (bookForRelative) {
@@ -38,7 +64,7 @@ const PatientManageAppointments = ({ doctorId }) => {
         axios
           .get(`http://localhost:8000/patients/${patID}/family`)
           .then((res) => {
-            setFamilyMembers(res.data || []); // Check if res.data is null
+            setFamilyMembers(res.data || []);
           })
           .catch((error) => {
             console.error(error);
@@ -47,7 +73,18 @@ const PatientManageAppointments = ({ doctorId }) => {
 
       fetchFamilyMembers();
     }
-  }, [bookForRelative]);
+
+    axios
+      .get(`http://localhost:8000/doctors/${doctorId}/slots`)
+      .then((res) => {
+        const currentTime = new Date().getTime();
+        const filteredSlots = res.data.filter((slot) => new Date(slot.date + ' ' + slot.time).getTime() > currentTime);
+        setAvailableSlots(filteredSlots);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [bookForRelative, doctorId, patID]);
 
   const handleBookForRelativeChange = (e) => {
     setBookForRelative(e.target.checked);
@@ -66,7 +103,6 @@ const PatientManageAppointments = ({ doctorId }) => {
 
   const handleBookingAppointment = () => {
     if (!selectedDate) {
-      // Check for necessary values before making the appointment
       setStatusMessage("Please fill in all required fields.");
       setIsSuccess(false);
       return;
@@ -92,7 +128,6 @@ const PatientManageAppointments = ({ doctorId }) => {
         setStatusMessage(successMessage);
         setIsSuccess(true);
   
-        // Reset the form
         setSelectedDate("");
         setSelectedFamilyMember("");
         setSelectedFamilyMemberID(null);
@@ -105,7 +140,6 @@ const PatientManageAppointments = ({ doctorId }) => {
         console.error(error);
       });
   };
-  
 
   return (
     <Container maxWidth="lg">
@@ -155,19 +189,23 @@ const PatientManageAppointments = ({ doctorId }) => {
               </Select>
             </FormControl>
           )}
+
           {statusMessage && (
             <Typography
               sx={{
                 border: "1px solid transparent",
                 borderRadius: 5,
                 padding: 2,
-                color: isSuccess ? "green" : "red", // Display green for success
+                color: isSuccess ? "green" : "red",
               }}
             >
               {statusMessage}
             </Typography>
           )}
         </Box>
+
+        {availableSlots.length > 0 && <AvailableSlotsTable availableSlots={availableSlots} />}
+
         <Box
           sx={{
             display: "flex",

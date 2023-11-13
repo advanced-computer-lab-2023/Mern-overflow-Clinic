@@ -109,6 +109,8 @@ const listDoctors = async (req: Request, res: Response) => {
     });
 };
 
+
+
 const listDoctorPatients = async (req: Request, res: Response) => {
   const id = req.params.id;
 
@@ -123,6 +125,23 @@ const listDoctorPatients = async (req: Request, res: Response) => {
   const patientIds = appointments.map((appointment) => appointment.patient);
   const patients = await patient.find({ _id: { $in: patientIds } }).exec();
 
+  return res.status(200).json(patients);
+};
+
+const listCompletedPatients = async (req: Request, res: Response) => {
+  const id = req.params.id;
+
+  const appointments = await appointment
+    .find({ doctor: id  , status : "completed"})
+    .populate("patient")
+    .exec();
+
+  console.log(id);
+
+  console.log(appointments);
+  const patientIds = appointments.map((appointment) => appointment.patient);
+  const patients = await patient.find({ _id: { $in: patientIds } }).exec();
+console.log(patients)
   return res.status(200).json(patients);
 };
 
@@ -455,4 +474,5 @@ export default {
   acceptContract,
   rejectContract,
   listSlots,
+  listCompletedPatients
 };

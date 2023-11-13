@@ -417,6 +417,79 @@ return res.status(404).send(err);
         });
 }
 
+// const linkfamilyMember = async (req: Request, res: Response) => {
+//     console.log(req.body);
+//     const patId = req.params.id;
+//     let familyMember: any[] = []; 
+//     const relation = req.body.relation;
+//     let found = false ;
+//     if (relation !== "wife" && relation !== "husband" && relation !== "child") {
+//         return res.status(404).send("cannot add with this relation");
+//     } 
+//     try {
+//         const rPatient = await patient.findById(patId);
+//         if (!rPatient || rPatient === undefined) {
+//             return res.status(404).send("Patient not found");
+//         }
+//         if (req.body.mobileNumber) {
+//             const mobileNumber = req.body.mobileNumber;
+//             const pat = await patient.findOne({ mobileNumber: mobileNumber });
+//             if (!pat) {
+//                 return res.status(404).send("Patient not found");
+//             }
+//             const data = {
+//                 name : pat.name,
+//                 nationalId: pat.nationalId,
+//                 patientId: pat._id,
+//                 relation: relation,
+//                 gender : pat.gender,  
+//             };
+//             for(var i = 0 ; i<rPatient.familyMembers?.length! ; i++){
+//                 if(rPatient.familyMembers![i].nationalId === data.nationalId){
+//                     return res.status(404).send("Patient already a family member");
+//                 }
+//               }
+//                 rPatient.familyMembers?.push(data);
+//                 const savedPat = await rPatient.save();
+//                 return res.status(200).send(savedPat);
+            
+//         }
+//         if (req.body.email) {
+//             const email = req.body.email;
+//             const pat = await patient.findOne({ email: email });
+//             if (!pat) {
+//                 return res.status(404).send("Patient not found");
+//             }
+//             const data = {
+//                 name : pat.name,
+//                 nationalId: pat.nationalId,
+//                 patientId: pat._id,
+//                 relation: relation,
+//                 gender : pat.gender,
+//             };
+
+
+//       for(var i = 0 ; i<rPatient.familyMembers?.length! ; i++){
+//         if(rPatient.familyMembers![i].nationalId === data.nationalId){
+//             found = true;
+//         }
+//       }
+//             if (found) {
+//                 return res.status(403).send("Patient already a family member");
+//             }
+//             else{
+//             rPatient.familyMembers?.push(data);
+//             const savedPat = await rPatient.save();
+//             return res.status(200).send(savedPat);
+//             }
+//         }
+
+//     } catch (error) {
+//         console.error(error);
+//         return res.status(400).json({ message: 'No family members found' });
+//     }
+// }
+
 const linkfamilyMember = async (req: Request, res: Response) => {
     //console.log(req.body);
     const patId = req.params.id;
@@ -425,10 +498,13 @@ const linkfamilyMember = async (req: Request, res: Response) => {
     let found = false ;
     if (relation !== "wife" && relation !== "husband" && relation !== "child") {
         return res.status(404).json({ message: 'Not a valid relation.' });;
+        return res.status(404).json({ message: 'Not a valid relation.' });;
     } 
     try {
         const rPatient = await patient.findById(patId);
         if (!rPatient || rPatient === undefined) {
+            console.log("no patient" );
+            return res.status(404).json({ message: 'Patient not found.' });;
             console.log("no patient" );
             return res.status(404).json({ message: 'Patient not found.' });;
         }
@@ -448,6 +524,7 @@ const linkfamilyMember = async (req: Request, res: Response) => {
             };
             for(var i = 0 ; i<rPatient.familyMembers?.length! ; i++){
                 if(rPatient.familyMembers![i].nationalId === data.nationalId){
+                    return res.status(404).json({ message: 'Patient is already a family member.' });
                     return res.status(404).json({ message: 'Patient is already a family member.' });
                 }
               }

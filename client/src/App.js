@@ -29,6 +29,7 @@ import AddFamilyMember from "./components/formComponents/linkFamilyMembers";
 import PatientManageFamilyLinks from "./pages/patient/PatientManageFamilyLinks";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AdminEditPackage from "./pages/admin/AdminEditPackage";
+// import PatientManageFamily from "./pages/patient/PatientManageFamily";
 // import EditDoctorProfile from './components/formComponents/EditDoctorProfile';
 import axios from "axios";
 import PatientPayAppointment from "./pages/patient/PatientPayAppointment";

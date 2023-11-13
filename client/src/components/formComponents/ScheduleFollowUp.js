@@ -8,39 +8,40 @@ import {
   Container,
   Paper,
   TextField,
+  MenuItem,
+  Select,
+  InputLabel,
+  InputAdornment,
 } from "@mui/material";
-import InputLabel from "@mui/material/InputLabel";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import InputAdornment from "@mui/material/InputAdornment";
 import { useUser } from "../../userContest";
 
 const ScheduleFollowUp = () => {
-  // let id = "65293c2cb5a34d208108cc33";
-
   const { userId } = useUser();
   let id = userId;
-  const [email, setEmail] = useState("");
+
+  const [emails, setEmails] = useState([]);
+  const [selectedEmail, setSelectedEmail] = useState("");
   const [price, setPrice] = useState("");
   const [date, setDate] = useState("");
   const [statusMessage, setStatusMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchEmails = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/doctors/${id}`,
-          { params: { id: id } },
+          `http://localhost:8000/doctors/${id}/completedAppointments`
         );
-        setEmail(response.data[0].email);
-        setPrice(response.data[0].price);
-        setDate(response.data[0].date);
+        const emailList = response.data.map((appointment) => appointment.email);
+        setEmails(emailList);
+        setSelectedEmail(""); // Set the default value to an empty string
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching emails:", error);
       }
     };
-    fetchData();
-  }, []);
+
+    fetchEmails();
+  }, [id]);
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -54,10 +55,17 @@ const ScheduleFollowUp = () => {
       return;
     }
 
+    // Validate if an email is selected
+    if (!selectedEmail) {
+      setStatusMessage("Please choose a patient email.");
+      setIsSuccess(false);
+      return;
+    }
+
     // Clear the status message
     setStatusMessage("");
 
-    const dataToServer = { email, price, date };
+    const dataToServer = { email: selectedEmail, price, date };
     axios
       .post(`http://localhost:8000/doctors/${id}/createFollowup`, dataToServer)
       .then((response) => {
@@ -65,9 +73,9 @@ const ScheduleFollowUp = () => {
         setStatusMessage("Follow-up scheduled successfully");
         setIsSuccess(true);
         // Clear the input fields
-        setEmail("");
         setPrice("");
         setDate("");
+        setSelectedEmail(""); // Reset email to the default value
       })
       .catch((error) => {
         console.error("Error making POST request", error);
@@ -84,28 +92,33 @@ const ScheduleFollowUp = () => {
           Schedule A Follow Up With A Patient{" "}
         </Typography>
         <Box component="form" onSubmit={onSubmit}>
-          <TextField
-            sx={{ mb: 3 }}
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
-            type="email"
-            label="Patient Email"
-            required
-            fullWidth
-            autoFocus
-          />
           <FormControl sx={{ mb: 3 }} fullWidth>
-            <InputLabel htmlFor="outlined-adornment-amount">
-              Session Price
-            </InputLabel>
-            <OutlinedInput
+            <InputLabel htmlFor="patient-email-select">Patient Email</InputLabel>
+            <Select
+              value={selectedEmail}
+              onChange={(e) => setSelectedEmail(e.target.value)}
+              label="Patient Email"
+              inputProps={{
+                name: "patient-email",
+                id: "patient-email-select",
+              }}
+            >
+              <MenuItem value="" disabled>
+                Choose Email
+              </MenuItem>
+              {emails.map((email) => (
+                <MenuItem key={email} value={email}>
+                  {email}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl sx={{ mb: 3 }} fullWidth>
+            <InputLabel htmlFor="outlined-adornment-amount"></InputLabel>
+            <TextField
               value={price}
               autoComplete="off"
-              onChange={(e) => {
-                setPrice(e.target.value);
-              }}
+              onChange={(e) => setPrice(e.target.value)}
               fullWidth
               required
               inputProps={{ max: 10000, min: 10 }}
@@ -120,11 +133,9 @@ const ScheduleFollowUp = () => {
           <TextField
             sx={{ mb: 3 }}
             value={date}
-            type="date"
-            onChange={(e) => {
-              setDate(e.target.value);
-            }}
-            label=""
+            type="datetime-local"
+            onChange={(e) => setDate(e.target.value)}
+            // label="Select Date and Time"
             required
             fullWidth
           />

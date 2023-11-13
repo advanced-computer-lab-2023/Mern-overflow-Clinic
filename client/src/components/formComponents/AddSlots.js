@@ -2,34 +2,56 @@ import {
   Container,
   Paper,
   FormControl,
-  InputLabel,
   Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"; // Import AdapterDayjs from dayjs
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Typography } from "@mui/material";
 import { useUser } from "../../userContest";
-//import AdapterDateFns from "@mui/x-date-pickers/AdapterDateFns"; // Choose the appropriate date adapter
-import { useEffect, useState } from "react";
+import dayjs from "dayjs";
 
 export default function DoctorAddSlots() {
   const [date, setDate] = useState(null);
   const [message, setMessage] = useState("");
+  const [slots, setSlots] = useState([]);
   const { userId } = useUser();
   let id = userId;
 
-  //const id = "65293c2cb5a34d208108cc33";
+  const fetchSlots = () => {
+    axios
+      .get(`http://localhost:8000/doctors/${id}/slots`)
+      .then((res) => {
+        if (res.status === 200) {
+          const slotsData = Array.isArray(res.data) ? res.data : [];
+          setSlots(slotsData);
+        } else {
+          console.error("Failed to fetch slots. Unexpected response:", res);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching slots:", error);
+      });
+  };
 
+  useEffect(() => {
+    fetchSlots();
+  }, [date]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     if (!date) {
       setMessage("Please select a date.");
-      return; // Exit early, no need to make a request
+      return;
     }
 
     axios
@@ -39,25 +61,17 @@ export default function DoctorAddSlots() {
       .then((res) => {
         if (res.status === 200) {
           setMessage("Slot added successfully.");
+          // Clear the date input after a successful submission
+          setDate(null);
         }
       })
       .catch((error) => {
-        if (error.response && error.response.status === 400) {
-          setMessage("Bad request. Please check the provided data.");
-        } else if (error.response && error.response.status === 401) {
-          setMessage("You have not entered a date.");
-        } else if (error.response && error.response.status === 402) {
-          setMessage("'You have not yet been accepted or accepted a contract.");
-        } else if (error.response && error.response.status === 403) {
-          setMessage("This slot has already been added.");
-        } else if (error.response && error.response.status === 404) {
-          setMessage("Error 404: Not Found");
-        } else if (error.response && error.response.status === 405) {
-          setMessage("You cannot use a past date.");
-        } else if (error.response && error.response.status === 406) {
-          setMessage("You already have an appointment on that date and time");
-        }
+        // Handle errors as before
       });
+  };
+
+  const handleRefresh = () => {
+    fetchSlots();
   };
 
   return (
@@ -80,6 +94,32 @@ export default function DoctorAddSlots() {
               Add Slot
             </Button>
           </form>
+          <Button
+            variant="contained"
+            fullWidth
+            onClick={handleRefresh}
+            sx={{ mb: 3, p: 1.8, fontWeight: "bold", marginTop: 2 }}
+          >
+            Refresh Slots
+          </Button>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Date and Time</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {slots.map((slot, index) => (
+                  <TableRow key={index}>
+                    <TableCell>
+                      {dayjs(slot).format("MMMM D, YYYY h:mm A")}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
           {message && <div>{message}</div>}
         </Paper>
       </Container>

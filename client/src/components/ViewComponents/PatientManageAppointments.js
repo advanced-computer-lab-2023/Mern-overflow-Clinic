@@ -6,14 +6,20 @@ import {
   Box,
   TextField,
   FormControl,
-  OutlinedInput,
   InputLabel,
-  InputAdornment,
-  Button,
-  Checkbox,
-  FormControlLabel,
   Select,
   MenuItem,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  FormControlLabel,
+  Checkbox,
+  OutlinedInput,
+  InputAdornment,
 } from "@mui/material";
 import axios from "axios";
 import { useParams } from "react-router-dom";
@@ -54,7 +60,7 @@ const PatientManageAppointments = ({ doctorId }) => {
         axios
           .get(`http://localhost:8000/patients/${patID}/family`)
           .then((res) => {
-            setFamilyMembers(res.data || []); // Check if res.data is null
+            setFamilyMembers(res.data || []);
           })
           .catch((error) => {
             console.error(error);
@@ -208,19 +214,22 @@ const PatientManageAppointments = ({ doctorId }) => {
               </Select>
             </FormControl>
           )}
+
           {statusMessage && (
             <Typography
               sx={{
                 border: "1px solid transparent",
                 borderRadius: 5,
                 padding: 2,
-                color: isSuccess ? "green" : "red", // Display green for success
+                color: isSuccess ? "green" : "red",
               }}
             >
               {statusMessage}
             </Typography>
           )}
         </Box>
+
+
         <Box
             sx={{
               display: "flex",

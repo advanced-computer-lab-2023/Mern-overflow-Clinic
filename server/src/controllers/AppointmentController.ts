@@ -5,6 +5,7 @@ import patient from "../models/Patient.js";
 import Patient from "../models/Patient.js";
 import Users from "../models/User.js";
 import { stat } from "fs";
+import dayjs from 'dayjs';
 
 const createAppointment = async (req: Request, res: Response) => {
   req.body.duration = 1;
@@ -264,7 +265,11 @@ const filterAppointments = async (req: Request, res: Response) => {
     (req.body.date !== undefined && status !== undefined) ||
     (req.body.date && status)
   ) {
-    const inputDate = new Date(req.body.date);
+   // const iDate = dayjs(req.body.date, 'MM/DD/YYYY hh:mm A').toDate();
+    // const inputDate = dayjs(iDate, 'MM/DD/YYYY hh:mm A').format('YYYY-MM-DDTHH:mm:ss.SSSZ');
+     var iDate = new Date(req.body.date);
+    const inputDate = iDate.toISOString()
+
     if (pat){
       const apt = appointment
       .find({ date: inputDate, status: status, patient: id })
@@ -302,7 +307,8 @@ return res.status(400).json(err);
     (req.body.date !== undefined && status === undefined) ||
     (req.body.date && !status)
   ) {
-    const inputDate = new Date(req.body.date);
+    const iDate = dayjs(req.body.date, 'MM/DD/YYYY hh:mm A').toDate();
+    const inputDate = dayjs(iDate, 'MM/DD/YYYY hh:mm A').format('YYYY-MM-DDTHH:mm:ss.SSSZ');
     if(pat){
       const apt = appointment
       .find({ date: inputDate , patient: id})

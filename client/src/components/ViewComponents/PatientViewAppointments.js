@@ -170,7 +170,8 @@ export default function DoctorViewAppointments() {
                   row.date +
                   (row.patient?.name || "") +
                   (row.doctor?.name || "") +
-                  row.status
+                  row.status +
+                  Math.random()
                 }
               >
                 <TableCell>{row.patient?.name || "N/A"}</TableCell>

@@ -132,6 +132,13 @@ export default function AdminViewDoctors() {
                   <TableCell>{row.status}</TableCell>
                   <TableCell>{row.speciality}</TableCell>
                   <TableCell>{row.hourlyRate}</TableCell>
+                  <TableCell>{
+        <ul>
+          {row.files.map((file, index) => (
+          <li key={index}>{file.filename}
+          <a href = {`http://localhost:8000/uploads/` + file.filename} target = "_blank">            View</a></li>
+          ))}
+      </ul>}</TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleAccept(row._id)}>
                       <DoneIcon />

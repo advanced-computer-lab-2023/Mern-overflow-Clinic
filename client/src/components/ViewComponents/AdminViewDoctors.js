@@ -82,7 +82,7 @@ export default function AdminViewDoctors() {
   const [filteredData, setFilteredData] = useState([]);
 
   const fetchTableData = () => {
-    axios.get(`http://localhost:8000/doctors/pendingDoctors`)
+    axios.get(`http://localhost:8000/doctors`)
       .then((res) => {
         let temp = ["No filter"];
         res.data.map((key) => {

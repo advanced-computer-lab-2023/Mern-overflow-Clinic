@@ -33,12 +33,6 @@ export default function SignIn() {
   axios.defaults.withCredentials = true;
 
   const onSubmit = (data) => {
-    if(data.Username === "admin" && data.Password==="admin"){
-        setUserRole("Admin");
-        navigate("/admin/patients");
-        return;
-    }
-
     data["passwordHash"] = sha256(data["Password"]);
     data["username"] = data["Username"];
     delete data.Username;

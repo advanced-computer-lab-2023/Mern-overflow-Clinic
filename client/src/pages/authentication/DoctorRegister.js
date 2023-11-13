@@ -16,26 +16,71 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { useState } from 'react';
 import sha256 from 'js-sha256';
 import { useNavigate } from 'react-router-dom';
 
 const defaultTheme = createTheme();
 
 export default function DoctorRegister() {
+
+  const [file, setFiles] = useState([]);
+  const [selectedType, setSelectedType] = useState('nationalID');
+  const [allTypes, setAllTypes] = useState([]);
+  
   const navigate = useNavigate();
   const { register, handleSubmit, setError, formState: { errors }, control } = useForm();
 
-  const onSubmit = data => {
-    const dataToServer = { ...data };
+  const handleTypeChange = (event) => {
+    setSelectedType(event.target.value);
+  };
 
+  const handleFileChange = (e) => {
+    //const updatedTypes = [...allTypes, selectedType];
+   // setAllTypes(updatedTypes);
+   //setFiles(e.target.files);
+   const file = Array.from(e.target.files);
+    setFiles(file);
+    // const selectedFiles = e.target.files;
+    // const newFilesArray = [...files]; 
+  
+    //setFiles(newFilesArray);
+  };
+
+  function openPDF(e, path) {
+    e.preventDefault(); // Prevent the default behavior of the link (e.g., opening in a new tab)
+    console.log("path is: " + path);
+    window.open(path, '_blank');
+  }
+
+
+
+  const onSubmit = data => {
+    console.log("files" + JSON.stringify(file));
+    const formData = new FormData();
+    for (let i = 0; i < file.length; i++) {
+      const f = file[i];   
+      formData.append(`files`, f);
+       console.log("file is: " + JSON.stringify(f));
+    }
+    const dataToServer = { ...data };
     dataToServer["passwordHash"] = sha256(data["password"]);
     delete dataToServer.password
 
-    axios.post('http://localhost:8000/doctors', dataToServer)
+    if (file.length === 0) return alert("Please select a file to upload");
+    formData.append('datatoserver', JSON.stringify(dataToServer));
+    
+    
+    //dataToServer= JSON.stringify(dataToServer) + JSON.stringify(files);
+    console.log("Data to server" + JSON.stringify(dataToServer));
+   
+    //console.log("data is :" +  JSON.stringify(Object.fromEntries(formData.entries())));
+
+    axios.post('http://localhost:8000/doctors', formData)
       .then((response) => {
         console.log('POST request successful', response);
         axios.post("http://localhost:8000/auth/login", { username: dataToServer.username, passwordHash: dataToServer.passwordHash }).then((response) => {
-          navigate("/doctor/profile");
+          navigate("/");
         })
       })
       .catch((error) => {
@@ -229,6 +274,32 @@ export default function DoctorRegister() {
                     onBlur={handleChange}
                   />
                 </Grid>
+
+                <Grid container direction="column">
+  <Grid item>
+    <Typography variant="h5" sx={{ fontWeight: "normal", my: 2 }}>
+      upload all required documents
+    </Typography>
+  </Grid>
+  {/* <Grid item>
+    <label htmlFor="id">document Type:</label>
+    <select id="id" value={selectedType} onChange={handleTypeChange}>
+      <option value="nationalID">nationalID</option>
+      <option value="medical degree">medical degree</option>
+      <option value="medical licenses">medical licenses</option>
+    </select>
+  </Grid> */}
+  <Grid>
+              <input type="file" multiple onChange={handleFileChange} />
+        {/*{
+        <ul>
+          {files.map((file, index) => (
+          <li key={index}>{file.name}</li>
+          //< img src={file.path} alt="Document" onClick={(e) => openPDF(e, file.path)} style={{ width: '100px', height: '100px' }} />
+          ))}
+      </ul>}     */}
+    </Grid>
+</Grid>
 
               </Grid>
               <Button fullWidth type="submit" variant="contained" sx={{ mt: 3, mb: 2, p: 2, fontWeight: 'bold' }}>

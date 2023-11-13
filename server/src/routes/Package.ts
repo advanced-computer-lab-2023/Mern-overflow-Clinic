@@ -12,14 +12,11 @@ router.get("/", isAuthenticated, packageController.listPackages);
 
 //POST
 router.post("/", isAuthenticated, packageController.createPackage);
-router.post("/", isAuthenticated, packageController.createPackage);
 
 //PUT
 router.put("/:id", isAuthenticated, packageController.updatePackage);
-router.put("/:id", isAuthenticated, packageController.updatePackage);
 
 //DELETE
-router.delete("/:id", isAuthenticated, packageController.deletePackage);
 router.delete("/:id", isAuthenticated, packageController.deletePackage);
 
 export default router;

@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { useForm } from "react-hook-form"
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 
 const EditDoctorProfile = () => {
     let { id } = useParams();
@@ -16,6 +17,8 @@ const EditDoctorProfile = () => {
     const [discountOnDoctorSessions, setDiscountOnDoctorSessions] = useState("");
     const [discountOnMedicine, setDiscountOnMedicine] = useState("");
     const [discountForFamily, setDiscountForFamily] = useState("");
+    const [subscriptionPeriod, setSubscriptionPeriod] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -26,6 +29,7 @@ const EditDoctorProfile = () => {
                 setDiscountOnDoctorSessions(response.data.discountOnDoctorSessions);
                 setDiscountOnMedicine(response.data.discountOnMedicine);
                 setDiscountForFamily(response.data.discountForFamily);
+                setSubscriptionPeriod(response.data.subscriptionPeriod);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -34,10 +38,11 @@ const EditDoctorProfile = () => {
     }, []);
 
     const onSubmit = data => {
-        const dataToServer = { name, price, discountOnDoctorSessions, discountOnMedicine, discountForFamily };
+        const dataToServer = { name, price, discountOnDoctorSessions, discountOnMedicine, discountForFamily, subscriptionPeriod };
         axios.put(`http://localhost:8000/packages/${id}`, dataToServer)
             .then((response) => {
                 console.log('PUT request successful', response);
+                navigate("/admin/packages");
             })
             .catch((error) => {
                 console.error('Error making PUT request', error);
@@ -48,7 +53,7 @@ const EditDoctorProfile = () => {
         <Container maxWidth="lg">
             <Paper elevation={3} sx={{ p: '20px', my: '40px' }}>
                 <Typography variant="h6" sx={{ mb: 4 }}> Update Health Package </Typography>
-                <Box component="form" sx={{ display: 'flex', alignItems: 'center' }} onSubmit={handleSubmit(onSubmit)}>
+                <Box component="form" sx={{ display: 'flex', alignItems: 'center' }} onSubmit={handleSubmit(onSubmit)} >
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <TextField
@@ -123,6 +128,23 @@ const EditDoctorProfile = () => {
                                     id="outlined-adornment-amount"
                                     startAdornment={<InputAdornment position="start">%</InputAdornment>}
                                     label="Discount For Family"
+                                />
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <FormControl fullWidth>
+                                <InputLabel htmlFor="outlined-adornment-amount">Subscription Period</InputLabel>
+                                <OutlinedInput
+                                    value={subscriptionPeriod}
+                                    onChange={(e) => { setSubscriptionPeriod(e.target.value) }}
+                                    inputProps={{ min: 0, max: 1000 }}
+                                    autoComplete="off"
+                                    required
+                                    fullWidth
+                                    type="number"
+                                    id="outlined-adornment-amount"
+                                    startAdornment={<InputAdornment position="start">days</InputAdornment>}
+                                    label="Subscription Period"
                                 />
                             </FormControl>
                         </Grid>

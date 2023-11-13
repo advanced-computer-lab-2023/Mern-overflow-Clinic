@@ -9,6 +9,7 @@ const AddPackage = () => {
 
     const onSubmit = data => {
         const dataToServer = { ...data };
+        // console.log("DATA:  Packs: "+JSON.stringify(dataToServer));
         axios.post('http://localhost:8000/packages', dataToServer)
             .then((response) => {
                 console.log('POST request successful', response);
@@ -116,6 +117,27 @@ const AddPackage = () => {
                                     label="Discount For Family"
                                 />
                             </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+                            <FormControl fullWidth>
+                                <InputLabel htmlFor="outlined-adornment-amount">Subscription Period</InputLabel>
+                                <OutlinedInput
+                                    inputProps={{ min: 0, max: 1000 }}
+                                    {...register("subscriptionPeriod", { required: true})}
+                                    error={!!errors["subscriptionPeriod"]}
+                                    helperText={errors["subscriptionPeriod"]?.message}
+                                    onBlur={handleChange}
+                                    autoComplete="off"
+                                    required
+                                    fullWidth
+                                    type="number"
+                                    id="outlined-adornment-amount"
+                                    startAdornment={<InputAdornment position="start">days</InputAdornment>}
+                                    label="Subscription Period"
+                                />
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
                         </Grid>
                         <Grid item xs={12} sm={4}>
                             <Button type="submit" variant="outlined" fullWidth sx={{ p: 1.8, fontWeight: 'bold' }}>

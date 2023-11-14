@@ -140,6 +140,8 @@ const AddFamilyMember = () => {
                     <MenuItem value="husband">Husband</MenuItem>
                     <MenuItem value="wife">Wife</MenuItem>
                     <MenuItem value="child">Child</MenuItem>
+                    <MenuItem value="parent">Parent</MenuItem>
+                    <MenuItem value="sibling">Sibling</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>

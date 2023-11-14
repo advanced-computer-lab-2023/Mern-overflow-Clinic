@@ -75,7 +75,7 @@ const PatientSchema = new Schema<IPatient>({
             patientId: { type: Schema.Types.ObjectId, ref: "Patient", required: true },
             //dateOfBirth: { type: Date, required: true, min: 0, max: 122 },
             gender: { type: String, required: true, lowercase: true, enum: ['male', 'female'] },
-            relation: { type: String, required: true, lowercase: true, enum: ['wife', 'husband', 'child'] },
+            relation: { type: String, required: true, lowercase: true, enum: ['wife', 'husband', 'parent', 'child', 'sibling'] },
             // package: { type: mongoose.Types.ObjectId, ref: "Package", required: false },
         }
     ],

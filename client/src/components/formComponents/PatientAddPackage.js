@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useUser } from '../../userContest';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const PatientAddPackage = () => {
   const [subscriptionType, setSubscriptionType] = useState('Yourself');
@@ -82,8 +83,9 @@ const PatientAddPackage = () => {
     }
 
   return (
-    <div style={styles.container}>
-      <div style={styles.row}>
+    <div className="w-1000 d-grid vh-75 bg-white justify-content-center align-items-center p-5">
+      <div className= 'd-grid justify-content-center align-items-center w-1000 bg-blue border-5 border rounded p-3'>
+      <div style={styles.row} className='d-grid align-items-center justify-content-center'>
         <label>
           <input
             type="radio"
@@ -105,7 +107,7 @@ const PatientAddPackage = () => {
       </div>
 
       {subscriptionType === 'FamilyMember' && (
-        <div style={styles.row}>
+        <div style={styles.row} className='d-grid align-items-center justify-content-center'>
           <label>Select Family Member:</label>
           <select value={selectedFamilyMember} onChange={handleFamilyMemberChange}>
             <option value="">Select</option>
@@ -116,7 +118,7 @@ const PatientAddPackage = () => {
         </div>
       )}
 
-      <div style={styles.row}>
+      <div style={styles.row} className='d-grid align-items-center justify-content-center'>
         <label>Select Package:</label>
         <select value={selectedPackage} onChange={handlePackageChange}>
           <option value="">Select</option>
@@ -126,28 +128,35 @@ const PatientAddPackage = () => {
         </select>
       </div>
 
-      {selectedPackage && (
         <div style={styles.table}>
           <table>
-            <thead>
+            <thead className=' p-3 border bg-light'>
               <tr>
-                <th>Attribute</th>
-                <th>Value</th>
+                <th className='px-3'>Package Name</th>
+                <th className='px-3'>Price</th>
+                <th className='px-3'>Discount On Doctor Sessions</th>
+                <th className='px-3'>Discount On Medicine</th>
+                <th className='px-3'>Discount For Family</th>
+                <th className='px-3'>Subscription Period</th>
               </tr>
             </thead>
+      {selectedPackage && (
             <tbody>
-              {Object.entries(packageInfo).map(([key, value]) => (
-                <tr key={key}>
-                  <td>{key}</td>
-                  <td>{value}</td>
-                </tr>
-              ))}
+              {console.log("packageInfo is equal to: " + JSON.stringify(packageInfo))}
+                    <tr key={packageInfo.name + packageInfo.price}>
+                      <td className='px-3'>{packageInfo.name}</td>
+                      <td className='px-3'>EGP {packageInfo.price}</td>
+                      <td className='px-3'>{packageInfo.discountOnDoctorSessions}%</td>
+                      <td className='px-3'>{packageInfo.discountOnMedicine}%</td>
+                      <td className='px-3'>{packageInfo.discountForFamily}%</td>
+                      <td className='px-3'>{packageInfo.subscriptionPeriod} days</td>
+                    </tr>
             </tbody>
+          )}
           </table>
         </div>
-      )}
 
-      <div style={styles.row}>
+      <div style={styles.row} className='d-grid align-items-center justify-content-center'>
         <button onClick={handleSubscribe} style={styles.button}>
           Subscribe
         </button>
@@ -158,21 +167,34 @@ const PatientAddPackage = () => {
           <p>{subscriptionResult}</p>
         </div>
       )}
+      </div>
     </div>
   );
 };
 
 const styles = {
+
+  // body: {
+  //   display: 'flex',
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   height: '100vh'
+  // },
   container: {
     padding: '20px',
     border: '1px solid #ccc',
     borderRadius: '10px',
-    width: '300px',
+    width: '1000px',
     margin: '20px',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    display: 'grid',
+    justifyContent: 'center', /* Horizontal centering */
+    alignItems: 'center'
   },
   row: {
     margin: '10px 0',
+    display: 'grid',
+    justifyContent: 'space-between', // Use 'space-between'
   },
   table: {
     margin: '20px 0',

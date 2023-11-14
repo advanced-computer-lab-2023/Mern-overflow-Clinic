@@ -17,7 +17,7 @@ const createAppointment = async (req: Request, res: Response) => {
       return res.status(200).json(newApt);
     })
     .catch((err) => {
-      console.log("error");
+      console.log("error::::  "+err);
       return res.status(400).json(err);
     });
 };
@@ -125,6 +125,13 @@ const createFollowUp = async (req: Request, res: Response) => {
   console.log(req.body);
   // 1. Extract the patient's email from req.body
   const patientEmail = req.body.email;
+
+  let iDate = new Date(req.body.date);
+    let userTimezoneOffset = iDate.getTimezoneOffset() * 60000;
+
+    let utcDate = new Date(iDate.getTime() - userTimezoneOffset).toISOString();
+
+    req.body.date = utcDate;
 
   // 2. Search for the patient with the given email in your database
   Patient.findOne({ email: patientEmail })

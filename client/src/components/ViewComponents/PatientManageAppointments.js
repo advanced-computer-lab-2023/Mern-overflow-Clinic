@@ -77,7 +77,15 @@ const PatientManageAppointments = ({ doctorId }) => {
     }
   };
   
+  const formatDateAndSubtractTwoHours = (date) => {
+    // Convert the date to milliseconds, subtract 2 hours (in milliseconds), and create a new Date
+    const modifiedDate = new Date(date.getTime() - 2 * 60 * 60 * 1000);
   
+    // Format the modified date
+    const formattedDate = `${modifiedDate.getFullYear()}-${(modifiedDate.getMonth() + 1).toString().padStart(2, '0')}-${modifiedDate.getDate().toString().padStart(2, '0')} ${modifiedDate.getHours().toString().padStart(2, '0')}:${modifiedDate.getMinutes().toString().padStart(2, '0')}:${modifiedDate.getSeconds().toString().padStart(2, '0')}`;
+  
+    return formattedDate;
+  };
   
   const handleSlotChange = (e) => {
     const selectedValue = e.target.value;
@@ -98,8 +106,8 @@ const PatientManageAppointments = ({ doctorId }) => {
         return;
       }
 
-      const formattedStartDate = formatDate(new Date(selectedSlot));
-      const formattedEndDate = formatDate(addOneHour(new Date(selectedSlot)));
+      const formattedStartDate = formatDate(formatDateAndSubtractTwoHours(new Date(selectedSlot)));
+      const formattedEndDate = formatDate(formatDateAndSubtractTwoHours(addOneHour(new Date(selectedSlot))));
 
       const appointmentData = {
         doctor: docID,
@@ -172,7 +180,7 @@ const PatientManageAppointments = ({ doctorId }) => {
               ) : (
                 slots.map((slot) => (
                   <MenuItem key={slot} value={slot}>
-                    {`${formatDate(new Date(slot))} - ${formatDate(addOneHour(new Date(slot)))}`}
+                    {`${formatDate(formatDateAndSubtractTwoHours(new Date(slot)))} - ${formatDate(formatDateAndSubtractTwoHours(addOneHour(new Date(slot))))}`}
                   </MenuItem>
                 ))
               )}

@@ -10,6 +10,7 @@ import {
     InputLabel,
     MenuItem,
     Typography,
+    Tab,
   } from "@mui/material";
   
   import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
@@ -200,6 +201,7 @@ import {
           <Table>
               <TableHead>
               <TableRow>
+                  <TableCell  key="Pname">Name</TableCell>
                   <TableCell key="Ppname">Package Name</TableCell>
                   <TableCell key="Pprice">Price</TableCell>
                   <TableCell key="PdiscountOnDoctorSessions">Discount On Doctor Sessions</TableCell>
@@ -207,11 +209,13 @@ import {
                   <TableCell key="PdiscountForFamily">Discount For Family</TableCell>
                   <TableCell key="Pstatus">Status</TableCell>
                   <TableCell key="PrenewalDate">Renewal Date</TableCell>
+                  <TableCell key="Paction">Action</TableCell>
               </TableRow>
               </TableHead>
               <TableBody>
                 {selectedPackage && 
                 <TableRow key={selectedPackage.name + selectedPackage.price}>
+                  <TableCell>{selectedPatient.name}</TableCell>
                   <TableCell>{selectedPackage.name}</TableCell>
                   <TableCell>{selectedPackage.price}</TableCell>
                   <TableCell>{selectedPackage.discountOnDoctorSessions}</TableCell>
@@ -244,7 +248,7 @@ import {
                       <>
                       <TableCell>
                         <Button onClick={() => handleCancelling()}>
-                          Cancel Subscription
+                          Cancel
                         </Button>
                       </TableCell>
                       </>
@@ -257,7 +261,7 @@ import {
             <TableHead>
               <TableRow>
                 <TableCell key="Fname">Name</TableCell>
-                <TableCell key="FnationalId">National ID</TableCell>
+                {/* <TableCell key="FnationalId">National ID</TableCell> */}
                 <TableCell key="Frelation">Relation</TableCell>
                 <TableCell key="Fpname">Package Name</TableCell>
                 <TableCell key="Fprice">Price</TableCell>
@@ -266,21 +270,18 @@ import {
                 <TableCell key="FdiscountForFamily">Discount For Family</TableCell>
                 <TableCell key="Fstatus">Status</TableCell>
                 <TableCell key="FrenewalDate">Renewal Date</TableCell>
+                <TableCell key="Faction">Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {console.log("data = "+JSON.stringify(data))}
-              {console.log("selectedFamArrREACT = "+JSON.stringify(selectedFamArr))}
+              {/* {console.log("data = "+JSON.stringify(data))}
+              {console.log("selectedFamArrREACT = "+JSON.stringify(selectedFamArr))} */}
               { selectedFamArr &&
                 selectedFamArr.map((row, index) => (
                   <TableRow key={row.name + row.nationalId + row.age + row.gender}>
                     <TableCell>{row.name}</TableCell>
-                    <TableCell>{row.nationalId}</TableCell>
+                    {/* <TableCell>{row.nationalId}</TableCell> */}
                     <TableCell>{selectedFamRelArr[index]}</TableCell>
-                    {console.log("Index = "+index)}
-                    {console.log("selectedFamPacArrREACT = "+JSON.stringify(selectedFamPacArr))}
-                    {console.log("selectedFamPacArr[index] = "+JSON.stringify(selectedFamPacArr[index]))}
-                    {console.log("selectedFamArr[index] = "+JSON.stringify(selectedFamArr[index]))}
                     <TableCell>{selectedFamPacArr[index].name}</TableCell>
                     <TableCell>{selectedFamPacArr[index].price}</TableCell>
                     <TableCell>{selectedFamPacArr[index].discountOnDoctorSessions}</TableCell>
@@ -313,7 +314,7 @@ import {
                         <>
                         <TableCell>
                           <Button onClick={() => handleCancellingFamily(row._id)}>
-                            Cancel Subscription
+                            Cancel
                           </Button>
                         </TableCell>
                         </>

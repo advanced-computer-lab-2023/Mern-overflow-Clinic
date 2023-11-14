@@ -119,7 +119,7 @@ const PatientViewDocuments = () => {
         
         <div className="d-flex vh-100 bg-white justify-content-center align-items-center">
             <div className= 'w-50 bg-blue border-5 border rounded p-3'>
-            <Typography variant="h5" sx={{ fontWeight: "normal", my: 2 }}>upload all required documents </Typography>
+            <Typography variant="h5" sx={{ fontWeight: "normal", my: 2 }}>Upload All Required Documents </Typography>
                
                
                <h1>File Upload</h1>

@@ -77,7 +77,7 @@ export default function PatientRegister() {
         });
       })
       .then(() => {
-        navigate("/patient/family");
+        navigate("/");
       })
       .catch((error) => {
         console.error("Error making POST request", error);

@@ -134,13 +134,12 @@ const addFamilyMember = async (req: Request, res: Response) => {
     }
 
     //   const familyMemId:mongoose.Types.ObjectId = familyMem._id;
-    const familyMemId = new mongoose.Types.ObjectId(familyMem._id);
 
     const familyMember = {
         name: req.body.name.toLowerCase(),
         nationalId: req.body.nationalId,
-        patientId: familyMemId,
-        age: req.body.age,
+        patientId: familyMem._id,
+        // age: req.body.age,
         gender: req.body.gender.toLowerCase(),
         relation: req.body.relation.toLowerCase(),
     };
@@ -154,14 +153,43 @@ const addFamilyMember = async (req: Request, res: Response) => {
             return res.status(404).json({ message: "Patient not found" });
         } else {
 
+            let revRelation = "";
+
+            if (req.body.relation.toLowerCase() === "child") {
+                revRelation = "parent";
+            } else if (req.body.relation.toLowerCase() === "parent") {
+                revRelation = "child";
+            } else if (req.body.relation.toLowerCase() === "wife") {
+                revRelation = "husband";
+            } else if (req.body.relation.toLowerCase() === "husband") {
+                revRelation = "wife";
+            } else if (req.body.relation.toLowerCase() === "sibling") {
+                revRelation = "sibling";
+            }
+
+            const myFamilyMember = {
+                name: pat.name.toLowerCase(),
+                nationalId: pat.nationalId,
+                patientId: pat._id,
+                // age: new Date().getFullYear() - new Date(pat.dateOfBirth).getFullYear(),
+                gender: pat.gender.toLowerCase(),
+                relation: revRelation,
+            };
+
             const newRelatives = pat.familyMembers;
             if (newRelatives !== undefined)
                 newRelatives.push(familyMember);
 
-            pat.familyMembers = newRelatives;
-            await pat.save();
+            const newRevRelatives = familyMem.familyMembers;
+            if (newRevRelatives !== undefined)
+                newRevRelatives.push(myFamilyMember);
 
-return res.status(200).json(pat);
+            pat.familyMembers = newRelatives;
+            familyMem.familyMembers = newRevRelatives;
+            await pat.save();
+            await familyMem.save();
+
+return res.status(200).json([pat, familyMem]);
         }
 
     } catch (err) {
@@ -720,6 +748,38 @@ const deletePackageFromFamMem = async (req: Request, res: Response) => {
     }
 }
 
+const getPackageDiscount = async (req: Request, res: Response) => {
+    try {
+        const pId = req.params.id;
+        const patientFound = await patient.findById(pId);
+        if (!patientFound) {
+            return res.status(404).json({ error: 'Patient not found' });
+        } else {
+            const famMembers = patientFound.familyMembers;
+            var maxDiscount = 0;
+            if (famMembers) {
+                for(const famMem of famMembers) {
+                    const famMemPatient = await patient.findById(famMem.patientId);
+                    if (famMemPatient) {
+                        if (famMemPatient.package) {
+                            const famMemPackage = await pack.findById(famMemPatient.package);
+                            if (famMemPackage) {
+                                if (famMemPackage.discountForFamily > maxDiscount) {
+                                    maxDiscount = famMemPackage.discountForFamily;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return res.status(200).json(maxDiscount);
+        }
+    } catch (err) {
+        res.status(500).json(err);
+    }
+
+}
+
 const listDoctorsBySessionPrice = async (req: Request, res: Response) => {
     try {
         const pId = req.params.id;
@@ -1002,17 +1062,14 @@ const linkfamilyMember = async (req: Request, res: Response) => {
     let familyMember: any[] = []; 
     const relation = req.body.relation;
     let found = false ;
-    if (relation !== "wife" && relation !== "husband" && relation !== "child") {
-        return res.status(404).json({ message: 'Not a valid relation.' });;
-        return res.status(404).json({ message: 'Not a valid relation.' });;
+    if (relation !== "wife" && relation !== "husband" && relation !== "child" && relation !== "parent" && relation !== "sibling") {
+        return res.status(404).json({ message: 'Not a valid relation.' });
     } 
     try {
         const rPatient = await patient.findById(patId);
         if (!rPatient || rPatient === undefined) {
             console.log("no patient" );
-            return res.status(404).json({ message: 'Patient not found.' });;
-            console.log("no patient" );
-            return res.status(404).json({ message: 'Patient not found.' });;
+            return res.status(404).json({ message: 'Patient not found.' });
         }
         if (req.body.mobileNumber && !req.body.email) {
             const mobileNumber = req.body.mobileNumber;
@@ -1031,12 +1088,39 @@ const linkfamilyMember = async (req: Request, res: Response) => {
             for(var i = 0 ; i<rPatient.familyMembers?.length! ; i++){
                 if(rPatient.familyMembers![i].nationalId === data.nationalId){
                     return res.status(404).json({ message: 'Patient is already a family member.' });
-                    return res.status(404).json({ message: 'Patient is already a family member.' });
                 }
-              }
-                rPatient.familyMembers?.push(data);
-                const savedPat = await rPatient.save();
-                return res.status(200).send(savedPat);
+            }
+
+            //reverse
+            let revRelation = "";
+
+            if (relation === "wife") {
+                revRelation = "husband";
+            } else if (relation === "husband") {
+                revRelation = "wife";
+            } else if (relation === "child") {
+                revRelation = "parent";
+            } else if (relation === "parent") {
+                revRelation = "child";
+            } else if (relation === "sibling") {
+                revRelation = "sibling";
+            }
+
+            const data2 = {
+                name: rPatient.name,
+                nationalId: rPatient.nationalId,
+                patientId: rPatient._id,
+                relation: revRelation,
+                gender: rPatient.gender,
+            }
+
+            rPatient.familyMembers?.push(data);
+            pat.familyMembers?.push(data2);
+
+            const savedPat = await rPatient.save();
+            const savedPat2 = await pat.save();
+
+            return res.status(200).send([savedPat, savedPat2]);
             
         }
         if (!req.body.mobileNumber && req.body.email) {
@@ -1054,18 +1138,45 @@ const linkfamilyMember = async (req: Request, res: Response) => {
             };
 
 
-        for(var i = 0 ; i<rPatient.familyMembers?.length! ; i++){
-            if(rPatient.familyMembers![i].nationalId === data.nationalId){
-                found = true;
+            for(var i = 0 ; i<rPatient.familyMembers?.length! ; i++){
+                if(rPatient.familyMembers![i].nationalId === data.nationalId){
+                    found = true;
+                }
             }
-        }
             if (found) {
                 return res.status(404).json({ message: 'Patient is already a family member.' });
             }
             else{
-            rPatient.familyMembers?.push(data);
-            const savedPat = await rPatient.save();
-            return res.status(200).send(savedPat);
+                //reverse
+                let revRelation = "";
+
+                if (relation === "wife") {
+                    revRelation = "husband";
+                } else if (relation === "husband") {
+                    revRelation = "wife";
+                } else if (relation === "child") {
+                    revRelation = "parent";
+                } else if (relation === "parent") {
+                    revRelation = "child";
+                } else if (relation === "sibling") {
+                    revRelation = "sibling";
+                }
+
+                const data2 = {
+                    name: rPatient.name,
+                    nationalId: rPatient.nationalId,
+                    patientId: rPatient._id,
+                    relation: revRelation,
+                    gender: rPatient.gender,
+                }
+
+                rPatient.familyMembers?.push(data);
+                pat.familyMembers?.push(data2);
+
+                const savedPat = await rPatient.save();
+                const savedPat2 = await pat.save();
+
+                return res.status(200).send([savedPat, savedPat2]);
             }
         }
         if (req.body.mobileNumber && req.body.email) {
@@ -1088,10 +1199,38 @@ const linkfamilyMember = async (req: Request, res: Response) => {
                     
                     return res.status(404).json({ message: 'Patient is already a family member.' });
                 }
-              }
-                rPatient.familyMembers?.push(data);
-                const savedPat = await rPatient.save();
-                return res.status(200).send(savedPat);
+            }
+
+            //reverse
+            let revRelation = "";
+
+            if (relation === "wife") {
+                revRelation = "husband";
+            } else if (relation === "husband") {
+                revRelation = "wife";
+            } else if (relation === "child") {
+                revRelation = "parent";
+            } else if (relation === "parent") {
+                revRelation = "child";
+            } else if (relation === "sibling") {
+                revRelation = "sibling";
+            }
+
+            const data2 = {
+                name: rPatient.name,
+                nationalId: rPatient.nationalId,
+                patientId: rPatient._id,
+                relation: revRelation,
+                gender: rPatient.gender,
+            }
+
+            rPatient.familyMembers?.push(data);
+            pat.familyMembers?.push(data2);
+
+            const savedPat = await rPatient.save();
+            const savedPat2 = await pat.save();
+
+            return res.status(200).send([savedPat, savedPat2]);
             
         }
 
@@ -1117,6 +1256,7 @@ export default {
     addPackageToFamMem,
     deletePackage,
     deletePackageFromFamMem,
+    getPackageDiscount,
     listDoctorsBySessionPrice,
     filterDoctor,
     viewMyHealthRecords,

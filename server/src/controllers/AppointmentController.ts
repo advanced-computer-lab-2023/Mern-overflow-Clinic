@@ -27,17 +27,17 @@ const createAppointmentForFamilyMember = async (
   res: Response,
 ) => {
   try {
-    console.log(req.body);
+    //console.log(req.body);
     const docID = req.body.doctor;
     req.body.duration = 1;
     req.body.status = "upcoming";
     req.body.appointmentType = "regular";
-    const id = req.params.id; // patient name;
+    const id = req.params.id; 
     const flag = req.body.flag;
     const relation = req.body.relation;
 
     if (flag) {
-      console.log(req.body);
+      //console.log(req.body);
       req.body.patient = req.body.relativeId;
 
       // Get the doctor and remove the date from availableStartTimeSlots
@@ -54,6 +54,7 @@ const createAppointmentForFamilyMember = async (
           (slot) => slot.toDateString() !== dateToRemove
         );
       }
+
 
       // Update the doctor in the database
       await doctor.findByIdAndUpdate(docID, {

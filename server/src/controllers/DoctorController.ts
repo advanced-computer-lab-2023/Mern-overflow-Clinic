@@ -337,6 +337,7 @@ const viewWallet = async (req: Request, res: Response) => {
 };
 
 const addFreeSlots = async (req: Request, res: Response) => {
+  console.log(req.body);
   const id = req.params.id;
   const startTime = new Date(req.body.date);
   const currentTime = new Date();
@@ -358,18 +359,22 @@ const addFreeSlots = async (req: Request, res: Response) => {
 
     const cont = await Contract.find({"doctor":id}).exec();
     if(!cont || cont === undefined){
-      return res.status(404).send("no contracts found");
+      return res.status(404).json({ message: "no contracts found"});
     }
     if(cont.length ===0){
-      return res.status(404).send("no contracts found");
+      return res.status(404).json( {message: "no contracts found"});
     }
     if(cont[0].status !== "accepted"){
-      return res.status(400).send("Doctor has not accepted the contract, can't add slots");
+      console.log("400");
+
+      return res.status(400).json({message: "Doctor has not accepted the contract, can't add slots"});
     }
 
     if (doc.availableSlotsStartTime) {
       for (const dt of doc.availableSlotsStartTime) {
         if (dt.toISOString() === startTime.toISOString()) {
+          console.log("403");
+
           return res
             .status(403)
             .json({ message: "This slot has already been added." });
@@ -377,6 +382,8 @@ const addFreeSlots = async (req: Request, res: Response) => {
       }
     }
     if (startTime <= currentTime) {
+      console.log("405");
+
       return res.status(405).json({ message: "You cannot use a past date." });
     }
 
@@ -395,9 +402,12 @@ const addFreeSlots = async (req: Request, res: Response) => {
     }
 
     if (conflictingAppointments.length !== 0) {
+      console.log("406");
+
       return res
         .status(406)
         .json({
+          
           message: "You already have an appointment on that date and time",
         });
     }
@@ -406,9 +416,8 @@ const addFreeSlots = async (req: Request, res: Response) => {
 
     // Save the updated doctor document
     const savedDoc = await doc.save();
-
     // Respond with the saved doctor document
-    return res.status(200).send(savedDoc);
+    return res.status(200).json(savedDoc);
   } catch (err) {
     return res.status(500).send(err);
   }

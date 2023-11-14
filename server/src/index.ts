@@ -18,6 +18,13 @@ import PaymentController from "./controllers/PaymentController.js";
 //const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 
 
+import path from 'path'
+import { fileURLToPath } from 'url';
+
+
+
+
+
 
 // import isAuthenticated from "./middlewares/permissions/isAuthenticated.js";
 // import isAuthorized from "./middlewares/permissions/isAuthorized.js";
@@ -27,6 +34,7 @@ import PaymentController from "./controllers/PaymentController.js";
 mongoose.set("strictQuery", false);
 
 //App variables
+const __dirname = process.cwd();
 const MongoURI: string =
   config.mongo.URL ;
 const app = express();
@@ -42,6 +50,10 @@ app.use(cors(corsOptions));
 const port: number = config.server.port ;
 app.use(bodyParser.json());
 app.use(cors(corsOptions));
+app.use("/uploads", express.static('./src/uploads'));
+//app.use(express.static(path.join(__dirname, './uploads')));
+
+
 app.use(cookieParser());
 
 //ROUTERS

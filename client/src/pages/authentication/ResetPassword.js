@@ -11,7 +11,8 @@ import {
 } from "@mui/material";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useState } from "react";
-
+import axios from "axios";
+import sha256 from "js-sha256";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 const theme = createTheme({
@@ -22,78 +23,25 @@ const theme = createTheme({
 
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
-  const [isValidToken, setIsValidToken] = useState(null);
   const [email, setEmail] = useState("");
 
   const navigate = useNavigate();
 
-  // validatePasswordResetToken(searchParams.get("token") || "")
-  //   .then((email) => {
-  //     setIsValidToken(true);
-  //     setEmail(email);
-  //   })
-  //   .catch(() => setIsValidToken(false));
+  const handleSubmit = (event) => {
+    event.preventDefault();
 
-  let contentBox;
-  if (isValidToken === null) {
-    contentBox = (
-      <Box sx={{ mt: 8 }}>
-        <CircularProgress />
-      </Box>
-    );
-  } else if (isValidToken) {
-    const handleSubmit = (event) => {
-      event.preventDefault();
-
-      const newPassword = new FormData(event.currentTarget).get("newPassword");
-
-      // performPasswordReset(searchParams.get("token") || "", newPassword)
-      //   .then(() => alert("Password reset successful!"))
-      //   .catch(() => alert("Password reset failed!"));
-
-      navigate("/signin");
-    };
-
-    contentBox = (
-      <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-        <TextField
-          margin="normal"
-          disabled
-          fullWidth
-          label="Email"
-          defaultValue={email}
-          variant="outlined"
-        />
-        <TextField
-          margin="normal"
-          required
-          type="password"
-          fullWidth
-          id="newPassword"
-          label="New Password"
-          name="newPassword"
-          autoComplete="current-password"
-          autoFocus
-        />
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          sx={{ mt: 3, mb: 2, fontWeight: "bold" }}
-        >
-          Confirm
-        </Button>
-      </Box>
-    );
-  } else {
-    contentBox = (
-      <Box component="form" noValidate sx={{ mt: 10 }}>
-        <Typography component="h1" variant="h5" color="red" fontWeight={"bold"}>
-          Invalid Reset Password URL
-        </Typography>
-      </Box>
-    );
-  }
+    const newPassword = new FormData(event.currentTarget).get("newPassword");
+    axios
+      .post("http://localhost:8000/auth/resetwithtoken", {
+        newPassword: sha256(newPassword),
+        token: searchParams.get("token") || "",
+      })
+      .then(() => {
+        alert("Password reset successful!");
+        navigate("/signin");
+      })
+      .catch(() => alert("Password reset failed!"));
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -113,9 +61,42 @@ export default function ResetPassword() {
           <Typography component="h1" variant="h5" fontWeight={"bold"}>
             Password Reset
           </Typography>
-          {contentBox}
+
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{ mt: 1 }}
+          >
+            <TextField
+              margin="normal"
+              fullWidth
+              label="Email"
+              variant="outlined"
+            />
+            <TextField
+              margin="normal"
+              required
+              type="password"
+              fullWidth
+              id="newPassword"
+              label="New Password"
+              name="newPassword"
+              autoComplete="current-password"
+              autoFocus
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2, fontWeight: "bold" }}
+            >
+              Confirm
+            </Button>
+          </Box>
         </Box>
       </Container>
     </ThemeProvider>
   );
 }
+

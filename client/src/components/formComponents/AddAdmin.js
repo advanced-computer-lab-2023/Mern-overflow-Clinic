@@ -16,6 +16,7 @@ const AddAdmin = (props) => {
         props.setDataIsUpdated(false);
       })
       .catch((error) => {
+        console.log(error);
 
         console.error('Error making POST request', error);
       });
@@ -46,7 +47,16 @@ const AddAdmin = (props) => {
             helperText={errors["username"]?.message}
             onBlur={handleChange}
             sx={{ mr: "2%" }} fullWidth />
-
+          <TextField
+            fullWidth
+            id="email"
+            label="Email"
+            type="email"
+            {...register("email", { required: true, maxLength: 80 })}
+            error={!!errors["email"]}
+            helperText={errors["email"]?.message}
+            onBlur={handleChange}
+          />
           <TextField
             id="password"
             label="Password"

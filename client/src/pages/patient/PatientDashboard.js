@@ -20,8 +20,14 @@ import {
 import Avatar from "@mui/material/Avatar";
 import FamilyRestroomIcon from "@mui/icons-material/FamilyRestroom";
 import MedicationIcon from "@mui/icons-material/Medication";
+import FileIcon from '@mui/icons-material/InsertDriveFile';
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import TodayIcon from "@mui/icons-material/Today";
+import LinkIcon from '@mui/icons-material/Link';
+import InfoIcon from '@mui/icons-material/Info';
+import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
+import PasswordIcon from '@mui/icons-material/Password';
+import InventoryIcon from '@mui/icons-material/Inventory';
 import { Link } from "react-router-dom";
 import { useUser } from "../../userContest";
 
@@ -46,7 +52,7 @@ const PatientDashboard = (props) => {
                       padding: 0,
                     }}
                   >
-                    <MedicationIcon sx={{ width: 30, height: 30 }} />
+                    <InfoIcon sx={{ width: 30, height: 30 }} />
                   </Avatar>
                 </ListItemIcon>
                 <ListItemText primary="My Information" />
@@ -134,7 +140,7 @@ const PatientDashboard = (props) => {
                       padding: 0,
                     }}
                   >
-                    <MedicationIcon sx={{ width: 30, height: 30 }} />
+                    <HistoryEduIcon sx={{ width: 30, height: 30 }} />
                   </Avatar>
                 </ListItemIcon>
                 <ListItemText primary="My Prescriptions" />
@@ -156,13 +162,40 @@ const PatientDashboard = (props) => {
                       padding: 0,
                     }}
                   >
-                    <MedicationIcon sx={{ width: 30, height: 30 }} />
+                    <LinkIcon sx={{ width: 30, height: 30 }} />
                   </Avatar>
                 </ListItemIcon>
                 <ListItemText primary="Link Family Members" />
               </ListItemButton>
             </ListItem>
           </List>
+          <Divider />
+          <List>
+              <ListItem disablePadding>
+                  <ListItemButton component={Link} to='/patient/documents'>
+                      <ListItemIcon>
+                          <Avatar sx={{ m: 0, bgcolor: 'white', color: 'black', width: 30, height: 30, padding: 0 }}>
+                              <FileIcon sx={{ width: 30, height: 30 }} />
+                          </Avatar>
+                      </ListItemIcon>
+                      <ListItemText primary="My Documents" />
+                  </ListItemButton>
+              </ListItem>
+          </List>
+          <Divider />
+          <List>
+              <ListItem disablePadding>
+                  <ListItemButton component={Link} to='/patient/packages'>
+                      <ListItemIcon>
+                          <Avatar sx={{ m: 0, bgcolor: 'white', color: 'black', width: 30, height: 30, padding: 0 }}>
+                              <InventoryIcon sx={{ width: 30, height: 30 }} />
+                          </Avatar>
+                      </ListItemIcon>
+                      <ListItemText primary="My Packages" />
+                  </ListItemButton>
+              </ListItem>
+          </List>
+          <Divider />
           <List>
             <ListItem disablePadding>
               <ListItemButton component={Link} to="/auth/changepassword">
@@ -177,7 +210,7 @@ const PatientDashboard = (props) => {
                       padding: 0,
                     }}
                   >
-                    <MedicationIcon sx={{ width: 30, height: 30 }} />
+                    <PasswordIcon sx={{ width: 30, height: 30 }} />
                   </Avatar>
                 </ListItemIcon>
                 <ListItemText primary="Change My Password" />

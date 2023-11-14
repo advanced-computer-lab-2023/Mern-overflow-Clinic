@@ -19,6 +19,14 @@ import TableRow from "@mui/material/TableRow";
 import axios from "axios";
 import dayjs from "dayjs"; // Import dayjs for date manipulation
 import { useUser } from "../../userContest";
+// Importing React Router Link
+import { Link } from 'react-router-dom';
+
+// Importing Material-UI Components
+import IconButton from '@mui/material/IconButton';
+import PaymentIcon from '@mui/icons-material/Payment';
+
+
 
 export default function DoctorViewAppointments() {
   const [data, setData] = useState([]);
@@ -28,7 +36,7 @@ export default function DoctorViewAppointments() {
 
   const fetchTableData = () => {
     axios
-      .get(`http://localhost:8000/appointments/${id}`, {})
+      .get(`http://localhost:8000/appointments/all/${id}`, {})
       .then((res) => {
         console.log(res.data);
         setData(res.data);
@@ -75,15 +83,6 @@ export default function DoctorViewAppointments() {
         })
         .catch(() => setData([]));
     }
-  };
-
-  const handleViewAll = () => {
-    axios
-      .get(`http://localhost:8000/appointments/all/${id}`)
-      .then((res) => {
-        setData(res.data || []);
-      })
-      .catch(() => setData([]));
   };
 
   return (
@@ -155,7 +154,7 @@ export default function DoctorViewAppointments() {
       <Button
         fullWidth
         variant="contained"
-        onClick={handleViewAll}
+        onClick={fetchTableData}
         sx={{ mt: 3, mb: 2, p: 2, fontWeight: "bold" }}
       >
         View All
@@ -174,13 +173,30 @@ export default function DoctorViewAppointments() {
         <TableBody>
           {data &&
             data.map((row) => (
-              <TableRow key={row.date + (row.patient?.name || "") + (row.doctor?.name || "") + row.status}>
-                <TableCell>{row.patient?.name || 'N/A'}</TableCell>
-                <TableCell>{row.doctor?.name || 'N/A'}</TableCell>
+              <TableRow
+                key={
+                  row.date +
+                  (row.patient?.name || "") +
+                  (row.doctor?.name || "") +
+                  row.status +
+                  Math.random()
+                }
+              >
+                <TableCell>{row.patient?.name || "N/A"}</TableCell>
+                <TableCell>{row.doctor?.name || "N/A"}</TableCell>
                 <TableCell>{row.duration + " hour"}</TableCell>
                 <TableCell>{row.date}</TableCell>
                 <TableCell>{row.status}</TableCell>
                 <TableCell>{calculateState(row.date)}</TableCell>
+
+                <TableCell>
+                
+              <Link to={row.status=="upcoming"?`/patient/pay/appointment/${row._id}`:undefined}>
+                    <IconButton disabled={!(row.status=="upcoming")}>
+                      <PaymentIcon />
+                    </IconButton>
+              </Link>
+                  </TableCell>
               </TableRow>
             ))}
         </TableBody>

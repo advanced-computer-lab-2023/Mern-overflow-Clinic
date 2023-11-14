@@ -6,6 +6,7 @@ import Avatar from '@mui/material/Avatar';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 import { Link } from 'react-router-dom';
+import PasswordIcon from "@mui/icons-material/Password";
 
 
 const AdminDashboard = (props) => {
@@ -18,7 +19,7 @@ const AdminDashboard = (props) => {
                 <Typography sx={{ fontWeight: "normal", verticalAlign: "text-bottom" }}> System Users</Typography>
             </Box>
             <List>
-                {[ {name: 'Admins', route: '/admin/admins'} , {name: 'Doctors', route: '/admin/doctors'}, {name: 'Patients', route: '/admin/patients'}].map((text, index) => (
+                {[{ name: 'Admins', route: '/admin/admins' }, { name: 'Doctors', route: '/admin/doctors' }, { name: 'Patients', route: '/admin/patients' }].map((text, index) => (
                     <ListItem key={text.name} disablePadding>
                         <ListItemButton component={Link} to={text.route} >
                             <ListItemIcon>
@@ -52,6 +53,28 @@ const AdminDashboard = (props) => {
                             </Avatar>
                         </ListItemIcon>
                         <ListItemText primary="Doctor Requests" />
+                    </ListItemButton>
+                </ListItem>
+            </List>
+            <Divider />
+            <List>
+                <ListItem disablePadding>
+                    <ListItemButton component={Link} to="/auth/changepassword">
+                        <ListItemIcon>
+                            <Avatar
+                                sx={{
+                                    m: 0,
+                                    bgcolor: "white",
+                                    color: "black",
+                                    width: 30,
+                                    height: 30,
+                                    padding: 0,
+                                }}
+                            >
+                                <PasswordIcon sx={{ width: 30, height: 30 }} />
+                            </Avatar>
+                        </ListItemIcon>
+                        <ListItemText primary="Change My Password" />
                     </ListItemButton>
                 </ListItem>
             </List>

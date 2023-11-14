@@ -19,12 +19,15 @@ import PatientManageInfo from "./pages/patient/PatientManageInfo";
 import PatientManagePrescriptions from "./pages/patient/PatientManagePrescriptions";
 import ChangePassword from "./pages/authentication/ChangePassword";
 import ResetPassword from "./pages/authentication/ResetPassword";
-
+import ForgotPassword from "./pages/authentication/ForgotPassword";
 import DoctorManageFreeSlots from "./pages/doctor/DoctorManageFreeSlots";
 import DoctorManageContracts from "./pages/doctor/DoctorManageContracts";
 import DoctorManageFollowUp from "./pages/doctor/DoctorManageFollowUp";
 import PatientBookAppointments from "./pages/patient/patientBookAppointment";
 import AddHealthRecords from "./pages/doctor/DoctorAddHealthRecords";
+import PatientManageDocuments from './pages/patient/PatientManageDocuments';
+import PatientManagePackages from './pages/patient/PatientManagePackages';
+
 import AddFamilyMember from "./components/formComponents/linkFamilyMembers";
 import PatientManageFamilyLinks from "./pages/patient/PatientManageFamilyLinks";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -33,6 +36,8 @@ import AdminEditPackage from "./pages/admin/AdminEditPackage";
 // import EditDoctorProfile from './components/formComponents/EditDoctorProfile';
 import axios from "axios";
 import PatientPayAppointment from "./pages/patient/PatientPayAppointment";
+import NotFoundPage from "./NotFoundPage";
+
 
 function App() {
   axios.defaults.withCredentials = true;
@@ -107,6 +112,14 @@ function App() {
       element: <PatientManageFamily />,
     },
     {
+      path: "/patient/documents",
+      element: <PatientManageDocuments />,
+    },
+    {
+      path: "/patient/packages",
+      element: <PatientManagePackages />,
+    },
+    {
       path: "/patient/family/:id",
       element: <PatientManageFamily />,
     },
@@ -158,6 +171,20 @@ function App() {
       path: "/patient/bookAppointment/:id",
       element: <PatientBookAppointments />,
     },
+    {
+      path: "/auth/changepassword",
+      element: <ChangePassword />,
+    },
+    {
+      path: "/auth/resetpassword",
+      element: <ResetPassword />,
+    },
+    {
+      path: "/auth/forgotpassword",
+      element: <ForgotPassword />,
+    },
+
+    { path: "*", element: <NotFoundPage /> },
   ]);
 
   return (

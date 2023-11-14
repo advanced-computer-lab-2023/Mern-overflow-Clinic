@@ -66,9 +66,14 @@ const columns = [
     label: "HOURLY RATE",
   },
   {
+    key: "files",
+    label: "Documents",
+  },
+  {
     key: "action",
     label: "ACTION",
   },
+  
 ];
 
 export default function AdminViewDoctors() {
@@ -77,18 +82,17 @@ export default function AdminViewDoctors() {
   const [filteredData, setFilteredData] = useState([]);
 
   const fetchTableData = () => {
-    axios
-      .get(`http://localhost:8000/doctors`)
+    axios.get(`http://localhost:8000/doctors`)
       .then((res) => {
         let temp = ["No filter"];
         res.data.map((key) => {
           if (temp.indexOf(key.speciality) === -1) {
             temp.push(key.speciality);
           }
-        });
+      });
 
         setUniqueSpecialties(temp);
-
+      console.log("data IS : " + JSON.stringify(res.data));
         setData(res.data);
         setFilteredData(res.data);
       })
@@ -115,13 +119,11 @@ export default function AdminViewDoctors() {
 
   return (
     <Container maxWidth="xl">
-      <Paper elevation={3} sx={{ p: "20px", my: "40px", paddingBottom: 5 }}>
-        <Container>
           <Table>
             <TableHead>
               <TableRow>
                 {columns.map((column) => (
-                  <TableCell key={column.key}>{column.label}</TableCell>
+                  <TableCell key={column.key} sx={{ fontWeight: 'bold' }}>{column.label}</TableCell>
                 ))}
               </TableRow>
             </TableHead>
@@ -137,6 +139,14 @@ export default function AdminViewDoctors() {
                   <TableCell>{row.status}</TableCell>
                   <TableCell>{row.speciality}</TableCell>
                   <TableCell>{row.hourlyRate}</TableCell>
+                  <TableCell>{
+                    <ul>
+                      {row.files.map((file, index) => (
+                      <li key={index}>{file.filename}
+                      <a href = {`http://localhost:8000/uploads/` + file.filename} target = "_blank">            View</a></li>
+                      ))}
+                    </ul>}
+                  </TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleDelete(row._id)}>
                       <DeleteIcon />
@@ -146,8 +156,6 @@ export default function AdminViewDoctors() {
               ))}
             </TableBody>
           </Table>
-        </Container>
-      </Paper>
     </Container>
   );
 }

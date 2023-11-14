@@ -134,7 +134,7 @@ export default function ChangePassword() {
           {contentBox}
         </Box>
         <GridContainer container>
-          <Link href="/auth/forgot" variant="body2" fontWeight={"bold"}>
+          <Link href="/auth/forgotpassword" variant="body2" fontWeight={"bold"}>
             Forgot password?
           </Link>
         </GridContainer>

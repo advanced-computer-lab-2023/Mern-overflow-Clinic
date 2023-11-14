@@ -44,7 +44,7 @@ const viewRequest = async (req: Request, res: Response) => {
   const doctors = doctor
     .find({})
     .then((doctors) => {
-      var newDoctors = [];
+      let newDoctors = [];
       for (var i = 0; i < doctors.length; i++) {
         if (doctors[i].status === "pending") newDoctors.push(doctors[i]);
       }

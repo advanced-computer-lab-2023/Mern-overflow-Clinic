@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useUser } from '../../userContest';
+import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const PatientAddPackage = () => {
@@ -13,6 +14,7 @@ const PatientAddPackage = () => {
   const [subscriptionResult, setSubscriptionResult] = useState('');
 
   const { userId } = useUser();
+  const navigate = useNavigate();
   let id = userId;
   // const id = "655089b786a7e9fff5d1d36a";
 
@@ -50,36 +52,38 @@ const PatientAddPackage = () => {
         // Include the necessary data like selectedFamilyMember, selectedPackage, etc.
         // Update the subscriptionResult state based on the result of the post request
         // Example:
-        console.log("selectedPackage is equal to: " + selectedPackage);
-        console.log("selectedFamilyMember is equal to: " + selectedFamilyMember);
+        // console.log("selectedPackage is equal to: " + selectedPackage);
+        // console.log("selectedFamilyMember is equal to: " + selectedFamilyMember);
         // console.log("subscriptionType is equal to: " + subscriptionType);
         // console.log("packageId is equal to: " + selectedPackage._id);
         // console.log("familyMemberId is equal to: " + selectedFamilyMember._id);
         if (subscriptionType === 'Yourself' && selectedPackage) {
-            console.log("subscriptionType1 is equal to: " + subscriptionType);
+            // console.log("subscriptionType1 is equal to: " + subscriptionType);
             axios.post(`http://localhost:8000/patients/${id}/packages/${selectedPackage}`, {
                 params: { id: id, packageId: selectedPackage }
                 })
                 .then( (res) => {
-                    setSubscriptionResult(res.data.message);
+                    // setSubscriptionResult(res.data.message);
+                    navigate('/patient/pay/package', { state: { packageId: selectedPackage, famId: null }});
                 })
                 .catch( (error) => {
                     setSubscriptionResult('Error subscribing: ' + error.message);
                 });
         } else if (subscriptionType === 'FamilyMember' && selectedPackage && selectedFamilyMember) {
-            console.log("subscriptionType2 is equal to: " + subscriptionType);
+            // console.log("subscriptionType2 is equal to: " + subscriptionType);
             axios.post(`http://localhost:8000/patients/${id}/packages/${selectedFamilyMember}/${selectedPackage}`, {
                 params: { id: id, pId: selectedFamilyMember, packageId: selectedPackage }
                 })
                 .then( (res) => {
-                    setSubscriptionResult(res.data.message);
+                    // setSubscriptionResult(res.data.message);
+                    navigate('/patient/pay/package', { state: { packageId: selectedPackage, famId: selectedFamilyMember }});
                 })
                 .catch( (error) => {
                     setSubscriptionResult('Error subscribing: ' + error.message);
                 });
         }
 
-        window.location.reload();
+        // window.location.reload();
     }
 
   return (

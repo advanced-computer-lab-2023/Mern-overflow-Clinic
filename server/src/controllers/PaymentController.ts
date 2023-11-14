@@ -6,10 +6,12 @@
 import appointment from "../models/appointment.js";
 import patient from "../models/Patient.js";
 import healthPackage from "../models/Package.js";
+import PatientController from "./PatientController.js";
 
 
 import { Request, Response } from "express";
 import Stripe from 'stripe';
+import axios from "axios";
 const stripe = new Stripe('sk_test_51O9bKeHqEqnZHrbzSpBS6JOvMryqZfvDolGqcPDOb19E9gXdSe3rKy5UbUgCOmqLVFyHxn1U0Fp7G3IFujKuYhn500g0lhxoDO');
 
 
@@ -109,10 +111,22 @@ const payCCHealthPackage = async (req: Request, res: Response) =>
 {
   try
   {
-    /// assuming health pacakage id is given in req . body 
-    const hPrice = (await healthPackage.findById(req.body.hpId))?.price; // price in pounds 
+    // assuming health pacakage id is given in req . body 
+
+    const id = req.body.id;
+    const packageId = req.body.packageId;
+    const famId = req.body.famId;
+
+    console.log("id is " + id + ", packageId is " + packageId + ", famId is " + famId);
+
+    // const hPrice = (await healthPackage.findById(req.body.hpId))?.price; // price in pounds 
+
+    var hPackagePriceIncents;
+    if (!famId)
+      hPackagePriceIncents = await PatientController.getPackageDiscount(id, packageId);
+    else
+      hPackagePriceIncents = await PatientController.getPackageDiscount(famId, packageId);
     
-    const hPackagePriceIncents = hPrice ? (hPrice *100) : undefined;
 
        const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -123,10 +137,10 @@ const payCCHealthPackage = async (req: Request, res: Response) =>
     price_data: {
       currency: 'EGP',
       product_data: {
-        name: 'AppointmnetFees',
-        description: 'Product Description',
+        name: 'PackageSubscriptionFees',
+        description: 'Package Subscription',
       },
-      unit_amount: hPrice!=undefined?hPrice*100:undefined,
+      unit_amount: hPackagePriceIncents * 100,
     },
     quantity: 1,
              },
@@ -134,38 +148,52 @@ const payCCHealthPackage = async (req: Request, res: Response) =>
 ] ,
         
        
-      success_url: `http://localhost:3000/patient/apppointments`,
-      cancel_url: `http://localhost:3000/patient/apppointments`,
+      success_url: `http://localhost:3000/patient/packages`,
+      cancel_url: `http://localhost:3000/patient/packages`,
     })
     res.json({ url: session.url })
   } catch (e) {
+    console.log('error:   : '+e);
     res.status(500).json(e);
   }
   
 }
+
 const payWalletHealthPackage= async (req: Request, res: Response) => {
   // assuming id of appointment comes from req.body but should come from fe entry click
-  const hpid = req.body.HPId;
-  const hPrice = (await healthPackage.findById(hpid))?.price;
+  const id = req.body.id;
+    const packageId = req.body.packageId;
+    const famId = req.body.famId;
+
+    console.log("id is " + id + ", packageId is " + packageId + ", famId is " + famId);
+
 
   // TODO: Display these messages  in the fe
   // assumimg id of user is given through req.body
   //TODO:UPDATE ID to be taken from logined in session
-  const pId = req.body.pId;
-  const pat = await patient.findById(pId);
+  // const pId = req.body.pId;
+  const pat = await patient.findById(id);
   const walletValue = (pat)?.wallet;
   console.log(pat?._id);
   console.log(walletValue);
-  if (hPrice!=undefined && walletValue!=undefined)
+
+  var hPackagePriceIncents;
+    if (!famId)
+      hPackagePriceIncents = await PatientController.getPackageDiscount(id, packageId);
+    else
+      hPackagePriceIncents = await PatientController.getPackageDiscount(famId, packageId);
+
+
+  if (hPackagePriceIncents!=undefined && walletValue!=undefined)
   {
-    if (walletValue < hPrice) {
-      res.status(400).json("Payment cannot be completed because credit not in wallet : Amount to be paid  " + hPrice + " current wallet balance " + walletValue);
+    if (walletValue < hPackagePriceIncents) {
+      res.status(400).json("Payment cannot be completed because credit not in wallet : Amount to be paid  " + hPackagePriceIncents + " current wallet balance " + walletValue);
     }
     else
     {
       const update = {
         // Define the fields you want to update and their new values
-        wallet: walletValue && hPrice? (walletValue - hPrice):undefined,
+        wallet: walletValue && hPackagePriceIncents? (walletValue - hPackagePriceIncents):undefined,
 
       };
 
@@ -175,16 +203,16 @@ const payWalletHealthPackage= async (req: Request, res: Response) => {
       };
 
       // Use findOneAndUpdate to find and update the document
-      const filter = { _id: pId };
+      const filter = { _id: id };
       const updateWallet = await patient.findOneAndUpdate(filter, update, options);
 		
-      const newWallet = walletValue && hPrice ? (walletValue - hPrice) : undefined;
+      const newWallet = walletValue && hPackagePriceIncents ? (walletValue - hPackagePriceIncents) : undefined;
       res.status(200).json("Payment successful , new wallet value :" + newWallet);
     }
   }
   else {
-    if(!hPrice)
-      res.status(404).send("appPrice is undefined")
+    if(!hPackagePriceIncents)
+      res.status(404).send("health package price is undefined")
     else
       res.status(404).send("wallet is undefined")
 

@@ -55,6 +55,8 @@ return res.status(404).send("You are already registered , please sign in ");
                     const newPatient = patient
                         .create(req.body)
                         .then((newPatient) => {
+                            newPatient.wallet = 0;
+                            newPatient.save();
 return res.status(200).json(newPatient);
                         })
                         .catch((err) => {
@@ -748,12 +750,12 @@ const deletePackageFromFamMem = async (req: Request, res: Response) => {
     }
 }
 
-const getPackageDiscount = async (req: Request, res: Response) => {
+async function getPackageDiscount(pId: mongoose.Types.ObjectId, packageId: mongoose.Types.ObjectId) {
     try {
-        const pId = req.params.id;
+        // const pId = req.params.id;
         const patientFound = await patient.findById(pId);
         if (!patientFound) {
-            return res.status(404).json({ error: 'Patient not found' });
+            throw new Error('Patient not found');
         } else {
             const famMembers = patientFound.familyMembers;
             var maxDiscount = 0;
@@ -772,10 +774,25 @@ const getPackageDiscount = async (req: Request, res: Response) => {
                     }
                 }
             }
-            return res.status(200).json(maxDiscount);
+            // const pId = req.params.pId;
+            const packageToBe = await pack.findById(packageId);
+            var packageDiscount = 0;
+            if (packageToBe) {
+                packageDiscount = packageToBe.price;
+                if (patientFound.package) {
+                    const packageData = await pack.findById(patientFound.package);
+                    if (packageData) {
+                        packageDiscount = packageDiscount * (1-maxDiscount/100);
+                    }
+                }
+            }
+            else {
+                throw new Error('Package not found');
+            }
+            return packageDiscount;
         }
-    } catch (err) {
-        res.status(500).json(err);
+    } catch (error) {
+        throw new Error('Error is: ${error.message}');
     }
 
 }

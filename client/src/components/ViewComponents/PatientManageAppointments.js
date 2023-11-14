@@ -238,7 +238,11 @@ export default PatientManageAppointments;
 
 const formatDate = (dateString) => {
   const options = { year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "numeric", hour12: true };
-  return new Date(dateString).toLocaleString("en-US", options);
+
+  const clientTimeZoneOffset = new Date().getTimezoneOffset();
+  const adjustedDate = new Date(new Date(dateString).getTime() );
+
+  return adjustedDate.toLocaleString("en-US", options);
 };
 
 const addOneHour = (date) => {

@@ -167,9 +167,9 @@ export default function DoctorViewPatients() {
             );
           })}
 
-          <Typography>Health Records</Typography>
+          {/* <Typography>Health Records</Typography> */}
 
-          <Typography> {`items: ${selectedPatient.healthRecords}`}</Typography>
+          {/* <Typography> {`items: ${selectedPatient.healthRecords}`}</Typography> */}
 
 
           {/* {selectedPatient.healthRecords.map((item) => {

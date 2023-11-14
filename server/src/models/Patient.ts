@@ -1,20 +1,18 @@
-import mongoose, { Schema, Types, model, connect } from 'mongoose';
-import User from "./User.js";
-import HelthRecords, { IHealthRecord } from './HelthRecords.js';
+import mongoose, { Schema, Types, model } from 'mongoose';
+import User from './User.js';
+import HealthRecords, { IHealthRecord } from './HelthRecords.js';
 
 interface emergencyContact {
-    name: string;
-    mobileNumber: string;
+  name: string;
+  mobileNumber: string;
 }
 
 interface familyMember {
-    name: string;
-    nationalId: string;
-    patientId: Types.ObjectId;
-   // dateOfBirth: Date;
-    gender: string;
-    relation: string;
-    // package?: typeof mongoose.Types.ObjectId;
+  name: string;
+  nationalId: string;
+  patientId: Types.ObjectId;
+  gender: string;
+  relation: string;
 }
 
 interface document {
@@ -40,13 +38,16 @@ export interface IPatient {
     //packageSubscribed?: Types.ObjectId;
     subscribedToPackage?: boolean;
     packageRenewalDate?: Date;
-    healthRecords?: IHealthRecord[];
+    healthRecords?: Types.ObjectId[];
     wallet?:number
+
+
     
 }
 
 
-// 2. Create a Schema corresponding to the document interface.
+
+
 const PatientSchema = new Schema<IPatient>({
     // username: { type: String, required: true, unique: true },
     name: { type: String, required: true, trim: true },
@@ -86,12 +87,10 @@ const PatientSchema = new Schema<IPatient>({
     packageRenewalDate: { type: Date, required: false },
     healthRecords: [
         {
-            name: { type: String, required: true, },
-            diagnosis: { type: String, required: true },
-            date: { type: Date, required: true },
-
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "HealthRecord", // Reference to the HealthRecord model
         }
-    ],
+      ],
     wallet: { type: Number, required: false }
 });
 
@@ -100,12 +99,9 @@ PatientSchema.pre('save', function(next) {
         this.name = this.name.toLowerCase();
     }
 
-    next();
+  next();
 });
 
-// 3. Create a Model.
-// const Patient = model<IPatient>('Patient', PatientSchema);
 const Patient = User.discriminator<IPatient>('Patient', PatientSchema);
 
-// export default mongoose.model<IPatient>("Patient", PatientSchema);
 export default Patient;

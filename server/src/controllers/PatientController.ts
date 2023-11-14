@@ -8,6 +8,7 @@ import app from "../index.js";
 import { relative } from "path";
 import doctor from "../models/Doctor.js";
 import user from "../models/User.js";
+import healthRecord from "../models/HelthRecords.js";
 import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -946,16 +947,23 @@ const filterDoctor = async (req: Request, res: Response) => {
 
 
 const viewMyHealthRecords = async (req: Request, res: Response) => {
-    // assuming I am a patient and I am already logged in so we can get patient id from session
-    // TO-DO: how do I get it from session ?
+   
     const pid = req.params.id;
-    patient.findById(pid).then(result => {
-        if (result != null)
-            res.status(200).send(result.healthRecords);
-        else
-            res.status(404).send("no health records found ");
-        
-}).catch(err=>res.status(400).send(err));
+    const pat = await patient.findById(pid).exec();
+    
+    if(!pat || pat === undefined){
+        return res.status(404).send("no patiend found with this id");
+    }
+    const arr: any[]=[];
+    if(pat.healthRecords && pat.healthRecords.length>0){
+        for(const id of pat.healthRecords){
+            const hr = await healthRecord.findById(id).exec();
+            if(hr){
+                arr.push(hr);
+            }
+        }
+    }
+    res.status(200).json(arr);
 
 }
 
@@ -1231,7 +1239,6 @@ const linkfamilyMember = async (req: Request, res: Response) => {
         return res.status(400).json({ message: 'No family members found' });
     }
 }
-
 
 
 export default {

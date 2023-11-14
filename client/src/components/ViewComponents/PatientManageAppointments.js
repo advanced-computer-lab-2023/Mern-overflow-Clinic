@@ -10,16 +10,8 @@ import {
   Select,
   MenuItem,
   Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   FormControlLabel,
   Checkbox,
-  OutlinedInput,
-  InputAdornment,
 } from "@mui/material";
 import axios from "axios";
 import { useParams } from "react-router-dom";
@@ -37,50 +29,29 @@ const PatientManageAppointments = ({ doctorId }) => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [docID, setDocID] = useState(id);
   const { userId } = useUser();
-  const [price, setPrice] = useState(""); // New state for price
-  let patID = userId;
+  const [hourlyRate, setHourlyRate] = useState(null); 
 
   useEffect(() => {
-    // Fetch available slots when the component mounts
-    const fetchSlots = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/doctors/${docID}/slots`);
-        setSlots(response.data);
+        // Fetch doctor's hourly rate
+        const doctorResponse = await axios.get(`http://localhost:8000/doctors/${docID}`);
+        setHourlyRate(doctorResponse.data.hourlyRate);
+
+        const slotsResponse = await axios.get(`http://localhost:8000/doctors/${docID}/slots`);
+        setSlots(slotsResponse.data);
+
+        if (bookForRelative) {
+          const familyMembersResponse = await axios.get(`http://localhost:8000/patients/${userId}/family`);
+          setFamilyMembers(familyMembersResponse.data || []);
+        }
       } catch (error) {
-        console.error("Error fetching slots:", error);
+        console.error("Error fetching data:", error);
       }
     };
 
-    fetchSlots();
-  }, [docID]);
-
-  useEffect(() => {
-    if (bookForRelative) {
-      const fetchFamilyMembers = () => {
-        axios
-          .get(`http://localhost:8000/patients/${patID}/family`)
-          .then((res) => {
-            const data = res.data || [];
-            console.log("Fetched Family Members:", data);
-            setFamilyMembers(data);
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      };
-  
-      fetchFamilyMembers();
-    }
-  }, [bookForRelative, patID]);
-  
-
-  useEffect(() => {
-    console.log("Slots:", slots); // Log the slots array
-  }, [slots]);
-
-  const handlePriceChange = (e) => {
-    setPrice(e.target.value);
-  };
+    fetchData();
+  }, [docID, userId, bookForRelative]);
 
   const handleBookForRelativeChange = (e) => {
     setBookForRelative(e.target.checked);
@@ -110,57 +81,59 @@ const PatientManageAppointments = ({ doctorId }) => {
   
   const handleSlotChange = (e) => {
     const selectedValue = e.target.value;
-    console.log("Selected Slot:", selectedValue);
     setSelectedSlot(selectedValue);
   };
 
-  const handleBookingAppointment = () => {
-    if (!selectedSlot) {
-      setStatusMessage("Please select a time slot.");
-      setIsSuccess(false);
-      return;
-    }
-
-    if (bookForRelative && !selectedFamilyMemberID) {
-      setStatusMessage("Please select a family member.");
-      setIsSuccess(false);
-      return;
-    }
-
-    if (!price) {
-      setStatusMessage("Please enter a price.");
-      setIsSuccess(false);
-      return;
-    }
-
-    const appointmentData = {
-      doctor: docID,
-      relativeId: selectedFamilyMemberID,
-      date: selectedSlot,
-      flag: bookForRelative,
-      price: price, // Include price in the appointment data
-    };
-
-    axios
-      .post(`http://localhost:8000/appointments/createAppointmentsForRelations/${patID}`, appointmentData)
-      .then((res) => {
-        const successMessage = "Appointment booked successfully";
-        setStatusMessage(successMessage);
-        setIsSuccess(true);
-        console.log(appointmentData)
-        // Reset the form
-        setSelectedSlot("");
-        setSelectedFamilyMember("");
-        setSelectedFamilyMemberID(null);
-        setBookForRelative(false);
-        setPrice(""); // Clear the price after successful booking
-      })
-      .catch((error) => {
-        const errorMessage = "Error booking appointment. Please try again.";
-        setStatusMessage(errorMessage);
+  const handleBookingAppointment = async () => {
+    try {
+      if (!selectedSlot) {
+        setStatusMessage("Please select a time slot.");
         setIsSuccess(false);
-        console.error(error);
-      });
+        return;
+      }
+
+      if (bookForRelative && !selectedFamilyMemberID) {
+        setStatusMessage("Please select a family member.");
+        setIsSuccess(false);
+        return;
+      }
+
+      const formattedStartDate = formatDate(new Date(selectedSlot));
+      const formattedEndDate = formatDate(addOneHour(new Date(selectedSlot)));
+
+      const appointmentData = {
+        doctor: docID,
+        relativeId: selectedFamilyMemberID,
+        date: selectedSlot,
+        flag: bookForRelative,
+        startDate: formattedStartDate,
+        endDate: formattedEndDate,
+      };
+
+      await axios.post(`http://localhost:8000/appointments/createAppointmentsForRelations/${userId}`, appointmentData);
+
+      const successMessage = "Appointment booked successfully";
+      setStatusMessage(successMessage);
+      setIsSuccess(true);
+
+      // Update local state instead of fetching again
+      setSlots((prevSlots) => prevSlots.filter((slot) => slot !== selectedSlot));
+
+      if (bookForRelative) {
+        const familyMembersResponse = await axios.get(`http://localhost:8000/patients/${userId}/family`);
+        setFamilyMembers(familyMembersResponse.data || []);
+      }
+
+      setSelectedSlot("");
+      setSelectedFamilyMember("");
+      setSelectedFamilyMemberID(null);
+      setBookForRelative(false);
+    } catch (error) {
+      const errorMessage = "Error booking appointment. Please try again.";
+      setStatusMessage(errorMessage);
+      setIsSuccess(false);
+      console.error(error);
+    }
   };
 
   return (
@@ -180,6 +153,11 @@ const PatientManageAppointments = ({ doctorId }) => {
             }
             label="Booking for a relative?"
           />
+          {hourlyRate && (
+            <Typography variant="body1" sx={{ mb: 3 }}>
+              Doctor's Hourly Rate: EGP {hourlyRate}
+            </Typography>
+          )}
           <FormControl sx={{ mb: 3 }} fullWidth>
             <InputLabel htmlFor="slot-select">Select a Time Slot</InputLabel>
             <Select
@@ -189,23 +167,16 @@ const PatientManageAppointments = ({ doctorId }) => {
               onChange={handleSlotChange}
               label="Time Slot"
             >
-              {slots.map((slot) => (
-                <MenuItem key={slot} value={slot}>
-                  {`${formatDate(new Date(slot))} - ${formatDate(addOneHour(new Date(slot)))}`}
-                </MenuItem>
-              ))}
+              {slots.length === 0 ? (
+                <MenuItem disabled>No available time slots</MenuItem>
+              ) : (
+                slots.map((slot) => (
+                  <MenuItem key={slot} value={slot}>
+                    {`${formatDate(new Date(slot))} - ${formatDate(addOneHour(new Date(slot)))}`}
+                  </MenuItem>
+                ))
+              )}
             </Select>
-          </FormControl>
-          <FormControl sx={{ mb: 3 }} fullWidth>
-            <InputLabel htmlFor="price-input">Enter Price</InputLabel>
-            <OutlinedInput
-              id="price-input"
-              type="number"
-              value={price}
-              onChange={handlePriceChange}
-              startAdornment={<InputAdornment position="start">EGP</InputAdornment>}
-              label="Price"
-            />
           </FormControl>
 
           {bookForRelative && (
@@ -247,18 +218,17 @@ const PatientManageAppointments = ({ doctorId }) => {
           )}
         </Box>
 
-
         <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              mt: 2,
-            }}
-          >
-            <Button variant="contained" onClick={handleBookingAppointment}>
-              Book
-            </Button>
-          </Box>
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            mt: 2,
+          }}
+        >
+          <Button variant="contained" onClick={handleBookingAppointment}>
+            Book
+          </Button>
+        </Box>
       </Paper>
     </Container>
   );
@@ -266,13 +236,11 @@ const PatientManageAppointments = ({ doctorId }) => {
 
 export default PatientManageAppointments;
 
-// Helper function to format date
 const formatDate = (dateString) => {
-  const options = { hour: "numeric", minute: "numeric", hour12: true };
-  return new Date(dateString).toLocaleTimeString("en-US", options);
+  const options = { year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "numeric", hour12: true };
+  return new Date(dateString).toLocaleString("en-US", options);
 };
 
-// Helper function to add one hour to a date string
 const addOneHour = (date) => {
   const newDate = new Date(date);
   newDate.setHours(newDate.getHours() + 1);

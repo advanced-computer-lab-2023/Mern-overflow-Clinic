@@ -27,45 +27,52 @@ import { error } from "console";
 //     }
 // }
 const createHealthRecord = async (req: Request, res: Response) => {
- 
+  try {
+    const patientEmail = req.body.email;
+    const patientData = await patient.findOne({ email: patientEmail });
 
-    try {
-        const patientEmail = req.body.email;
-        const patientData = await patient.findOne({ email: patientEmail });
-
-        // If patient not found, return a 404 status
-        if (!patientData) {
-            console.log("here");
-            return res.status(404).json({ error: "Patient not found" });
-        }
-
-        req.body.doctor = req.params.id;
-        req.body.date = Date.now();
-        req.body.patient = patientData._id;
-
-        console.log(req.body);
-
-        const newHealthRecord = await HealthRecords.create(req.body);
-        const newHealthRecordId = newHealthRecord._id;
-
-        // Find the patient by email and update their healthRecords array
-        const updatedPatient = await patient.findOneAndUpdate(
-            { email: patientEmail },
-            { $push: { healthRecords: newHealthRecordId } },
-            { new: true } 
-        );
-
-        // If patient not found, return a 404 status
-        if (!updatedPatient) {
-
-             res.status(404).json({ error: "Patient not found" });
-        }
-
-        res.status(200).json(newHealthRecordId);
-    } catch (err) {
-        console.log(err);
-        res.status(400).json(err);
+    // If patient not found, return a 404 status
+    if (!patientData) {
+      console.log("here");
+      return res.status(404).json({ message: "Patient not found" });
     }
+
+    req.body.doctor = req.params.id;
+    req.body.date = Date.now();
+    req.body.patient = patientData._id;
+
+    console.log(req.body);
+
+    const newHealthRecord = await HealthRecords.create(req.body);
+
+    const retrievedHealthRecord = await HealthRecords.findOne({
+      patient: req.body.patient,
+      doctor: req.params.id,
+      date: req.body.date,
+      diagnosis: req.body.diagnosis,
+
+      // Add more conditions based on your schema to uniquely identify the health record
+    });
+
+    // If the health record is not found, handle it accordingly
+    if (!retrievedHealthRecord) {
+      return res.status(404).json({ message: 'Health record not found' });
+    }
+
+    const newHealthRecordId = retrievedHealthRecord._id;
+
+    // Find the patient by email and update their healthRecords array
+    const updatedPatient = await patient.findOneAndUpdate(
+      { email: patientEmail },
+      { $push: { healthRecords: newHealthRecordId } },
+      { new: true }
+    );
+
+    res.status(200).json({ message: 'Health record created successfully', healthRecordId: newHealthRecordId });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({ message: 'Error creating health record', error: err });
+  }
 };
 
 

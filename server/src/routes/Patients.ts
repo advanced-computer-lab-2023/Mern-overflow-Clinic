@@ -15,6 +15,8 @@ router.get(
 );
 router.get("/:id/family", patientController.listFamilyMembers);
 router.get("/:id/wallet", isAuthenticated, patientController.viewWallet);
+router.get("/:id/healthRecords", patientController.viewMyHealthRecords);
+
 //added this new route
 router.post(
   "/:id/prescriptionsFilter",

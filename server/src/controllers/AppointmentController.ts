@@ -28,7 +28,6 @@ const createAppointmentForFamilyMember = async (
 ) => {
   try {
     console.log(req.body);
-    req.body.price = 100;
     const docID = req.body.doctor;
     req.body.duration = 1;
     req.body.status = "upcoming";
@@ -46,7 +45,7 @@ const createAppointmentForFamilyMember = async (
       if (!doctorObj || doctorObj === undefined) {
         return res.status(404).json({ message: 'Doctor not found' });
       }
-
+      req.body.price = doctorObj.hourlyRate*1;
       const dateToRemove = new Date(req.body.date).toDateString(); // Convert to string
 
       // Assuming availableStartTimeSlots is an array of Date objects

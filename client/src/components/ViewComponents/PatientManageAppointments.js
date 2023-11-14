@@ -29,10 +29,15 @@ const PatientManageAppointments = ({ doctorId }) => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [docID, setDocID] = useState(id);
   const { userId } = useUser();
+  const [hourlyRate, setHourlyRate] = useState(null); 
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Fetch doctor's hourly rate
+        const doctorResponse = await axios.get(`http://localhost:8000/doctors/${docID}`);
+        setHourlyRate(doctorResponse.data.hourlyRate);
+
         const slotsResponse = await axios.get(`http://localhost:8000/doctors/${docID}/slots`);
         setSlots(slotsResponse.data);
 
@@ -148,6 +153,11 @@ const PatientManageAppointments = ({ doctorId }) => {
             }
             label="Booking for a relative?"
           />
+          {hourlyRate && (
+            <Typography variant="body1" sx={{ mb: 3 }}>
+              Doctor's Hourly Rate: EGP {hourlyRate}
+            </Typography>
+          )}
           <FormControl sx={{ mb: 3 }} fullWidth>
             <InputLabel htmlFor="slot-select">Select a Time Slot</InputLabel>
             <Select
@@ -157,11 +167,15 @@ const PatientManageAppointments = ({ doctorId }) => {
               onChange={handleSlotChange}
               label="Time Slot"
             >
-              {slots.map((slot) => (
-                <MenuItem key={slot} value={slot}>
-                  {`${formatDate(new Date(slot))} - ${formatDate(addOneHour(new Date(slot)))}`}
-                </MenuItem>
-              ))}
+              {slots.length === 0 ? (
+                <MenuItem disabled>No available time slots</MenuItem>
+              ) : (
+                slots.map((slot) => (
+                  <MenuItem key={slot} value={slot}>
+                    {`${formatDate(new Date(slot))} - ${formatDate(addOneHour(new Date(slot)))}`}
+                  </MenuItem>
+                ))
+              )}
             </Select>
           </FormControl>
 

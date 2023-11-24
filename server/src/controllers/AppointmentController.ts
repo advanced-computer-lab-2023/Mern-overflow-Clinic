@@ -6,25 +6,32 @@ import Patient from "../models/Patient.js";
 import Users from "../models/User.js";
 import { stat } from "fs";
 import dayjs from "dayjs";
+import Doctor from "../models/Doctor.js";
 
 const createAppointment = async (req: Request, res: Response) => {
+  //console.log("HELLO ");
   req.body.duration = 1;
   req.body.status = "upcoming";
   req.body.appointmentType = "regular";
+  //req.body.paid = false;
+  //req.body.price = (await Doctor.findById(req.body.dId))?.hourlyRate;
+
+  //console.log("BODY  ========" + req.body);
+  //console.log("DOCTOR ID" + req.body.dId);
   const newApt = appointment
     .create(req.body)
     .then((newApt) => {
       return res.status(200).json(newApt);
     })
     .catch((err) => {
-      console.log("error::::  "+err);
+      console.log("error::::  " + err);
       return res.status(400).json(err);
     });
 };
 
 const createAppointmentForFamilyMember = async (
   req: Request,
-  res: Response,
+  res: Response
 ) => {
   try {
     //console.log(req.body);
@@ -32,7 +39,7 @@ const createAppointmentForFamilyMember = async (
     req.body.duration = 1;
     req.body.status = "upcoming";
     req.body.appointmentType = "regular";
-    const id = req.params.id; 
+    const id = req.params.id;
     const flag = req.body.flag;
     const relation = req.body.relation;
 
@@ -43,18 +50,18 @@ const createAppointmentForFamilyMember = async (
       // Get the doctor and remove the date from availableStartTimeSlots
       const doctorObj = await doctor.findById(docID);
       if (!doctorObj || doctorObj === undefined) {
-        return res.status(404).json({ message: 'Doctor not found' });
+        return res.status(404).json({ message: "Doctor not found" });
       }
-      req.body.price = doctorObj.hourlyRate*1;
+      req.body.price = doctorObj.hourlyRate * 1;
       const dateToRemove = new Date(req.body.date).toDateString(); // Convert to string
 
       // Assuming availableStartTimeSlots is an array of Date objects
       if (doctorObj.availableSlotsStartTime !== undefined) {
-        doctorObj.availableSlotsStartTime = doctorObj.availableSlotsStartTime.filter(
-          (slot) => slot.toDateString() !== dateToRemove
-        );
+        doctorObj.availableSlotsStartTime =
+          doctorObj.availableSlotsStartTime.filter(
+            (slot) => slot.toDateString() !== dateToRemove
+          );
       }
-
 
       // Update the doctor in the database
       await doctor.findByIdAndUpdate(docID, {
@@ -70,16 +77,17 @@ const createAppointmentForFamilyMember = async (
 
       const doctorObj = await doctor.findById(docID);
       if (!doctorObj || doctorObj === undefined) {
-        return res.status(404).json({ message: 'Doctor not found' });
+        return res.status(404).json({ message: "Doctor not found" });
       }
 
       const dateToRemove = new Date(req.body.date).toDateString(); // Convert to string
 
       // Assuming availableStartTimeSlots is an array of Date objects
       if (doctorObj.availableSlotsStartTime !== undefined) {
-        doctorObj.availableSlotsStartTime = doctorObj.availableSlotsStartTime.filter(
-          (slot) => slot.toDateString() !== dateToRemove
-        );
+        doctorObj.availableSlotsStartTime =
+          doctorObj.availableSlotsStartTime.filter(
+            (slot) => slot.toDateString() !== dateToRemove
+          );
       }
 
       // Update the doctor in the database
@@ -127,11 +135,11 @@ const createFollowUp = async (req: Request, res: Response) => {
   const patientEmail = req.body.email;
 
   let iDate = new Date(req.body.date);
-    let userTimezoneOffset = iDate.getTimezoneOffset() * 60000;
+  let userTimezoneOffset = iDate.getTimezoneOffset() * 60000;
 
-    let utcDate = new Date(iDate.getTime() - userTimezoneOffset).toISOString();
+  let utcDate = new Date(iDate.getTime() - userTimezoneOffset).toISOString();
 
-    req.body.date = utcDate;
+  req.body.date = utcDate;
 
   // 2. Search for the patient with the given email in your database
   Patient.findOne({ email: patientEmail })

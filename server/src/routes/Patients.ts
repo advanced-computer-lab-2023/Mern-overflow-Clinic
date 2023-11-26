@@ -6,6 +6,7 @@ import bodyParser from "body-parser";
 import patientController from "../controllers/PatientController.js";
 import prescriptionController from "../controllers/PrescriptionController.js";
 import isAuthenticated from "../middlewares/permissions/isAuthenticated.js";
+import healthRecordController from "../controllers/HealthRecordController.js";
 
 const router = express.Router();
 router.use(bodyParser.json());
@@ -36,7 +37,9 @@ router.get("/:id/packages/discount", isAuthenticated, patientController.getPacka
 router.get("/:id/wallet", isAuthenticated, patientController.viewWallet);
 router.get("/:id/documents", isAuthenticated, patientController.readDocuments);
 router.get("/:id/document", isAuthenticated, patientController.readPath);
-router.get("/:id/healthRecords", patientController.viewMyHealthRecords);
+// router.get("/:id/healthRecords",patientController.viewMyHealthRecords);
+router.get("/:id/healthRecords",isAuthenticated,healthRecordController.patientListAllHealthRecords);
+
 
 //POST
 router.post("/", patientController.createPatient);

@@ -946,26 +946,79 @@ const filterDoctor = async (req: Request, res: Response) => {
 };
 
 
-const viewMyHealthRecords = async (req: Request, res: Response) => {
+// const viewMyHealthRecords = async (req: Request, res: Response) => {
    
+//     const pid = req.params.id;
+//     const pat = await patient.findById(pid).exec();
+    
+//     if(!pat || pat === undefined){
+//         return res.status(404).send("no patiend found with this id");
+//     }
+//     const arr: any[]=[];
+//     if(pat.healthRecords && pat.healthRecords.length>0){
+//         for(const id of pat.healthRecords){
+//             const hr = await healthRecord.findById(id).exec();
+//             console.log(hr);
+//             if(hr !==undefined && hr){
+//                 arr.push(hr);
+//             }
+//         }
+//     }
+//     const result: any[]=[];
+//     for(const hR of arr){
+//         const doc = await doctor.findById(hR.doctor).exec();
+//         if(doc !== undefined && doc){
+//             result.push(
+//                 {
+//                     doctor:doc.name,
+//                     diagnosis:hR.diagnosis,
+//                     date:hR.date
+//                 }
+//             );
+//         }
+
+//     }
+
+//     res.status(200).json(result);
+
+// }
+const viewMyHealthRecords = async (req: Request, res: Response) => {
     const pid = req.params.id;
     const pat = await patient.findById(pid).exec();
-    
-    if(!pat || pat === undefined){
-        return res.status(404).send("no patiend found with this id");
+
+    if (!pat) {
+        return res.status(404).send("No patient found with this id");
     }
-    const arr: any[]=[];
-    if(pat.healthRecords && pat.healthRecords.length>0){
-        for(const id of pat.healthRecords){
+
+    const arr: any[] = [];
+
+    if (pat.healthRecords && pat.healthRecords.length > 0) {
+        for (const id of pat.healthRecords) {
             const hr = await healthRecord.findById(id).exec();
-            if(hr){
+
+            if (hr) {
                 arr.push(hr);
             }
         }
     }
-    res.status(200).json(arr);
 
-}
+    const result: any[] = [];
+
+    for (const hR of arr) {
+        const doc = await doctor.findById(hR.doctor).exec();
+
+        if (doc) {
+            result.push({
+                doctor: doc.name,
+                diagnosis: hR.diagnosis,
+                date: hR.date, // Assuming you have a function formatDate for date formatting
+            });
+        }
+    }
+
+    res.status(200).json(result);
+};
+
 
 const viewWallet = async (req: Request, res: Response) => {
     const pId = req.params.id;

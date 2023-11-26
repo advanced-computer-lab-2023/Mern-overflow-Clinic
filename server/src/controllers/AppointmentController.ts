@@ -119,6 +119,7 @@ const createAppointmentForFamilyMember = async (
 
 const createFollowUp = async (req: Request, res: Response) => {
   req.body.doctor = req.params.id;
+  req.body.price = 0;
   req.body.duration = 1;
   req.body.status = "upcoming";
   req.body.appointmentType = "followup";

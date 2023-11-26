@@ -113,11 +113,50 @@ const listAllHealthRecords = async (req: Request, res: Response) => {
     });
 };
 
+// const patientListAllHealthRecords = async (req: Request, res: Response) => {
+//   const HealthRecordss = HealthRecords.find({"patient": req.params.id})
+//     .then( (HealthRecordss) => {
+
+//       res.status(200).json(HealthRecordss)
+    
+//     })
+//     .catch((err) => {
+//       return res.status(400).json(err);
+//     });
+// };
+
+const patientListAllHealthRecords = async (req: Request, res: Response) => {
+  try {
+    const HealthRecordss = await HealthRecords.find({ "patient": req.params.id }).exec();
+
+    const result: any[] = [];
+
+    for (const hR of HealthRecordss) {
+      const doc = await doctor.findById(hR.doctor).exec();
+
+      if (doc) {
+        result.push({
+          doctor: doc.name,
+          diagnosis: hR.diagnosis,
+          date: hR.date,
+        });
+      }
+    }
+
+    res.status(200).json(result);
+  } catch (err) {
+    return res.status(400).json(err);
+  }
+};
+
+
+
 export default {
   createHealthRecord,
   readHealthRecord,
   updateHealthRecord,
   deleteHealthRecord,
   listAllHealthRecords,
+  patientListAllHealthRecords
 };
 

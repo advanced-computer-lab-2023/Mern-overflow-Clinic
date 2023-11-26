@@ -21,7 +21,6 @@ const ScheduleFollowUp = () => {
 
   const [emails, setEmails] = useState([]);
   const [selectedEmail, setSelectedEmail] = useState("");
-  const [price, setPrice] = useState("");
   const [date, setDate] = useState("");
   const [statusMessage, setStatusMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
@@ -65,7 +64,7 @@ const ScheduleFollowUp = () => {
     // Clear the status message
     setStatusMessage("");
 
-    const dataToServer = { email: selectedEmail, price, date };
+    const dataToServer = { email: selectedEmail, date };
     axios
       .post(`http://localhost:8000/doctors/${id}/createFollowup`, dataToServer)
       .then((response) => {
@@ -73,7 +72,6 @@ const ScheduleFollowUp = () => {
         setStatusMessage("Follow-up scheduled successfully");
         setIsSuccess(true);
         // Clear the input fields
-        setPrice("");
         setDate("");
         setSelectedEmail(""); // Reset email to the default value
       })
@@ -113,7 +111,7 @@ const ScheduleFollowUp = () => {
               ))}
             </Select>
           </FormControl>
-          <FormControl sx={{ mb: 3 }} fullWidth>
+          {/* <FormControl sx={{ mb: 3 }} fullWidth>
             <InputLabel htmlFor="outlined-adornment-amount"></InputLabel>
             <TextField
               value={price}
@@ -129,7 +127,7 @@ const ScheduleFollowUp = () => {
               }
               label="Session Price"
             />
-          </FormControl>
+          </FormControl> */}
           <TextField
             sx={{ mb: 3 }}
             value={date}

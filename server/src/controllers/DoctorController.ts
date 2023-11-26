@@ -44,6 +44,8 @@ const createDoctor = async (req: Request, res: Response) => {
           const newDoctor = doctor
             .create(dataToServer)
             .then((newDoctor) => {
+              newDoctor.wallet = 0;
+              newDoctor.save();
               return res.status(200).json(newDoctor);
             })
             .catch((err) => {
@@ -337,9 +339,15 @@ const viewWallet = async (req: Request, res: Response) => {
 };
 
 const addFreeSlots = async (req: Request, res: Response) => {
-  console.log(req.body);
+  // console.log(req.body);
   const id = req.params.id;
-  const startTime = new Date(req.body.date);
+  let iDate = new Date(req.body.date);
+  let userTimezoneOffset = iDate.getTimezoneOffset() * 60000;
+  
+  let utcDate = new Date(iDate.getTime() - userTimezoneOffset).toISOString();
+  
+  const startTime = utcDate;
+    // let inputDate = utcDate;
   const currentTime = new Date();
   try {
     if (!startTime || startTime === undefined) {
@@ -348,6 +356,7 @@ const addFreeSlots = async (req: Request, res: Response) => {
     const doc = await doctor.findById(id);
 
     if (!doc || doc === undefined) {
+      console.log("LINE 351");
       return res.status(404).json({ message: "Doctor not found." });
     }
 
@@ -359,9 +368,11 @@ const addFreeSlots = async (req: Request, res: Response) => {
 
     const cont = await Contract.find({"doctor":id}).exec();
     if(!cont || cont === undefined){
+      console.log("LINE 363");
       return res.status(404).json({ message: "no contracts found"});
     }
     if(cont.length ===0){
+      console.log("LINE 367");
       return res.status(404).json( {message: "no contracts found"});
     }
     if(cont[0].status !== "accepted"){
@@ -372,7 +383,7 @@ const addFreeSlots = async (req: Request, res: Response) => {
 
     if (doc.availableSlotsStartTime) {
       for (const dt of doc.availableSlotsStartTime) {
-        if (dt.toISOString() === startTime.toISOString()) {
+        if (dt.toISOString() === startTime) {
           console.log("403");
 
           return res
@@ -381,7 +392,7 @@ const addFreeSlots = async (req: Request, res: Response) => {
         }
       }
     }
-    if (startTime <= currentTime) {
+    if (startTime <= currentTime.toISOString()) {
       console.log("405");
 
       return res.status(405).json({ message: "You cannot use a past date." });
@@ -396,7 +407,7 @@ const addFreeSlots = async (req: Request, res: Response) => {
         appointmentStartTime.getTime() + appointment.duration * 60 * 1000,
       );
 
-      if (startTime < appointmentEndTime && startTime >= appointmentStartTime) {
+      if (startTime < appointmentEndTime.toISOString() && startTime >= appointmentStartTime.toISOString()) {
         conflictingAppointments.push(appointment);
       }
     }
@@ -412,7 +423,7 @@ const addFreeSlots = async (req: Request, res: Response) => {
         });
     }
 
-    doc.availableSlotsStartTime?.push(startTime);
+    doc.availableSlotsStartTime?.push(new Date(startTime));
 
     // Save the updated doctor document
     const savedDoc = await doc.save();

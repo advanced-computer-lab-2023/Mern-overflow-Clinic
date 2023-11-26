@@ -27,7 +27,7 @@ import PatientBookAppointments from "./pages/patient/patientBookAppointment";
 import AddHealthRecords from "./pages/doctor/DoctorAddHealthRecords";
 import PatientManageDocuments from './pages/patient/PatientManageDocuments';
 import PatientManagePackages from './pages/patient/PatientManagePackages';
-import PatientManageHealthRecords from "./pages/patient/PatientManageHealthRecords";
+import PatientPayPackage from "./components/ViewComponents/PatientPayPackage";import PatientManageHealthRecords from "./pages/patient/PatientManageHealthRecords";
 import AddFamilyMember from "./components/formComponents/linkFamilyMembers";
 import PatientManageFamilyLinks from "./pages/patient/PatientManageFamilyLinks";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -142,6 +142,10 @@ function App() {
     {
       path: "/patient/linkFamilyMember",
       element: <PatientManageFamilyLinks />,
+    },
+    {
+      path: "/patient/pay/package",
+      element: <PatientPayPackage />,
     },
     {
       path: "/patient/healthRecords",

@@ -241,7 +241,9 @@ import {
                                   </>
                                 ) : null))
                   }
-                  <TableCell>{new Date(selectedPatient.packageRenewalDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</TableCell>
+                  {selectedPatient && selectedPatient.package &&
+                    <TableCell>{new Date(selectedPatient.packageRenewalDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</TableCell>
+                  }
                   {selectedPatient && selectedPatient.package && 
                     selectedPatient.subscribedToPackage === true && 
                     new Date(selectedPatient.packageRenewalDate).getTime() > Date.now() ? (

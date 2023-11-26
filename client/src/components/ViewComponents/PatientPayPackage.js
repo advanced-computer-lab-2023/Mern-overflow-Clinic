@@ -9,9 +9,12 @@ import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import { useUser } from "../../userContest";
+import { useLocation } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import PatientDashboard from "../../pages/patient/PatientDashboard";
 
-export default function PatientPayMethod(props) {
+
+export default function PatientPayPackage(props) {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [total, setTotal] = useState(0);
@@ -26,7 +29,11 @@ export default function PatientPayMethod(props) {
     const [successMessage, setSuccessMessage] = useState('');
 
     const { userId, setUserId, userRole, setUserRole } = useUser();
+    const location = useLocation();
     const id = userId;
+    const packageId = location.state? location.state.packageId : null;
+    const famId = location.state? location.state.famId : null;
+    const navigate = useNavigate();
 
     const handleChange = (event) => {
         setValue(event.target.value);
@@ -41,19 +48,16 @@ export default function PatientPayMethod(props) {
     };
 
     const handleCredit = (event) => {
-        props.setPaymentMethod("Credit Card");
-        setCash(false);
-        setCredit(true);
-        setWallet(false);
-        console.log("appiddddd"+props.appid);
         {
-            fetch("http://localhost:8000/create-checkout-session/appointments", {
+            fetch("http://localhost:8000/create-checkout-session/healthPackages", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    appId: props.appid
+                    id: id,
+                    packageId: packageId,
+                    famId: famId,
                 }),
             })
                 .then(async res => {
@@ -73,12 +77,8 @@ export default function PatientPayMethod(props) {
     };
 
     const handleWallet = (event) => {
-        props.setPaymentMethod("Wallet");
-        setCash(false);
-        setCredit(false);
-        setWallet(true);
-        console.log(props.appid)
-        axios.post('http://localhost:8000/walletPayment/appointments', {id:props.appid,pId:id}, {
+
+        axios.post("http://localhost:8000/walletPayment/healthPackages", {id: id, packageId: packageId, famId: famId}, {
   headers: {
     'Content-Type': 'application/json', // Set the content type based on your API requirements
     // Add other headers as needed
@@ -100,10 +100,11 @@ export default function PatientPayMethod(props) {
     };
 
     return (
+
         <Container maxWidth="md">
             {userRole === "Patient" ? (
                 <>
-                {/* <PatientDashboard title="Payment" /> */}
+                <PatientDashboard title="Payment" />
                 <Snackbar open={errorOpen} autoHideDuration={3000} onClose={handleSuccessClose}>
                     <Alert elevation={6} variant="filled" onClose={handleSuccessClose}  severity="error">
                         {errorMessage}

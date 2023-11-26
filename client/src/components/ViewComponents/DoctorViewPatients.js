@@ -36,7 +36,7 @@ export default function DoctorViewPatients() {
       })
       .then((res) => {
         console.log(res.data);
-        console.log("Hererrrrrrrrrrrrreeee: "+(res.data)[1].healthRecords.lenth);
+        // console.log("Hererrrrrrrrrrrrreeee: "+(res.data)[1].healthRecords.length);
         setData(res.data);
       })
       .catch((error) => {
@@ -117,6 +117,7 @@ export default function DoctorViewPatients() {
             <TableCell key="dateOfBirth">Date of Birth</TableCell>
             <TableCell key="gender">Gender</TableCell>
             <TableCell key="mobileNumber">Mobile Number</TableCell>
+            <TableCell key="files">Records</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -129,6 +130,14 @@ export default function DoctorViewPatients() {
                   <TableCell>{row.dateOfBirth}</TableCell>
                   <TableCell>{row.gender}</TableCell>
                   <TableCell>{row.mobileNumber}</TableCell>
+                  <TableCell>{
+                    <ul>
+                      {row.files.map((file, index) => (
+                      <li key={index}>{file.filename}
+                      <a href = {`http://localhost:8000/uploads/` + file.filename} target = "_blank">            View</a></li>
+                      ))}
+                    </ul>}
+                  </TableCell>
                   <TableCell>
                     <Button onClick={() => setSelectedPatient(row)}>
                       Select Patient
@@ -158,9 +167,9 @@ export default function DoctorViewPatients() {
             );
           })}
 
-          <Typography>Health Records</Typography>
+          {/* <Typography>Health Records</Typography> */}
 
-          <Typography> {`items: ${selectedPatient.healthRecords.lenth}`}</Typography>
+          {/* <Typography> {`items: ${selectedPatient.healthRecords}`}</Typography> */}
 
 
           {/* {selectedPatient.healthRecords.map((item) => {

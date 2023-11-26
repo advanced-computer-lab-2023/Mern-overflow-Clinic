@@ -33,6 +33,7 @@ export interface IPatient {
     emergencyContact: emergencyContact[];
     files?: document[];
     familyMembers?: familyMember[];
+    revFamilyMembers?: Types.ObjectId[];
     prescriptions?: Types.ObjectId[];
     package?: Types.ObjectId;
     //packageSubscribed?: Types.ObjectId;
@@ -80,6 +81,7 @@ const PatientSchema = new Schema<IPatient>({
             // package: { type: mongoose.Types.ObjectId, ref: "Package", required: false },
         }
     ],
+    revFamilyMembers: [{ type: Schema.Types.ObjectId, ref: "Patient", required: false }],
     prescriptions: [{ type: Schema.Types.ObjectId, ref: "Prescription", required: false }],
     package: { type: Schema.Types.ObjectId, ref: "Package", required: false },
     //packageSubscribed: { type: Number, required: false },

@@ -113,7 +113,7 @@ export default function DoctorAddSlots() {
                 {slots.map((slot, index) => (
                   <TableRow key={index}>
                     <TableCell>
-                      {dayjs(slot).format("MMMM D, YYYY h:mm A")}
+                      {dayjs(slot).subtract(2, 'hour').format("MMMM D, YYYY h:mm A")}
                     </TableCell>
                   </TableRow>
                 ))}

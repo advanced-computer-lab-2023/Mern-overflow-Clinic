@@ -12,6 +12,7 @@ import { Request, Response } from "express";
 import Stripe from "stripe";
 import axios from "axios";
 import Doctor from "../models/Doctor.js";
+import { CompletionInfoFlags } from "typescript";
 const stripe = new Stripe(
   "sk_test_51O9bKeHqEqnZHrbzSpBS6JOvMryqZfvDolGqcPDOb19E9gXdSe3rKy5UbUgCOmqLVFyHxn1U0Fp7G3IFujKuYhn500g0lhxoDO"
 );
@@ -25,6 +26,7 @@ const payCCAppointment = async (req: Request, res: Response) => {
     const dId = (await appointment.findById(req.body.appId))?.doctor;
     console.log("doctor id " + dId);
     const doc = await Doctor.findById(dId);
+    console.log("doctor entry from appointment " + doc);
     if (appPrice !== undefined) {
       if (doc) {
         const update = {
@@ -44,6 +46,7 @@ const payCCAppointment = async (req: Request, res: Response) => {
           update,
           options
         );
+        console.log(updateWallet);
         console.log("CHANGED WALLET " + doc.wallet);
       }
     }
@@ -138,6 +141,28 @@ const payWalletAppointment = async (req: Request, res: Response) => {
 
       const newWallet =
         walletValue && appPrice ? walletValue - appPrice : undefined;
+      const dId = (await appointment.findById(appId))?.doctor;
+      const doc = await Doctor.findById(dId);
+      if (doc) {
+        const update = {
+          // Define the fields you want to update and their new values
+          wallet: doc.wallet && appPrice ? doc.wallet + appPrice : undefined,
+        };
+
+        // Set options for the update
+        const options = {
+          new: true, // Return the updated document after the update
+        };
+
+        // Use findOneAndUpdate to find and update the document
+        const filter = { _id: dId };
+        const updateWallet = await Doctor.findOneAndUpdate(
+          filter,
+          update,
+          options
+        );
+      }
+
       res
         .status(200)
         .send("Payment successful , new wallet value :" + newWallet);

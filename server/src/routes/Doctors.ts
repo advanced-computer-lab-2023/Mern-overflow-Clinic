@@ -64,7 +64,7 @@ router.put("/:id", isAuthenticated, doctorController.updateDoctor);
 router.put("/:id/rejectContract", isAuthenticated, doctorController.rejectContract);
 router.put("/:id/addSlots", isAuthenticated, doctorController.addFreeSlots);
 
-router.delete("/:id", isAuthenticated, doctorController.deleteDoctor);
-router.delete("/:id", isAuthenticated, doctorController.deleteDoctor);
+//router.delete("/:id", isAuthenticated, doctorController.deleteDoctor);
+//router.delete("/:id", isAuthenticated, doctorController.deleteDoctor);
 
 export default router;

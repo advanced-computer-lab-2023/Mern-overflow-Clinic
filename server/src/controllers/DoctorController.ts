@@ -122,18 +122,21 @@ const deleteDoctor = async (req: Request, res: Response) => {
     .findByIdAndDelete({ _id: id })
     .then((doc) => {
       res.status(200).json(doc);
-      if(doc !==null){
-        for(const file of doc.files){
-            const filePath = `./src/uploads/` + file.filename;
-            fs.unlink(filePath, (err) => {
-                if (err) {
-                    console.error(err);
-                    return res.status(500).json({ message: "Error deleting file from server" });
-                 }
-              })
-            }
-          }
-    })
+
+      // if(doc !==null){
+      //   for(const file of doc.files){
+      //       const filePath = `./src/uploads/` + file.filename;
+      //       fs.unlink(filePath, (err) => {
+      //           if (err) {
+      //               console.error(err);
+      //               return res.status(500).json({ message: "Error deleting file from server" });
+      //            }
+      //         })
+      //       }
+      //     }
+          
+    }
+    )
     .catch((err) => {
       return res.status(400).json(err);
     });
@@ -527,7 +530,7 @@ export default {
   createDoctor,
   readDoctor,
   updateDoctor,
-  deleteDoctor,
+  // deleteDoctor,
   listDoctors,
   listDoctorPatients,
   selectPatient,

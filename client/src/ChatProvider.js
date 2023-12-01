@@ -1,23 +1,29 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+
 import { useHistory } from "react-router-dom";
+
+import { useUser } from "./userContest"
 
 const ChatContext = createContext();
 
 const ChatProvider = ({ children }) => {
+
   const [selectedChat, setSelectedChat] = useState();
   const [user, setUser] = useState();
   const [notification, setNotification] = useState([]);
   const [chats, setChats] = useState();
+  const { userId, setUserId, userRole, setUserRole } = useUser();
 
-  const history = useHistory();
+
 
   useEffect(() => {
-    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    
+
+    const userInfo = {userId:userId, userRole:userRole};
     setUser(userInfo);
 
-    if (!userInfo) history.push("/");
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [history]);
+  },);
 
   return (
     <ChatContext.Provider

@@ -37,6 +37,9 @@ import AdminEditPackage from "./pages/admin/AdminEditPackage";
 import axios from "axios";
 import PatientPayAppointment from "./pages/patient/PatientPayAppointment";
 import NotFoundPage from "./NotFoundPage";
+import Chatpage from "./pages/Chatpage";
+
+import ChatProvider from "./ChatProvider";
 
 
 function App() {
@@ -196,7 +199,7 @@ function App() {
 
     {
       path:"/chat",
-      element:""
+      element: <Chatpage/>
     }
   ]);
 

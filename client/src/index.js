@@ -3,10 +3,15 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import { UserProvider } from './userContest';
-
+import ChatProvider from './ChatProvider';
+import { ChakraProvider } from "@chakra-ui/react";
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
+  <ChakraProvider>
   <UserProvider>
-  <App />
-</UserProvider>,
+    <ChatProvider>
+    <App />
+    </ChatProvider>
+</UserProvider>
+</ChakraProvider>
 );

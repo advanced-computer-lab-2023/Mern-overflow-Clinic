@@ -193,6 +193,11 @@ function App() {
     },
 
     { path: "*", element: <NotFoundPage /> },
+
+    {
+      path:"/chat",
+      element:""
+    }
   ]);
 
   return (

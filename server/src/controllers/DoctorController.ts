@@ -4,6 +4,7 @@ import appointment from "../models/appointment.js";
 import patient from "../models/Patient.js";
 import user from "../models/User.js";
 import Contract from "../models/Contract.js";
+import medicine from "../models/medicine.js";
 import fs from 'fs';
 
 const createDoctor = async (req: Request, res: Response) => {
@@ -265,6 +266,25 @@ const listMyPatients = async (req: Request, res: Response) => {
   }
 };
 
+const createMedicine = async (req: Request, res: Response) => {
+  //add a medicine with its details (active ingredients) , price and available quantity 
+  try {
+    var overTheCounter = req.body.overTheCounter;
+    if (overTheCounter == null)
+      overTheCounter = false;
+    if (req.body.availableQuantity === 0)
+      res.status(400).send("cannot add medicine with 0 available quantity");
+    else {
+      const NewMedecine = await medicine.create(req.body);
+      res.status(200).send(NewMedecine);
+    }
+  } catch (error) {
+    res.status(400).send(error);
+    console.log(error)
+  }
+}
+
+
 const selectPatientByName = async (req: Request, res: Response) => {
   const id = req.params.id;
   const patientName = req.body.patientName.toLowerCase();
@@ -525,6 +545,7 @@ const listSlots = async (req: Request, res: Response) => {
 
 export default {
   createDoctor,
+  createMedicine,
   readDoctor,
   updateDoctor,
   deleteDoctor,

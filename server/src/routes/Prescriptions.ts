@@ -11,11 +11,15 @@ router.get("/:id", isAuthenticated, prescriptionController.selectPrescription);
 
 //POST
 router.post("/doctors/:dId/patients/:pId/addPrescription", isAuthenticated, prescriptionController.createPrescription);
+router.post("/:id/addMedicine", prescriptionController.addMedicine);
+
 
 //PUT
 router.put("/:id", isAuthenticated, prescriptionController.updatePrescription);
 
 //DELETE
 router.delete("/:id", isAuthenticated, prescriptionController.deletePrescription);
+router.delete("/:id/deleteMedicine", prescriptionController.deleteMedicine);
+
 
 export default router;

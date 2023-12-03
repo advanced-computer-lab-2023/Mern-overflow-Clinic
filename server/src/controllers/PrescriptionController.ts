@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import Prescription from '../models/Prescription.js';
 import Patient from '../models/Patient.js';
 import Doctor from '../models/Doctor.js';
+import Medicine from '../models/medicine.js';
 
 
 const createPrescription = async (req: Request, res: Response) => {
@@ -22,6 +23,11 @@ const viewPatientPrescription = async (req: Request, res: Response) => {
   try {
     console.log(id)
     const prescriptions = await Prescription.find({ "patient": id }).populate('doctor').populate('patient');
+    // for(const pres of prescriptions){
+    //              for(const medId of pres.medicine){
+    //               await pres.populate('medId')
+    //              }
+    //           }     
     console.log(prescriptions)
     if (prescriptions.length === 0) {
 return res.status(200).json(prescriptions);
@@ -30,6 +36,76 @@ return res.status(200).json(prescriptions);
     }
   } catch (err) {
 return res.status(400).json(err);
+  }
+};
+
+const addMedicine = async (req: Request, res: Response) => {
+    
+  const presId = req.params.id;
+  const newMedicineId = req.body.mId;
+  //console.log(id)
+  //console.log("File in BE : " + JSON.stringify(fileInfo))
+  try {
+      const pres = await Prescription.findById(presId);
+
+      if (!pres) {
+          return res.status(404).json({ message: "Prescription not found" });
+      } else {
+          if(pres.medicine !== undefined){
+              // i want to loop on the list of medicines of pres
+              for(const medId of pres.medicine){
+                  // const med = await Medicine.findById(medId);
+                  // const newMed = await Medicine.findById(newMedicineId)
+                  if(medId.equals(newMedicineId)){
+                      return res.status(400).json({ message: "Medicine already exists in the prescription" });
+                  }
+              }      
+          }
+            
+              pres.medicine?.push(newMedicineId);
+              await pres.save();
+  
+              res.status(200).json(pres);           
+      }
+
+  } catch (err) {
+      console.error(err);
+      return res.status(500).json({ message: "Server error" });
+  }
+};
+
+const deleteMedicine = async (req: Request, res: Response) => {
+    
+  const presId = req.params.id;
+  const medicineId = req.body.mId;
+  
+  try {
+      const pres = await Prescription.findById(presId);
+
+      if (!pres) {
+          return res.status(404).json({ message: "Patient not found" });
+      } else {
+
+          
+          // let newFiles = pat.files;
+          // if (newFiles === undefined) {
+          //     newFiles = [];
+          const newPrescription= [];
+          if(pres.medicine !== undefined){
+              for (const medId of pres.medicine){
+                  if(!medId.equals(medicineId)){
+                          newPrescription.push(medId);
+                  }          
+      }
+                  pres.medicine = newPrescription;
+                  await pres.save();   
+                  res.status(200).json(pres); 
+    }
+  }
+}
+   catch (err) {
+      console.error(err);
+      return res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -143,5 +219,7 @@ export default {
   updatePrescription,
   deletePrescription,
   viewPatientPrescription,
-  filterPrescriptions
+  filterPrescriptions,
+  addMedicine,
+  deleteMedicine
 }

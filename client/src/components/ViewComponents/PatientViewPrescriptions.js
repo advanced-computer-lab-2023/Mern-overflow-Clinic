@@ -149,7 +149,13 @@ export default function PatientViewPrescriptions() {
               <TableRow key={row.patient?.name}>
                 <TableCell>{row.patient?.name}</TableCell>
                 <TableCell>{row.doctor?.name}</TableCell>
-                {row.medicine[0] && <TableCell>{row.medicine[0]}</TableCell>}
+                <TableCell>{
+                    <ul>
+                      {row.medicine.map((medicine, index) => (
+                      <li key={index}>{medicine} </li>
+                      ))}
+                    </ul>}
+                  </TableCell>
 
                 <TableCell>{row.filled.toString()}</TableCell>
                 <TableCell>{row.date}</TableCell>

@@ -152,7 +152,7 @@ export default function PatientViewPrescriptions() {
                 <TableCell>{
                     <ul>
                       {row.medicine.map((medicine, index) => (
-                      <li key={index}>{medicine} </li>
+                      <li key={index}>{medicine.medId} | Dosage: {medicine.dailyDosage} per day</li>
                       ))}
                     </ul>}
                   </TableCell>

@@ -31,7 +31,7 @@ router.get("/:id/relatives", isAuthenticated, patientController.readFamilyMember
 router.get("/doctors/:dId", isAuthenticated, patientController.selectDoctor);
 router.get("/doctorsSearch", isAuthenticated, patientController.selectDoctorByNameAndSpeciality);
 router.get("/:id/price", isAuthenticated, patientController.listDoctorsBySessionPrice);
-router.get("/:id/prescriptions", isAuthenticated, prescriptionController.viewPatientPrescription);
+router.get("/:pId/prescriptions", isAuthenticated, prescriptionController.viewPatientPrescription);
 router.get("/:id/packages", isAuthenticated, patientController.listPatientPackages);
 // router.get("/:id/packages/:pId/discount", isAuthenticated, patientController.getPackageDiscount);
 router.get("/:id/wallet", isAuthenticated, patientController.viewWallet);

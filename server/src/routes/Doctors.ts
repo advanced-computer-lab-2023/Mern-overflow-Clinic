@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import doctorController from "../controllers/DoctorController.js";
 import patientController from "../controllers/PatientController.js";
+import prescriptionController from "../controllers/PrescriptionController.js";
 import multer from 'multer';
 import { Request, Response, NextFunction } from 'express';
 import fs from 'fs';
@@ -48,6 +49,7 @@ router.get("/:id/registeredPatients", isAuthenticated, doctorController.listMyPa
 router.get("/:id/patients/:pId", isAuthenticated, doctorController.selectPatient);
 router.get("/:id/search", isAuthenticated, doctorController.selectPatientByName);
 router.get("/:id/res", isAuthenticated, doctorController.listAllMyPatientsUpcoming);
+router.get("/:dId/prescriptions", isAuthenticated, prescriptionController.viewDoctorPrescription);
 
 router.post("/filter", isAuthenticated, patientController.filterDoctor);
 // router.post("/createMedicine", doctorController.createMedicine);

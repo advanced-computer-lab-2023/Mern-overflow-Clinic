@@ -1,4 +1,4 @@
-import mongoose, { Schema, model } from "mongoose";
+import mongoose, { Schema, Types, model } from "mongoose";
 import User from "./User.js";
 
 export interface IDoctor {
@@ -16,6 +16,7 @@ export interface IDoctor {
     speciality: string;
     wallet: number;
     availableSlotsStartTime?: Date[];
+    prescriptions?: Types.ObjectId[];
 }
 
 interface document {
@@ -43,6 +44,7 @@ const doctorShema = new Schema<IDoctor>({
     status: { type: String, required: true, lowercase: true, enum: ['pending', 'accepted', 'rejected'] },
     wallet:{ type: Number, required: true , default: 0.0},
     availableSlotsStartTime: { type: [Date], required: false, default: [] },
+    prescriptions: [{ type: Schema.Types.ObjectId, ref: "Prescription", required: false }],
 })
 doctorShema.pre('save', function(next) {
     if (this.isModified('name')) {

@@ -8,43 +8,47 @@ import User from '../models/User.js';
 //@route           POST /api/chat/
 //@access          Protected
 const accessChat = asyncHandler(async (req:any, res:any): Promise<any> => {
-  const { userId } = req.body;
-
-  if (!userId) {
+  const { docId,patId } = req.body;
+  if (!docId) {
     console.log("UserId param not sent with request");
     return res.sendStatus(400);
   }
-
+  console.log("HERE1");
   let isChat = await Chat.find({
     isGroupChat: false,
     $and: [
-      { users: { $elemMatch: { $eq: req.user._id } } },
-      { users: { $elemMatch: { $eq: userId } } },
+      { users: { $elemMatch: { $eq: patId} } },
+      { users: { $elemMatch: { $eq: docId } } },
     ],
   })
     .populate("users", "-password")
     .populate("latestMessage");
 
+  console.log("HERE2");
   let usersInChat = await User.populate(isChat, {
     path: "latestMessage.sender",
     select: "name pic email",
   });
-
+  console.log("HERE3");
   if (usersInChat.length > 0) {
     res.send(usersInChat[0]);
   } else {
     var chatData = {
       chatName: "sender",
       isGroupChat: false,
-      users: [req.user._id, userId],
+      users: [patId, docId],
+      latestMessage:""
     };
-
+    console.log("HERE4 "+" "+patId+" "+docId);
     try {
+      console.log("Here5");
       const createdChat = await Chat.create(chatData);
+      console.log("Here6");
       const FullChat = await Chat.findOne({ _id: createdChat._id }).populate(
         "users",
         "-password"
       );
+      console.log("Here7 "+FullChat);
       res.status(200).json(FullChat);
     } catch (error) {
       res.status(400);

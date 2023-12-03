@@ -18,7 +18,7 @@ const chatSchema = new Schema<IChat>(
     isGroupChat: { type: Boolean, default: false ,required:true },
     users: [{ type: Schema.Types.ObjectId, ref: 'User' ,required:true }],
     latestMessage: { type: Schema.Types.ObjectId, ref: 'Message' ,required:true },
-    groupAdmin: { type: Schema.Types.ObjectId, ref: 'User', required:true },
+    groupAdmin: { type: Schema.Types.ObjectId, ref: 'User', required:false },
   },
   { timestamps: true }
 );

@@ -24,7 +24,7 @@ import userRoutes from "./routes/User.js";
 //const chatRoutes = require("./routes/chatRoutes");
 import chatRoutes from "./routes/chatRoutes.js";
 
-import messageRoutes from "./routes/chatRoutes.js";
+import messageRoutes from "./routes/messageRoutes.js";
 
 //const messageRoutes = require("./routes/messageRoutes");
 import MessageModel from "./models/messageModel.js";

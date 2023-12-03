@@ -1,6 +1,7 @@
 import { FormControl } from "@chakra-ui/form-control";
 import { Input } from "@chakra-ui/input";
 import { Box, Text } from "@chakra-ui/layout";
+import { useUser } from "../../userContest";
 import "./styles.css";
 import { IconButton, Spinner, useToast } from "@chakra-ui/react";
 import { getSender, getSenderFull } from "../config/ChatLogics";
@@ -19,6 +20,7 @@ const ENDPOINT = "http://localhost:8000"; // "https://talk-a-tive.herokuapp.com"
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
+  const { userId, setUserId, userRole, setUserRole } = useUser();
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState("");
@@ -39,6 +41,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     ChatState();
 
   const fetchMessages = async () => {
+    console.log("HELLOOOO");
     if (!selectedChat) return;
 
     try {
@@ -51,7 +54,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       setLoading(true);
 
       const { data } = await axios.get(
-        `/api/message/${selectedChat._id}`,
+        `http://localhost:8000/api/message/${selectedChat._id}`,
         config
       );
       setMessages(data);
@@ -59,6 +62,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
       socket.emit("join chat", selectedChat._id);
     } catch (error) {
+      console.log(error);
       toast({
         title: "Error Occured!",
         description: "Failed to Load the Messages",
@@ -72,6 +76,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
   const sendMessage = async (event) => {
     if (event.key === "Enter" && newMessage) {
+      console.log("HERRRE")
       socket.emit("stop typing", selectedChat._id);
       try {
         const config = {
@@ -82,16 +87,18 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         };
         setNewMessage("");
         const { data } = await axios.post(
-          "/api/message",
+          "http://localhost:8000/api/message",
           {
             content: newMessage,
             chatId: selectedChat,
+            userId:userId
           },
           config
         );
         socket.emit("new message", data);
         setMessages([...messages, data]);
       } catch (error) {
+        console.log(error);
         toast({
           title: "Error Occured!",
           description: "Failed to send the Message",

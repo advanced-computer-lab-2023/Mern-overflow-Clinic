@@ -2,6 +2,8 @@ import { Button } from "@chakra-ui/button";
 import { useDisclosure } from "@chakra-ui/hooks";
 import { Input } from "@chakra-ui/input";
 import { Box, Text } from "@chakra-ui/layout";
+import { Link as RouterLink } from "react-router-dom";
+import { useUser } from "../../userContest";
 import {
   Menu,
   MenuButton,
@@ -33,8 +35,11 @@ import UserListItem from "../userAvatar/UserListItem";
 import { ChatState } from "../../Context/ChatProvider";
 import { useNavigate } from "react-router-dom";
 
+
 function SideDrawer() {
   const navigate = useNavigate();
+
+  const { userId, setUserId, userRole, setUserRole } = useUser();
 
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
@@ -79,8 +84,8 @@ function SideDrawer() {
         },
       };
 
-      const { data } = await axios.get(`/api/user?search=${search}`, config);
-
+      const { data } = await axios.get(`http://localhost:8000/patients/chatWithDoctors/${userId}/${search}`);
+      console.log(data);
       setLoading(false);
       setSearchResult(data);
     } catch (error) {
@@ -95,20 +100,21 @@ function SideDrawer() {
     }
   };
 
-  const accessChat = async (userId) => {
+  const accessChat = async (docId) => {
+    console.log(docId);
     console.log(userId);
-
     try {
       setLoadingChat(true);
-      const config = {
-        headers: {
-          "Content-type": "application/json",
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
-      const { data } = await axios.post(`/api/chat`, { userId }, config);
 
-      if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
+      
+
+      const { data } = await axios.post(`http://localhost:8000/api/chat`, { docId:docId,patId:userId });
+
+      console.log("Chats:  "+JSON.stringify(data));
+      
+      if (!chats.find((c) => c._id === data._id)) {
+        setChats([data, ...chats]);
+      }
       setSelectedChat(data);
       setLoadingChat(false);
       onClose();
@@ -148,6 +154,14 @@ function SideDrawer() {
         </Text>
         <div>
           <Menu>
+
+          <RouterLink to="/patient/family">
+      <Button as="div" p={2.5} mr={4}>
+        <NotificationBadge count={notification.length} effect={Effect.SCALE} />
+        <span>Back to Dashboard</span>
+      </Button>
+    </RouterLink>
+
             <MenuButton p={1}>
               <NotificationBadge
                 count={notification.length}
@@ -214,6 +228,7 @@ function SideDrawer() {
                   key={user._id}
                   user={user}
                   handleFunction={() => accessChat(user._id)}
+
                 />
               ))
             )}

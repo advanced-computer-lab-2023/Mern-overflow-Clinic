@@ -6,16 +6,14 @@ import Doctor from '../models/Doctor.js';
 
 const createPrescription = async (req: Request, res: Response) => {
   try {
-    const newPrescriptionData = req.body;
-
-    newPrescriptionData.filled = false;
-
-    const newPrescription = await Prescription.create(newPrescriptionData);
-
-return res.status(200).json(newPrescription);
+    const docId = req.params.dId;
+    const patientId = req.params.pId;
+    const newBody = {"doctor": docId, "patient": patientId, ...req.body };
+    const newPrescription = await Prescription.create(newBody);
+    res.status(200).send(newPrescription);
   } catch (error) {
-    console.log("error");
-return res.status(400).json(error);
+    res.status(400).send(error);
+    console.log(error);
   }
 };
 

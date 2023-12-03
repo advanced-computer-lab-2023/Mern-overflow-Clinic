@@ -50,7 +50,8 @@ router.get("/:id/search", isAuthenticated, doctorController.selectPatientByName)
 router.get("/:id/res", isAuthenticated, doctorController.listAllMyPatientsUpcoming);
 
 router.post("/filter", isAuthenticated, patientController.filterDoctor);
-router.post("/createMedicine", doctorController.createMedicine);
+// router.post("/createMedicine", doctorController.createMedicine);
+// router.post("/:id/patients/:pId/addPrescription", isAuthenticated, doctorController.createPrescription);
 router.post( "/:id/addHealthRecord", isAuthenticated, healthRecordController.createHealthRecord);
 router.post( "/:id/createFollowup", isAuthenticated, appointmentController.createFollowUp);
 router.post("/filter", isAuthenticated, patientController.filterDoctor);

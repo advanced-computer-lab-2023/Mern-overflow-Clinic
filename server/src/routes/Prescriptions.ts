@@ -10,16 +10,12 @@ router.use(bodyParser.json());
 router.get("/:id", isAuthenticated, prescriptionController.selectPrescription);
 
 //POST
-router.post("/", isAuthenticated, prescriptionController.createPrescription);
+router.post("/doctors/:dId/patients/:pId/addPrescription", isAuthenticated, prescriptionController.createPrescription);
 
 //PUT
 router.put("/:id", isAuthenticated, prescriptionController.updatePrescription);
 
 //DELETE
-router.delete(
-  "/:id",
-  isAuthenticated,
-  prescriptionController.deletePrescription,
-);
+router.delete("/:id", isAuthenticated, prescriptionController.deletePrescription);
 
 export default router;

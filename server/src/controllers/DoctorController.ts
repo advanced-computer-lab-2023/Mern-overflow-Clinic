@@ -4,60 +4,60 @@ import appointment from "../models/appointment.js";
 import patient from "../models/Patient.js";
 import user from "../models/User.js";
 import Contract from "../models/Contract.js";
-import fs from 'fs';
+import fs from "fs";
 
 const createDoctor = async (req: Request, res: Response) => {
   const data = req.body.datatoserver;
   console.log("DATA: " + JSON.stringify(data));
   const dataToServer = JSON.parse(data);
-  console.log("im here")
-  const entry = user.find({ 'username': dataToServer.username }).then((document) => {
-    if (document.length === 0) {
+  console.log("im here");
+  const entry = user
+    .find({ username: dataToServer.username })
+    .then((document) => {
+      if (document.length === 0) {
+        doctor.find({ email: dataToServer.email }).then((emailRes) => {
+          if (emailRes.length !== 0)
+            return res
+              .status(404)
+              .send("You are already registered , please sign in ");
+          else {
+            const files = req.files as Express.Multer.File[];
+            console.log("Files:", files);
+            console.log("additional Field: " + data);
+            console.log("additional Field2: " + dataToServer.name);
+            const documents = [];
+            if (files !== undefined) {
+              for (const file of files) {
+                const fileInfo = {
+                  filename: file.originalname,
+                  path: file.path,
+                };
+                documents.push(fileInfo);
+              }
+            }
+            console.log("DOCUMENTS: " + JSON.stringify(documents));
+            dataToServer.status = "pending";
 
-      doctor.find({ 'email': dataToServer.email }).then((emailRes) => {
+            dataToServer.files = documents;
 
-        if (emailRes.length !== 0)
-          return res
-            .status(404)
-            .send("You are already registered , please sign in ");
-        else {
-          const files = req.files as Express.Multer.File[];       
-          console.log("Files:", files);
-          console.log('additional Field: ' + data);
-          console.log('additional Field2: ' + dataToServer.name);
-          const documents = []; 
-          if(files!== undefined){
-            for (const file of files){
-              const fileInfo = {
-                filename: file.originalname,
-                path: file.path,
-            };
-            documents.push(fileInfo);
-        }
-      }
-      console.log("DOCUMENTS: " + JSON.stringify(documents));
-      dataToServer.status = "pending";
-
-      dataToServer.files = documents;
-
-      console.log("Modified Data:", JSON.stringify(dataToServer));  
-          const newDoctor = doctor
-            .create(dataToServer)
-            .then((newDoctor) => {
-              newDoctor.wallet = 0;
-              newDoctor.save();
-              return res.status(200).json(newDoctor);
-            })
-            .catch((err) => {
-              return res.status(400).json(err);
-            });
-        }
-      });
-    } else if (document.length !== 0)
-      return res
-        .status(400)
-        .send("username taken , please choose another one ");
-  });
+            console.log("Modified Data:", JSON.stringify(dataToServer));
+            const newDoctor = doctor
+              .create(dataToServer)
+              .then((newDoctor) => {
+                newDoctor.wallet = 0;
+                newDoctor.save();
+                return res.status(200).json(newDoctor);
+              })
+              .catch((err) => {
+                return res.status(400).json(err);
+              });
+          }
+        });
+      } else if (document.length !== 0)
+        return res
+          .status(400)
+          .send("username taken , please choose another one ");
+    });
 };
 
 const readDoctor = async (req: Request, res: Response) => {
@@ -122,17 +122,19 @@ const deleteDoctor = async (req: Request, res: Response) => {
     .findByIdAndDelete({ _id: id })
     .then((doc) => {
       res.status(200).json(doc);
-      if(doc !==null){
-        for(const file of doc.files){
-            const filePath = `./src/uploads/` + file.filename;
-            fs.unlink(filePath, (err) => {
-                if (err) {
-                    console.error(err);
-                    return res.status(500).json({ message: "Error deleting file from server" });
-                 }
-              })
+      if (doc !== null) {
+        for (const file of doc.files) {
+          const filePath = `./src/uploads/` + file.filename;
+          fs.unlink(filePath, (err) => {
+            if (err) {
+              console.error(err);
+              return res
+                .status(500)
+                .json({ message: "Error deleting file from server" });
             }
-          }
+          });
+        }
+      }
     })
     .catch((err) => {
       return res.status(400).json(err);
@@ -141,18 +143,16 @@ const deleteDoctor = async (req: Request, res: Response) => {
 
 const listDoctors = async (req: Request, res: Response) => {
   const doctors = doctor
-    .find({ "status": "accepted" })
+    .find({ status: "accepted" })
     .then((doctors) => res.status(200).json(doctors))
     .catch((err) => {
       return res.status(400).json(err);
     });
 };
 
-
-
 const listPendingDoctors = async (req: Request, res: Response) => {
   const doctors = doctor
-    .find({ "status": "pending" })
+    .find({ status: "pending" })
     .then((doctors) => res.status(200).json(doctors))
     .catch((err) => {
       return res.status(400).json(err);
@@ -180,7 +180,7 @@ const listCompletedPatients = async (req: Request, res: Response) => {
   const id = req.params.id;
 
   const appointments = await appointment
-    .find({ doctor: id  , status : "completed"})
+    .find({ doctor: id, status: "completed" })
     .populate("patient")
     .exec();
 
@@ -189,7 +189,7 @@ const listCompletedPatients = async (req: Request, res: Response) => {
   console.log(appointments);
   const patientIds = appointments.map((appointment) => appointment.patient);
   const patients = await patient.find({ _id: { $in: patientIds } }).exec();
-console.log(patients)
+  console.log(patients);
   return res.status(200).json(patients);
 };
 
@@ -302,24 +302,18 @@ const selectPatientByName = async (req: Request, res: Response) => {
   }
 };
 
-const viewHealthRecordOfPatient = async (req: Request, res: Response)=>
-  {
-  // assuming in Fe , doctorn gets a table that has all HIS patients and upon selecting a specific entry has the option to view health record of a patient with him 
-  
+const viewHealthRecordOfPatient = async (req: Request, res: Response) => {
+  // assuming in Fe , doctorn gets a table that has all HIS patients and upon selecting a specific entry has the option to view health record of a patient with him
+
   const pid = req.params.id;
-  patient.findById(pid).then(result => {
-    if (result != null)
-      res.status(200).send(result.healthRecords);
-    else
-      res.status(404).send("no health records found ");
-        
-  }).catch(err => res.status(400).send(err));
+  patient
+    .findById(pid)
+    .then((result) => {
+      if (result != null) res.status(200).send(result.healthRecords);
+      else res.status(404).send("no health records found ");
+    })
+    .catch((err) => res.status(400).send(err));
 };
-
-
-
-
-
 
 const viewWallet = async (req: Request, res: Response) => {
   const dId = req.params.id;
@@ -343,11 +337,11 @@ const addFreeSlots = async (req: Request, res: Response) => {
   const id = req.params.id;
   let iDate = new Date(req.body.date);
   let userTimezoneOffset = iDate.getTimezoneOffset() * 60000;
-  
+
   let utcDate = new Date(iDate.getTime() - userTimezoneOffset).toISOString();
-  
+
   const startTime = utcDate;
-    // let inputDate = utcDate;
+  // let inputDate = utcDate;
   const currentTime = new Date();
   try {
     if (!startTime || startTime === undefined) {
@@ -366,19 +360,23 @@ const addFreeSlots = async (req: Request, res: Response) => {
         .json({ message: "You have not yet been accepted." });
     }
 
-    const cont = await Contract.find({"doctor":id}).exec();
-    if(!cont || cont === undefined){
+    const cont = await Contract.find({ doctor: id }).exec();
+    if (!cont || cont === undefined) {
       console.log("LINE 363");
-      return res.status(404).json({ message: "no contracts found"});
+      return res.status(404).json({ message: "no contracts found" });
     }
-    if(cont.length ===0){
+    if (cont.length === 0) {
       console.log("LINE 367");
-      return res.status(404).json( {message: "no contracts found"});
+      return res.status(404).json({ message: "no contracts found" });
     }
-    if(cont[0].status !== "accepted"){
+    if (cont[0].status !== "accepted") {
       console.log("400");
 
-      return res.status(400).json({message: "Doctor has not accepted the contract, can't add slots"});
+      return res
+        .status(400)
+        .json({
+          message: "Doctor has not accepted the contract, can't add slots",
+        });
     }
 
     if (doc.availableSlotsStartTime) {
@@ -407,7 +405,10 @@ const addFreeSlots = async (req: Request, res: Response) => {
         appointmentStartTime.getTime() + appointment.duration * 60 * 1000,
       );
 
-      if (startTime < appointmentEndTime.toISOString() && startTime >= appointmentStartTime.toISOString()) {
+      if (
+        startTime < appointmentEndTime.toISOString() &&
+        startTime >= appointmentStartTime.toISOString()
+      ) {
         conflictingAppointments.push(appointment);
       }
     }
@@ -415,12 +416,9 @@ const addFreeSlots = async (req: Request, res: Response) => {
     if (conflictingAppointments.length !== 0) {
       console.log("406");
 
-      return res
-        .status(406)
-        .json({
-          
-          message: "You already have an appointment on that date and time",
-        });
+      return res.status(406).json({
+        message: "You already have an appointment on that date and time",
+      });
     }
 
     doc.availableSlotsStartTime?.push(new Date(startTime));
@@ -511,7 +509,7 @@ const listSlots = async (req: Request, res: Response) => {
     .findById(id)
     .then((doctors) => {
       //console.log("sjhkshkshkjs");
-      if(doctors?.status === "accepted"){
+      if (doctors?.status === "accepted") {
         //console.log("in the if");
         //console.log(doctors.availableSlotsStartTime);
         res.status(200).json(doctors.availableSlotsStartTime);
@@ -521,7 +519,6 @@ const listSlots = async (req: Request, res: Response) => {
       return res.status(400).json(err);
     });
 };
-
 
 export default {
   createDoctor,
@@ -541,5 +538,5 @@ export default {
   rejectContract,
   listPendingDoctors,
   listSlots,
-  listCompletedPatients
+  listCompletedPatients,
 };

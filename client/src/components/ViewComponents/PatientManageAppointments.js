@@ -4,7 +4,8 @@ import {
   Paper,
   Typography,
   Box,
-  TextField,
+  Alert,
+  AlertTitle,
   FormControl,
   InputLabel,
   Select,
@@ -14,6 +15,7 @@ import {
   Checkbox,
 } from "@mui/material";
 import axios from "axios";
+import dayjs from "dayjs";
 import { useParams } from "react-router-dom";
 import { useUser } from "../../userContest";
 
@@ -29,20 +31,26 @@ const PatientManageAppointments = ({ doctorId }) => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [docID, setDocID] = useState(id);
   const { userId } = useUser();
-  const [hourlyRate, setHourlyRate] = useState(null); 
+  const [hourlyRate, setHourlyRate] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         // Fetch doctor's hourly rate
-        const doctorResponse = await axios.get(`http://localhost:8000/doctors/${docID}`);
+        const doctorResponse = await axios.get(
+          `http://localhost:8000/doctors/${docID}`,
+        );
         setHourlyRate(doctorResponse.data.hourlyRate);
 
-        const slotsResponse = await axios.get(`http://localhost:8000/doctors/${docID}/slots`);
+        const slotsResponse = await axios.get(
+          `http://localhost:8000/doctors/${docID}/slots`,
+        );
         setSlots(slotsResponse.data);
 
         if (bookForRelative) {
-          const familyMembersResponse = await axios.get(`http://localhost:8000/patients/${userId}/family`);
+          const familyMembersResponse = await axios.get(
+            `http://localhost:8000/patients/${userId}/family`,
+          );
           setFamilyMembers(familyMembersResponse.data || []);
         }
       } catch (error) {
@@ -62,11 +70,13 @@ const PatientManageAppointments = ({ doctorId }) => {
 
   const handleFamilyMemberChange = (e) => {
     const selectedName = e.target.value;
-    const selectedMember = familyMembers.find((member) => member.name === selectedName);
-  
+    const selectedMember = familyMembers.find(
+      (member) => member.name === selectedName,
+    );
+
     console.log("Selected Name:", selectedName);
     console.log("Selected Member:", selectedMember);
-  
+
     if (selectedMember) {
       setSelectedFamilyMember(selectedMember.name);
       setSelectedFamilyMemberID(selectedMember.patientId); // Assuming _id is the correct property for the member's identifier
@@ -76,17 +86,7 @@ const PatientManageAppointments = ({ doctorId }) => {
       setSelectedFamilyMemberID(null);
     }
   };
-  
-  const formatDateAndSubtractTwoHours = (date) => {
-    // Convert the date to milliseconds, subtract 2 hours (in milliseconds), and create a new Date
-    const modifiedDate = new Date(date.getTime() - 2 * 60 * 60 * 1000);
-  
-    // Format the modified date
-    const formattedDate = `${modifiedDate.getFullYear()}-${(modifiedDate.getMonth() + 1).toString().padStart(2, '0')}-${modifiedDate.getDate().toString().padStart(2, '0')} ${modifiedDate.getHours().toString().padStart(2, '0')}:${modifiedDate.getMinutes().toString().padStart(2, '0')}:${modifiedDate.getSeconds().toString().padStart(2, '0')}`;
-  
-    return formattedDate;
-  };
-  
+
   const handleSlotChange = (e) => {
     const selectedValue = e.target.value;
     setSelectedSlot(selectedValue);
@@ -106,8 +106,8 @@ const PatientManageAppointments = ({ doctorId }) => {
         return;
       }
 
-      const formattedStartDate = formatDate(formatDateAndSubtractTwoHours(new Date(selectedSlot)));
-      const formattedEndDate = formatDate(formatDateAndSubtractTwoHours(addOneHour(new Date(selectedSlot))));
+      const formattedStartDate = new Date(selectedSlot);
+      const formattedEndDate = new Date(dayjs(selectedSlot).add(1, "hour"));
 
       const appointmentData = {
         doctor: docID,
@@ -118,17 +118,24 @@ const PatientManageAppointments = ({ doctorId }) => {
         endDate: formattedEndDate,
       };
 
-      await axios.post(`http://localhost:8000/appointments/createAppointmentsForRelations/${userId}`, appointmentData);
+      await axios.post(
+        `http://localhost:8000/appointments/createAppointmentsForRelations/${userId}`,
+        appointmentData,
+      );
 
       const successMessage = "Appointment booked successfully";
       setStatusMessage(successMessage);
       setIsSuccess(true);
 
       // Update local state instead of fetching again
-      setSlots((prevSlots) => prevSlots.filter((slot) => slot !== selectedSlot));
+      setSlots((prevSlots) =>
+        prevSlots.filter((slot) => slot !== selectedSlot),
+      );
 
       if (bookForRelative) {
-        const familyMembersResponse = await axios.get(`http://localhost:8000/patients/${userId}/family`);
+        const familyMembersResponse = await axios.get(
+          `http://localhost:8000/patients/${userId}/family`,
+        );
         setFamilyMembers(familyMembersResponse.data || []);
       }
 
@@ -180,7 +187,8 @@ const PatientManageAppointments = ({ doctorId }) => {
               ) : (
                 slots.map((slot) => (
                   <MenuItem key={slot} value={slot}>
-                    {`${formatDate(formatDateAndSubtractTwoHours(new Date(slot)))} - ${formatDate(formatDateAndSubtractTwoHours(addOneHour(new Date(slot))))}`}
+                    {dayjs(slot).format("MMMM D, YYYY h:mm A")} -{" "}
+                    {dayjs(slot).add(1, "hour").format("MMMM D, YYYY h:mm A")}
                   </MenuItem>
                 ))
               )}
@@ -196,7 +204,6 @@ const PatientManageAppointments = ({ doctorId }) => {
                 labelId="family-member-select-label"
                 id="family-member-select"
                 value={selectedFamilyMember}
-               
                 onChange={handleFamilyMemberChange}
                 label="Family Member"
               >
@@ -207,22 +214,15 @@ const PatientManageAppointments = ({ doctorId }) => {
                   </MenuItem>
                 ))}
                 {console.log(selectedFamilyMember)}
-                
               </Select>
             </FormControl>
           )}
 
           {statusMessage && (
-            <Typography
-              sx={{
-                border: "1px solid transparent",
-                borderRadius: 5,
-                padding: 2,
-                color: isSuccess ? "green" : "red",
-              }}
-            >
+            <Alert severity={isSuccess ? "success" : "error"}>
+              <AlertTitle>{isSuccess ? "Success" : "Error"}</AlertTitle>
               {statusMessage}
-            </Typography>
+            </Alert>
           )}
         </Box>
 
@@ -243,18 +243,3 @@ const PatientManageAppointments = ({ doctorId }) => {
 };
 
 export default PatientManageAppointments;
-
-const formatDate = (dateString) => {
-  const options = { year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "numeric", hour12: true };
-
-  const clientTimeZoneOffset = new Date().getTimezoneOffset();
-  const adjustedDate = new Date(new Date(dateString).getTime() );
-
-  return adjustedDate.toLocaleString("en-US", options);
-};
-
-const addOneHour = (date) => {
-  const newDate = new Date(date);
-  newDate.setHours(newDate.getHours() + 1);
-  return newDate;
-};

@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import doctor from "../models/Doctor.js";
 import appointment from "../models/appointment.js";
-import patient from "../models/Patient.js";
 import Patient from "../models/Patient.js";
 import Users from "../models/User.js";
 import { stat } from "fs";
 import dayjs from "dayjs";
 import Doctor from "../models/Doctor.js";
+import sendMailService from "../services/emails/sendMailService.js";
 
 const createAppointment = async (req: Request, res: Response) => {
   //console.log("HELLO ");
@@ -16,11 +16,27 @@ const createAppointment = async (req: Request, res: Response) => {
   //req.body.paid = false;
   //req.body.price = (await Doctor.findById(req.body.dId))?.hourlyRate;
 
+  const patientEmail = await Users.findById(req.body.patient).then(
+    (pat) => pat?.email,
+  );
+  const doctorEmail = await Users.findById(req.body.doctor).then(
+    (doc) => doc?.email,
+  );
+
+  if (patientEmail === undefined || doctorEmail === undefined) {
+    return res.status(400).json();
+  }
+
   //console.log("BODY  ========" + req.body);
   //console.log("DOCTOR ID" + req.body.dId);
   const newApt = appointment
     .create(req.body)
     .then((newApt) => {
+      const subject = "Appointment Booked";
+      let html = `Hello patient, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
+      sendMailService.sendMail(patientEmail, subject, html);
+      html = `Hello doctor, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
+      sendMailService.sendMail(doctorEmail, subject, html);
       return res.status(200).json(newApt);
     })
     .catch((err) => {
@@ -31,7 +47,7 @@ const createAppointment = async (req: Request, res: Response) => {
 
 const createAppointmentForFamilyMember = async (
   req: Request,
-  res: Response
+  res: Response,
 ) => {
   try {
     //console.log(req.body);
@@ -59,7 +75,7 @@ const createAppointmentForFamilyMember = async (
       if (doctorObj.availableSlotsStartTime !== undefined) {
         doctorObj.availableSlotsStartTime =
           doctorObj.availableSlotsStartTime.filter(
-            (slot) => slot.toDateString() !== dateToRemove
+            (slot) => slot.toDateString() !== dateToRemove,
           );
       }
 
@@ -68,8 +84,24 @@ const createAppointmentForFamilyMember = async (
         $set: { availableSlotsStartTime: doctorObj.availableSlotsStartTime },
       });
 
+      const patientEmail = await Users.findById(req.body.patient).then(
+        (pat) => pat?.email,
+      );
+      const doctorEmail = await Users.findById(req.body.doctor).then(
+        (doc) => doc?.email,
+      );
+
+      if (patientEmail === undefined || doctorEmail === undefined) {
+        return res.status(400).json();
+      }
+
       // Create the new appointment
       const newApt = await appointment.create(req.body);
+      const subject = "Appointment Booked";
+      let html = `Hello patient, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
+      sendMailService.sendMail(patientEmail, subject, html);
+      html = `Hello doctor, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
+      sendMailService.sendMail(doctorEmail, subject, html);
       return res.status(200).json(newApt);
     } else {
       req.body.patient = id;
@@ -86,7 +118,7 @@ const createAppointmentForFamilyMember = async (
       if (doctorObj.availableSlotsStartTime !== undefined) {
         doctorObj.availableSlotsStartTime =
           doctorObj.availableSlotsStartTime.filter(
-            (slot) => slot.toDateString() !== dateToRemove
+            (slot) => slot.toDateString() !== dateToRemove,
           );
       }
 
@@ -94,9 +126,24 @@ const createAppointmentForFamilyMember = async (
       await doctor.findByIdAndUpdate(docID, {
         $set: { availableSlotsStartTime: doctorObj.availableSlotsStartTime },
       });
+      const patientEmail = await Users.findById(req.body.patient).then(
+        (pat) => pat?.email,
+      );
+      const doctorEmail = await Users.findById(req.body.doctor).then(
+        (doc) => doc?.email,
+      );
+
+      if (patientEmail === undefined || doctorEmail === undefined) {
+        return res.status(400).json();
+      }
 
       // Create the new appointment
       const newApt = await appointment.create(req.body);
+      const subject = "Appointment Booked";
+      let html = `Hello patient, <br /> A new appointment was booked with date ${req.body.date}. <br /> Please be on time. <br /> With Love, <br /> El7a2ni Clinic xoxo.`;
+      sendMailService.sendMail(patientEmail, subject, html);
+      html = `Hello doctor, <br /> A new appointment was booked with date ${req.body.date}. <br /> Please be on time. <br /> With Love, <br /> El7a2ni Clinic xoxo.`;
+      sendMailService.sendMail(doctorEmail, subject, html);
       return res.status(200).json(newApt);
     }
   } catch (err) {

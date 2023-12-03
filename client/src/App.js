@@ -39,7 +39,6 @@ import PatientPayAppointment from "./pages/patient/PatientPayAppointment";
 import NotFoundPage from "./NotFoundPage";
 import Chatpage from "./pages/Chatpage";
 
-import ChatProvider from "./ChatProvider";
 
 
 function App() {

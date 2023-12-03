@@ -31,11 +31,8 @@ import { Effect } from "react-notification-badge";
 import { getSender } from "../../config/ChatLogics";
 import UserListItem from "../userAvatar/UserListItem";
 import { ChatState } from "../../Context/ChatProvider";
-import { useNavigate } from "react-router-dom";
 
 function SideDrawer() {
-  const navigate = useNavigate();
-
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -52,10 +49,11 @@ function SideDrawer() {
 
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const history = useHistory();
 
   const logoutHandler = () => {
     localStorage.removeItem("userInfo");
-    navigate("/");
+    history.push("/");
   };
 
   const handleSearch = async () => {
@@ -138,7 +136,7 @@ function SideDrawer() {
         <Tooltip label="Search Users to chat" hasArrow placement="bottom-end">
           <Button variant="ghost" onClick={onOpen}>
             <i className="fas fa-search"></i>
-            <Text display={{ base: "none", md: "flex" }} px={4}>
+            <Text d={{ base: "none", md: "flex" }} px={4}>
               Search User
             </Text>
           </Button>

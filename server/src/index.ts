@@ -17,6 +17,18 @@ import cookieParser from "cookie-parser";import appointment from "./models/appoi
 import PaymentController from "./controllers/PaymentController.js";
 //const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 
+// const connectDB = require("./config/db");
+import dotenv from "dotenv";
+
+import userRoutes from "./routes/User.js";
+//const chatRoutes = require("./routes/chatRoutes");
+import chatRoutes from "./routes/chatRoutes.js";
+
+import messageRoutes from "./routes/chatRoutes.js";
+
+//const messageRoutes = require("./routes/messageRoutes");
+import MessageModel from "./models/messageModel.js";
+
 
 import path from 'path'
 import { fileURLToPath } from 'url';
@@ -67,6 +79,11 @@ app.use('/packages', packageRouter);
 app.use('/create-checkout-session', CCpaymentRouter);
 app.use('/walletPayment', walletPaymentRouter);
 
+// chat use apis
+app.use("/api/user", userRoutes);
+app.use("/api/chat", chatRoutes);
+app.use("/api/message", messageRoutes);
+
 
 app.use('/contracts',contractRouter);
 
@@ -76,12 +93,14 @@ app.use('/contracts',contractRouter);
 //   console.log("hello, world!");
 // });
 
+let server;
+
 mongoose
   .connect(MongoURI)
   .then(() => {
     console.log("MongoDB is now connected!");
     // Starting server
-    app.listen(port, () => {
+    server = app.listen(port, () => {
       console.log(`Listening to requests on http://localhost:${port}`);
     });
   })
@@ -94,6 +113,83 @@ mongoose
         [1,{priceInCents: , name: "appointment fees"}]
     ])
 /*/
+
+
+ // to accept json data
+
+// app.get("/", (req, res) => {
+//   res.send("API Running!");
+// });
+
+
+// --------------------------deployment------------------------------
+
+const __dirname1 = path.resolve();
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname1, "/frontend/build")));
+
+  app.get("*", (req, res) =>
+    res.sendFile(path.resolve(__dirname1, "frontend", "build", "index.html"))
+  );
+} else {
+  app.get("/", (req, res) => {
+    res.send("API is running..");
+  });
+}
+
+// --------------------------deployment------------------------------
+
+// Error Handling middlewares
+// app.use(notFound);
+// app.use(errorHandler);
+
+
+
+
+import { Server } from "socket.io";
+
+const io = new Server(server, {
+  pingTimeout: 60000,
+  cors: {
+    origin: "http://localhost:3000",
+    // credentials: true,
+  },
+});
+
+
+io.on("connection", (socket:any) => {
+  console.log("Connected to socket.io");
+  socket.on("setup", (userData:any) => {
+    socket.join(userData._id);
+    socket.emit("connected");
+  });
+
+  socket.on("join chat", (room:any) => {
+    socket.join(room);
+    console.log("User Joined Room: " + room);
+  });
+  socket.on("typing", (room:any) => socket.in(room).emit("typing"));
+  socket.on("stop typing", (room:any) => socket.in(room).emit("stop typing"));
+
+  socket.on("new message", (newMessageRecieved:any) => {
+    var chat = newMessageRecieved.chat;
+
+    if (!chat.users) return console.log("chat.users not defined");
+
+    chat.users.forEach((user:any) => {
+      if (user._id == newMessageRecieved.sender._id) return;
+
+      socket.in(user._id).emit("message recieved", newMessageRecieved);
+    });
+  });
+// we added parameter userData (to be reviewed)
+  socket.off("setup", (userData:any) => {
+    console.log("USER DISCONNECTED");
+    socket.leave(userData._id);
+  });
+});
+
 
 
 export default app;

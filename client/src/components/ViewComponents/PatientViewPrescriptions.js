@@ -23,6 +23,8 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
 import { useUser } from "../../userContest";
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function PatientViewPrescriptions() {
   const [data, setData] = useState([]);
@@ -160,7 +162,8 @@ export default function PatientViewPrescriptions() {
                 <TableCell>{row.filled.toString()}</TableCell>
                 <TableCell>{row.date}</TableCell>
                 <TableCell>
-                  <Button onClick={() => setSelectedPrescription(row)}>
+                  {console.log("ID is: "+row._id)}
+                  <Button component={Link} to={`/patient/prescriptions/${row._id}`}>
                     Select Prescription
                   </Button>
                 </TableCell>

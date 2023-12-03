@@ -17,6 +17,7 @@ import PatientManageDoctors from "./pages/patient/PatientManageDoctors";
 import PatientManageFamily from "./pages/patient/PatientManageFamily";
 import PatientManageInfo from "./pages/patient/PatientManageInfo";
 import PatientManagePrescriptions from "./pages/patient/PatientManagePrescriptions";
+import PatientManagePrescriptionDetails from "./pages/patient/PatientManagePrescriptionDetails";
 import ChangePassword from "./pages/authentication/ChangePassword";
 import ResetPassword from "./pages/authentication/ResetPassword";
 import ForgotPassword from "./pages/authentication/ForgotPassword";
@@ -27,7 +28,8 @@ import PatientBookAppointments from "./pages/patient/patientBookAppointment";
 import AddHealthRecords from "./pages/doctor/DoctorAddHealthRecords";
 import PatientManageDocuments from './pages/patient/PatientManageDocuments';
 import PatientManagePackages from './pages/patient/PatientManagePackages';
-import PatientPayPackage from "./components/ViewComponents/PatientPayPackage";import PatientManageHealthRecords from "./pages/patient/PatientManageHealthRecords";
+import PatientPayPackage from "./components/ViewComponents/PatientPayPackage";
+import PatientManageHealthRecords from "./pages/patient/PatientManageHealthRecords";
 import AddFamilyMember from "./components/formComponents/linkFamilyMembers";
 import PatientManageFamilyLinks from "./pages/patient/PatientManageFamilyLinks";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -134,6 +136,10 @@ function App() {
     {
       path: "/patient/prescriptions",
       element: <PatientManagePrescriptions />,
+    },
+    {
+      path: "/patient/prescriptions/:id",
+      element: <PatientManagePrescriptionDetails />,
     },
     {
       path: "/patient/info",

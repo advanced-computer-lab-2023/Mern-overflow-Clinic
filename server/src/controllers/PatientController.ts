@@ -1236,8 +1236,9 @@ const chatWithDoctors = async (req: Request, res: Response) => {
         for (const apt of apts) {
 
         const doc = await doctor.findById(apt.doctor);
-    
-        if((doc?.name)?.includes(search)) doctors.push(doc);
+
+        if((doc?.name)?.includes(search) && !doctors.some(element => element.id === doc?.id)) doctors.push(doc);
+
         }
         console.log(doctors);
         res.status(200).send(doctors);

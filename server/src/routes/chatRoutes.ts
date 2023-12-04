@@ -8,12 +8,15 @@ import express from "express";
 // import renameGroup from "../controllers/chatControllers.js"
 
 import chatControllers from "../controllers/chatControllers.js";
+import isAuthenticated from "../middlewares/permissions/isAuthenticated.js";
+import isAuthorized from "../middlewares/permissions/isAuthorized.js";
+import { UserType } from "../enums/UserTypes.js";
 
 
 const router = express.Router();
 
-router.route("/").post(chatControllers.accessChat);
-router.route("/").get( chatControllers.fetchChats);
+router.route("/").post(isAuthenticated,isAuthorized([UserType.DOCTOR,UserType.PATIENT]),chatControllers.accessChat);
+router.route("/:userId").get( isAuthenticated,isAuthorized([UserType.DOCTOR,UserType.PATIENT]),chatControllers.fetchChats);
 router.route("/group").post( chatControllers.createGroupChat);
 router.route("/rename").put(chatControllers.renameGroup);
 router.route("/groupremove").put( chatControllers.removeFromGroup);

@@ -77,18 +77,15 @@ function SideDrawer() {
 
     try {
       setLoading(true);
-
-      const config = {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
-
-      const { data } = await axios.get(`http://localhost:8000/patients/chatWithDoctors/${userId}/${search}`);
-      console.log(data);
+      console.log("userRole "+userRole)
+      console.log((userRole === "Patient"?`http://localhost:8000/patients/chatWithDoctors/${userId}/${search}`:`http://localhost:8000/doctors/chatWithPateints/${userId}/${search}`));
+      const { data } = await axios.get((userRole === "Patient"?`http://localhost:8000/patients/chatWithDoctors/${userId}/${search}`:`http://localhost:8000/doctors/chatWithPatients/${userId}/${search}`)
+        );
+      console.log("DATA:   "+JSON.stringify(data));
       setLoading(false);
       setSearchResult(data);
     } catch (error) {
+      console.log(error);
       toast({
         title: "Error Occured!",
         description: "Failed to Load the Search Results",
@@ -157,7 +154,6 @@ function SideDrawer() {
 
           <RouterLink to="/patient/family">
       <Button as="div" p={2.5} mr={4}>
-        <NotificationBadge count={notification.length} effect={Effect.SCALE} />
         <span>Back to Dashboard</span>
       </Button>
     </RouterLink>

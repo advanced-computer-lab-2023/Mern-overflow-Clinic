@@ -8,24 +8,25 @@ import ChatLoading from "./ChatLoading";
 import GroupChatModal from "./miscellaneous/GroupChatModal";
 import { Button } from "@chakra-ui/react";
 import { ChatState } from "../Context/ChatProvider";
+import { useUser } from "../userContest";
+
 
 const MyChats = ({ fetchAgain }) => {
-  const [loggedUser, setLoggedUser] = useState();
+  const { userId, setUserId, userRole, setUserRole } = useUser();
+  const [loggedUser, setLoggedUser] = useState(userId);
+
 
   const { selectedChat, setSelectedChat, user, chats, setChats } = ChatState();
 
+  console.log("Logged user :"+JSON.stringify(loggedUser));
   const toast = useToast();
 
   const fetchChats = async () => {
     // console.log(user._id);
     try {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
 
-      const { data } = await axios.get("http://localhost:8000/api/chat", config);
+
+      const { data } = await axios.get(`http://localhost:8000/api/chat/${userId}`, );
       setChats(data);
     } catch (error) {
       toast({
@@ -40,7 +41,7 @@ const MyChats = ({ fetchAgain }) => {
   };
 
   useEffect(() => {
-    setLoggedUser(JSON.parse(localStorage.getItem("userInfo")));
+    setLoggedUser(userId);
     fetchChats();
     // eslint-disable-next-line
   }, [fetchAgain]);
@@ -68,13 +69,13 @@ const MyChats = ({ fetchAgain }) => {
       >
         My Chats
         <GroupChatModal>
-          <Button
+          {/* <Button
             display="flex"
             fontSize={{ base: "17px", md: "10px", lg: "17px" }}
             rightIcon={<AddIcon />}
           >
             New Group Chat
-          </Button>
+          </Button> */}
         </GroupChatModal>
       </Box>
       <Box
@@ -101,9 +102,7 @@ const MyChats = ({ fetchAgain }) => {
                 key={chat._id}
               >
                 <Text>
-                  {!chat.isGroupChat
-                    ? getSender(loggedUser, chat.users)
-                    : chat.chatName}
+                  {getSender(loggedUser, chat.users)}
                 </Text>
                 {chat.latestMessage && (
                   <Text fontSize="xs">

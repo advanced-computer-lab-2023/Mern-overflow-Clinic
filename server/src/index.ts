@@ -97,14 +97,16 @@ let server;
 
 mongoose
   .connect(MongoURI)
-  .then(() => {
+  .then(() => 
+  {
     console.log("MongoDB is now connected!");
     // Starting server
-    server = app.listen(port, () => {
-      console.log(`Listening to requests on http://localhost:${port}`);
-    });
-  })
+   
+    })
   .catch((err) => console.log(err));
+  server = app.listen(port, () => {
+    console.log(`Listening to requests on http://localhost:${port}`)
+  });
 
 
 // Payment part 
@@ -149,6 +151,8 @@ if (process.env.NODE_ENV === "production") {
 
 import { Server } from "socket.io";
 
+console.log(server);
+
 const io = new Server(server, {
   pingTimeout: 60000,
   cors: {
@@ -158,10 +162,11 @@ const io = new Server(server, {
 });
 
 
-io.on("connection", (socket:any) => {
+io.on("connection", (socket:any) =>
+ {
   console.log("Connected to socket.io");
   socket.on("setup", (userData:any) => {
-    socket.join(userData._id);
+    socket.join(userData);
     socket.emit("connected");
   });
 
@@ -173,6 +178,7 @@ io.on("connection", (socket:any) => {
   socket.on("stop typing", (room:any) => socket.in(room).emit("stop typing"));
 
   socket.on("new message", (newMessageRecieved:any) => {
+    console.log("HALLOO "+newMessageRecieved);
     var chat = newMessageRecieved.chat;
 
     if (!chat.users) return console.log("chat.users not defined");
@@ -186,7 +192,7 @@ io.on("connection", (socket:any) => {
 // we added parameter userData (to be reviewed)
   socket.off("setup", (userData:any) => {
     console.log("USER DISCONNECTED");
-    socket.leave(userData._id);
+    socket.leave(userData);
   });
 });
 

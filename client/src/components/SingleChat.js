@@ -37,8 +37,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       preserveAspectRatio: "xMidYMid slice",
     },
   };
-  const { selectedChat, setSelectedChat, user, notification, setNotification } =
-    ChatState();
+   const { selectedChat, setSelectedChat, user, notification, setNotification } =
+     ChatState();
+
 
   const fetchMessages = async () => {
     console.log("HELLOOOO");
@@ -95,7 +96,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           },
           config
         );
+        console.log("Almost there "+JSON.stringify(data));
         socket.emit("new message", data);
+        console.log("emitted new msg");
         setMessages([...messages, data]);
       } catch (error) {
         console.log(error);
@@ -113,7 +116,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
   useEffect(() => {
     socket = io(ENDPOINT);
-    socket.emit("setup", user);
+    socket.emit("setup", userId);
     socket.on("connected", () => setSocketConnected(true));
     socket.on("typing", () => setIsTyping(true));
     socket.on("stop typing", () => setIsTyping(false));

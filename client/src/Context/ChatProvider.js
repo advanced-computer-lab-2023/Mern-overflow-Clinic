@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { useUser } from "../userContest";
 
 const ChatContext = createContext();
 
@@ -9,14 +10,18 @@ const ChatProvider = ({ children }) => {
   const [notification, setNotification] = useState([]);
   const [chats, setChats] = useState([]);
 
+  const { userId, setUserId, userRole, setUserRole } = useUser();
+
 
   useEffect(() => {
-    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    setUser(userInfo);
+    // const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    console.log("LOGGGGGEEEEDDD");
+    console.log(userId);
+    setUser(userId);
 
     //if (!userInfo) history.push("/");
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  },);
+  },[]);
 
   return (
     <ChatContext.Provider

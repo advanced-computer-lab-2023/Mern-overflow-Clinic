@@ -4,161 +4,196 @@ import axios from 'axios'
 import {  Typography } from '@mui/material';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useUser } from '../../userContest';
+import { set } from 'react-hook-form';
 
 
-const PatientViewPrescriptionDetails = () => {
-    const { userId } = useUser();
-    let id = userId;
-    // const id = "655089b786a7e9fff5d1d36a";
-    const [data, setData] = useState([]);
-    const [file, setFile] = useState([]);
+const PatientViewPrescriptionDetails = ({ match }) => {
+  const { userId } = useUser();
+  const patientId = userId;
+  let { id } = useParams();
 
 
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-     //setFile(e.target.files[0]);
-  };
+  const [prescription, setPrescription] = useState([]);
+  const [medicine, setMedicine] = useState([]);
+  const [errorMessage, setErrorMessage] = useState(null);
 
-  const handleFileUpload = async () => {
-    //  const files = file;   
-    //  const fileName = files.name;
-    //  const filePath = URL.createObjectURL(files);
-    //  const fileInfo = { filename: fileName, path: filePath };
-    if (file.length === 0) return alert("Please select a file to upload");
-    const formData = new FormData();
-    console.log("file is equal to: " + JSON.stringify(file));
-    formData.append('file', file);
-    console.log("formData is equal to: " + JSON.stringify(formData));
-
-    axios
-      .post(`http://localhost:8000/patients/${id}/documents`, formData)
-      .then((response) => {
-        console.log("PUT request successful", response);
-        window.location.reload();
-      })
-      .catch((error) => {
-        console.log(JSON.stringify(formData));
-        if (error.response && error.response.status === 400 && error.response.data.message === "Filename already exists in the patient's files") {
-          alert(error.response.data.message);
-        }
-        else{
-          console.error("Error making PUT request", error);
-          alert('Error making POST request: ' + error.message);
-        }
-      });
-  };
-
-    const fetchTableData = () => {
-        axios
-          .get(`http://localhost:8000/patients/${id}/documents`, {
-            params: { id: id },
-          })
-          .then((res) => {
-            console.log(res.data);
-            setData(res.data);
-            console.log("data retrieved is: " + JSON.stringify(res.data))
-          });
-      };
-
-      useEffect(() => {
-        fetchTableData();
-      }, []);
-
-      const handleDelete = (filename) => {
-        axios.delete(`http://localhost:8000/patients/${id}/documents`, { data: { filename: filename } })
-        .then(res => {console.log(res)
-            console.log("fileName is equal to: " + filename);
-            window.location.reload()})
-            .catch(err => {
-              console.log(err);
-          });
-    }
-
-     function openPDF(e, filename) {
-          e.preventDefault();
-          console.log("filename is equal to: " + filename);
-          // axios.get(`http://localhost:8000/uploads/` + filename)
-          // .then(res => {            
-          //   console.log("fileName is equal to: " + filename);
-          //   console.log("res.data is equal to: " + res.data);
-          //   console.log("res.data.path is equal to: " + res.data.path);
-          //   window.open(res.data, '_blank');
-          //   //window.location.reload();
-          // })
-          // .catch(err => console.log(err))         
-          const path = `http://localhost:8000/uploads/` + filename;
-          window.open(path, '_blank');        
-     }
-    
-
-    // function openPDF(e,path) {
+  const fetchPrescription = async () => {
+    try {
+      console.log("PresID " + id);
+      const response = await axios.get(`http://localhost:8000/prescriptions/${id}`);
+  
+      console.log("HI " + response.data);
+      setPrescription(response.data);
+  
       
-    
-    //   const pdfPath = path;
-    
-    //   pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
-    
-    //   const onDocumentLoadSuccess = ({ numPages }) => {
-    //     setNumPages(numPages);
-    //   };
-    
-    //   return (
-    //     <div>
-    //       <Document file={pdfPath} onLoadSuccess={onDocumentLoadSuccess}>
-    //         <Page pageNumber={pageNumber} />
-    //       </Document>
-    //       <p>
-    //         Page {pageNumber} of {numPages}
-    //       </p>
-    //     </div>
-    //   );
-    // };
+        let medList = [];
+  
+        for (let i = 0; i < response.data.medicine.length; i++) {
+          let mId = response.data.medicine[i].medId;
+          console.log("Hello " + mId);
+          const res = await axios.get(`http://localhost:8000/prescriptions/medicineDetails/${mId}`);
+          medList.push(res.data);
+        }  
+        setMedicine(medList);
+    } catch (error) {
+      setErrorMessage("Error fetching prescription details");
+      console.error("Error fetching prescription details:", error);
+    }
+  };
+  
 
 
-    return (
-        
-        <div className="d-flex vh-100 bg-white justify-content-center align-items-center">
-            <div className= 'w-50 bg-blue border-5 border rounded p-3'>
-            <Typography variant="h5" sx={{ fontWeight: "normal", my: 2 }}>Upload All Required Documents </Typography>
-               
-               
-               <h1>File Upload</h1>
-                <input type="file" onChange={handleFileChange} />
-                <button className='btn btn-success' onClick={handleFileUpload}>Upload</button>
- 
-                <table className='table'>
-                    <thead>
-                        <tr>
-                            <th>FileName</th>
-                            <th>View document</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            data.map((file) => {
-                                return  <tr>
-                                    <td>{file.filename}</td>
-                                    <td>
-                                        { <button className='btn btn-primary'
-                                        onClick={(e) => openPDF(e, file.filename)}>View</button> }
-                                        {/* //<a href = {file.path} target = "_blank">View</a> */}
-                                    </td>
-                                    <td>
-                                        <button className='btn btn-danger'
-                                        onClick={(e) => handleDelete(file.filename)}>Delete</button>
-                                    </td>
-                                </tr>
-                            })
-                        }
+  // const fetchMedicine = async () => {
+  //   try {
+  //   let medList = [];
+  //   for(let i=0;i<prescription.medicines.length;i++){
+  //         let medId = prescription.medicines[i];
+  //         const response = await axios.get(`http://localhost:8000/precriptions/medicineDetails` , {mId: medId} );
+  //         medList.push(response.data);
+  //       }     
+  //       setMedicine(medList);
+  //     }
+  //     catch (error) {
+  //       setErrorMessage("Error fetching medicine details");
+  //       console.error("Error fetching medicine details:", error);
+  //     }
+  //   };
 
-                    </tbody>
-                </table>
-            </div>
-        </div>       
-    )
+  useEffect(() => {
+    fetchPrescription();
+  }, [patientId]);
 
+  // useEffect(() => {
+  //   fetchMedicine();
+  // }, [patientId]);
 
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
+  return (
+    <div style={styles.container}>
+      {errorMessage && <div style={styles.errorMessage}>{errorMessage}</div>}
+      
+      <h2>Prescription Details</h2>
+    <br></br>
+      <table style={styles.table}>
+        <thead>
+          <tr>
+            <th style={styles.th}>Patient</th>
+            <th style={styles.th}>Doctor</th>
+            <th style={styles.th}>Date</th>
+            <th style={styles.th}>Filled</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style={styles.td}>{prescription.patient?.name}</td>
+            <td style={styles.td}>{prescription.doctor?.name}</td>
+            <td style={styles.td}>{formatDate(prescription?.date)}</td>
+            <td style={styles.td}>{prescription.filled ? 'Filled' : 'Not Filled'}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <br></br>
+
+      <h4>Medicines Details</h4>
+
+      <table style={styles.table}>
+        <thead>
+          <tr>
+            <th style={styles.th}>Name</th>
+            <th style={styles.th}>Dosage</th>
+            <th style={styles.th}>Medicinal Use</th>
+            <th style={styles.th}>Description</th>
+            <th style={styles.th}>Active Ingredients</th>
+            <th style={styles.th}>Price</th>
+            <th style={styles.th}>Available Quantity</th>
+            <th style={styles.th}>Over The Counter</th>
+            <th style={styles.th}>Archived</th>
+          </tr>
+        </thead>
+        <tbody>
+          {medicine.map((med, index) => (
+            <tr key={index}>
+              <td style={styles.td}>{med?.name}</td>
+              <td style={styles.td}>{prescription.medicine[index]?.dailyDosage} {prescription.medicine[index]?.dailyDosage === 1 ? 'dosage' : 'dosages'} per day</td>  
+              <td style={styles.td}>{med?.medicinalUse}</td>
+              <td style={styles.td}>{med?.details.description}</td>
+              {med?.details.activeIngredients.map((ingredient, i) => (
+                <li key={i} style={styles.td}>{ingredient}</li>
+              ))}
+              <td style={styles.td}>{med?.price}</td>
+              <td style={styles.td}>{med?.availableQuantity}</td>
+              <td style={styles.td}>{med?.overTheCounter ? 'Yes' : 'No' }</td>
+              <td style={styles.td}>{med?.isArchived ? 'Yes' : 'No' }</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+    </div>
+  );
 };
+
+// {/* <td style={styles.td}>
+// <ul>
+//   {medicine.map((med, index) => (
+//     <ul key={index} style={styles.td}>
+//       {/* Your medicine details here */}
+//     </ul>
+//   ))}
+// </ul>
+// </td> */}
+
+const styles = {
+  container: {
+    fontFamily: 'Arial, sans-serif',
+    margin: '20px',
+  },
+  errorMessage: {
+    color: 'red',
+    marginBottom: '10px',
+  },
+  table: {
+    width: '100%',
+    borderCollapse: 'collapse',
+    marginBottom: '20px',
+  },
+  th: {
+    backgroundColor: '#f2f2f2',
+    padding: '10px',
+    textAlign: 'left',
+  },
+  td: {
+    border: '1px solid #dddddd',
+    padding: '8px',
+    textAlign: 'left',
+  },
+};
+
+// const styles = {
+//   container: {
+//     textAlign: "center",
+//     margin: "20px",
+//   },
+//   header: {
+//     fontSize: "1.5rem",
+//   },
+//   healthRecordsTable: {
+//     width: "100%",
+//     borderCollapse: "collapse",
+//   },
+//   recordRow: {
+//     borderTop: "15px solid transparent",
+//   },
+//   errorMessage: {
+//     backgroundColor: "lightcoral",
+//     padding: "1rem",
+//     margin: "1rem",
+//   },
+// };
 
 export default PatientViewPrescriptionDetails;

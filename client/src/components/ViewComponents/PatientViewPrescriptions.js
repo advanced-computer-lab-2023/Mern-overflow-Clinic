@@ -32,6 +32,7 @@ export default function PatientViewPrescriptions() {
   const { userId } = useUser();
   // const id = "655089b786a7e9fff5d1d36a";
   const id = userId;
+  const navigate = useNavigate();
 
   const fetchTableData = () => {
     axios
@@ -67,6 +68,11 @@ export default function PatientViewPrescriptions() {
       })
       .catch(() => setData([]));
   };
+
+  const handleClick = (id) => {
+    navigate(`/patient/prescriptions/${id}`);
+  };
+
   return (
     <Container maxWidth="xl">
       <Paper elevation={3} sx={{ p: "20px", my: "40px", paddingBottom: 5 }}>
@@ -140,7 +146,6 @@ export default function PatientViewPrescriptions() {
           <TableRow>
             <TableCell key="patient">Patient</TableCell>
             <TableCell key="doctor">Doctor</TableCell>
-            <TableCell key="medicine">Medicine</TableCell>
             <TableCell key="filled">Filled</TableCell>
             <TableCell key="date">Date</TableCell>
           </TableRow>
@@ -151,19 +156,11 @@ export default function PatientViewPrescriptions() {
               <TableRow key={row.patient?.name}>
                 <TableCell>{row.patient?.name}</TableCell>
                 <TableCell>{row.doctor?.name}</TableCell>
-                <TableCell>{
-                    <ul>
-                      {row.medicine.map((medicine, index) => (
-                      <li key={index}>{medicine.medId} | Dosage: {medicine.dailyDosage} per day</li>
-                      ))}
-                    </ul>}
-                  </TableCell>
-
                 <TableCell>{row.filled.toString()}</TableCell>
                 <TableCell>{row.date}</TableCell>
                 <TableCell>
                   {console.log("ID is: "+row._id)}
-                  <Button component={Link} to={`/patient/prescriptions/${row._id}`}>
+                  <Button onClick={() => handleClick(row._id)}>
                     Select Prescription
                   </Button>
                 </TableCell>
@@ -171,17 +168,6 @@ export default function PatientViewPrescriptions() {
             ))}
         </TableBody>
       </Table>
-      {typeof selectedPrescription.patient !== "undefined" && (
-        <List>
-          <ListItem>{"Patient: " + selectedPrescription.patient.name}</ListItem>
-          <ListItem>{"Doctor: " + selectedPrescription.doctor.name}</ListItem>
-          {selectedPrescription.medicine.map((med) => (
-            <ListItem>{"Medicine: " + med.name}</ListItem>
-          ))}
-          <ListItem>{"Filled: " + selectedPrescription.filled}</ListItem>
-          <ListItem>{"Date: " + selectedPrescription.date}</ListItem>
-        </List>
-      )}
     </Container>
   );
 }

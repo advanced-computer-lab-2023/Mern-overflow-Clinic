@@ -7,7 +7,8 @@ const router = express.Router();
 router.use(bodyParser.json());
 
 //GET
-router.get("/:id", isAuthenticated, prescriptionController.selectPrescription);
+router.get("/:id", prescriptionController.selectPrescription);
+router.get("/medicineDetails/:mId", prescriptionController.listMedicine);
 
 //POST
 router.post("/doctors/:dId/patients/:pId/addPrescription", prescriptionController.createPrescription);

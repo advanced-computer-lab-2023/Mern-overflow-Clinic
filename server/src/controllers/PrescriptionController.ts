@@ -9,7 +9,14 @@ const createPrescription = async (req: Request, res: Response) => {
   try {
     const docId = req.params.dId;
     const patientId = req.params.pId;
-    const newBody = {"doctor": docId, "patient": patientId, ...req.body };
+    const medicineName = req.body.medicineName;
+    const medicineDosage = req.body.medicineDosage;
+    const medicine = await Medicine.findOne({ name: medicineName });
+    if (!medicine) {
+      return res.status(404).json({ message: "Medicine not found" });
+    }
+    const medId = medicine._id;
+    const newBody = {"doctor": docId, "patient": patientId, medicine: [{medId: medId, dailyDosage: medicineDosage}] };
     const newPrescription = await Prescription.create(newBody);
     const patient = await Patient.findById(patientId);
     const doctor = await Doctor.findById(docId);
@@ -174,7 +181,7 @@ return res.status(400).send(error);
 
 const deletePrescription = async (req: Request, res: Response) => {
   const id = req.params.id;
-  const prescription = Prescription
+  const prescription = await Prescription
     .findByIdAndDelete({ _id: id })
     .then((prescription) => {
 return res.status(200).json(prescription);
@@ -183,11 +190,23 @@ return res.status(200).json(prescription);
 return res.status(400).json(err);
     });
 }
+
+
 const selectPrescription = async (req: Request, res: Response) => {
   const id = req.params.id;
-  const pres = Prescription
-    .findById(id)
+  const pres = await Prescription
+    .findById(id).populate('doctor').populate('patient')
     .then((pres) => res.status(200).json(pres))
+    .catch((err) => {
+return res.status(400).json(err);
+    });
+}
+
+const listMedicine = async (req: Request, res: Response) => {
+  const mId = req.params.mId;
+  const med = await Medicine
+    .findById(mId)
+    .then((med) => res.status(200).json(med))
     .catch((err) => {
 return res.status(400).json(err);
     });
@@ -265,5 +284,6 @@ export default {
   viewDoctorPrescription,
   filterPrescriptions,
   addMedicine,
-  deleteMedicine
+  deleteMedicine,
+  listMedicine
 }

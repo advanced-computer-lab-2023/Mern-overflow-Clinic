@@ -1116,6 +1116,7 @@ const linkfamilyMember = async (req: Request, res: Response) => {
     if (relation !== "wife" && relation !== "husband" && relation !== "child" && relation !== "parent" && relation !== "sibling") {
         return res.status(404).json({ message: 'Not a valid relation.' });
     } 
+    console.log(req.body)
     try {
         const rPatient = await patient.findById(patId);
         if (!rPatient || rPatient === undefined) {

@@ -189,6 +189,37 @@ const readAppointment = async (req: Request, res: Response) => {
     });
 };
 
+
+
+
+const changeToPastAppointment = async (req: Request, res: Response) => {
+  try {
+    const currentDate = new Date();
+
+    const filter = {
+      date: { $lt: currentDate },
+      status: 'upcoming'
+    };
+
+    const update = {
+      $set: { status: 'completed' }
+    };
+
+    const result = await appointment.updateMany(filter, update);
+
+    // Check if any documents were updated
+    if (result.modifiedCount > 0) {
+      res.status(200).json(result);
+    } else {
+      res.status(404).json({ message: 'No matching appointments found.' });
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+
 // const updateAppointment = async (req: Request, res: Response) => {
 //   const id = req.params.id;
 //   const today = new Date();
@@ -456,4 +487,5 @@ export default {
   createFollowUp,
   createAppointmentForFamilyMember,
   getAllAppointments,
+  changeToPastAppointment,
 };

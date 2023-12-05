@@ -122,9 +122,9 @@ const PatientViewPrescriptionDetails = ({ match }) => {
               <td style={styles.td}>{prescription.medicine[index]?.dailyDosage} {prescription.medicine[index]?.dailyDosage === 1 ? 'dosage' : 'dosages'} per day</td>  
               <td style={styles.td}>{med?.medicinalUse}</td>
               <td style={styles.td}>{med?.details.description}</td>
-              {med?.details.activeIngredients.map((ingredient, i) => (
+              <td style={styles.td}>{med?.details.activeIngredients.map((ingredient, i) => (
                 <li key={i} style={styles.td}>{ingredient}</li>
-              ))}
+              ))}</td>
               <td style={styles.td}>{med?.price}</td>
               <td style={styles.td}>{med?.availableQuantity}</td>
               <td style={styles.td}>{med?.overTheCounter ? 'Yes' : 'No' }</td>

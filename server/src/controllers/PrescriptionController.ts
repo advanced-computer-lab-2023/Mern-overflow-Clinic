@@ -9,14 +9,18 @@ const createPrescription = async (req: Request, res: Response) => {
   try {
     const docId = req.params.dId;
     const patientId = req.params.pId;
-    const medicineName = req.body.medicineName;
-    const medicineDosage = req.body.medicineDosage;
-    const medicine = await Medicine.findOne({ name: medicineName });
-    if (!medicine) {
-      return res.status(404).json({ message: "Medicine not found" });
+    const medicines = req.body.medicines;
+    let medicineJSON = [];
+    for (const medicine of medicines) {
+      const medicineName = medicine.medName;
+      const medicineDosage = medicine.dailyDosage;
+      const med = await Medicine.findOne({ name: medicineName });
+      if (!med) {
+        return res.status(404).json({ message: "Medicine not found" });
+      }
+      medicineJSON.push({medId: med._id, dailyDosage: medicineDosage});
     }
-    const medId = medicine._id;
-    const newBody = {"doctor": docId, "patient": patientId, medicine: [{medId: medId, dailyDosage: medicineDosage}] };
+    const newBody = {"doctor": docId, "patient": patientId, "medicine": medicineJSON};
     const newPrescription = await Prescription.create(newBody);
     const patient = await Patient.findById(patientId);
     const doctor = await Doctor.findById(docId);

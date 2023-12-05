@@ -10,7 +10,7 @@ const AdminManageAdmins = () => {
         <>
             <AdminDashboard title="Manage Health Packages" />
             <AddPackage setDataIsUpdated= {setDataIsUpdated}  />
-            <AdminViewPackages  dataIsUpdated= {dataIsUpdated} setDataIsUpdated={setDataIsUpdated} />
+            <AdminViewPackages dataIsUpdated= {dataIsUpdated} setDataIsUpdated={setDataIsUpdated} />
         </>
     );
 }

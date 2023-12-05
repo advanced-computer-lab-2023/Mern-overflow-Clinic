@@ -18,7 +18,7 @@ const PrescriptionSchema = new Schema<IPrescription>({
     patient: { type: Schema.Types.ObjectId, ref: "Patient", required: true },
     doctor: { type: Schema.Types.ObjectId, ref: "Doctor", required: true },
     medicine: [ { medId: { type: Schema.Types.ObjectId, ref: "Medicine", required: true }, dailyDosage: { type: Number, required: true } } ],
-    date: { type: Date, required: true },
+    date: { type: Date, required: true, default: Date.now },
     filled: { type: Boolean, required: true, default: false },
 });
 

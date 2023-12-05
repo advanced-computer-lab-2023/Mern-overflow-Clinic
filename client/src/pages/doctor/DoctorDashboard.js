@@ -165,6 +165,28 @@ const DoctorDashboard = (props) => {
           <Divider />
           <List>
             <ListItem disablePadding>
+              <ListItemButton component={Link} to="/doctor/prescriptions">
+                <ListItemIcon>
+                  <Avatar
+                    sx={{
+                      m: 0,
+                      bgcolor: "white",
+                      color: "black",
+                      width: 30,
+                      height: 30,
+                      padding: 0,
+                    }}
+                  >
+                    <PeopleIcon sx={{ width: 25, height: 25 }} />
+                  </Avatar>
+                </ListItemIcon>
+                <ListItemText primary="My Prescriptions" />
+              </ListItemButton>
+            </ListItem>
+          </List>
+          <Divider />
+          <List>
+            <ListItem disablePadding>
               <ListItemButton component={Link} to="/doctor/addHealthRecords">
                 <ListItemIcon>
                   <Avatar

@@ -35,20 +35,12 @@ router.get("/:id/completedAppointments", isAuthenticated, doctorController.listC
 router.get("/:id", isAuthenticated, doctorController.readDoctor);
 router.get("/:id/wallet", isAuthenticated, doctorController.viewWallet);
 router.get("/:id/slots", isAuthenticated, doctorController.listSlots);
-router.get("/:id/patients", isAuthenticated, doctorController.listDoctorPatients);
+router.get("/:id/patients", doctorController.listDoctorPatients);
 router.get( "/:id/registeredPatients", isAuthenticated, doctorController.listMyPatients);
 router.get( "/:id/patients/:pId", isAuthenticated, doctorController.selectPatient);
 router.get( "/:id/search", isAuthenticated, doctorController.selectPatientByName);
 router.get( "/:id/res", isAuthenticated, doctorController.listAllMyPatientsUpcoming);
-router.get("/", doctorController.listDoctors);
 router.get("/pendingDoctors", isAuthenticated, isAuthorized([UserType.ADMINSTARTOR]), doctorController.listPendingDoctors);
-router.get("/:id", isAuthenticated, doctorController.readDoctor);
-router.get("/:id/wallet", isAuthenticated, doctorController.viewWallet);
-router.get("/:id/patients", isAuthenticated, doctorController.listDoctorPatients);
-router.get("/:id/registeredPatients", isAuthenticated, doctorController.listMyPatients);
-router.get("/:id/patients/:pId", isAuthenticated, doctorController.selectPatient);
-router.get("/:id/search", isAuthenticated, doctorController.selectPatientByName);
-router.get("/:id/res", isAuthenticated, doctorController.listAllMyPatientsUpcoming);
 router.get("/:dId/prescriptions", isAuthenticated, prescriptionController.viewDoctorPrescription);
 
 router.post("/filter", isAuthenticated, patientController.filterDoctor);

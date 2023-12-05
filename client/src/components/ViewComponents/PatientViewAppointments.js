@@ -185,14 +185,7 @@ export default function DoctorViewAppointments() {
           </Container>
         </Container>
       </Paper>
-      <Button
-        fullWidth
-        variant="contained"
-        onClick={fetchTableData}
-        sx={{ mt: 1, mb: 1, p: 1, fontWeight: "bold" }}
-      >
-        View All
-      </Button>
+
       <Table>
         <TableHead>
           <TableRow>

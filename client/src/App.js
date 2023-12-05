@@ -25,6 +25,7 @@ import DoctorManageFreeSlots from "./pages/doctor/DoctorManageFreeSlots";
 import DoctorManageContracts from "./pages/doctor/DoctorManageContracts";
 import DoctorManageFollowUp from "./pages/doctor/DoctorManageFollowUp";
 import DoctorManagePrescriptions from "./pages/doctor/DoctorManagePrescriptions";
+import DoctorManagePrescriptionDetails from "./pages/doctor/DoctorManagePrescriptionDetails";
 import PatientBookAppointments from "./pages/patient/patientBookAppointment";
 import AddHealthRecords from "./pages/doctor/DoctorAddHealthRecords";
 import PatientManageDocuments from './pages/patient/PatientManageDocuments';
@@ -113,6 +114,10 @@ function App() {
     {
       path: "/doctor/prescriptions",
       element: <DoctorManagePrescriptions />,
+    },
+    {
+      path: "/doctor/prescriptions/:id",
+      element: <DoctorManagePrescriptionDetails />
     },
     {
       path: "/patient/family",

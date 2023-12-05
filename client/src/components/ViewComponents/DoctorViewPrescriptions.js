@@ -52,7 +52,7 @@ import {
     }, []);
   
     const handleClick = (id) => {
-    //   navigate(`/doctor/prescriptions/${id}`);
+      navigate(`/doctor/prescriptions/${id}`);
     };
   
     return (

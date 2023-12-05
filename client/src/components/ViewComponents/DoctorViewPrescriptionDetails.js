@@ -7,9 +7,9 @@ import { useUser } from '../../userContest';
 import { set } from 'react-hook-form';
 
 
-const PatientViewPrescriptionDetails = ({ match }) => {
+const DoctorViewPrescriptionDetails = ({ match }) => {
   const { userId } = useUser();
-  const patientId = userId;
+  const doctorId = userId;
   let { id } = useParams();
 
 
@@ -40,10 +40,10 @@ const PatientViewPrescriptionDetails = ({ match }) => {
       console.error("Error fetching prescription details:", error);
     }
   };
-
+  
   useEffect(() => {
     fetchPrescription();
-  }, [patientId]);
+  }, [doctorId]);
 
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
@@ -59,16 +59,16 @@ const PatientViewPrescriptionDetails = ({ match }) => {
       <table style={styles.table}>
         <thead>
           <tr>
-            <th style={styles.th}>Patient</th>
             <th style={styles.th}>Doctor</th>
+            <th style={styles.th}>Patient</th>
             <th style={styles.th}>Date</th>
             <th style={styles.th}>Filled</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td style={styles.td}>{prescription.patient?.name}</td>
             <td style={styles.td}>{prescription.doctor?.name}</td>
+            <td style={styles.td}>{prescription.patient?.name}</td>
             <td style={styles.td}>{formatDate(prescription?.date)}</td>
             <td style={styles.td}>{prescription.filled ? 'Filled' : 'Not Filled'}</td>
           </tr>
@@ -174,4 +174,4 @@ const styles = {
 //   },
 // };
 
-export default PatientViewPrescriptionDetails;
+export default DoctorViewPrescriptionDetails;

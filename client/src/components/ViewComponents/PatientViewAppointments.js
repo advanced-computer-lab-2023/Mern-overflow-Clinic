@@ -224,5 +224,8 @@ export default function DoctorViewAppointments() {
         </TableBody>
       </Table>
     </Container>
+
+
+
   );
 }

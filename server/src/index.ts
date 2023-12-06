@@ -47,6 +47,7 @@ app.use("/uploads", express.static("./src/uploads"));
 
 app.use(cookieParser());
 
+
 //ROUTERS
 app.use("/auth", authRouter);
 app.use("/doctors", doctorRouter);

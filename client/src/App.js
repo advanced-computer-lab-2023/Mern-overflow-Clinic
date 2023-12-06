@@ -36,6 +36,8 @@ import AddFamilyMember from "./components/formComponents/linkFamilyMembers";
 import PatientManageFamilyLinks from "./pages/patient/PatientManageFamilyLinks";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AdminEditPackage from "./pages/admin/AdminEditPackage";
+import DoctorEditDosage from "./pages/doctor/DoctorEditDosage";
+
 // import PatientManageFamily from "./pages/patient/PatientManageFamily";
 // import EditDoctorProfile from './components/formComponents/EditDoctorProfile';
 import axios from "axios";
@@ -190,6 +192,10 @@ function App() {
     {
       path: "/doctor/addHealthRecords",
       element: <AddHealthRecords />,
+    },
+    {
+      path: "/doctor/prescriptions/:id/medicine/:mid",
+      element: <DoctorEditDosage />,
     },
     {
       path: "/patient/bookAppointment/:id",

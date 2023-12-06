@@ -9,7 +9,7 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 
-const EditDoctorProfile = () => {
+const EditPackage = () => {
     let { id } = useParams();
     const { register, handleSubmit, setError, formState: { errors } } = useForm();
     const [name, setName] = useState("");
@@ -167,4 +167,4 @@ const EditDoctorProfile = () => {
     );
 }
 
-export default EditDoctorProfile;
+export default EditPackage;

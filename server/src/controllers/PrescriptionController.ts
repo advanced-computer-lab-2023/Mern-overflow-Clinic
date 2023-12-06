@@ -129,7 +129,7 @@ const addMedicine = async (req: Request, res: Response) => {
 const deleteMedicine = async (req: Request, res: Response) => {
     
   const presId = req.params.id;
-  const medicineId = req.body.mId;
+  const medicineId = req.params.mid;
   
   try {
       const pres = await Prescription.findById(presId);
@@ -144,10 +144,19 @@ const deleteMedicine = async (req: Request, res: Response) => {
           //     newFiles = [];
           const newPrescription= [];
           if(pres.medicine !== undefined){
-              for (const medId of pres.medicine){
-                  if(!medId.medId.equals(medicineId)){
-                          newPrescription.push(medId);
-                  }          
+            console.log("medicineIdToBeDel: " + medicineId)
+              for (const med of pres.medicine){
+                 if (!((med.medId).equals(medicineId))){
+                           console.log("medId: " + med.medId)
+                           newPrescription.push(med);
+                   }  
+              //   if (med.medId && medicineId && med.medId.toString && medicineId.toString) {
+              //     if (med.medId.toString() !== medicineId.toString()) {
+              //         newPrescription.push(med);
+              //     }
+              // } else {
+              //   return res.status(404).json({ message: "medicine not found" });
+              // }        
       }
                   pres.medicine = newPrescription;
                   await pres.save();   
@@ -215,6 +224,59 @@ const listMedicine = async (req: Request, res: Response) => {
 return res.status(400).json(err);
     });
 }
+
+const updateDosage = async (req: Request, res: Response) => {
+   const id = req.params.id;
+   const mid = req.params.mid;
+   const newDosage = req.body.dosage
+   console.log("Hiii")
+   try {
+     const pres = await Prescription.findById(id);
+     if (!pres) {
+         return res.status(404).json({ message: "Patient not found" });
+     } else {
+      const newPrescription= [];
+      for (const med of pres.medicine){
+             if((med.medId).equals(mid)){
+              console.log("DailyDosage = " + med.dailyDosage)
+              med.dailyDosage = newDosage;
+            }
+            newPrescription.push(med);
+       }
+       pres.medicine = newPrescription;
+       await pres.save();   
+       res.status(200).json(pres);
+   }
+ }
+ catch (err) {
+   console.error(err);
+   return res.status(500).json({ message: "Server error" });
+ }
+}
+
+ const listMedDosage = async (req: Request, res: Response) => {
+   const id = req.params.id;
+   const mid = req.params.mid;
+   console.log("Hiii")
+   try {
+     const pres = await Prescription.findById(id);
+     if (!pres) {
+         return res.status(404).json({ message: "Patient not found" });
+     } else {
+       for (const med of pres.medicine){
+             if((med.medId).equals(mid)){
+              console.log("DailyDosage = " + med.dailyDosage)
+              return res.json({ dosage: med.dailyDosage }); // Send JSON response
+            }
+       }
+   }
+ }
+ catch (err) {
+   console.error(err);
+   return res.status(500).json({ message: "Server error" });
+ }
+
+ }
 
 
 // const filterPrescriptions = async (req: Request, res: Response) => {
@@ -289,5 +351,7 @@ export default {
   filterPrescriptions,
   addMedicine,
   deleteMedicine,
-  listMedicine
+  listMedicine,
+  listMedDosage,
+  updateDosage
 }

@@ -4,11 +4,34 @@ import axios from 'axios'
 import {  Typography } from '@mui/material';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useUser } from '../../userContest';
+import { useForm } from "react-hook-form";
+import {
+  Container,
+  Paper,
+  TextField,
+  FormControl,
+  Button,
+  MenuItem,
+  Select,
+  InputLabel,
+}from "@mui/material";
 import { set } from 'react-hook-form';
+import DeleteIcon from "@mui/icons-material/Delete";
+import IconButton from "@mui/material/IconButton";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import EditIcon from "@mui/icons-material/Edit";
 
 
 const DoctorViewPrescriptionDetails = ({ match }) => {
+  const navigate = useNavigate();
   const { userId } = useUser();
+  const {
+    register,
+    handleSubmit,
+    reset, // <-- Add the reset function
+    formState: { errors },
+  } = useForm();
+  const [statusMessage, setStatusMessage] = useState("");
   const doctorId = userId;
   let { id } = useParams();
 
@@ -30,8 +53,9 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
   
         for (let i = 0; i < response.data.medicine.length; i++) {
           let mId = response.data.medicine[i].medId;
-          console.log("Hello " + mId);
+          console.log("Hello! " + mId);
           const res = await axios.get(`http://localhost:8000/prescriptions/medicineDetails/${mId}`);
+          console.log(res.data)
           medList.push(res.data);
         }  
         setMedicine(medList);
@@ -50,11 +74,60 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
+  const onSubmit = (data) => {
+    const requestData = {
+      mName: data.medicineName,
+      mDosage: data.dosage,
+    };
+
+    axios
+      .post(`http://localhost:8000/prescriptions/${id}/addMedicine`, requestData)
+      .then((response) => {
+        setStatusMessage("medicine added successfully");
+        console.log("POST request successful", response);
+
+        // Reset the form after successful submission
+        reset();
+        window.location.reload();
+        // Optionally, you can handle other actions after resetting the form
+      })
+      .catch((error) => {
+        setStatusMessage("medicine not correct");
+        console.error("Error making POST request", error);
+      });
+  }
+
+  const handleClickDelete = (mid) => {
+    // const requestData = {
+    //   mId: mid,
+    // };
+    axios
+      .delete(`http://localhost:8000/prescriptions/${id}/deleteMedicine/${mid}`)
+      .then((response) => {
+        console.log("medicineId:  " + mid);
+        console.log("DELETE request successful", response);
+        // fetchTableData();
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.error("Error making DELETE request", error);
+      });
+  };
+
+  const handleClickEdit = (mid) => {
+    console.log("medId! = " + mid);
+    navigate(`/doctor/prescriptions/${id}/medicine/${mid}`);
+    console.log("medId! = " + mid);
+  };
+
+
   return (
     <div style={styles.container}>
       {errorMessage && <div style={styles.errorMessage}>{errorMessage}</div>}
       
-      <h2>Prescription Details</h2>
+
+
+      {/* <h2>Prescription Details</h2>
     <br></br>
       <table style={styles.table}>
         <thead>
@@ -73,7 +146,49 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
             <td style={styles.td}>{prescription.filled ? 'Filled' : 'Not Filled'}</td>
           </tr>
         </tbody>
-      </table>
+      </table> */}
+      <Container maxWidth="lg">
+      <Paper elevation={3} sx={{ p: "20px", my: "40px" }}>
+        <Typography variant="h6" sx={{ mb: 2 }}>
+          Add Medicine
+        </Typography>
+        {statusMessage && (
+          <Typography
+            variant="body2"
+            color={statusMessage.includes("Error") ? "error" : "success"}
+            sx={{ mb: 2 }}
+          >
+            {statusMessage}
+          </Typography>
+        )}
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <TextField
+            label="Medicine Name"
+            {...register("medicineName", { required: "medicine is required" })}
+            fullWidth
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            label="Dosage"
+            type="number"
+            {...register("dosage", { required: "dosage is required" })}
+            fullWidth
+            sx={{ mb: 2 }}
+          />
+          {/* {errors.diagnosis && (
+            <Typography color="error">{errors.diagnosis.message}</Typography>
+          )} */}
+          <Button
+            type="submit"
+            variant="contained"
+            fullWidth
+            sx={{ p: 1.8, fontWeight: "bold", mb: 2 }}
+          >
+            Add Medicine
+          </Button>
+        </form>
+      </Paper>
+    </Container>
 
       <br></br>
 
@@ -91,6 +206,8 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
             <th style={styles.th}>Available Quantity</th>
             <th style={styles.th}>Over The Counter</th>
             <th style={styles.th}>Archived</th>
+            <th style={styles.th}>Edit</th>
+            <th style={styles.th}>Delete</th>
           </tr>
         </thead>
         <tbody>
@@ -107,6 +224,16 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
               <td style={styles.td}>{med?.availableQuantity}</td>
               <td style={styles.td}>{med?.overTheCounter ? 'Yes' : 'No' }</td>
               <td style={styles.td}>{med?.isArchived ? 'Yes' : 'No' }</td>
+              <td style={styles.td}>
+                        <IconButton onClick={() => handleClickEdit(med?._id)}>
+                          <EditIcon />
+                        </IconButton>
+                      </td>
+              <td style={styles.td}>
+                        <IconButton onClick={() => handleClickDelete(med?._id)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </td>
             </tr>
           ))}
         </tbody>

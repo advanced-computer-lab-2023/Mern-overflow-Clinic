@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios'
 import {  Typography } from '@mui/material';
+import { Button } from '@mui/material';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useUser } from '../../userContest';
 import { set } from 'react-hook-form';
@@ -50,6 +51,10 @@ const PatientViewPrescriptionDetails = ({ match }) => {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
+  const handleButtonClick = async () => {
+    
+  }
+
   return (
     <div style={styles.container}>
       {errorMessage && <div style={styles.errorMessage}>{errorMessage}</div>}
@@ -59,18 +64,18 @@ const PatientViewPrescriptionDetails = ({ match }) => {
       <table style={styles.table}>
         <thead>
           <tr>
-            <th style={styles.th}>Patient</th>
             <th style={styles.th}>Doctor</th>
+            <th style={styles.th}>Specialty</th>
             <th style={styles.th}>Date</th>
-            <th style={styles.th}>Filled</th>
+            <th style={styles.th}>Prescription Collected</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td style={styles.td}>{prescription.patient?.name}</td>
             <td style={styles.td}>{prescription.doctor?.name}</td>
+            <td style={styles.td}>{prescription.doctor?.speciality}</td>
             <td style={styles.td}>{formatDate(prescription?.date)}</td>
-            <td style={styles.td}>{prescription.filled ? 'Filled' : 'Not Filled'}</td>
+            <td style={styles.td}>{prescription.filled ? 'Collected' : 'Not Collected'}</td>
           </tr>
         </tbody>
       </table>
@@ -85,12 +90,8 @@ const PatientViewPrescriptionDetails = ({ match }) => {
             <th style={styles.th}>Name</th>
             <th style={styles.th}>Dosage</th>
             <th style={styles.th}>Medicinal Use</th>
-            <th style={styles.th}>Description</th>
-            <th style={styles.th}>Active Ingredients</th>
             <th style={styles.th}>Price</th>
             <th style={styles.th}>Available Quantity</th>
-            <th style={styles.th}>Over The Counter</th>
-            <th style={styles.th}>Archived</th>
           </tr>
         </thead>
         <tbody>
@@ -99,32 +100,23 @@ const PatientViewPrescriptionDetails = ({ match }) => {
               <td style={styles.td}>{med?.name}</td>
               <td style={styles.td}>{prescription.medicine[index]?.dailyDosage} {prescription.medicine[index]?.dailyDosage === 1 ? 'dosage' : 'dosages'} per day</td>  
               <td style={styles.td}>{med?.medicinalUse}</td>
-              <td style={styles.td}>{med?.details.description}</td>
-              <td style={styles.td}>{med?.details.activeIngredients.map((ingredient, i) => (
-                <li key={i} style={styles.td}>{ingredient}</li>
-              ))}</td>
               <td style={styles.td}>{med?.price}</td>
               <td style={styles.td}>{med?.availableQuantity}</td>
-              <td style={styles.td}>{med?.overTheCounter ? 'Yes' : 'No' }</td>
-              <td style={styles.td}>{med?.isArchived ? 'Yes' : 'No' }</td>
             </tr>
           ))}
         </tbody>
       </table>
 
+      {!prescription.filled && (
+            <Button variant="contained" onClick={handleButtonClick}>
+              Collect Prescription
+            </Button>
+      )}
+
     </div>
   );
 };
 
-// {/* <td style={styles.td}>
-// <ul>
-//   {medicine.map((med, index) => (
-//     <ul key={index} style={styles.td}>
-//       {/* Your medicine details here */}
-//     </ul>
-//   ))}
-// </ul>
-// </td> */}
 
 const styles = {
   container: {
@@ -152,26 +144,5 @@ const styles = {
   },
 };
 
-// const styles = {
-//   container: {
-//     textAlign: "center",
-//     margin: "20px",
-//   },
-//   header: {
-//     fontSize: "1.5rem",
-//   },
-//   healthRecordsTable: {
-//     width: "100%",
-//     borderCollapse: "collapse",
-//   },
-//   recordRow: {
-//     borderTop: "15px solid transparent",
-//   },
-//   errorMessage: {
-//     backgroundColor: "lightcoral",
-//     padding: "1rem",
-//     margin: "1rem",
-//   },
-// };
 
 export default PatientViewPrescriptionDetails;

@@ -73,6 +73,11 @@ export default function PatientViewPrescriptions() {
     navigate(`/patient/prescriptions/${id}`);
   };
 
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
   return (
     <Container maxWidth="xl">
       <Paper elevation={3} sx={{ p: "20px", my: "40px", paddingBottom: 5 }}>
@@ -144,26 +149,26 @@ export default function PatientViewPrescriptions() {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell key="patient">Patient</TableCell>
+            {/* <TableCell key="patient">Patient</TableCell> */}
             <TableCell key="doctor">Doctor</TableCell>
-            <TableCell key="filled">Filled</TableCell>
+            <TableCell key="filled">Prescription Collected</TableCell>
             <TableCell key="date">Date</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {data &&
             data.map((row) => (
-              <TableRow key={row.patient?.name}>
-                <TableCell>{row.patient?.name}</TableCell>
+              <TableRow key={row.patient?.name} onClick={() => handleClick(row._id)} style={{ cursor: 'pointer', transition: 'background-color 0.3s' }} hover>
+                {/* <TableCell>{row.patient?.name}</TableCell> */}
                 <TableCell>{row.doctor?.name}</TableCell>
-                <TableCell>{row.filled.toString()}</TableCell>
-                <TableCell>{row.date}</TableCell>
-                <TableCell>
+                <TableCell>{row.filled.toString() == "true"? "Collected": "Not Collected"}</TableCell>
+                <TableCell>{formatDate(row.date)}</TableCell>
+                {/* <TableCell>
                   {console.log("ID is: "+row._id)}
                   <Button onClick={() => handleClick(row._id)}>
                     Select Prescription
                   </Button>
-                </TableCell>
+                </TableCell> */}
               </TableRow>
             ))}
         </TableBody>

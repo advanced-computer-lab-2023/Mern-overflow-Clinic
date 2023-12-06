@@ -37,7 +37,7 @@ const accessChat = asyncHandler(async (req:any, res:any): Promise<any> => {
       chatName: "sender",
       isGroupChat: false,
       users: [patId, docId],
-      latestMessage:""
+      latestMessage:null
     };
     console.log("HERE4 "+" "+patId+" "+docId);
     try {

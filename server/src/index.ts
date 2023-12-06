@@ -104,16 +104,7 @@ app.get("/google/redirect", async (req, res)=>{
 
 app.get("/call/:email1/:email2",async (req,res)=>{
 
-  const url = oauth2Client.generateAuthUrl({
-    access_type:"offline",
-    scope: scopes
-  })
-
-  const code:any =req.query.code;
-
-  const {tokens} = await oauth2Client.getToken(code);
-  oauth2Client.setCredentials(tokens);
-
+  console.log("call");
   const {email1,email2} = req.params;
 
   console.log(oauth2Client.credentials.access_token);
@@ -145,7 +136,8 @@ app.get("/call/:email1/:email2",async (req,res)=>{
   });
 
   console.log(meet.data.hangoutLink);
-  res.send({
+
+  res.status(200).send({
     link:meet.data.hangoutLink
   })
 
@@ -186,6 +178,7 @@ app.use("/api/message", messageRoutes);
 
 
 app.use('/contracts',contractRouter);
+app.use(cors({ origin: 'http://localhost:3000' }));
 
 // //GET
 // app.get("/", (req, res) => {

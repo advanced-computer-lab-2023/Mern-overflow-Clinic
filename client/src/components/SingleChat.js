@@ -119,9 +119,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
   const handleVideoCall =  async()=>{
     console.log(selectedChat.users);
-    const {link} = await axios.get(`http://localhost:8000/call/${selectedChat.users[0].email}/${selectedChat.users[1].email}`);
+    const link = await axios.get(`http://localhost:8000/call/${selectedChat.users[0].email}/${selectedChat.users[1].email}`);
     
-    window.open(link,"_blank")
+    console.log(link);
+    window.open(link.link,"_blank")
   }
 
   useEffect(() => {

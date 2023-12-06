@@ -8,6 +8,12 @@ router.use(bodyParser.json());
 
 //GET
 router.get("/", isAuthenticated, appointmentController.listAllAppointments);
+
+router.put("/refresh",
+  isAuthenticated,
+  appointmentController.changeToPastAppointment,
+);
+
 router.get("/:id", isAuthenticated, appointmentController.readAppointment);
 
 //POST
@@ -20,6 +26,9 @@ router.get("/all/:id",
   isAuthenticated,
   appointmentController.getAllAppointments,
 );
+
+
+
 router.post(
   "/update",
   isAuthenticated,

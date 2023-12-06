@@ -40,9 +40,9 @@ router.post(
   appointmentController.createAppointmentForFamilyMember,
 );
 router.put(
-  "/rescheduleAppointmentForMySelf/:id",
+  "/reschedule/:id",
   //isAuthenticated,
-  appointmentController.rescheduleAppointmentForMySelf,
+  appointmentController.rescheduleAppointmentForMySelfOrFamilyMember,
 );
 
 

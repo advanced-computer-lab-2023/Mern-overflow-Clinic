@@ -410,12 +410,25 @@ const filterAppointments = async (req: Request, res: Response) => {
   }
 };
 
-const rescheduleAppointmentForMySelf = async (req:Request, res:Response) => {
+const rescheduleAppointmentForMySelfOrFamilyMember = async (req:Request, res:Response) => {
+  
   const id = req.params.id;
   const newDate = new Date(req.body.date);
+  const familyId = req.body.fId;
+  const forFam = req.body.forFam;
+
+
 
   try {
-    const apt = await appointment.findById(id).exec();
+
+    var apt=null; 
+    if(forFam === false){
+      apt = await appointment.findById(id).exec();
+    }
+    else{
+      apt = await appointment.findById(familyId).exec();
+
+    }
 
     if (!apt) {
       return res.status(404).send("No appointments found");
@@ -546,6 +559,6 @@ export default {
   createFollowUp,
   createAppointmentForFamilyMember,
   getAllAppointments,
-  rescheduleAppointmentForMySelf,
+  rescheduleAppointmentForMySelfOrFamilyMember,
   changeToPastAppointment,
 };

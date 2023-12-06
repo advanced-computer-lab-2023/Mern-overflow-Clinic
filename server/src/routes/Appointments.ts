@@ -39,9 +39,9 @@ router.post(
   isAuthenticated,
   appointmentController.createAppointmentForFamilyMember,
 );
-router.post(
+router.put(
   "/rescheduleAppointmentForMySelf/:id",
-  isAuthenticated,
+  //isAuthenticated,
   appointmentController.rescheduleAppointmentForMySelf,
 );
 

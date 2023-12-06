@@ -410,38 +410,65 @@ const filterAppointments = async (req: Request, res: Response) => {
   }
 };
 
-const rescheduleAppointmentForMySelf = async (req: Request, res: Response) => {
+const rescheduleAppointmentForMySelf = async (req:Request, res:Response) => {
   const id = req.params.id;
-  const date = req.body.date;
+  const newDate = new Date(req.body.date);
+
+  try {
     const apt = await appointment.findById(id).exec();
 
     if (!apt) {
       return res.status(404).send("No appointments found");
-    } else {
-      const docId = apt.doctor;
-      const foundDoc = await doctor.findById(docId).exec();
+    }
 
-      if (!foundDoc) {
-        return res.status(404).send("Doctor not found");
-      }
+    const docId = apt.doctor;
+    const foundDoc = await doctor.findById(docId).exec();
 
-      if (apt.status === "upcoming") {
-        if (foundDoc.availableSlotsStartTime && foundDoc.availableSlotsStartTime.length > 0) {
-          // for (let i = 0; i < foundDoc.availableSlotsStartTime.length; i++) {
-          //   // Your logic for rescheduling based on available slots
-          // }
-          if(date >= foundDoc.availableSlotsStartTime[0] && date <= foundDoc.availableSlotsStartTime[foundDoc.availableSlotsStartTime.length]){
-            apt.date = date;
-          }
-          else {
-            return res.status(404).send("this date is not in the available slots of the doctor");
-          }
+    if (!foundDoc) {
+      return res.status(404).send("Doctor not found");
+    }
+
+    if (apt.status === "upcoming") {
+      if (foundDoc.availableSlotsStartTime && foundDoc.availableSlotsStartTime.length > 0) {
+        const isDateAvailable = foundDoc.availableSlotsStartTime.some((slot) => {
+          // Compare date strings without milliseconds
+          return slot.toDateString() === newDate.toDateString();
+        });
+
+        if (isDateAvailable) {
+          // Remove the date from available slots
+          foundDoc.availableSlotsStartTime = foundDoc.availableSlotsStartTime.filter(
+            (slot) => slot.toISOString().split(".")[0] !== newDate.toISOString().split(".")[0]
+          );
+
+          // Update the doctor's available slots
+          await doctor.findByIdAndUpdate(docId, {
+            $set: { availableSlotsStartTime: foundDoc.availableSlotsStartTime },
+          });
+
+          // Update the appointment details
+          apt.date = newDate;
+          apt.status = "rescheduled";
+
+          // Save the updated appointment
+          await apt.save();
+
+          return res.status(200).json({ message: "Appointment rescheduled successfully", appointment: apt });
         } else {
-          return res.status(404).send("No available");
+          return res.status(404).send("This date is not in the available slots of the doctor");
         }
+      } else {
+        return res.status(404).send("No available slots for the doctor");
       }
     }
-}
+
+    return res.status(404).send("Cannot reschedule appointment. It may not be in an upcoming status.");
+  } catch (error) {
+    console.error("Error rescheduling appointment:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
   
 
 const getAllAppointments = async (req: Request, res: Response) => {

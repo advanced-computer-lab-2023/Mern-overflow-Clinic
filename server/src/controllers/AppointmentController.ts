@@ -9,13 +9,9 @@ import Doctor from "../models/Doctor.js";
 import sendMailService from "../services/emails/sendMailService.js";
 
 const createAppointment = async (req: Request, res: Response) => {
-  //console.log("HELLO ");
   req.body.duration = 1;
   req.body.status = "upcoming";
   req.body.appointmentType = "regular";
-  //req.body.paid = false;
-  //req.body.price = (await Doctor.findById(req.body.dId))?.hourlyRate;
-
   const patientEmail = await Users.findById(req.body.patient).then(
     (pat) => pat?.email,
   );
@@ -26,9 +22,6 @@ const createAppointment = async (req: Request, res: Response) => {
   if (patientEmail === undefined || doctorEmail === undefined) {
     return res.status(400).json();
   }
-
-  //console.log("BODY  ========" + req.body);
-  //console.log("DOCTOR ID" + req.body.dId);
   const newApt = appointment
     .create(req.body)
     .then((newApt) => {
@@ -40,7 +33,7 @@ const createAppointment = async (req: Request, res: Response) => {
       return res.status(200).json(newApt);
     })
     .catch((err) => {
-      console.log("error::::  " + err);
+      console.log(err);
       return res.status(400).json(err);
     });
 };

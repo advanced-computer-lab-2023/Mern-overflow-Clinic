@@ -247,84 +247,94 @@ You will then need to run the following command each time before your next commi
 ## Code Examples 👉
 
 <details>
-<summary> Add Address to a Patient </summary>
+<summary> Delete an Admin from System </summary>
 
 ```javascript
-const addAddress = async (req: Request, res: Response) => {
-    const patientId = req.params.patientId;
-    const newAddress = req.body.newAddress;
-    try {
-        const existingPatient = await patient.findOne({ _id: patientId });
-        if (!existingPatient) {
-            return res.status(404).json({ message: "Patient not found" });
-        }
-        existingPatient.address.push(newAddress);
-        await existingPatient.save();
-        res.json({ message: "Address added successfully" });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Internal Server Error" });
-    }
+const deleteAdmin = async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const adminToDelete = adminstrator
+    .findByIdAndDelete({ _id: id })
+    .then((adminToDelete) => {
+      res.status(200).json(adminToDelete);
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
 };
 ```
 
 </details>
 
 <details>
-<summary> Archive / Unarchive a Medicine </summary>
+<summary> Create an Appointment </summary>
 
 ```javascript
-const archiveMedicine = async (req: Request, res: Response) => {
-    const id = req.params.id;
-    try {
-        const existingMedicine = await medicine.findById(id);
-        if (!existingMedicine) {
-            return res.status(404).send({ message: "Medicine not found" });
-        }
-        existingMedicine.isArchived = !existingMedicine.isArchived;
-        const updatedMed = await existingMedicine.save();
-        res.status(200).send(updatedMed);
-    } catch (error) {
-        res.status(400).send(error);
-    }
+const createAppointment = async (req: Request, res: Response) => {
+  req.body.duration = 1;
+  req.body.status = "upcoming";
+  req.body.appointmentType = "regular";
+  const patientEmail = await Users.findById(req.body.patient).then(
+    (pat) => pat?.email,
+  );
+  const doctorEmail = await Users.findById(req.body.doctor).then(
+    (doc) => doc?.email,
+  );
+
+  if (patientEmail === undefined || doctorEmail === undefined) {
+    return res.status(400).json();
+  }
+  const newApt = appointment
+    .create(req.body)
+    .then((newApt) => {
+      const subject = "Appointment Booked";
+      let html = `Hello patient, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ny Clinic xoxo.`;
+      sendMailService.sendMail(patientEmail, subject, html);
+      html = `Hello doctor, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ny Clinic xoxo.`;
+      sendMailService.sendMail(doctorEmail, subject, html);
+      return res.status(200).json(newApt);
+    })
+    .catch((err) => {
+      console.log(err);
+      return res.status(400).json(err);
+    });
 };
 ```
 
 </details>
 
 <details>
-<summary> List Adminstrators </summary>
+<summary> Create Contract </summary>
 
 ```javascript
-const listAdminstrators = async (req: Request, res: Response) => {
-    const adminstrators = adminstrator
-        .find({})
-        .then((admns) => res.status(200).json(admns))
-        .catch((err) => {
-            res.status(400).json(err);
-        });
-};
+const createContract = async (req: Request, res: Response) => {
+    req.body.date = Date.now();
+    req.body.admin = req.params.id;
+
+    const newContract = contract
+    .create(req.body)
+    .then((newContract) => {
+        return res.status(200).json(newContract);
+    })
+    .catch((err) => {
+        return res.status(400).json(err);
+    });
+}
 ```
 
 </details>
 
 <details>
-<summary>Not Found Page Component</summary>
+<summary> Add Admin Form Component</summary>
 
 ```javascript
-import NotFoundImg from "./assets/photos/not-found.png";
-
-<Container>
-    <div>
-        <h1>404 - Page Not Found</h1>
-        <p>Sorry, the page you're looking for does not exist.</p>
-        <img src={NotFoundImg} />
-    </div>
-    <Button variant="contained" component={Link} to="/patient/medicines">
-        {" "}
-        Return to Homepage{" "}
+<Box component="form" onSubmit={handleSubmit(onSubmit)}>
+    <TextField label="Username" />
+    <TextField label="Email" />
+    <TextField label="Password" />
+    <Button type="submit" variant="outlined">
+        Add Admin
     </Button>
-</Container>;
+</Box>
 ```
 
 </details>
@@ -334,21 +344,19 @@ import NotFoundImg from "./assets/photos/not-found.png";
 
 ```javascript
 <AppBar position="static">
-    <Toolbar>
-        <IconButton>
-            <MenuIcon />
-        </IconButton>
-        <Typography>{props.title}</Typography>
-        {props.cart && (
-            <IconButton component={Link} to="/patient/cart">
-                <ShoppingCartIcon />
+          <Toolbar>
+            <IconButton>
+              <MenuIcon />
             </IconButton>
-        )}
-        <IconButton component={Link} onClick={handleLogout}>
-            <LogoutIcon />
-        </IconButton>
-    </Toolbar>
-</AppBar>
+            <Typography>
+              {props.title}
+            </Typography>
+            <Button type="button" color="inherit" onClick={handleLogout}>
+              {" "}
+              Log out{" "}
+            </Button>
+          </Toolbar>
+        </AppBar>
 ```
 
 </details>

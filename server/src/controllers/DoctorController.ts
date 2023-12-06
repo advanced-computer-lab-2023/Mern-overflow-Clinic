@@ -148,8 +148,6 @@ const listDoctors = async (req: Request, res: Response) => {
     });
 };
 
-
-
 const listPendingDoctors = async (req: Request, res: Response) => {
   const doctors = doctor
     .find({ "status": "pending" })
@@ -315,11 +313,6 @@ const viewHealthRecordOfPatient = async (req: Request, res: Response)=>
         
   }).catch(err => res.status(400).send(err));
 };
-
-
-
-
-
 
 const viewWallet = async (req: Request, res: Response) => {
   const dId = req.params.id;

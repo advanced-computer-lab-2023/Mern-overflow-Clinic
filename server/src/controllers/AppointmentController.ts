@@ -291,8 +291,6 @@ const listAllAppointments = async (req: Request, res: Response) => {
 const filterAppointments = async (req: Request, res: Response) => {
   const status = req.body.status;
   const id = req.params.id;
-  console.log(req.body);
-  console.log(id);
   var doc;
 
   const pat = await Patient.findById(id).exec();
@@ -412,6 +410,40 @@ const filterAppointments = async (req: Request, res: Response) => {
   }
 };
 
+const rescheduleAppointmentForMySelf = async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const date = req.body.date;
+    const apt = await appointment.findById(id).exec();
+
+    if (!apt) {
+      return res.status(404).send("No appointments found");
+    } else {
+      const docId = apt.doctor;
+      const foundDoc = await doctor.findById(docId);
+
+      if (!foundDoc) {
+        return res.status(404).send("Doctor not found");
+      }
+
+      if (apt.status === "upcoming") {
+        if (foundDoc.availableSlotsStartTime && foundDoc.availableSlotsStartTime.length > 0) {
+          // for (let i = 0; i < foundDoc.availableSlotsStartTime.length; i++) {
+          //   // Your logic for rescheduling based on available slots
+          // }
+          if(date >= foundDoc.availableSlotsStartTime[0] && date <= foundDoc.availableSlotsStartTime[foundDoc.availableSlotsStartTime.length]){
+            apt.date = date;
+          }
+          else {
+            return res.status(404).send("this date is not in the available slots of the doctor");
+          }
+        } else {
+          return res.status(404).send("No available");
+        }
+      }
+    }
+}
+  
+
 const getAllAppointments = async (req: Request, res: Response) => {
   const id = req.params.id;
   var doc;
@@ -487,5 +519,6 @@ export default {
   createFollowUp,
   createAppointmentForFamilyMember,
   getAllAppointments,
+  rescheduleAppointmentForMySelf,
   changeToPastAppointment,
 };

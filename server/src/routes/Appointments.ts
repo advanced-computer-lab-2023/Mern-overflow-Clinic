@@ -39,6 +39,12 @@ router.post(
   isAuthenticated,
   appointmentController.createAppointmentForFamilyMember,
 );
+router.post(
+  "/rescheduleAppointmentForMySelf/:id",
+  isAuthenticated,
+  appointmentController.rescheduleAppointmentForMySelf,
+);
+
 
 //DELETE
 router.delete("/:id", isAuthenticated, appointmentController.deleteAppointment);

@@ -344,19 +344,19 @@ const createContract = async (req: Request, res: Response) => {
 
 ```javascript
 <AppBar position="static">
-          <Toolbar>
-            <IconButton>
-              <MenuIcon />
-            </IconButton>
-            <Typography>
-              {props.title}
-            </Typography>
-            <Button type="button" color="inherit" onClick={handleLogout}>
-              {" "}
-              Log out{" "}
-            </Button>
-          </Toolbar>
-        </AppBar>
+  <Toolbar>
+    <IconButton>
+      <MenuIcon />
+    </IconButton>
+    <Typography>
+      {props.title}
+    </Typography>
+    <Button type="button" color="inherit" onClick={handleLogout}>
+      {" "}
+      Log out{" "}
+    </Button>
+  </Toolbar>
+</AppBar>
 ```
 
 </details>

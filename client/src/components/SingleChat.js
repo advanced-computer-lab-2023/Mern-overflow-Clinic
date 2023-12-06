@@ -2,6 +2,7 @@ import { FormControl } from "@chakra-ui/form-control";
 import { Input } from "@chakra-ui/input";
 import { Box, Text } from "@chakra-ui/layout";
 import { useUser } from "../userContest";
+import { Tooltip } from "@chakra-ui/tooltip";
 import "./styles.css";
 import { IconButton, Spinner, useToast } from "@chakra-ui/react";
 import { getSender, getSenderFull } from "../config/ChatLogics";
@@ -12,6 +13,7 @@ import ProfileModal from "./miscellaneous/ProfileModal";
 import ScrollableChat from "./ScrollableChat";
 import Lottie from "react-lottie";
 import animationData from "../animations/typing.json";
+import { PhoneIcon } from "@chakra-ui/icons";
 
 import io from "socket.io-client";
 import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
@@ -113,6 +115,14 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       }
     }
   };
+  
+
+  const handleVideoCall =  async()=>{
+    console.log(selectedChat.users);
+    const {link} = await axios.get(`http://localhost:8000/call/${selectedChat.users[0].email}/${selectedChat.users[1].email}`);
+    
+    window.open(link,"_blank")
+  }
 
   useEffect(() => {
     socket = io(ENDPOINT);
@@ -172,6 +182,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     <>
       {selectedChat ? (
         <>
+        
           <Text
             fontSize={{ base: "28px", md: "30px" }}
             pb={3}
@@ -182,21 +193,36 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             justifyContent={{ base: "space-between" }}
             alignItems="center"
           >
+            
             <IconButton
               display={{ base: "flex", md: "none" }}
               icon={<ArrowBackIcon />}
               onClick={() => setSelectedChat("")}
             />
+          
             {messages &&
               (!selectedChat.isGroupChat ? (
                 <>
+                
                   {getSender(user, selectedChat.users)}
+                  
+                  <div>
+                  <Tooltip label={"Videocall Doctor"} placement="bottom-start" hasArrow>
+                <IconButton d={{ base: "flex"}} marginRight="4" cursor="pointer" icon={<PhoneIcon />} 
+                onClick={()=>{
+                  handleVideoCall()}}  />
+              </Tooltip>
+                  
                   <ProfileModal
                     user={getSenderFull(user, selectedChat.users)}
                   />
+                  </div>
+
+                  
                 </>
               ) : (
                 <>
+                
                   {selectedChat.chatName.toUpperCase()}
                   <UpdateGroupChatModal
                     fetchMessages={fetchMessages}
@@ -205,6 +231,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                   />
                 </>
               ))}
+              
           </Text>
           <Box
             display="flex"

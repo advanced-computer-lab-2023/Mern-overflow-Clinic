@@ -41,7 +41,7 @@ const accessChat = asyncHandler(async (req:any, res:any): Promise<any> => {
     };
     console.log("HERE4 "+" "+patId+" "+docId);
     try {
-      console.log("Here5");
+      console.log("Here5 "+JSON.stringify(chatData));
       const createdChat = await Chat.create(chatData);
       console.log("Here6");
       const FullChat = await Chat.findOne({ _id: createdChat._id }).populate(
@@ -51,6 +51,7 @@ const accessChat = asyncHandler(async (req:any, res:any): Promise<any> => {
       console.log("Here7 "+FullChat);
       res.status(200).json(FullChat);
     } catch (error) {
+      console.log(error);
       res.status(400);
     }
   }

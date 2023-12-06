@@ -12,10 +12,14 @@ import prescriptionRouter from "./routes/Prescriptions.js";
 import packageRouter from "./routes/Package.js";
 import CCpaymentRouter from "./routes/Payment.js";
 import walletPaymentRouter from "./routes/WalletPayment.js";
+import VideoCallRouter from "./routes/VideoCall.js";
+
 import cors from "cors";
 import cookieParser from "cookie-parser";import appointment from "./models/appointment.js";
 import PaymentController from "./controllers/PaymentController.js";
 //const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
+
+
 
 // const connectDB = require("./config/db");
 import dotenv from "dotenv";
@@ -35,12 +39,36 @@ import { fileURLToPath } from 'url';
 
 
 
+import dayjs from "dayjs";
+
+import {v4 as uuid} from "uuid";
 
 
 
 // import isAuthenticated from "./middlewares/permissions/isAuthenticated.js";
 // import isAuthorized from "./middlewares/permissions/isAuthorized.js";
 // import { UserType } from "./enums/UserTypes.js";
+
+
+import {google} from "googleapis";
+
+const calendar = google.calendar({
+  version:"v3",
+  auth: process.env.API_KEY
+})
+
+const oauth2Client = new google.auth.OAuth2(
+  process.env.CLIENT_ID,
+  process.env.CLIENT_SECRET,
+  process.env.REDIRECT_URL
+)
+
+const scopes = [
+  'https://www.googleapis.com/auth/calendar'
+];
+const token = "";
+
+
 
 
 mongoose.set("strictQuery", false);
@@ -51,6 +79,77 @@ const MongoURI: string =
   config.mongo.URL ;
 const app = express();
 
+app.get("/google",(req,res)=>{
+  
+  const url = oauth2Client.generateAuthUrl({
+    access_type:"offline",
+    scope: scopes
+  })
+
+  res.redirect(url);
+});
+
+app.get("/google/redirect", async (req, res)=>{
+  const code:any =req.query.code;
+
+  const {tokens} = await oauth2Client.getToken(code);
+  oauth2Client.setCredentials(tokens);
+
+  res.send({
+    msg:"You have successfully logged in"
+  })
+})
+
+
+
+app.get("/call/:email1/:email2",async (req,res)=>{
+
+  const url = oauth2Client.generateAuthUrl({
+    access_type:"offline",
+    scope: scopes
+  })
+
+  const code:any =req.query.code;
+
+  const {tokens} = await oauth2Client.getToken(code);
+  oauth2Client.setCredentials(tokens);
+
+  const {email1,email2} = req.params;
+
+  console.log(oauth2Client.credentials.access_token);
+
+  const meet = await calendar.events.insert({
+    calendarId:"primary",
+    auth: oauth2Client,
+    conferenceDataVersion:1,
+    requestBody:{
+      summary: "Videocall",
+      description: `Call between ${email1} and ${email2}`,
+      start:{
+        dateTime: dayjs(new Date()).toISOString(),
+        timeZone:"Africa/Cairo"
+      },
+      end:{
+        dateTime: dayjs(new Date()).add(1,"hour").toISOString(),
+        timeZone:"Africa/Cairo"
+      },
+      conferenceData:{createRequest:{
+        requestId:uuid()
+      }},
+      attendees:[{
+        email:email1,
+      },
+      {email:email2}
+    ]
+    }
+  });
+
+  console.log(meet.data.hangoutLink);
+  res.send({
+    link:meet.data.hangoutLink
+  })
+
+});
 const corsOptions = {
     origin: ["http://localhost:3000", "http://127.0.0.1/"],
     credentials: true,
@@ -78,6 +177,7 @@ app.use('/prescriptions', prescriptionRouter);
 app.use('/packages', packageRouter);
 app.use('/create-checkout-session', CCpaymentRouter);
 app.use('/walletPayment', walletPaymentRouter);
+app.use("/video",VideoCallRouter);
 
 // chat use apis
 app.use("/api/user", userRoutes);
@@ -150,6 +250,7 @@ if (process.env.NODE_ENV === "production") {
 
 
 import { Server } from "socket.io";
+import axios from "axios";
 
 console.log(server);
 

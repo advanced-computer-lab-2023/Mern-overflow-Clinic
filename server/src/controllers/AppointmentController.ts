@@ -419,7 +419,7 @@ const rescheduleAppointmentForMySelf = async (req: Request, res: Response) => {
       return res.status(404).send("No appointments found");
     } else {
       const docId = apt.doctor;
-      const foundDoc = await doctor.findById(docId);
+      const foundDoc = await doctor.findById(docId).exec();
 
       if (!foundDoc) {
         return res.status(404).send("Doctor not found");

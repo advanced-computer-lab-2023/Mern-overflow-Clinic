@@ -33,9 +33,9 @@ const createAppointment = async (req: Request, res: Response) => {
     .create(req.body)
     .then((newApt) => {
       const subject = "Appointment Booked";
-      let html = `Hello patient, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
+      let html = `Hello patient, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ny Clinic xoxo.`;
       sendMailService.sendMail(patientEmail, subject, html);
-      html = `Hello doctor, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
+      html = `Hello doctor, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ny Clinic xoxo.`;
       sendMailService.sendMail(doctorEmail, subject, html);
       return res.status(200).json(newApt);
     })
@@ -98,9 +98,9 @@ const createAppointmentForFamilyMember = async (
       // Create the new appointment
       const newApt = await appointment.create(req.body);
       const subject = "Appointment Booked";
-      let html = `Hello patient, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
+      let html = `Hello patient, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ny Clinic xoxo.`;
       sendMailService.sendMail(patientEmail, subject, html);
-      html = `Hello doctor, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
+      html = `Hello doctor, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ny Clinic xoxo.`;
       sendMailService.sendMail(doctorEmail, subject, html);
       return res.status(200).json(newApt);
     } else {
@@ -140,9 +140,9 @@ const createAppointmentForFamilyMember = async (
       // Create the new appointment
       const newApt = await appointment.create(req.body);
       const subject = "Appointment Booked";
-      let html = `Hello patient, <br /> A new appointment was booked with date ${req.body.date}. <br /> Please be on time. <br /> With Love, <br /> El7a2ni Clinic xoxo.`;
+      let html = `Hello patient, <br /> A new appointment was booked with date ${req.body.date}. <br /> Please be on time. <br /> With Love, <br /> El7a2ny Clinic xoxo.`;
       sendMailService.sendMail(patientEmail, subject, html);
-      html = `Hello doctor, <br /> A new appointment was booked with date ${req.body.date}. <br /> Please be on time. <br /> With Love, <br /> El7a2ni Clinic xoxo.`;
+      html = `Hello doctor, <br /> A new appointment was booked with date ${req.body.date}. <br /> Please be on time. <br /> With Love, <br /> El7a2ny Clinic xoxo.`;
       sendMailService.sendMail(doctorEmail, subject, html);
       return res.status(200).json(newApt);
     }

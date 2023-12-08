@@ -20,6 +20,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import EditIcon from "@mui/icons-material/Edit";
+import {Snackbar,Alert} from '@mui/material';
+
 
 
 const DoctorViewPrescriptionDetails = ({ match }) => {
@@ -34,11 +36,15 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
   const [statusMessage, setStatusMessage] = useState("");
   const doctorId = userId;
   let { id } = useParams();
+   const [successOpen, setSuccessOpen] = useState(false);
+   const [successMessage, setSuccessMessage] = useState("");
+  const [errorOpen, setErrorOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-
-  const [prescription, setPrescription] = useState([]);
-  const [medicine, setMedicine] = useState([]);
-  const [errorMessage, setErrorMessage] = useState(null);
+   const [prescription, setPrescription] = useState([]);
+   const [medicine, setMedicine] = useState([]);
+   //const [errorMessage, setErrorMessage] = useState(null);
+  
 
   const fetchPrescription = async () => {
     try {
@@ -64,6 +70,19 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
       console.error("Error fetching prescription details:", error);
     }
   };
+
+   const handleSuccessClose = (event, reason) => {
+     if (reason === "clickaway") {
+       return;
+     }
+     setSuccessOpen(false);
+   };
+   const handleErrorClose = (event, reason) => {
+     if (reason === "clickaway") {
+       return;
+     }
+     setErrorOpen(false);
+   };
   
   useEffect(() => {
     fetchPrescription();
@@ -75,6 +94,7 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
   };
 
   const onSubmit = (data) => {
+    if(! (prescription.filled)){
     const requestData = {
       mName: data.medicineName,
       mDosage: data.dosage,
@@ -95,29 +115,47 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
         setStatusMessage("medicine not correct");
         console.error("Error making POST request", error);
       });
+    }
+    else{
+      // setError(true);
+      // setErrorMessage("prescription is already filled");
+      setStatusMessage("prescription is filled!");
+    }
   }
 
   const handleClickDelete = (mid) => {
     // const requestData = {
     //   mId: mid,
     // };
-    axios
-      .delete(`http://localhost:8000/prescriptions/${id}/deleteMedicine/${mid}`)
-      .then((response) => {
-        console.log("medicineId:  " + mid);
-        console.log("DELETE request successful", response);
-        // fetchTableData();
-        window.location.reload();
-      })
-      .catch((error) => {
-        console.error("Error making DELETE request", error);
-      });
+    if(!(prescription.filled)){
+      axios
+        .delete(`http://localhost:8000/prescriptions/${id}/deleteMedicine/${mid}`)
+        .then((response) => {
+          console.log("medicineId:  " + mid);
+          console.log("DELETE request successful", response);
+          // fetchTableData();
+          window.location.reload();
+        })
+        .catch((error) => {
+          console.error("Error making DELETE request", error);
+        });
+    }
+    else{
+      setErrorOpen(true);
+      setErrorMessage("prescription is filled!");
+    }
   };
 
   const handleClickEdit = (mid) => {
-    console.log("medId! = " + mid);
+    if(!(prescription.filled)){
+    //console.log("medId! = " + mid);
     navigate(`/doctor/prescriptions/${id}/medicine/${mid}`);
-    console.log("medId! = " + mid);
+    //console.log("medId! = " + mid);
+    }
+    else{
+      setErrorOpen(true);
+      setErrorMessage("prescription is filled!");
+    }
   };
 
 
@@ -125,6 +163,35 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
     <div style={styles.container}>
       {errorMessage && <div style={styles.errorMessage}>{errorMessage}</div>}
       
+
+       <Snackbar
+        open={successOpen}
+        autoHideDuration={3000}
+        onClose={handleSuccessClose}
+      >
+        <Alert
+          elevation={6}
+          variant="filled"
+          onClose={handleSuccessClose}
+          severity="success"
+        >
+          {successMessage}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={errorOpen}
+        autoHideDuration={3000}
+        onClose={handleErrorClose}
+      >
+        <Alert
+          elevation={6}
+          variant="filled"
+          onClose={handleErrorClose}
+          severity="error"
+        >
+          {errorMessage}
+        </Alert>
+      </Snackbar> 
 
 
       {/* <h2>Prescription Details</h2>

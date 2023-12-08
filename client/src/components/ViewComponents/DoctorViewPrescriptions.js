@@ -60,7 +60,6 @@ import {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell key="doctor">Doctor</TableCell>
               <TableCell key="patient">Patient</TableCell>
               <TableCell key="filled">Filled</TableCell>
               <TableCell key="date">Date</TableCell>
@@ -70,7 +69,6 @@ import {
             {data &&
               data.map((row) => (
                 <TableRow key={row.patient?.name}>
-                  <TableCell>{row.doctor?.name}</TableCell>
                   <TableCell>{row.patient?.name}</TableCell>
                   <TableCell>{row.filled.toString()}</TableCell>
                   <TableCell>{row.date}</TableCell>

@@ -67,4 +67,5 @@ router.put("/:id/addSlots", isAuthenticated, doctorController.addFreeSlots);
 router.delete("/:id", isAuthenticated, doctorController.deleteDoctor);
 router.delete("/:id", isAuthenticated, doctorController.deleteDoctor);
 
+
 export default router;

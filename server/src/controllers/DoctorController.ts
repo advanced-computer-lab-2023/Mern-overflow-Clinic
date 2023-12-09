@@ -462,6 +462,100 @@ const acceptContract = async (req: Request, res: Response) => {
     .json({ success: true, message: "Contract accepted successfully" });
 };
 
+const acceptFollowUp = async (req: Request, res: Response) => {
+  try {
+    const doctorId = req.params.id;
+    const appointmentId = req.body.appointmentId;
+
+    // Find the appointment for the given doctor ID
+    const apt = await appointment.findById(appointmentId).exec();
+
+    if (!apt) {
+      return res.status(404).json({
+        success: false,
+        message: "No pending appointments found for this doctor.",
+      });
+    }
+
+    // Update the status to "accepted"
+    apt.followUpStatus = "accepted";
+
+    // Save the updated appointment
+    await apt.save();
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Appointment accepted successfully" });
+  } catch (error) {
+    console.error("Error accepting appointment:", error);
+    return res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+const rejectFollowUp = async (req: Request, res: Response) => {
+  try {
+    const doctorId = req.params.id;
+    const appointmentId = req.body.appointmentId;
+
+    // Find the appointment for the given doctor ID
+    const apt = await appointment.findById(appointmentId).exec();
+
+    if (!apt) {
+      return res.status(404).json({
+        success: false,
+        message: "No pending appointments found for this doctor.",
+      });
+    }
+
+    // Update the status to "accepted"
+    apt.followUpStatus = "rejected";
+
+    // Save the updated appointment
+    await apt.save();
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Appointment accepted successfully" });
+  } catch (error) {
+    console.error("Error accepting appointment:", error);
+    return res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+
+// const acceptFollowUp = async (req: Request, res: Response) => {
+//   const docId = req.params.id;
+//   const aptId = req.body.apppointmentId;
+//   console.log(req.body);
+//   const apts = await appointment.find({ doctor: docId }).exec();
+//   if (apts.length === 0 || apts === undefined || !apts) {
+//     return res
+//       .status(404)
+//       .json({ success: false, message: "No followUp appointments found for this doctor." });
+//   }
+//   for (const contract of contracts) {
+//     if (
+//       contract._id.toString() === contractId &&
+//       contract.status === "pending"
+//     ) {
+//       console.log("true");
+//       contract.status = "accepted";
+//       try {
+//         await contract.save();
+//         break;
+//       } catch (err) {
+//         // Handle the error, e.g., log or send an error response.
+//         console.error(err);
+//         return res
+//           .status(500)
+//           .json({ success: false, message: "Error saving the contract." });
+//       }
+//     }
+//   }
+//   console.log("200");
+//   return res
+//     .status(200)
+//     .json({ success: true, message: "Contract accepted successfully" });
+// };
 const rejectContract = async (req: Request, res: Response) => {
   const docId = req.params.id;
   const contractId = req.body.contractId;
@@ -534,5 +628,7 @@ export default {
   rejectContract,
   listPendingDoctors,
   listSlots,
-  listCompletedPatients
+  listCompletedPatients,
+  acceptFollowUp,
+  rejectFollowUp,
 };

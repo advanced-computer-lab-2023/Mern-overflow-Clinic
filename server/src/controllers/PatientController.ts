@@ -1034,6 +1034,30 @@ const viewWallet = async (req: Request, res: Response) => {
         });
 }
 
+
+ const listCopmletedAppointmnetsForPatient = async (req: Request, res: Response) => {
+    try {
+        const id = req.params.id;
+
+        // Find completed appointments for the patient and populate the 'doctor' field
+        const appointments = await appointment
+            .find({ patient: id, status: "completed" })
+            .populate("doctor")
+            .exec();
+
+        // The 'doctor' field in 'appointments' is already populated, so you can access the doctors directly
+        const doctors = appointments.map((appointment) => appointment.doctor);
+        const completedAppointments = appointments.filter(appointment => appointment.status === "completed");
+        return res.status(200).json({ doctors, appointments: completedAppointments });
+
+        //return res.status(200).json({ doctors, appointments });
+    } catch (error) {
+        console.error("Error retrieving completed appointments:", error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+
+  
 // const linkfamilyMember = async (req: Request, res: Response) => {
 //     console.log(req.body);
 //     const patId = req.params.id;
@@ -1251,5 +1275,6 @@ export default {
     deleteDocument,
     readPath,
     linkfamilyMember,
-    listFamilyMembers
+    listFamilyMembers,
+    listCopmletedAppointmnetsForPatient,
 };

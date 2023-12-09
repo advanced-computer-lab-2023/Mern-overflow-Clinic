@@ -10,6 +10,7 @@ interface IAppointment {
   price?: number;
   appointmentType?: string;
   paid?: boolean;
+  followUpStatus?:string;
 }
 
 const appointmentSchema = new Schema<IAppointment>({
@@ -28,6 +29,7 @@ const appointmentSchema = new Schema<IAppointment>({
     lowercase: true,
     enum: ["upcoming", "completed", "canceled", "rescheduled"],
   },
+  followUpStatus: { type: String, required: false, lowercase: true, enum: ['accepted', 'rejected','pending'], default: 'pending'},
   price: { type: Number, required: false },
   appointmentType: {
     type: String,

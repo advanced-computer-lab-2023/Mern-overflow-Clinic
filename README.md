@@ -34,7 +34,7 @@ El7a2ny Clinic is a comprehensive healthcare platform that caters to the diverse
 -   [Code Examples 👉](#code-examples-)
 -   [Installation 📥](#installation-)
 -   [How to Use ❓](#how-to-use-)
--   [Reference 📖](#reference-)
+-   [API Reference 📖](#api-reference-)
 -   [Tests 🧪](#tests-)
 -   [Contribute 🤝](#contribute-)
 -   [Credits 🙏](#credits-)
@@ -407,13 +407,116 @@ To run this project, you will need to add the following environment variables to
 
 ## Reference 📖
 
--   [JWT docs](https://jwt.io/introduction)
--   [Stripe docs](https://stripe.com/docs)
--   [Node.js docs](https://nodejs.org/en/docs/)
--   [Express.js docs](https://expressjs.com/en/4x/api.html)
--   [React.js docs](https://legacy.reactjs.org/docs/getting-started.html)
--   [MongoDB docs](https://www.mongodb.com/docs/)
--   [Mongoose docs](https://mongoosejs.com/docs/)
+<details>
+    <summary>Authentication routes</summary>
+
+|method|route|returns|
+|--|--|--|
+|POST|```/auth/login/```|Log in|
+|POST|```/auth/logout/```|Log out|
+|POST|```/auth/reset/```|Reset Password|
+|POST|```/auth/resetwithtoken/```|Reset Password with Token|
+|POST|```/auth/change/```|Change Password|
+</details>
+
+<details>
+    <summary>Admin routes</summary>
+
+|method|route|returns|
+|--|--|--|
+|GET|```/admins/```|View all admins|
+|POST|```/admins/:id/createContract```|Create a contract|
+|POST|```/admins/```|Create an admin|
+|POST|```/admins/acceptDoctorRequest/```|Accept a doctor request|
+|POST|```/admins/rejectDoctorRequest/```|Reject a doctor request|
+|DELETE|```/admins/:id/```|Delete an admin|
+</details>
+
+<details>
+    <summary>Doctor routes</summary>
+
+|method|route|returns|
+|--|--|--|
+|GET|```/doctors/```|View all doctors|
+|GET|```/doctors/pendingDoctors/```|View all pending doctors|
+|GET|```/doctors/:id/```|View all details about a doctor|
+|GET|```/doctors/:id/slots/```|View all slots of a doctor|
+|GET|```/doctors/:id/completedAppointments/```|View all completed appointments of a doctor|
+|GET|```/doctors/:id/```|View details of a doctor|
+|GET|```/doctors/:id/wallet/```|View wallet amount of a doctor|
+|GET|```/doctors/:id/patients/```|View all patients of a doctor|
+|GET|```/doctors/:id/registeredPatients/```|View all patients having upcoming appointment with a doctor|
+|GET|```/doctors/:id/patients/:pId/```|View all details about a patient by Id|
+|GET|```/doctors/:id/search/```|View all details about a patient by name|
+|GET|```/doctors/:id/res/```|View all patients having non-cancelled appointment with a doctor|
+|POST|```/doctors/```|Create a doctor|
+|POST|```/doctors/filter/```|View doctors based on specialization|
+|POST|```/doctors/:id/addHealthRecord/```|Add a health record|
+|POST|```/doctors/:id/createFollowup/```|View doctors based on specialization|
+|PUT|```/doctors/:id/```|Update a doctor's details|
+|PUT|```/doctors/:id/acceptContract```|Accept a contract|
+|PUT|```/doctors/:id/rejectContract/```|Reject a contract|
+|PUT|```/doctors:id/addSlots/```|Add slots for a doctor|
+|DELETE|```/doctors:id/```|Delete a doctor|
+</details>
+
+<details>
+    <summary>Patient routes</summary>
+
+|method|route|returns|
+|--|--|--|
+|GET|```/patients/```||
+</details>
+
+<details>
+    <summary>Package routes</summary>
+
+|method|route|returns|
+|--|--|--|
+|GET|```/packages/```||
+</details>
+
+<details>
+    <summary>Contract routes</summary>
+
+|method|route|returns|
+|--|--|--|
+|GET|```/contracts/```||
+</details>
+
+<details>
+    <summary>Appointment routes</summary>
+
+|method|route|returns|
+|--|--|--|
+|GET|```/appointments/```||
+</details>
+
+<details>
+    <summary>Prescription routes</summary>
+
+|method|route|returns|
+|--|--|--|
+|GET|```/prescriptions/```||
+</details>
+
+<details>
+    <summary>Appointment routes</summary>
+
+|method|route|returns|
+|--|--|--|
+|GET|```/appointments/```||
+</details>
+
+<details>
+    <summary>Payment routes</summary>
+
+|method|route|returns|
+|--|--|--|
+|GET|```/create-checkout-session/```||
+|GET|```/walletPayment/```||
+</details>
+
 <p align="right" title="Return to Table of Contents"> <a href="#table-of-contents">&#11014;</a></p>
 
 ## Tests 🧪
@@ -443,6 +546,13 @@ This project follows the [Contributor Covenant Code of Conduct](https://www.cont
 
 ## Credits 🙏
 
+-   [JWT docs](https://jwt.io/introduction)
+-   [Stripe docs](https://stripe.com/docs)
+-   [Node.js docs](https://nodejs.org/en/docs/)
+-   [Express.js docs](https://expressjs.com/en/4x/api.html)
+-   [React.js docs](https://legacy.reactjs.org/docs/getting-started.html)
+-   [MongoDB docs](https://www.mongodb.com/docs/)
+-   [Mongoose docs](https://mongoosejs.com/docs/)
 -   [SimpliLearn Blog about MERN](https://www.simplilearn.com/tutorials/mongodb-tutorial/what-is-mern-stack-introduction-and-examples)
 -   [MERN Stack | GeeksforGeeks](https://www.geeksforgeeks.org/mern-stack/)
 -   [MongoDB guide to MERN](https://www.mongodb.com/languages/mern-stack-tutorial)

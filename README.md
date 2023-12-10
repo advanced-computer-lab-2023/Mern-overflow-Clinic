@@ -405,7 +405,7 @@ To run this project, you will need to add the following environment variables to
 
  <p align="right" title="Return to Table of Contents"> <a href="#table-of-contents">&#11014;</a></p>
 
-## Reference 📖
+## API Reference 📖
 
 <details>
     <summary>Authentication routes</summary>

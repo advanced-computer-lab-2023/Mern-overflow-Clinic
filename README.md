@@ -449,6 +449,8 @@ To run this project, you will need to add the following environment variables to
 |GET|```/doctors/:id/patients/:pId/```|View all details about a patient by Id|
 |GET|```/doctors/:id/search/```|View all details about a patient by name|
 |GET|```/doctors/:id/res/```|View all patients having non-cancelled appointment with a doctor|
+|GET|```/doctors/:dId/search/```|Patients can view details of a selected doctor|
+|GET|```/doctors/doctorsSearch/```|Patients can search for a doctor by name or speciality|
 |POST|```/doctors/```|Create a doctor|
 |POST|```/doctors/filter/```|View doctors based on specialization|
 |POST|```/doctors/:id/addHealthRecord/```|Add a health record|
@@ -465,7 +467,29 @@ To run this project, you will need to add the following environment variables to
 
 |method|route|returns|
 |--|--|--|
-|GET|```/patients/```||
+|GET|```/patients/```|View all patients|
+|GET|```/patients/:id/```|View all details about a patient|
+|GET|```/patients/:id/family/```|View all family members of a patient|
+|GET|```/patients/:id/relatives/```|???|
+|GET|```/patients/:id/price/```|View doctors by session price|
+|GET|```/patients/:id/prescriptions/```|View a patient's prescriptions|
+|GET|```/patients/:id/packages/```|View a patient's packages|
+|GET|```/patients/:id/packages/:pId/discount```|View a patient's package discount|
+|GET|```/patients/:id/wallet/```|View a patient's wallet amount|
+|GET|```/patients/:id/documents/```|View a patient's documents|
+|GET|```/patients/:id/document/```|View a patient's document|
+|GET|```/patients/:id/healthRecords/```|View a patient's health records|
+|POST|```/patients/```|Create a patient|
+|POST|```/patients/:id/familyMember/```|Add a family member to a patient|
+|POST|```/patients/linkfamilyMember/```|Link a patient's account to another patient's family|
+|POST|```/patients/:id/documents/```|Add a document to a patient's account|
+|POST|```/patients/:id/packages/:packageId```|Add a package to a patient's account|
+|POST|```/patients:id/packages/:pId/:packageId/```|Add a package to a family member|
+|POST|```/patients/:id/prescriptionsFilter/```|Filter a patient's prescriptions|
+|DELETE|```/patients/:id/```|Delete a patient|
+|DELETE|```/patients/:id/documents/```|Delete a document|
+|DELETE|```/patients/:id/packages/```|Delete a package|
+|DELETE|```/patients/:id/packages/pId/```|Delete a package from a family member|
 </details>
 
 <details>
@@ -473,7 +497,11 @@ To run this project, you will need to add the following environment variables to
 
 |method|route|returns|
 |--|--|--|
-|GET|```/packages/```||
+|GET|```/packages/```|View all packages|
+|GET|```/packages/:id/```|View details of a package|
+|POST|```/packages/```|Create a package|
+|PUT|```/packages/:id/```|Update details of a package|
+|DELETE|```/packages/:id/```|Delete a package|
 </details>
 
 <details>
@@ -481,7 +509,9 @@ To run this project, you will need to add the following environment variables to
 
 |method|route|returns|
 |--|--|--|
-|GET|```/contracts/```||
+|GET|```/contracts/:id/```|Read a contract|
+|PUT|```/contracts/```|Update a contract|
+|DELETE|```/contracts/```|Delete a contract|
 </details>
 
 <details>
@@ -489,7 +519,14 @@ To run this project, you will need to add the following environment variables to
 
 |method|route|returns|
 |--|--|--|
-|GET|```/appointments/```||
+|GET|```/appointments/```|View all appointments|
+|GET|```/appointments/:id/```|View details of an appointment|
+|GET|```/appointments/all/:id/```|???|
+|POST|```/appointments/```|Create an appointment|
+|POST|```/appointments/filter/:id/```|Filter appointments|
+|POST|```/appointments/update/```|Update an appointment|
+|POST|```/appointments/createAppointmentsForRelations/```|Create an appointment for a family member|
+|DELETE|```/appointments/:id/```|Delete an appointment|
 </details>
 
 <details>
@@ -497,15 +534,10 @@ To run this project, you will need to add the following environment variables to
 
 |method|route|returns|
 |--|--|--|
-|GET|```/prescriptions/```||
-</details>
-
-<details>
-    <summary>Appointment routes</summary>
-
-|method|route|returns|
-|--|--|--|
-|GET|```/appointments/```||
+|GET|```/prescriptions/:id```|View details of a prescription|
+|POST|```/prescriptions/```|Create a prescription|
+|PUT|```/prescriptions/:id```|Update details of a prescription|
+|DELETE|```/prescriptions/:id```|Delete a prescription|
 </details>
 
 <details>
@@ -513,8 +545,10 @@ To run this project, you will need to add the following environment variables to
 
 |method|route|returns|
 |--|--|--|
-|GET|```/create-checkout-session/```||
-|GET|```/walletPayment/```||
+|POST|```/create-checkout-session/appointments/```|Pay for an appointment using credit card|
+|POST|```/create-checkout-session/healthPackages/```|Pay for a health package using credit card|
+|POST|```/walletPayment/appointments/```|Pay for an appointment using wallet|
+|POST|```/walletPayment/healthPackages/```|Pay for a health package using wallet|
 </details>
 
 <p align="right" title="Return to Table of Contents"> <a href="#table-of-contents">&#11014;</a></p>

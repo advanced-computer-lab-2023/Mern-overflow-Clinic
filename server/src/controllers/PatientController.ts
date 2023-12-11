@@ -1224,6 +1224,28 @@ const linkfamilyMember = async (req: Request, res: Response) => {
     }
 }
 
+const chatWithDoctors = async (req: Request, res: Response) => {
+    console.log("We are HEREEEE");
+    const pId = req.params.id;
+    const search = req.params.search;
+
+    if (!search) res.status(400).send("No search text.");
+    else if(search!==undefined && search!==null && typeof search == "string") {
+        const apts = await appointment.find({ patient: pId });
+        const doctors: any[] = [];
+        for (const apt of apts) {
+
+        const doc = await doctor.findById(apt.doctor);
+
+        if((doc?.name)?.includes(search) && !doctors.some(element => element.id === doc?.id)) doctors.push(doc);
+
+        }
+        console.log(doctors);
+        res.status(200).send(doctors);
+    }
+
+  };
+
 
 export default {
     createPatient,
@@ -1250,5 +1272,6 @@ export default {
     deleteDocument,
     readPath,
     linkfamilyMember,
-    listFamilyMembers
+    listFamilyMembers,
+    chatWithDoctors
 };

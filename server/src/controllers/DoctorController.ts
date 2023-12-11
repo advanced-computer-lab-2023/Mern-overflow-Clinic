@@ -122,20 +122,21 @@ const deleteDoctor = async (req: Request, res: Response) => {
     .findByIdAndDelete({ _id: id })
     .then((doc) => {
       res.status(200).json(doc);
-      if (doc !== null) {
-        for (const file of doc.files) {
-          const filePath = `./src/uploads/` + file.filename;
-          fs.unlink(filePath, (err) => {
-            if (err) {
-              console.error(err);
-              return res
-                .status(500)
-                .json({ message: "Error deleting file from server" });
-            }
-          });
-        }
-      }
-    })
+
+      // if(doc !==null){
+      //   for(const file of doc.files){
+      //       const filePath = `./src/uploads/` + file.filename;
+      //       fs.unlink(filePath, (err) => {
+      //           if (err) {
+      //               console.error(err);
+      //               return res.status(500).json({ message: "Error deleting file from server" });
+      //            }
+      //         })
+      //       }
+      //     }
+          
+    }
+    )
     .catch((err) => {
       return res.status(400).json(err);
     });
@@ -520,11 +521,35 @@ const listSlots = async (req: Request, res: Response) => {
     });
 };
 
+const chatWithPatients = async (req: Request, res: Response) => {
+  console.log("In chat with patients");
+  const dId = req.params.id;
+  const search = req.params.search;
+
+  if (!search) res.status(400).send("No search text.");
+  else if(search!==undefined && search!==null && typeof search == "string") {
+      const apts = await appointment.find({ doctor: dId });
+      const patients: any[] = [];
+      for (const apt of apts) {
+
+      const pat = await patient.findById(apt.patient);
+
+      
+
+      if((pat?.name)?.includes(search) && !patients.some(element => element.id === pat?.id)) patients.push(pat);
+      }
+      console.log(patients);
+      res.status(200).send(patients);
+  }
+
+};
+
+
 export default {
   createDoctor,
   readDoctor,
   updateDoctor,
-  deleteDoctor,
+  // deleteDoctor,
   listDoctors,
   listDoctorPatients,
   selectPatient,
@@ -539,4 +564,5 @@ export default {
   listPendingDoctors,
   listSlots,
   listCompletedPatients,
+  chatWithPatients
 };

@@ -1,6 +1,5 @@
 import asyncHandler from "express-async-handler";
-// import Message from "../models/messageModel.js";
-import Notification from "../models/Notification.js";
+import Message from "../models/messageModel.js";
 import User from "../models/User.js";
 import Chat from "../models/chatModel.js";
 
@@ -10,7 +9,7 @@ import Chat from "../models/chatModel.js";
 const allMessages = asyncHandler(async (req:any, res:any) => {
   console.log("HI");
   try {
-    const messages = await Notification.find({ chat: req.params.chatId })
+    const messages = await Message.find({ chat: req.params.chatId })
       .populate("sender", "name pic email")
       .populate("chat");
     res.json(messages);
@@ -38,7 +37,7 @@ const sendMessage = asyncHandler(async (req:any, res:any) => {
   };
 
   try {
-    var message = await Notification.create(newMessage);
+    var message = await Message.create(newMessage);
 
     message = await message.populate("sender", "name pic");
     message = await message.populate("chat");

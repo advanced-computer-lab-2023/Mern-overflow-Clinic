@@ -158,7 +158,7 @@ function SideDrawer() {
       </Button>
     </RouterLink>
 
-            <MenuButton p={1}>
+            {/* <MenuButton p={1}>
               <NotificationBadge
                 count={notification.length}
                 effect={Effect.SCALE}
@@ -180,7 +180,7 @@ function SideDrawer() {
                     : `New Message from ${getSender(user, notif.chat.users)}`}
                 </MenuItem>
               ))}
-            </MenuList>
+            </MenuList> */}
           </Menu>
           <Menu>
             <MenuButton as={Button} bg="white" rightIcon={<ChevronDownIcon />}>

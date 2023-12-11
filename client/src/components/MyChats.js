@@ -61,34 +61,36 @@ const MyChats = (props) => {
       borderRadius="lg"
       borderWidth="1px"
     >
-
-                <Tooltip label={`Search ${userRole === "Patient"?"Doctor":"Patient"} to chat`} hasArrow placement="bottom-end">
+    <Box
+        display={{ base: selectedChat ? "none" : "flex", md: "flex" }}
+        flexDir="row"
+        alignItems="center"
+        justifyContent="space-between"
+        bg="white"
+        width="full"
+    >
+            <Tooltip label={`Search ${userRole === "Patient"?"Doctor":"Patient"} to chat`} hasArrow placement="bottom-end">
           <Button  variant="ghost" onClick={async()=>{
             const { data } = await axios.get((userRole === "Patient"?`http://localhost:8000/patients/getAllMyDoctors/${userId}`:`http://localhost:8000/doctors/getAllMyPatients/${userId}`));
 
             props.setSearchResult(data);
             props.onOpen();
             }}>
-            <i className="fas fa-search"></i>
             <Text display={{ base: "none", md: "flex" }} px={4}>
               {userRole=== "Patient"?"Search Doctor":"Search Patient"}
             </Text>
           </Button>
         </Tooltip>
 
-        <Box
-        pb={3}
-        px={3}
-        fontSize={{ base: "28px", md: "30px" }}
-        fontFamily="Work sans"
-        display="flex"
-        w="100%"
-        justifyContent="space-between"
-        alignItems="center"
-      >
-        My Chats
 
-      </Box>
+        <Text display={{ base: "none", md: "flex" }} px={4}>
+        My Chats
+        </Text>
+
+    </Box>
+
+
+      {/* </Box> */}
       <Box
         display="flex"
         flexDir="column"

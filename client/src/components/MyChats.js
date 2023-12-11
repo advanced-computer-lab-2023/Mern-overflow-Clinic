@@ -9,9 +9,12 @@ import GroupChatModal from "./miscellaneous/GroupChatModal";
 import { Button } from "@chakra-ui/react";
 import { ChatState } from "../Context/ChatProvider";
 import { useUser } from "../userContest";
+import { Tooltip } from "@chakra-ui/tooltip";
 
+const MyChats = (props) => {
+  
+  const {fetchAgain} = props;
 
-const MyChats = ({ fetchAgain }) => {
   const { userId, setUserId, userRole, setUserRole } = useUser();
   const [loggedUser, setLoggedUser] = useState(userId);
 
@@ -58,7 +61,22 @@ const MyChats = ({ fetchAgain }) => {
       borderRadius="lg"
       borderWidth="1px"
     >
-      <Box
+
+                <Tooltip label={`Search ${userRole === "Patient"?"Doctor":"Patient"} to chat`} hasArrow placement="bottom-end">
+          <Button  variant="ghost" onClick={async()=>{
+            const { data } = await axios.get((userRole === "Patient"?`http://localhost:8000/patients/getAllMyDoctors/${userId}`:`http://localhost:8000/doctors/getAllMyPatients/${userId}`));
+
+            props.setSearchResult(data);
+            props.onOpen();
+            }}>
+            <i className="fas fa-search"></i>
+            <Text display={{ base: "none", md: "flex" }} px={4}>
+              {userRole=== "Patient"?"Search Doctor":"Search Patient"}
+            </Text>
+          </Button>
+        </Tooltip>
+
+        <Box
         pb={3}
         px={3}
         fontSize={{ base: "28px", md: "30px" }}
@@ -69,15 +87,7 @@ const MyChats = ({ fetchAgain }) => {
         alignItems="center"
       >
         My Chats
-        <GroupChatModal>
-          {/* <Button
-            display="flex"
-            fontSize={{ base: "17px", md: "10px", lg: "17px" }}
-            rightIcon={<AddIcon />}
-          >
-            New Group Chat
-          </Button> */}
-        </GroupChatModal>
+
       </Box>
       <Box
         display="flex"

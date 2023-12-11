@@ -78,6 +78,13 @@ const __dirname = process.cwd();
 const MongoURI: string = config.mongo.URL;
 const app = express();
 
+const corsOptions = {
+  origin: ["http://localhost:3000", "http://127.0.0.1/"],
+  credentials: true,
+  exposedHeaders: ["set-cookie"],
+};
+app.use(cors(corsOptions));
+
 app.get("/google",(req,res)=>{
   
   const url = oauth2Client.generateAuthUrl({
@@ -141,16 +148,11 @@ app.get("/call/:email1/:email2",async (req,res)=>{
   })
 
 });
-const corsOptions = {
-  origin: ["http://localhost:3000", "http://127.0.0.1/"],
-  credentials: true,
-  exposedHeaders: ["set-cookie"],
-};
-app.use(cors(corsOptions));
+
 
 const port: number = config.server.port;
 app.use(bodyParser.json());
-app.use(cors(corsOptions));
+//app.use(cors(corsOptions));
 app.use("/uploads", express.static("./src/uploads"));
 //app.use(express.static(path.join(__dirname, './uploads')));
 

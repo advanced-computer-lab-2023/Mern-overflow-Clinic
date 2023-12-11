@@ -121,8 +121,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     console.log(selectedChat.users);
     const link = await axios.get(`http://localhost:8000/call/${selectedChat.users[0].email}/${selectedChat.users[1].email}`);
     
-    console.log(link);
-    window.open(link.link,"_blank")
+    console.log("LINKKKKK:"+JSON.stringify(link));
+    window.open(link.data.link,"_blank")
   }
 
   useEffect(() => {

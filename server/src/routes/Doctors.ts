@@ -49,6 +49,7 @@ router.get("/:id/patients/:pId", isAuthenticated, doctorController.selectPatient
 router.get("/:id/search", isAuthenticated, doctorController.selectPatientByName);
 router.get("/:id/res", isAuthenticated, doctorController.listAllMyPatientsUpcoming);
 router.get("/chatWithPatients/:id/:search",isAuthenticated,isAuthorized([UserType.DOCTOR]),doctorController.chatWithPatients);
+router.get("/getAllMyPatients/:id",isAuthenticated,isAuthorized([UserType.DOCTOR]),doctorController.getAllMyPatients);
 
 
 router.post("/filter", isAuthenticated, patientController.filterDoctor);

@@ -4,6 +4,7 @@ import { Input } from "@chakra-ui/input";
 import { Box, Text } from "@chakra-ui/layout";
 import { Link as RouterLink } from "react-router-dom";
 import { useUser } from "../../userContest";
+
 import {
   Menu,
   MenuButton,
@@ -36,13 +37,15 @@ import { ChatState } from "../../Context/ChatProvider";
 import { useNavigate } from "react-router-dom";
 
 
-function SideDrawer() {
+function SideDrawer(props) {
   const navigate = useNavigate();
+
+  const toast = useToast();
 
   const { userId, setUserId, userRole, setUserRole } = useUser();
 
   const [search, setSearch] = useState("");
-  const [searchResult, setSearchResult] = useState([]);
+  
   const [loading, setLoading] = useState(false);
   const [loadingChat, setLoadingChat] = useState(false);
 
@@ -55,8 +58,6 @@ function SideDrawer() {
     setChats,
   } = ChatState();
 
-  const toast = useToast();
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const logoutHandler = () => {
     localStorage.removeItem("userInfo");
@@ -83,7 +84,7 @@ function SideDrawer() {
         );
       console.log("DATA:   "+JSON.stringify(data));
       setLoading(false);
-      setSearchResult(data);
+      props.setSearchResult(data);
     } catch (error) {
       console.log(error);
       toast({
@@ -114,7 +115,7 @@ function SideDrawer() {
       }
       setSelectedChat(data);
       setLoadingChat(false);
-      onClose();
+      props.onClose();
     } catch (error) {
       toast({
         title: "Error fetching the chat",
@@ -138,25 +139,21 @@ function SideDrawer() {
         p="5px 10px 5px 10px"
         borderWidth="5px"
       >
-        <Tooltip label="Search Users to chat" hasArrow placement="bottom-end">
-          <Button variant="ghost" onClick={onOpen}>
+        {/* <Tooltip label={`Search ${userRole === "Patient"?"Doctor":"Patient"} to chat`} hasArrow placement="bottom-end">
+          <Button variant="ghost" onClick={async()=>{
+            const { data } = await axios.get((userRole === "Patient"?`http://localhost:8000/patients/getAllMyDoctors/${userId}`:`http://localhost:8000/doctors/getAllMyPatients/${userId}`));
+
+            setSearchResult(data);
+            onOpen();
+            }}>
             <i className="fas fa-search"></i>
             <Text display={{ base: "none", md: "flex" }} px={4}>
-              Search User
+              {userRole=== "Patient"?"Search Doctor":"Search Patient"}
             </Text>
           </Button>
-        </Tooltip>
-        <Text fontSize="2xl" fontFamily="Work sans">
-          Talk-A-Tive
-        </Text>
+        </Tooltip> */}
         <div>
           <Menu>
-
-          <RouterLink to="/patient/family">
-      <Button as="div" p={2.5} mr={4}>
-        <span>Back to Dashboard</span>
-      </Button>
-    </RouterLink>
 
             {/* <MenuButton p={1}>
               <NotificationBadge
@@ -202,10 +199,10 @@ function SideDrawer() {
         </div>
       </Box>
 
-      <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
+      <Drawer placement="left" onClose={props.onClose} isOpen={props.isOpen}>
         <DrawerOverlay />
         <DrawerContent>
-          <DrawerHeader borderBottomWidth="1px">Search Users</DrawerHeader>
+          <DrawerHeader borderBottomWidth="1px">{userRole=== "Patient"?"Search Doctor":"Search Patient"}</DrawerHeader>
           <DrawerBody>
             <Box display="flex" pb={2}>
               <Input
@@ -219,7 +216,7 @@ function SideDrawer() {
             {loading ? (
               <ChatLoading />
             ) : (
-              searchResult?.map((user) => (
+              props.searchResult?.map((user) => (
                 <UserListItem
                   key={user._id}
                   user={user}

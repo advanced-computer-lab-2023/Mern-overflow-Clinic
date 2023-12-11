@@ -522,10 +522,11 @@ const listSlots = async (req: Request, res: Response) => {
 };
 
 const chatWithPatients = async (req: Request, res: Response) => {
-  console.log("In chat with patients");
+  
   const dId = req.params.id;
   const search = req.params.search;
 
+  
   if (!search) res.status(400).send("No search text.");
   else if(search!==undefined && search!==null && typeof search == "string") {
       const apts = await appointment.find({ doctor: dId });
@@ -541,6 +542,26 @@ const chatWithPatients = async (req: Request, res: Response) => {
       console.log(patients);
       res.status(200).send(patients);
   }
+
+};
+
+
+const getAllMyPatients = async (req: Request, res: Response) => {
+  
+  const dId = req.params.id;
+
+      const apts = await appointment.find({ doctor: dId });
+      const patients: any[] = [];
+      for (const apt of apts) {
+
+      const pat = await patient.findById(apt.patient);
+
+      
+
+      if(!patients.some(element => element.id === pat?.id)) patients.push(pat);
+      }
+      console.log(patients);
+      res.status(200).send(patients);
 
 };
 
@@ -564,5 +585,6 @@ export default {
   listPendingDoctors,
   listSlots,
   listCompletedPatients,
-  chatWithPatients
+  chatWithPatients,
+  getAllMyPatients
 };

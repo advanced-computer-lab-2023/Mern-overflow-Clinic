@@ -1247,6 +1247,25 @@ const chatWithDoctors = async (req: Request, res: Response) => {
   };
 
 
+  const getAllMyDoctors = async (req: Request, res: Response) => {
+    console.log("ALL DOCS");
+    const pId = req.params.id;
+
+        const apts = await appointment.find({ patient: pId });
+        const doctors: any[] = [];
+        for (const apt of apts) {
+
+        const doc = await doctor.findById(apt.doctor);
+
+        if(!doctors.some(element => element.id === doc?.id)) doctors.push(doc);
+
+        }
+        console.log(doctors);
+        res.status(200).send(doctors);
+
+  };
+
+
 export default {
     createPatient,
     readPatient,
@@ -1273,5 +1292,6 @@ export default {
     readPath,
     linkfamilyMember,
     listFamilyMembers,
-    chatWithDoctors
+    chatWithDoctors,
+    getAllMyDoctors
 };

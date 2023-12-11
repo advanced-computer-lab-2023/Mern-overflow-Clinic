@@ -1,7 +1,7 @@
 import asyncHandler from 'express-async-handler'
 import { Request, Response } from 'express';
 
-import Chat from '../models/chatModel.js'; // Assuming you have a ChatModel and its interface
+import Chat from '../models/chatModel.js';
 import User from '../models/User.js';
 
 //@description     Create or fetch One to One Chat

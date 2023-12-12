@@ -1,64 +1,99 @@
-import { ViewIcon } from "@chakra-ui/icons";
+import React from 'react';
 import {
   Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
+  Backdrop,
+  Fade,
   Button,
-  useDisclosure,
   IconButton,
-  Text,
-  Image,
-} from "@chakra-ui/react";
+  Typography,
+  Paper,
+  Avatar,
+} from '@mui/material';
+import { Close as CloseIcon, Visibility as ViewIcon } from '@mui/icons-material';
+import { useUser } from "../../userContest";
 
-const ProfileModal = ({ user, children }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+const ProfileModal = ({children }) => {
+  
+  const [open, setOpen] = React.useState(false);
+  const { userId, setUserId, userRole, setUserRole, userData, setUserData } = useUser();
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return (
     <>
       {children ? (
-        <span onClick={onOpen}>{children}</span>
+        <span onClick={handleOpen}>{children}</span>
       ) : (
-        <IconButton d={{ base: "flex" }} icon={<ViewIcon />} onClick={onOpen} />
+        <IconButton onClick={handleOpen}>
+          <ViewIcon />
+        </IconButton>
       )}
-      <Modal size="lg" onClose={onClose} isOpen={isOpen} isCentered>
-        <ModalOverlay />
-        <ModalContent h="410px">
-          <ModalHeader
-            fontSize="40px"
-            fontFamily="Work sans"
-            display="flex"
-            justifyContent="center"
+      <Modal
+        open={open}
+        onClose={handleClose}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={open}>
+          <Paper
+            sx={{
+              width: '80%',
+              maxWidth: '400px',
+              mx: 'auto',
+              mt: '5%',
+              p: 2,
+            }}
           >
-            {user.name}
-          </ModalHeader>
-          <ModalCloseButton />
-          <ModalBody
-            display="flex"
-            flexDir="column"
-            alignItems="center"
-            justifyContent="space-between"
-          >
-            <Image
-              borderRadius="full"
-              boxSize="150px"
-              src={user.pic}
-              alt={user.name}
-            />
-            <Text
-              fontSize={{ base: "28px", md: "30px" }}
-              fontFamily="Work sans"
+            <Typography variant="h4" align="center">
+              {userData.data.name}
+            </Typography>
+            <IconButton
+              edge="end"
+              color="inherit"
+              onClick={handleClose}
+              sx={{ position: 'absolute', top: 0, right: 0 }}
             >
-              Email: {user.email}
-            </Text>
-          </ModalBody>
-          <ModalFooter>
-            <Button onClick={onClose}>Close</Button>
-          </ModalFooter>
-        </ModalContent>
+              <CloseIcon />
+            </IconButton>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              <Avatar
+                sx={{ width: '150px', height: '150px', mb: 2 }}
+                alt={userData.data.name}
+                src={userData.data.pic}
+              />
+              <Typography variant="h6" sx={{ fontFamily: 'Work sans' }}>
+                Email: {userData.data.email}
+              </Typography>
+
+              <Typography variant="h6" sx={{ fontFamily: 'Work sans' }}>
+                National id: {userData.data.nationalId}
+              </Typography>
+
+              <Typography variant="h6" sx={{ fontFamily: 'Work sans' }}>
+                DOB: {userData.data.dateOfBirth}
+              </Typography>
+            </div>
+            <Button onClick={handleClose} sx={{ mt: 2 }}>
+              Close
+            </Button>
+          </Paper>
+        </Fade>
       </Modal>
     </>
   );

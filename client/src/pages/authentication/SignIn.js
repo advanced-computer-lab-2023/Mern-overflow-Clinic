@@ -21,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 const defaultTheme = createTheme();
 
 export default function SignIn() {
-  const { userId, setUserId, userRole, setUserRole } = useUser();
+  const { userId, setUserId, userRole, setUserRole,userData, setUserData } = useUser();
   const {
     register,
     handleSubmit,
@@ -32,7 +32,7 @@ export default function SignIn() {
 
   axios.defaults.withCredentials = true;
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
 
     data["passwordHash"] = sha256(data["Password"]);
     data["username"] = data["Username"];
@@ -40,7 +40,8 @@ export default function SignIn() {
     delete data.Password;
     console.log("Data to server" + JSON.stringify(data));
 
-    axios
+    let path = "";
+     await axios
       .post("http://localhost:8000/auth/login", data)
       .then((response) => {
         console.log(response);
@@ -50,19 +51,40 @@ export default function SignIn() {
         setUserId(userId);
         if (type === "Patient") {
           setUserRole("Patient");
+          path = "patients";
           navigate("/patient/family");
         } else if (type === "Doctor") {
           setUserRole("Doctor");
+          path = "doctors";
           navigate("/doctor/profile");
         } else if (type === "Adminstrator") {
           setUserRole("Admin");
           navigate("/admin/patients");
         }
+
+
+        console.log(`http://localhost:8000/${path}/${userId}`);
+        if(userRole==="Doctor" || userRole === "Patient"){
+          axios
+          .get(`http://localhost:8000/${path}/${userId}`)
+          .then((response) => {
+            setUserData(JSON.stringify(response));
+            console.log(JSON.stringify(response));
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+        }
+        
       })
       .catch((error) => {
         console.error("Error:", error);
       });
+
+
+
   };
+
   console.log(errors);
 
   const handleChange = (event) => {

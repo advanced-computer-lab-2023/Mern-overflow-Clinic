@@ -1,4 +1,9 @@
 import MenuIcon from "@mui/icons-material/Menu";
+import ProfileModal from "./miscellaneous/ProfileModal";
+import { Logout as LogoutIcon } from '@mui/icons-material';
+import {Popover,MenuItem} from '@mui/material';
+import { Avatar } from "@chakra-ui/avatar";
+import { BellIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import {
   AppBar,
   Box,
@@ -14,8 +19,26 @@ import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../userContest";
 import { useEffect } from "react";
+import { ChatState } from "../Context/ChatProvider";
 
 export default function ButtonAppBar(props) {
+
+  const { userId, setUserId, userRole, setUserRole, userData, setUserData } = useUser();
+  console.log("user data after login: "+ JSON.stringify(userData));
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'menu-popover' : undefined;
+
   const list = (anchor) => (
     <Box
       sx={{ width: anchor === "top" || anchor === "bottom" ? "auto" : 250 }}
@@ -56,7 +79,7 @@ export default function ButtonAppBar(props) {
   });
   const navigate = useNavigate();
 
-  const { userId, setUserId, userRole, setUserRole } = useUser();
+  
 
   const toggleDrawer = (anchor, open) => (event) => {
     if (
@@ -114,10 +137,77 @@ export default function ButtonAppBar(props) {
             >
               {props.title}
             </Typography>
-            <Button type="button" color="inherit" onClick={handleLogout}>
+
+            <>
+            <IconButton
+    onClick={handleMenuOpen}
+    sx={{ p: 1 }} // Adjust the padding as needed
+  >
+    <Avatar
+      size="small"
+      alt={userData.name}
+      src={userData.pic}
+      sx={{ width: '32px', height: '32px' }} // Adjust the width and height as needed
+    />
+  </IconButton>
+  
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleMenuClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+      >
+        
+        {
+          (userRole === "Patient" || userRole == "Doctor") &&
+                  (<MenuItem>
+                  <ProfileModal user={userData}>
+                    <span>My Profile</span>
+                  </ProfileModal>
+                </MenuItem>)
+
+        }
+
+
+        <Divider />
+        <MenuItem onClick={handleLogout}>
+          <LogoutIcon sx={{ mr: 1 }} />
+          Logout
+        </MenuItem>
+      </Popover>
+    </>
+
+            {/* <Menu>
+            <MenuButton as={Button} bg="white" rightIcon={<ChevronDownIcon />}>
+              <Avatar
+                size="sm"
+                cursor="pointer"
+                 name={user.name}
+                  src={user.pic}
+              />
+            </MenuButton>
+            <MenuList>
+              <ProfileModal 
+              user={user}
+              >
+                <MenuItem>My Profile</MenuItem>{" "}
+              </ProfileModal>
+              <MenuDivider />
+              <MenuItem onClick={handleLogout}>Logout</MenuItem>
+            </MenuList>
+          </Menu> */}
+            {/* <Button type="button" color="inherit" onClick={handleLogout}>
               {" "}
               Log out{" "}
-            </Button>
+            </Button> */}
           </Toolbar>
         </AppBar>
       </Box>

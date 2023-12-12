@@ -60,8 +60,19 @@ function SideDrawer(props) {
 
 
   const logoutHandler = () => {
-    localStorage.removeItem("userInfo");
-    navigate("/");
+    axios
+    .post("http://localhost:8000/auth/logout")
+    .then((response) => {
+      console.log(response);
+      setUserId("");
+      setUserRole("");
+      navigate("/signin");
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+    // localStorage.removeItem("userInfo");
+    // navigate("/");
   };
 
   const handleSearch = async () => {
@@ -179,7 +190,7 @@ function SideDrawer(props) {
               ))}
             </MenuList> */}
           </Menu>
-          <Menu>
+          {/* <Menu>
             <MenuButton as={Button} bg="white" rightIcon={<ChevronDownIcon />}>
               <Avatar
                 size="sm"
@@ -195,7 +206,7 @@ function SideDrawer(props) {
               <MenuDivider />
               <MenuItem onClick={logoutHandler}>Logout</MenuItem>
             </MenuList>
-          </Menu>
+          </Menu> */}
         </div>
       </Box>
 

@@ -38,6 +38,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AdminEditPackage from "./pages/admin/AdminEditPackage";
 import DoctorEditDosage from "./pages/doctor/DoctorEditDosage";
 import DoctorDownloadPdf from "./pages/doctor/DoctorDownloadPdf";
+import PatientDownloadPdf from "./pages/patient/PatientDownloadPdf";
 
 // import PatientManageFamily from "./pages/patient/PatientManageFamily";
 // import EditDoctorProfile from './components/formComponents/EditDoctorProfile';
@@ -201,6 +202,10 @@ function App() {
     {
       path: "/doctor/prescriptions/:id/prescriptionDownload",
       element: <DoctorDownloadPdf />,
+    },
+    {
+      path: "/patient/prescriptions/:id/prescriptionDownload",
+      element: <PatientDownloadPdf />,
     },
     {
       path: "/patient/bookAppointment/:id",

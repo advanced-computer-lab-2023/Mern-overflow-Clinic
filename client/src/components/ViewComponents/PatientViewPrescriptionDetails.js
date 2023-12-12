@@ -9,6 +9,7 @@ import { set } from 'react-hook-form';
 
 
 const PatientViewPrescriptionDetails = ({ match }) => {
+  const navigate = useNavigate();
   const { userId } = useUser();
   const patientId = userId;
   let { id } = useParams();
@@ -49,6 +50,10 @@ const PatientViewPrescriptionDetails = ({ match }) => {
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
     return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
+  const handleClick = (pid) => {
+    navigate(`/patient/prescriptions/${pid}/prescriptionDownload`);
   };
 
   const handleButtonClick = async () => {
@@ -113,6 +118,13 @@ const PatientViewPrescriptionDetails = ({ match }) => {
             </Button>
       )}
 
+      <br></br>
+      <br></br>
+      <br></br>
+
+      <button className="btn btn-primary"  onClick={() => handleClick(id)}>
+                View Official Prescription Document
+              </button>
     </div>
   );
 };

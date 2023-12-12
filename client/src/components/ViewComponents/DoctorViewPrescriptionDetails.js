@@ -71,6 +71,10 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
     }
   };
 
+  useEffect(() => {
+    fetchPrescription();
+  }, [doctorId]);
+
    const handleSuccessClose = (event, reason) => {
      if (reason === "clickaway") {
        return;
@@ -84,9 +88,7 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
      setErrorOpen(false);
    };
   
-  useEffect(() => {
-    fetchPrescription();
-  }, [doctorId]);
+ 
 
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
@@ -158,6 +160,9 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
     }
   };
 
+  const handleClick = (pid) => {
+    navigate(`/doctor/prescriptions/${pid}/prescriptionDownload`);
+  };
 
   return (
     <div style={styles.container}>
@@ -305,7 +310,9 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
           ))}
         </tbody>
       </table>
-
+      <button className="btn btn-primary"  onClick={() => handleClick(id)}>
+                View Official Prescription Document
+              </button>
     </div>
   );
 };

@@ -13,7 +13,7 @@ import packageRouter from "./routes/Package.js";
 import CCpaymentRouter from "./routes/Payment.js";
 import walletPaymentRouter from "./routes/WalletPayment.js";
 import VideoCallRouter from "./routes/VideoCall.js";
-
+import notificationRouter from "./routes/Notification.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import appointment from "./models/appointment.js";
@@ -161,6 +161,7 @@ app.use('/auth', authRouter);
 app.use('/doctors', doctorRouter);
 app.use('/patients', patientRouter);
 app.use('/admins', adminRouter);
+app.use('/notifications', notificationRouter);
 app.use('/appointments', appointmentRouter);
 app.use('/prescriptions', prescriptionRouter);
 app.use('/packages', packageRouter);
@@ -176,6 +177,7 @@ app.use("/api/message", messageRoutes);
 
 app.use('/contracts',contractRouter);
 app.use(cors({ origin: 'http://localhost:3000' }));
+
 
 // //GET
 // app.get("/", (req, res) => {

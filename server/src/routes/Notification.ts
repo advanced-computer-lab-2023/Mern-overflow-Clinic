@@ -11,7 +11,7 @@ router.use(bodyParser.json());
 
 router.get("/:id",notificationController.listNotifiactions);
 
-// router.put("/",notificationController.updateContract);
+router.post("/",notificationController.createNotification);
 
 // router.delete("/", notificationController.deleteContract);
 

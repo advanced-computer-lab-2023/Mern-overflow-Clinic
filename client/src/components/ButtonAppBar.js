@@ -1,9 +1,9 @@
 import MenuIcon from "@mui/icons-material/Menu";
-import ProfileModal from "./miscellaneous/ProfileModal";
 import { Logout as LogoutIcon } from '@mui/icons-material';
 import {Popover,MenuItem} from '@mui/material';
 import { Avatar } from "@chakra-ui/avatar";
 import { BellIcon, ChevronDownIcon } from "@chakra-ui/icons";
+import { Link } from 'react-router-dom';
 import {
   AppBar,
   Box,
@@ -145,8 +145,6 @@ export default function ButtonAppBar(props) {
   >
     <Avatar
       size="small"
-      alt={userData.name}
-      src={userData.pic}
       sx={{ width: '32px', height: '32px' }} // Adjust the width and height as needed
     />
   </IconButton>
@@ -168,11 +166,13 @@ export default function ButtonAppBar(props) {
         
         {
           (userRole === "Patient" || userRole == "Doctor") &&
-                  (<MenuItem>
-                  <ProfileModal user={userData}>
-                    <span>My Profile</span>
-                  </ProfileModal>
-                </MenuItem>)
+                  (
+
+                  <MenuItem>
+                  <Link to={userRole==="Patient"?`/patient/info`:`/doctor/info`}><span>My Profile</span></Link>
+                </MenuItem>
+                
+                )
 
         }
 

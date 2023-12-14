@@ -410,25 +410,16 @@ const filterAppointments = async (req: Request, res: Response) => {
   }
 };
 
-const rescheduleAppointmentForMySelfOrFamilyMember = async (req:Request, res:Response) => {
+const rescheduleAppointment = async (req:Request, res:Response) => {
   
   const id = req.params.id;
   const newDate = new Date(req.body.date);
-  const familyId = req.body.fId;
-  const forFam = req.body.forFam;
-
-
 
   try {
 
-    var apt=null; 
-    if(forFam === false){
-      apt = await appointment.findById(id).exec();
-    }
-    else{
-      apt = await appointment.findById(familyId).exec();
-
-    }
+    //var apt=null; 
+     const apt = await appointment.findById(id).exec();
+    
 
     if (!apt) {
       return res.status(404).send("No appointments found");
@@ -465,7 +456,6 @@ const rescheduleAppointmentForMySelfOrFamilyMember = async (req:Request, res:Res
 
           // Save the updated appointment
           await apt.save();
-
           return res.status(200).json({ message: "Appointment rescheduled successfully", appointment: apt });
         } else {
           return res.status(404).send("This date is not in the available slots of the doctor");
@@ -559,6 +549,6 @@ export default {
   createFollowUp,
   createAppointmentForFamilyMember,
   getAllAppointments,
-  rescheduleAppointmentForMySelfOrFamilyMember,
+  rescheduleAppointment,
   changeToPastAppointment,
 };

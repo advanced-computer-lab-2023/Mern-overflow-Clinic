@@ -219,6 +219,167 @@ const createFollowUp = async (req: Request, res: Response) => {
     });
 };
 
+
+
+
+// const createAppointmentForFamilyMember = async (
+//   req: Request,
+//   res: Response
+// ) => {
+//   try {
+//     //console.log(req.body);
+//     const docID = req.body.doctor;
+//     req.body.duration = 1;
+//     req.body.status = "upcoming";
+//     req.body.appointmentType = "regular";
+//     const id = req.params.id;
+//     const flag = req.body.flag;
+//     const relation = req.body.relation;
+
+//     if (flag) {
+//       //console.log(req.body);
+//       req.body.patient = req.body.relativeId;
+
+//       // Get the doctor and remove the date from availableStartTimeSlots
+//       const doctorObj = await doctor.findById(docID);
+//       if (!doctorObj || doctorObj === undefined) {
+//         return res.status(404).json({ message: "Doctor not found" });
+//       }
+//       req.body.price = doctorObj.hourlyRate * 1;
+//       const dateToRemove = new Date(req.body.date).toDateString(); // Convert to string
+
+//       // Assuming availableStartTimeSlots is an array of Date objects
+//       if (doctorObj.availableSlotsStartTime !== undefined) {
+//         doctorObj.availableSlotsStartTime =
+//           doctorObj.availableSlotsStartTime.filter(
+//             (slot) => slot.toDateString() !== dateToRemove
+//           );
+//       }
+
+//       // Update the doctor in the database
+//       await doctor.findByIdAndUpdate(docID, {
+//         $set: { availableSlotsStartTime: doctorObj.availableSlotsStartTime },
+//       });
+
+//       // Create the new appointment
+//       const newApt = await appointment.create(req.body);
+//       return res.status(200).json(newApt);
+//     } else {
+//       req.body.patient = id;
+//       console.log(req.body);
+
+//       const doctorObj = await doctor.findById(docID);
+//       if (!doctorObj || doctorObj === undefined) {
+//         return res.status(404).json({ message: "Doctor not found" });
+//       }
+
+//       const dateToRemove = new Date(req.body.date).toDateString(); // Convert to string
+
+//       // Assuming availableStartTimeSlots is an array of Date objects
+//       if (doctorObj.availableSlotsStartTime !== undefined) {
+//         doctorObj.availableSlotsStartTime =
+//           doctorObj.availableSlotsStartTime.filter(
+//             (slot) => slot.toDateString() !== dateToRemove
+//           );
+//       }
+
+//       // Update the doctor in the database
+//       await doctor.findByIdAndUpdate(docID, {
+//         $set: { availableSlotsStartTime: doctorObj.availableSlotsStartTime },
+//       });
+
+//       // Create the new appointment
+//       const newApt = await appointment.create(req.body);
+//       return res.status(200).json(newApt);
+//     }
+//   } catch (err) {
+//     console.error(err);
+//     return res.status(400).json(err);
+//   }
+// };
+const requestFollowUp = async (req: Request, res: Response) => {
+  try {
+  const docID = req.body.doctor;
+  req.body.duration = 1;
+  req.body.status = "upcoming";
+  req.body.appointmentType = "followup";
+  const id = req.params.id;
+  const flag = req.body.flag;
+  const relation = req.body.relation;
+  let iDate = new Date(req.body.date);
+  let userTimezoneOffset = iDate.getTimezoneOffset() * 60000;
+
+  let utcDate = new Date(iDate.getTime() - userTimezoneOffset).toISOString();
+
+  //req.body.date = utcDate;
+  if (flag) {
+  req.body.patient = req.body.relativeId;
+  // Get the doctor and remove the date from availableStartTimeSlots
+  const doctorObj = await doctor.findById(docID);
+
+  if (!doctorObj || doctorObj === undefined) {
+    return res.status(404).json({ message: "Doctor not found" });
+          }
+  req.body.price = doctorObj.hourlyRate * 1;
+  const dateToRemove = new Date(req.body.date).toDateString(); // Convert to string
+    
+          // Assuming availableStartTimeSlots is an array of Date objects
+  if (doctorObj.availableSlotsStartTime !== undefined) {
+      doctorObj.availableSlotsStartTime =
+      doctorObj.availableSlotsStartTime.filter(
+      (slot) => slot.toDateString() !== dateToRemove
+            );
+        }
+          // Update the doctor in the database
+  await doctor.findByIdAndUpdate(docID, {
+    $set: { availableSlotsStartTime: doctorObj.availableSlotsStartTime },
+        });
+    
+          // Create the new appointment
+  const newApt = await appointment.create(req.body);
+ // console.log(newApt)
+  return res.status(200).json(newApt);
+
+    } else {
+   req.body.patient = id;
+        //console.log(req.body);
+        
+  const doctorObj = await doctor.findById(docID);
+  if (!doctorObj || doctorObj === undefined) {
+    return res.status(404).json({ message: "Doctor not found" });
+         }
+        
+  const dateToRemove = new Date(req.body.date).toDateString(); // Convert to string
+        
+              // Assuming availableStartTimeSlots is an array of Date objects
+   if (doctorObj.availableSlotsStartTime !== undefined) {
+     doctorObj.availableSlotsStartTime =
+     doctorObj.availableSlotsStartTime.filter(
+     (slot) => slot.toDateString() !== dateToRemove
+           );
+      }
+        
+              // Update the doctor in the database
+    await doctor.findByIdAndUpdate(docID, {
+      $set: { availableSlotsStartTime: doctorObj.availableSlotsStartTime },
+      });
+        
+              // Create the new appointment
+    const newApt = await appointment.create(req.body);
+      return res.status(200).json(newApt);
+         }
+     
+      }    catch (err) {
+        console.error(err);
+        return res.status(400).json(err);
+      }
+    } 
+    
+
+  
+
+
+
 const readAppointment = async (req: Request, res: Response) => {
   const id = req.params.id;
 
@@ -235,6 +396,37 @@ const readAppointment = async (req: Request, res: Response) => {
       return res.status(400).json(err);
     });
 };
+
+
+
+
+const changeToPastAppointment = async (req: Request, res: Response) => {
+  try {
+    const currentDate = new Date();
+
+    const filter = {
+      date: { $lt: currentDate },
+      status: 'upcoming'
+    };
+
+    const update = {
+      $set: { status: 'completed' }
+    };
+
+    const result = await appointment.updateMany(filter, update);
+
+    // Check if any documents were updated
+    if (result.modifiedCount > 0) {
+      res.status(200).json(result);
+    } else {
+      res.status(404).json({ message: 'No matching appointments found.' });
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
 
 // const updateAppointment = async (req: Request, res: Response) => {
 //   const id = req.params.id;
@@ -307,8 +499,6 @@ const listAllAppointments = async (req: Request, res: Response) => {
 const filterAppointments = async (req: Request, res: Response) => {
   const status = req.body.status;
   const id = req.params.id;
-  console.log(req.body);
-  console.log(id);
   var doc;
 
   const pat = await Patient.findById(id).exec();
@@ -428,6 +618,95 @@ const filterAppointments = async (req: Request, res: Response) => {
   }
 };
 
+const rescheduleAppointment = async (req:Request, res:Response) => {
+  
+  const id = req.params.id;
+  const newDate = new Date(req.body.date);
+
+  try {
+
+    //var apt=null; 
+     const apt = await appointment.findById(id).exec();
+    
+
+    if (!apt) {
+      return res.status(404).send("No appointments found");
+    }
+
+    const docId = apt.doctor;
+    const foundDoc = await doctor.findById(docId).exec();
+
+    if (!foundDoc) {
+      return res.status(404).send("Doctor not found");
+    }
+
+    if (apt.status === "upcoming") {
+      if (foundDoc.availableSlotsStartTime && foundDoc.availableSlotsStartTime.length > 0) {
+        const isDateAvailable = foundDoc.availableSlotsStartTime.some((slot) => {
+          // Compare date strings without milliseconds
+          return slot.toDateString() === newDate.toDateString();
+        });
+
+        if (isDateAvailable) {
+          // Remove the date from available slots
+          foundDoc.availableSlotsStartTime = foundDoc.availableSlotsStartTime.filter(
+            (slot) => slot.toISOString().split(".")[0] !== newDate.toISOString().split(".")[0]
+          );
+
+          // Update the doctor's available slots
+          await doctor.findByIdAndUpdate(docId, {
+            $set: { availableSlotsStartTime: foundDoc.availableSlotsStartTime },
+          });
+
+          // Update the appointment details
+          apt.date = newDate;
+          apt.status = "rescheduled";
+
+          // Save the updated appointment
+          await apt.save();
+          return res.status(200).json({ message: "Appointment rescheduled successfully", appointment: apt });
+        } else {
+          return res.status(404).send("This date is not in the available slots of the doctor");
+        }
+      } else {
+        return res.status(404).send("No available slots for the doctor");
+      }
+    }
+
+    return res.status(404).send("Cannot reschedule appointment. It may not be in an upcoming status.");
+  } catch (error) {
+    console.error("Error rescheduling appointment:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+const rescheduleAppointmentForMyPatient = async (req: Request, res: Response) => {
+  console.log("entered");
+  const aptId = req.body.appointmentId;// Update the property name to match the request body
+  console.log(aptId);
+  try {
+    const updatedAppointment = await appointment.findOneAndUpdate({ _id: aptId }, req.body, { new: true });
+    console.log(updatedAppointment);
+    if (!updatedAppointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    return res.status(200).json({ message: "Appointment rescheduled successfully", updatedAppointment });
+  } catch (error) {
+    console.error("Error updating appointment:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+const listAllPendingFllowUps = async (req:Request, res:Response) => {
+  const apts = appointment
+  .find({"doctor": req.params.id , "appointmentType" : "followup" , "followUpStatus" : "pending"})
+  .then((apts) => res.status(200).json(apts))
+  .catch((err) => {
+return res.status(400).json(err);
+  });
+} 
+
+
 const getAllAppointments = async (req: Request, res: Response) => {
   const id = req.params.id;
   var doc;
@@ -491,7 +770,65 @@ const getAllAppointments = async (req: Request, res: Response) => {
         res.status(400).json(err);
       });
   }
-};
+}
+
+
+const cancelAppointment = async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const isLessThan24Hours = req.body.isLessThan24Hours;
+
+  const apt = await appointment.findById(id).exec();
+
+  if (!apt) {
+    return res.status(404).json({ message: "Appointment not found." });
+  }
+
+  const appointmentDate = new Date(apt.date);
+  const currentDate = new Date();
+
+  const isFutureAppointment = appointmentDate.toISOString() > currentDate.toISOString();
+  if(isLessThan24Hours){
+    
+    apt.status = "cancelled";
+    await apt.save();
+
+    return res.status(200).json({message : "Appointment cancelled successfuly."});
+
+  }else{
+    apt.status = "cancelled";
+    
+    const patID = apt.patient;
+    const price = apt.price;
+    
+    const pat = await Patient.findById(patID).exec();
+
+    if(!pat || pat ===undefined){
+      return res.status(404).json({message : "Patient not found."});
+    }
+
+    if(!price || price ===undefined){
+      return res.status(404).json({message : "Appointment price is undefined."});
+
+    }
+
+    if(!pat.wallet || pat.wallet ===undefined){
+      //return res.status(404).json({message : "Patient wallet is undefined."});
+      pat.wallet = price;
+
+    }else{
+      pat.wallet = pat.wallet + price;
+
+    }
+
+  
+    await pat.save();
+    await apt.save();
+
+    return res.status(200).json({message : "Appointment cancelled and money refunded successfuly. "});
+  }
+
+}
+
 
 export default {
   createAppointment,
@@ -503,4 +840,10 @@ export default {
   createFollowUp,
   createAppointmentForFamilyMember,
   getAllAppointments,
+  rescheduleAppointment,
+  changeToPastAppointment,
+  requestFollowUp,
+  listAllPendingFllowUps,
+  rescheduleAppointmentForMyPatient,
+  cancelAppointment
 };

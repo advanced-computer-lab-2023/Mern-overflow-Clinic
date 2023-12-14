@@ -468,6 +468,100 @@ const acceptContract = async (req: Request, res: Response) => {
     .json({ success: true, message: "Contract accepted successfully" });
 };
 
+const acceptFollowUp = async (req: Request, res: Response) => {
+  try {
+    const doctorId = req.params.id;
+    const appointmentId = req.body.appointmentId;
+
+    // Find the appointment for the given doctor ID
+    const apt = await appointment.findById(appointmentId).exec();
+
+    if (!apt) {
+      return res.status(404).json({
+        success: false,
+        message: "No pending appointments found for this doctor.",
+      });
+    }
+
+    // Update the status to "accepted"
+    apt.followUpStatus = "accepted";
+
+    // Save the updated appointment
+    await apt.save();
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Appointment accepted successfully" });
+  } catch (error) {
+    console.error("Error accepting appointment:", error);
+    return res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+const rejectFollowUp = async (req: Request, res: Response) => {
+  try {
+    const doctorId = req.params.id;
+    const appointmentId = req.body.appointmentId;
+
+    // Find the appointment for the given doctor ID
+    const apt = await appointment.findById(appointmentId).exec();
+
+    if (!apt) {
+      return res.status(404).json({
+        success: false,
+        message: "No pending appointments found for this doctor.",
+      });
+    }
+
+    // Update the status to "accepted"
+    apt.followUpStatus = "rejected";
+
+    // Save the updated appointment
+    await apt.save();
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Appointment accepted successfully" });
+  } catch (error) {
+    console.error("Error accepting appointment:", error);
+    return res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+
+// const acceptFollowUp = async (req: Request, res: Response) => {
+//   const docId = req.params.id;
+//   const aptId = req.body.apppointmentId;
+//   console.log(req.body);
+//   const apts = await appointment.find({ doctor: docId }).exec();
+//   if (apts.length === 0 || apts === undefined || !apts) {
+//     return res
+//       .status(404)
+//       .json({ success: false, message: "No followUp appointments found for this doctor." });
+//   }
+//   for (const contract of contracts) {
+//     if (
+//       contract._id.toString() === contractId &&
+//       contract.status === "pending"
+//     ) {
+//       console.log("true");
+//       contract.status = "accepted";
+//       try {
+//         await contract.save();
+//         break;
+//       } catch (err) {
+//         // Handle the error, e.g., log or send an error response.
+//         console.error(err);
+//         return res
+//           .status(500)
+//           .json({ success: false, message: "Error saving the contract." });
+//       }
+//     }
+//   }
+//   console.log("200");
+//   return res
+//     .status(200)
+//     .json({ success: true, message: "Contract accepted successfully" });
+// };
 const rejectContract = async (req: Request, res: Response) => {
   const docId = req.params.id;
   const contractId = req.body.contractId;
@@ -521,6 +615,29 @@ const listSlots = async (req: Request, res: Response) => {
     });
 };
 
+const cancelPatientAppointment = async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const aptId = req.body.apt;
+  console.log(req.body);
+  try {
+ // const apt = await appointment.find({doctor:Pid}).exec();
+  const apt = await appointment.findById(aptId).exec()
+  if(!apt){
+    return res.status(404).send("No appointments found");
+  }
+  if (apt.doctor.toString() === id) {
+    // Update the appointment status to "canceled"
+    apt.status = "canceled";
+    await apt.save(); // Save the changes to the database
+    return res.status(200).json({ message: "Appointment canceled successfully" });
+  } else {
+    return res.status(403).json({ message: "Unauthorized to cancel this appointment" });
+  }
+} catch (error) {
+  console.error("Error canceling appointment:", error);
+  return res.status(500).json({ message: "Internal Server Error" });
+}
+};
 const chatWithPatients = async (req: Request, res: Response) => {
   console.log("In chat with patients");
   const dId = req.params.id;
@@ -544,7 +661,11 @@ const chatWithPatients = async (req: Request, res: Response) => {
 
 };
 
-
+const reschedulePatientAppointment = async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const aptId = req.body.apt;
+  
+}
 export default {
   createDoctor,
   readDoctor,
@@ -564,5 +685,8 @@ export default {
   listPendingDoctors,
   listSlots,
   listCompletedPatients,
+  acceptFollowUp,
+  rejectFollowUp,
+  cancelPatientAppointment,
   chatWithPatients
 };

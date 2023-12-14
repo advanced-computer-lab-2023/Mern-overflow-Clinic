@@ -8,6 +8,15 @@ router.use(bodyParser.json());
 
 //GET
 router.get("/", isAuthenticated, appointmentController.listAllAppointments);
+
+router.put("/refresh",
+  isAuthenticated,
+  appointmentController.changeToPastAppointment,
+);
+router.put("/:id/reschedule",
+  isAuthenticated,
+  appointmentController.rescheduleAppointmentForMyPatient,
+);
 router.get("/:id", isAuthenticated, appointmentController.readAppointment);
 
 //POST
@@ -20,6 +29,16 @@ router.get("/all/:id",
   isAuthenticated,
   appointmentController.getAllAppointments,
 );
+
+router.get("/pendingFollowUps/:id",
+  isAuthenticated,
+  appointmentController.listAllPendingFllowUps,
+);
+
+
+
+
+
 router.post(
   "/update",
   isAuthenticated,
@@ -29,6 +48,22 @@ router.post(
   "/createAppointmentsForRelations/:id",
   isAuthenticated,
   appointmentController.createAppointmentForFamilyMember,
+);
+router.post(
+  "/requestFollowUp/:id",
+  isAuthenticated,
+  appointmentController.requestFollowUp,
+);
+router.put(
+  "/reschedule/:id",
+  isAuthenticated,
+  appointmentController.rescheduleAppointment,
+);
+
+router.put(
+  "/cancel/:id",
+  isAuthenticated,
+  appointmentController.cancelAppointment,
 );
 
 //DELETE

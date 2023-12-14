@@ -156,6 +156,7 @@ app.use("/uploads", express.static("./src/uploads"));
 
 app.use(cookieParser());
 
+
 //ROUTERS
 app.use('/auth', authRouter);
 app.use('/doctors', doctorRouter);
@@ -200,7 +201,8 @@ mongoose
     console.log(`Listening to requests on http://localhost:${port}`)
   });
 
-// Payment part
+
+// Payment part 
 /*const itemsToBePaid = new Map([
     // assuming user selected an entry appointmnet of his appointmnets and it is passed in the request body 
         [1,{priceInCents: , name: "appointment fees"}]

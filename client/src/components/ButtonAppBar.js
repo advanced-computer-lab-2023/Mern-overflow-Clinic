@@ -20,23 +20,36 @@ import MenuItem from '@mui/material/MenuItem';
 import { useState } from "react";
 import io from 'socket.io-client';
 
-const socket = io('http://localhost:3001');
 export default function ButtonAppBar(props) {
-
 	const [notifications, setNotifications] = useState([]);
 
 	useEffect(() => {
-		fetchNotifications();
-		socket.on('newNotification', (newNotification) => {
-			setNotifications((prevNotifications) => [newNotification, ...prevNotifications]);
+		const socket = io.connect('http://localhost:3001/notificationIO');
+
+		socket.on('connect', () => {
+			console.log('Connected to the Socket.IO server');
+			const userData = { userId: '655488bf0f1f9f306eacc663' };//TODO: change this to the user id
+			socket.emit('setup', userData);
 		});
+
+		socket.on('connected', () => {
+			console.log('Connected to the Socket.IO server and set up');
+			fetchNotifications();
+		});
+
+		socket.on('disconnect', () => {
+			console.log('Disconnected from the Socket.IO server');
+		});
+
 		return () => {
 			socket.disconnect();
 		};
 	}, []);
 
+
 	const fetchNotifications = async () => {
 		try {
+			console.log("fetching notifications");
 			const response = await axios.get('http://localhost:3001/notifications');
 			const data = await response.json();
 			setNotifications(data);

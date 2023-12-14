@@ -1,6 +1,12 @@
 import mongoose, { Schema, model } from "mongoose";
 import User from "./User.js";
 
+
+interface document {
+    filename: string;
+    path: string;
+}
+
 export interface IDoctor {
     // username:string;
     name: string;
@@ -18,10 +24,7 @@ export interface IDoctor {
     availableSlotsStartTime?: Date[];
 }
 
-interface document {
-    filename: string;
-    path: string;
-}
+
 
 const doctorShema = new Schema<IDoctor>({
     // username: { type: String, required: true , unique: true },

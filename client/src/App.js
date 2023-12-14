@@ -41,6 +41,8 @@ import AdminEditPackage from "./pages/admin/AdminEditPackage";
 import axios from "axios";
 import PatientPayAppointment from "./pages/patient/PatientPayAppointment";
 import NotFoundPage from "./NotFoundPage";
+import Chatpage from "./pages/Chatpage";
+
 
 
 function App() {
@@ -213,6 +215,11 @@ function App() {
     },
 
     { path: "*", element: <NotFoundPage /> },
+
+    {
+      path:"/chat",
+      element: <Chatpage/>
+    }
   ]);
 
   return (

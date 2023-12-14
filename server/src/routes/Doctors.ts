@@ -49,11 +49,15 @@ router.get("/:id/registeredPatients", isAuthenticated, doctorController.listMyPa
 router.get("/:id/patients/:pId", isAuthenticated, doctorController.selectPatient);
 router.get("/:id/search", isAuthenticated, doctorController.selectPatientByName);
 router.get("/:id/res", isAuthenticated, doctorController.listAllMyPatientsUpcoming);
+router.get("/chatWithPatients/:id/:search",isAuthenticated,isAuthorized([UserType.DOCTOR]),doctorController.chatWithPatients);
+
 router.post("/filter", isAuthenticated, patientController.filterDoctor);
 router.post( "/:id/addHealthRecord", isAuthenticated, healthRecordController.createHealthRecord);
 router.post( "/:id/createFollowup", isAuthenticated, appointmentController.createFollowUp);
 router.post("/filter", isAuthenticated, patientController.filterDoctor);
 router.post("/", upload.array('files',10) ,doctorController.createDoctor);
+
+
 
 router.put("/:id/acceptContract", isAuthenticated, doctorController.acceptContract);
 router.put("/:id/rejectContract", isAuthenticated, doctorController.rejectContract);

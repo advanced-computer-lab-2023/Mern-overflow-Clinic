@@ -25,6 +25,7 @@ import DoctorManageFreeSlots from "./pages/doctor/DoctorManageFreeSlots";
 import DoctorManageContracts from "./pages/doctor/DoctorManageContracts";
 import DoctorManageFollowUps from "./pages/doctor/DoctorManagePendingFollowUps";
 import DoctorManageFollowUp from "./pages/doctor/DoctorManageFollowUp";
+import DoctorManageRescheduaedlAppointments from "./pages/doctor/DoctorRechdualAppointment";
 import PatientBookAppointments from "./pages/patient/patientBookAppointment";
 import PatientBookFollowUp from "./pages/patient/patientBookAFollowUp";
 import AddHealthRecords from "./pages/doctor/DoctorAddHealthRecords";
@@ -189,6 +190,10 @@ function App() {
     {
       path: "/patient/bookAppointment/:id",
       element: <PatientBookAppointments />,
+    },
+    {
+      path: "/doctor/reschedualAppointments/:id/:aptId",
+      element: <DoctorManageRescheduaedlAppointments />,
     },
     {
       path: "/patient/bookFollowUp/:id",

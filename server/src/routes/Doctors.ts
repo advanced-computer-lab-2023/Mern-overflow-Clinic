@@ -65,6 +65,7 @@ router.put("/:id/rejectContract", isAuthenticated, doctorController.rejectContra
 router.put("/:id/addSlots", isAuthenticated, doctorController.addFreeSlots);
 router.put("/:id/acceptFollowUp", isAuthenticated, doctorController.acceptFollowUp);
 router.put("/:id/rejectFollowUp", isAuthenticated, doctorController.rejectFollowUp);
+router.put("/:id/cancelAppointment", isAuthenticated, doctorController.cancelPatientAppointment);
 
 router.delete("/:id", isAuthenticated, doctorController.deleteDoctor);
 router.delete("/:id", isAuthenticated, doctorController.deleteDoctor);

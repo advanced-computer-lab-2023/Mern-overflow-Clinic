@@ -13,7 +13,10 @@ router.put("/refresh",
   isAuthenticated,
   appointmentController.changeToPastAppointment,
 );
-
+router.put("/:id/reschedule",
+  isAuthenticated,
+  appointmentController.rescheduleAppointmentForMyPatient,
+);
 router.get("/:id", isAuthenticated, appointmentController.readAppointment);
 
 //POST

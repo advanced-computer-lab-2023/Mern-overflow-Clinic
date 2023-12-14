@@ -629,6 +629,23 @@ const rescheduleAppointmentForMySelf = async (req:Request, res:Response) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
+const rescheduleAppointmentForMyPatient = async (req: Request, res: Response) => {
+  console.log("entered");
+  const aptId = req.body.appointmentId;// Update the property name to match the request body
+  console.log(aptId);
+  try {
+    const updatedAppointment = await appointment.findOneAndUpdate({ _id: aptId }, req.body, { new: true });
+    console.log(updatedAppointment);
+    if (!updatedAppointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    return res.status(200).json({ message: "Appointment rescheduled successfully", updatedAppointment });
+  } catch (error) {
+    console.error("Error updating appointment:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
 
 const listAllPendingFllowUps = async (req:Request, res:Response) => {
   const apts = appointment
@@ -719,4 +736,5 @@ export default {
   changeToPastAppointment,
   requestFollowUp,
   listAllPendingFllowUps,
+  rescheduleAppointmentForMyPatient,
 };

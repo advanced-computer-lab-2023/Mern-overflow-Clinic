@@ -7,23 +7,23 @@ const router = express.Router();
 router.use(bodyParser.json());
 
 //GET
-router.get("/:id", prescriptionController.selectPrescription);
-router.get("/medicineDetails/:mId", prescriptionController.listMedicine);
-router.get("/:id/medicineDosage/:mid", prescriptionController.listMedDosage);
+router.get("/:id",isAuthenticated, prescriptionController.selectPrescription);
+router.get("/medicineDetails/:mId",isAuthenticated, prescriptionController.listMedicine);
+router.get("/:id/medicineDosage/:mid",isAuthenticated, prescriptionController.listMedDosage);
 
 
 //POST
-router.post("/doctors/:dId/patients/:pId/addPrescription", prescriptionController.createPrescription);
-router.post("/:id/addMedicine", prescriptionController.addMedicine);
+router.post("/doctors/:dId/patients/:pId/addPrescription",isAuthenticated, prescriptionController.createPrescription);
+router.post("/:id/addMedicine",isAuthenticated, prescriptionController.addMedicine);
 
 
 //PUT
-router.put("/:id", prescriptionController.updatePrescription);
-router.put("/:id/updateDosage/:mid", prescriptionController.updateDosage);
+router.put("/:id",isAuthenticated, prescriptionController.updatePrescription);
+router.put("/:id/updateDosage/:mid",isAuthenticated, prescriptionController.updateDosage);
 
 //DELETE
 router.delete("/:id", isAuthenticated, prescriptionController.deletePrescription);
-router.delete("/:id/deleteMedicine/:mid", prescriptionController.deleteMedicine);
+router.delete("/:id/deleteMedicine/:mid",isAuthenticated, prescriptionController.deleteMedicine);
 
 
 export default router;

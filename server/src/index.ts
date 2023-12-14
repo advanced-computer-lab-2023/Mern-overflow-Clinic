@@ -78,7 +78,8 @@ mongoose
   })
   .catch((err) => console.log(err));
 
-// Payment part
+
+// Payment part 
 /*const itemsToBePaid = new Map([
     // assuming user selected an entry appointmnet of his appointmnets and it is passed in the request body 
         [1,{priceInCents: , name: "appointment fees"}]

@@ -41,6 +41,7 @@ router.get( "/:id/search", isAuthenticated, doctorController.selectPatientByName
 router.get( "/:id/res", isAuthenticated, doctorController.listAllMyPatientsUpcoming);
 router.get("/", doctorController.listDoctors);
 router.get("/pendingDoctors", isAuthenticated, isAuthorized([UserType.ADMINSTARTOR]), doctorController.listPendingDoctors);
+
 router.get("/:id", isAuthenticated, doctorController.readDoctor);
 router.get("/:id/wallet", isAuthenticated, doctorController.viewWallet);
 router.get("/:id/patients", isAuthenticated, doctorController.listDoctorPatients);
@@ -48,7 +49,6 @@ router.get("/:id/registeredPatients", isAuthenticated, doctorController.listMyPa
 router.get("/:id/patients/:pId", isAuthenticated, doctorController.selectPatient);
 router.get("/:id/search", isAuthenticated, doctorController.selectPatientByName);
 router.get("/:id/res", isAuthenticated, doctorController.listAllMyPatientsUpcoming);
-
 router.post("/filter", isAuthenticated, patientController.filterDoctor);
 router.post( "/:id/addHealthRecord", isAuthenticated, healthRecordController.createHealthRecord);
 router.post( "/:id/createFollowup", isAuthenticated, appointmentController.createFollowUp);
@@ -63,8 +63,12 @@ router.put("/:id/acceptContract", isAuthenticated, doctorController.acceptContra
 router.put("/:id", isAuthenticated, doctorController.updateDoctor);
 router.put("/:id/rejectContract", isAuthenticated, doctorController.rejectContract);
 router.put("/:id/addSlots", isAuthenticated, doctorController.addFreeSlots);
+router.put("/:id/acceptFollowUp", isAuthenticated, doctorController.acceptFollowUp);
+router.put("/:id/rejectFollowUp", isAuthenticated, doctorController.rejectFollowUp);
+router.put("/:id/cancelAppointment", isAuthenticated, doctorController.cancelPatientAppointment);
 
 router.delete("/:id", isAuthenticated, doctorController.deleteDoctor);
 router.delete("/:id", isAuthenticated, doctorController.deleteDoctor);
+
 
 export default router;

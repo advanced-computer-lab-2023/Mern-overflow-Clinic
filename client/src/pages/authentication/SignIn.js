@@ -21,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 const defaultTheme = createTheme();
 
 export default function SignIn() {
-  const { userId, setUserId, userRole, setUserRole,userData, setUserData } = useUser();
+  const { userId, setUserId, userRole, setUserRole } = useUser();
   const {
     register,
     handleSubmit,
@@ -40,22 +40,21 @@ export default function SignIn() {
     delete data.Password;
     console.log("Data to server" + JSON.stringify(data));
 
-    let path = "";
+
      await axios
       .post("http://localhost:8000/auth/login", data)
       .then((response) => {
         console.log(response);
         const type = response.data.type;
         const userId = response.data.userId;
-        console.log(type);
+        console.log("Type: "+type);
         setUserId(userId);
         if (type === "Patient") {
           setUserRole("Patient");
-          path = "patients";
+
           navigate("/patient/family");
         } else if (type === "Doctor") {
           setUserRole("Doctor");
-          path = "doctors";
           navigate("/doctor/profile");
         } else if (type === "Adminstrator") {
           setUserRole("Admin");
@@ -63,18 +62,6 @@ export default function SignIn() {
         }
 
 
-        console.log(`http://localhost:8000/${path}/${userId}`);
-        if(userRole==="Doctor" || userRole === "Patient"){
-          axios
-          .get(`http://localhost:8000/${path}/${userId}`)
-          .then((response) => {
-            setUserData(JSON.stringify(response));
-            console.log(JSON.stringify(response));
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-          });
-        }
         
       })
       .catch((error) => {

@@ -23,9 +23,9 @@ import { ChatState } from "../Context/ChatProvider";
 
 export default function ButtonAppBar(props) {
 
-  const { userId, setUserId, userRole, setUserRole, userData, setUserData } = useUser();
-  console.log("user data after login: "+ JSON.stringify(userData));
+  const { userId, setUserId, userRole, setUserRole } = useUser();
 
+  console.log(userId+" "+userRole);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleMenuOpen = (event) => {

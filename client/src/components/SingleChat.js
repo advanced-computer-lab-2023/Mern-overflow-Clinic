@@ -38,7 +38,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       preserveAspectRatio: "xMidYMid slice",
     },
   };
-   const { selectedChat, setSelectedChat, user, notification, setNotification } =
+   const { selectedChat, setSelectedChat, user, notification, setNotification, chats, setChats } =
      ChatState();
 
 
@@ -97,10 +97,13 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           },
           config
         );
+
         console.log("Almost there "+JSON.stringify(data));
         socket.emit("new message", data);
         console.log("emitted new msg");
         setMessages([...messages, data]);
+
+
       } catch (error) {
         console.log(error);
         toast({

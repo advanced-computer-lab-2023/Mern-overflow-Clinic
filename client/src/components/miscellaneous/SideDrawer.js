@@ -122,6 +122,7 @@ function SideDrawer(props) {
       
       if (!chats.find((c) => c._id === data._id)) {
         setChats([data, ...chats]);
+        console.log("All chats: "+chats);
       }
       setSelectedChat(data);
       setLoadingChat(false);

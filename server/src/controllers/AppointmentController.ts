@@ -172,6 +172,167 @@ const createFollowUp = async (req: Request, res: Response) => {
     });
 };
 
+
+
+
+// const createAppointmentForFamilyMember = async (
+//   req: Request,
+//   res: Response
+// ) => {
+//   try {
+//     //console.log(req.body);
+//     const docID = req.body.doctor;
+//     req.body.duration = 1;
+//     req.body.status = "upcoming";
+//     req.body.appointmentType = "regular";
+//     const id = req.params.id;
+//     const flag = req.body.flag;
+//     const relation = req.body.relation;
+
+//     if (flag) {
+//       //console.log(req.body);
+//       req.body.patient = req.body.relativeId;
+
+//       // Get the doctor and remove the date from availableStartTimeSlots
+//       const doctorObj = await doctor.findById(docID);
+//       if (!doctorObj || doctorObj === undefined) {
+//         return res.status(404).json({ message: "Doctor not found" });
+//       }
+//       req.body.price = doctorObj.hourlyRate * 1;
+//       const dateToRemove = new Date(req.body.date).toDateString(); // Convert to string
+
+//       // Assuming availableStartTimeSlots is an array of Date objects
+//       if (doctorObj.availableSlotsStartTime !== undefined) {
+//         doctorObj.availableSlotsStartTime =
+//           doctorObj.availableSlotsStartTime.filter(
+//             (slot) => slot.toDateString() !== dateToRemove
+//           );
+//       }
+
+//       // Update the doctor in the database
+//       await doctor.findByIdAndUpdate(docID, {
+//         $set: { availableSlotsStartTime: doctorObj.availableSlotsStartTime },
+//       });
+
+//       // Create the new appointment
+//       const newApt = await appointment.create(req.body);
+//       return res.status(200).json(newApt);
+//     } else {
+//       req.body.patient = id;
+//       console.log(req.body);
+
+//       const doctorObj = await doctor.findById(docID);
+//       if (!doctorObj || doctorObj === undefined) {
+//         return res.status(404).json({ message: "Doctor not found" });
+//       }
+
+//       const dateToRemove = new Date(req.body.date).toDateString(); // Convert to string
+
+//       // Assuming availableStartTimeSlots is an array of Date objects
+//       if (doctorObj.availableSlotsStartTime !== undefined) {
+//         doctorObj.availableSlotsStartTime =
+//           doctorObj.availableSlotsStartTime.filter(
+//             (slot) => slot.toDateString() !== dateToRemove
+//           );
+//       }
+
+//       // Update the doctor in the database
+//       await doctor.findByIdAndUpdate(docID, {
+//         $set: { availableSlotsStartTime: doctorObj.availableSlotsStartTime },
+//       });
+
+//       // Create the new appointment
+//       const newApt = await appointment.create(req.body);
+//       return res.status(200).json(newApt);
+//     }
+//   } catch (err) {
+//     console.error(err);
+//     return res.status(400).json(err);
+//   }
+// };
+const requestFollowUp = async (req: Request, res: Response) => {
+  try {
+  const docID = req.body.doctor;
+  req.body.duration = 1;
+  req.body.status = "upcoming";
+  req.body.appointmentType = "followup";
+  const id = req.params.id;
+  const flag = req.body.flag;
+  const relation = req.body.relation;
+  let iDate = new Date(req.body.date);
+  let userTimezoneOffset = iDate.getTimezoneOffset() * 60000;
+
+  let utcDate = new Date(iDate.getTime() - userTimezoneOffset).toISOString();
+
+  //req.body.date = utcDate;
+  if (flag) {
+  req.body.patient = req.body.relativeId;
+  // Get the doctor and remove the date from availableStartTimeSlots
+  const doctorObj = await doctor.findById(docID);
+
+  if (!doctorObj || doctorObj === undefined) {
+    return res.status(404).json({ message: "Doctor not found" });
+          }
+  req.body.price = doctorObj.hourlyRate * 1;
+  const dateToRemove = new Date(req.body.date).toDateString(); // Convert to string
+    
+          // Assuming availableStartTimeSlots is an array of Date objects
+  if (doctorObj.availableSlotsStartTime !== undefined) {
+      doctorObj.availableSlotsStartTime =
+      doctorObj.availableSlotsStartTime.filter(
+      (slot) => slot.toDateString() !== dateToRemove
+            );
+        }
+          // Update the doctor in the database
+  await doctor.findByIdAndUpdate(docID, {
+    $set: { availableSlotsStartTime: doctorObj.availableSlotsStartTime },
+        });
+    
+          // Create the new appointment
+  const newApt = await appointment.create(req.body);
+ // console.log(newApt)
+  return res.status(200).json(newApt);
+
+    } else {
+   req.body.patient = id;
+        //console.log(req.body);
+        
+  const doctorObj = await doctor.findById(docID);
+  if (!doctorObj || doctorObj === undefined) {
+    return res.status(404).json({ message: "Doctor not found" });
+         }
+        
+  const dateToRemove = new Date(req.body.date).toDateString(); // Convert to string
+        
+              // Assuming availableStartTimeSlots is an array of Date objects
+   if (doctorObj.availableSlotsStartTime !== undefined) {
+     doctorObj.availableSlotsStartTime =
+     doctorObj.availableSlotsStartTime.filter(
+     (slot) => slot.toDateString() !== dateToRemove
+           );
+      }
+        
+              // Update the doctor in the database
+    await doctor.findByIdAndUpdate(docID, {
+      $set: { availableSlotsStartTime: doctorObj.availableSlotsStartTime },
+      });
+        
+              // Create the new appointment
+    const newApt = await appointment.create(req.body);
+      return res.status(200).json(newApt);
+         }
+     
+      }    catch (err) {
+        console.error(err);
+        return res.status(400).json(err);
+      }
+    } 
+    
+
+  
+
+
+
 const readAppointment = async (req: Request, res: Response) => {
   const id = req.params.id;
 
@@ -471,8 +632,33 @@ const rescheduleAppointment = async (req:Request, res:Response) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
+const rescheduleAppointmentForMyPatient = async (req: Request, res: Response) => {
+  console.log("entered");
+  const aptId = req.body.appointmentId;// Update the property name to match the request body
+  console.log(aptId);
+  try {
+    const updatedAppointment = await appointment.findOneAndUpdate({ _id: aptId }, req.body, { new: true });
+    console.log(updatedAppointment);
+    if (!updatedAppointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
 
-  
+    return res.status(200).json({ message: "Appointment rescheduled successfully", updatedAppointment });
+  } catch (error) {
+    console.error("Error updating appointment:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+const listAllPendingFllowUps = async (req:Request, res:Response) => {
+  const apts = appointment
+  .find({"doctor": req.params.id , "appointmentType" : "followup" , "followUpStatus" : "pending"})
+  .then((apts) => res.status(200).json(apts))
+  .catch((err) => {
+return res.status(400).json(err);
+  });
+} 
+
 
 const getAllAppointments = async (req: Request, res: Response) => {
   const id = req.params.id;
@@ -551,4 +737,7 @@ export default {
   getAllAppointments,
   rescheduleAppointment,
   changeToPastAppointment,
+  requestFollowUp,
+  listAllPendingFllowUps,
+  rescheduleAppointmentForMyPatient,
 };

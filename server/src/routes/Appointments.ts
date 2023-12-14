@@ -13,7 +13,10 @@ router.put("/refresh",
   isAuthenticated,
   appointmentController.changeToPastAppointment,
 );
-
+router.put("/:id/reschedule",
+  isAuthenticated,
+  appointmentController.rescheduleAppointmentForMyPatient,
+);
 router.get("/:id", isAuthenticated, appointmentController.readAppointment);
 
 //POST
@@ -27,6 +30,13 @@ router.get("/all/:id",
   appointmentController.getAllAppointments,
 );
 
+router.get("/pendingFollowUps/:id",
+  isAuthenticated,
+  appointmentController.listAllPendingFllowUps,
+);
+
+
+
 
 
 router.post(
@@ -38,6 +48,11 @@ router.post(
   "/createAppointmentsForRelations/:id",
   isAuthenticated,
   appointmentController.createAppointmentForFamilyMember,
+);
+router.post(
+  "/requestFollowUp/:id",
+  isAuthenticated,
+  appointmentController.requestFollowUp,
 );
 router.put(
   "/reschedule/:id",

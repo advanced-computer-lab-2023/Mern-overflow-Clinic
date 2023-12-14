@@ -6,6 +6,11 @@ import {
   Select,
   InputLabel,
   MenuItem,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -21,6 +26,7 @@ import dayjs from "dayjs"; // Import dayjs for date manipulation
 import { useUser } from "../../userContest";
 // Importing React Router Link
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 // Importing Material-UI Components
 import IconButton from '@mui/material/IconButton';
@@ -31,6 +37,9 @@ import PaymentIcon from '@mui/icons-material/Payment';
 export default function DoctorViewAppointments() {
   const [data, setData] = useState([]);
   const { userId } = useUser();
+  const [cancelAppointmentId, setCancelAppointmentId] = useState(null);
+  const [openCancelDialog, setOpenCancelDialog] = useState(false);
+  const navigate = useNavigate();
 
   const id = userId;
 
@@ -117,6 +126,40 @@ export default function DoctorViewAppointments() {
         })
         .catch(() => setData([]));
     }
+  };
+  const handleCancelDialogOpen = (appointmentId) => {
+    setCancelAppointmentId(appointmentId);
+    setOpenCancelDialog(true);
+  };
+
+  const handleCancelDialogClose = () => {
+    setOpenCancelDialog(false);
+  };
+  const handleRescheduleClick = (appointmentId) => {
+    // Navigate to the reschedule page with the doctor's ID and the appointment ID
+    navigate(`/doctor/reschedualAppointments/${id}/${appointmentId}`);
+  };
+  const handleCancelConfirmation = () => {
+    // Trigger the cancellation method with the selected appointment ID
+    axios
+      .put(`http://localhost:8000/doctors/${id}/cancelAppointment`, {
+        apt: cancelAppointmentId,
+      })
+      .then((res) => {
+        console.log(res.data);
+        // You can handle the response if needed
+        // Refresh the table data after cancellation
+        fetchTableData();
+      })
+      .catch((error) => {
+        console.error("Error canceling appointment:", error);
+      })
+      .finally(() => {
+        // Close the cancel dialog
+        setOpenCancelDialog(false);
+        // Reset the cancel appointment ID
+        setCancelAppointmentId(null);
+      });
   };
 
   return (
@@ -221,21 +264,53 @@ export default function DoctorViewAppointments() {
                 <TableCell>{row.status}</TableCell>
                 <TableCell>{calculateState(row.date)}</TableCell>
                 <TableCell>
-                <Link to={row.status === "upcoming" ? `/doctor/appointments/${row._id}/reschedule` : undefined}>
+                <Link >
                     <Button
                       variant="contained"
                       size="small" 
                        
                       disabled={!(row.status === "upcoming")}
+                      onClick={() => handleRescheduleClick(row._id)}
                     >
-                      Reschedule
+                      Reschedule                    
                     </Button>
                   </Link>
                 </TableCell>
+                <TableCell>
+                <Button
+                  variant="contained"
+                  size="small"
+                  disabled={!(row.status === "upcoming")}
+                  onClick={() => handleCancelDialogOpen(row._id)}
+                >
+                  Cancel
+                </Button>
+              </TableCell>
               </TableRow>
             ))}
         </TableBody>
       </Table>
+      <Dialog
+        open={openCancelDialog}
+        onClose={handleCancelDialogClose}
+        aria-labelledby="cancel-appointment-dialog-title"
+        aria-describedby="cancel-appointment-dialog-description"
+      >
+        <DialogTitle id="cancel-appointment-dialog-title">
+          Confirm Appointment Cancellation
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="cancel-appointment-dialog-description">
+            Are you sure you want to cancel this appointment?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelDialogClose}>Cancel</Button>
+          <Button onClick={handleCancelConfirmation} autoFocus>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 }

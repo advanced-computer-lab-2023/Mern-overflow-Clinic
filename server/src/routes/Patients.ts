@@ -39,6 +39,7 @@ router.get("/:id/documents", isAuthenticated, patientController.readDocuments);
 router.get("/:id/document", isAuthenticated, patientController.readPath);
 // router.get("/:id/healthRecords",patientController.viewMyHealthRecords);
 router.get("/:id/healthRecords",isAuthenticated,healthRecordController.patientListAllHealthRecords);
+router.get("/:id/completedAppointments", isAuthenticated, patientController.listCopmletedAppointmnetsForPatient);
 
 
 //POST

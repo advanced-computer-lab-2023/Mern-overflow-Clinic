@@ -20,15 +20,23 @@ import MenuItem from '@mui/material/MenuItem';
 import { useState } from "react";
 import io from 'socket.io-client';
 
-const socket = io('http://localhost:3001');
 export default function ButtonAppBar(props) {
-
+	const { userId, setUserId, userRole, setUserRole } = useUser();
 	const [notifications, setNotifications] = useState([]);
 
 	useEffect(() => {
+		const socket = io('http://localhost:9000');
+
 		fetchNotifications();
+		console.log("userId:", userId);
+		//socket.emit('setup', userId)
 		socket.on('newNotification', (newNotification) => {
-			setNotifications((prevNotifications) => [newNotification, ...prevNotifications]);
+			console.log("newNotification:", newNotification);
+			//setNotifications((prevNotifications) => [newNotification, ...prevNotifications]);
+			fetchNotifications();
+		});
+		socket.on('foo', () => {
+			console.log("foo");
 		});
 		return () => {
 			socket.disconnect();
@@ -37,8 +45,8 @@ export default function ButtonAppBar(props) {
 
 	const fetchNotifications = async () => {
 		try {
-			const response = await axios.get('http://localhost:3001/notifications');
-			const data = await response.json();
+			const response = await axios.get('http://localhost:8000/notifications/${userId}');
+			const data = await response.data;
 			setNotifications(data);
 		} catch (error) {
 			console.error('Error fetching notifications:', error);
@@ -96,7 +104,6 @@ export default function ButtonAppBar(props) {
 	});
 	const navigate = useNavigate();
 
-	const { userId, setUserId, userRole, setUserRole } = useUser();
 
 	const toggleDrawer = (anchor, open) => (event) => {
 		if (
@@ -163,8 +170,11 @@ export default function ButtonAppBar(props) {
 								open={Boolean(anchorEl)}
 								onClose={handleClose}
 							>
-								<MenuItem onClick={handleClose}>Notification 1</MenuItem>
-								<MenuItem onClick={handleClose}>Notification 2</MenuItem>
+								{notifications.map((notification, index) => (
+									<MenuItem key={index} onClick={handleClose}>
+										{notification.content}
+									</MenuItem>
+								))}
 							</Menu>
 						</div>
 						<Button type="button" color="inherit" onClick={handleLogout}>

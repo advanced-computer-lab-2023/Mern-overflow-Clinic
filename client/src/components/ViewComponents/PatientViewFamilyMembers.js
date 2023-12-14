@@ -38,7 +38,7 @@ export default function PatientViewFamilyMembers() {
         params: { id: id },
       })
       .then((res) => {
-        console.log(res.data);
+        //console.log(res.data);
         setData(res.data);
       })
       .catch((error) => {

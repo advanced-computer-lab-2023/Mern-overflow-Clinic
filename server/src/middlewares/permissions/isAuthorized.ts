@@ -32,12 +32,15 @@ const isAuthorized = (requiredRoles: UserType[]) => {
 	};
 };
 
-export const getLogedUserID = (req: Request) => {
+export const getLoggedUserID = (req: Request): string => {
 	const token = req.cookies.authorization;
 	const decodedToken = TokenUtils.decodeToken(token);
-	if (decodedToken) {
-		return decodedToken.userId;
+	if (decodedToken) { 
+		if(decodedToken.userId){
+			return decodedToken.userId;
+		}
 	}
+	return "wrong";
 };
 
 export default isAuthorized;

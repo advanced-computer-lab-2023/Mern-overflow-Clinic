@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import notification, { INotification } from "../models/Notifications.js";
 import { HydratedDocument } from "mongoose";
-import {notificationIO} from '../services/Sockets/NotificationsIO.js';
+import {io} from '../index.js';
 import { getLoggedUserID } from "../middlewares/permissions/isAuthorized.js";
 
 const createNotification = async (req: Request, res: Response) => {
@@ -9,11 +9,7 @@ const createNotification = async (req: Request, res: Response) => {
     const newNotification: HydratedDocument<INotification> = new notification({ 'receiver': receiver, 'content': content, 'read': false })
     newNotification.save().then((newNotification) => {
 		const id = getLoggedUserID(req);
-		console.log("adding notification",id);
-		notificationIO.to(id).emit('foo');
-		notificationIO.to("656fc7a66f1f4ad84368cc1b").emit('foo');
-		notificationIO.emit('foo');
-		notificationIO.to(id).emit('newNotification', newNotification);
+		io.to(id).emit('newNotification', newNotification);
 		
         return res.status(200).json(newNotification);
     }).catch((err) => {

@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { useUser } from "../userContest";
 import { useEffect } from "react";
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import NotificationImportantIcon from '@mui/icons-material/NotificationImportant';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { useState } from "react";
@@ -23,20 +24,18 @@ import io from 'socket.io-client';
 export default function ButtonAppBar(props) {
 	const { userId, setUserId, userRole, setUserRole } = useUser();
 	const [notifications, setNotifications] = useState([]);
+	const [newNotifications, setNewNotifications] = useState(false);
 
 	useEffect(() => {
-		const socket = io('http://localhost:9000');
+		let socket = io('http://localhost:8000');
 
 		fetchNotifications();
-		console.log("userId:", userId);
-		//socket.emit('setup', userId)
+		socket.emit('setupNotifications', userId);
 		socket.on('newNotification', (newNotification) => {
 			console.log("newNotification:", newNotification);
-			//setNotifications((prevNotifications) => [newNotification, ...prevNotifications]);
-			fetchNotifications();
-		});
-		socket.on('foo', () => {
-			console.log("foo");
+			setNotifications((prevNotifications) => [newNotification, ...prevNotifications]);
+			//fetchNotifications();
+			setNewNotifications(true);
 		});
 		return () => {
 			socket.disconnect();
@@ -58,6 +57,7 @@ export default function ButtonAppBar(props) {
 
 	const handleClick = (event) => {
 		setAnchorEl(event.currentTarget);
+		setNewNotifications(false);
 	};
 
 	const handleClose = () => {
@@ -163,7 +163,11 @@ export default function ButtonAppBar(props) {
 						</Typography>
 						<div>
 							<IconButton onClick={handleClick} color="inherit">
-								<NotificationsIcon />
+								{newNotifications ? (
+									<NotificationImportantIcon style={{ color: 'red' }}/>
+								) : (
+									<NotificationsIcon />
+								)}
 							</IconButton>
 							<Menu
 								anchorEl={anchorEl}

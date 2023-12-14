@@ -638,11 +638,6 @@ const cancelPatientAppointment = async (req: Request, res: Response) => {
   return res.status(500).json({ message: "Internal Server Error" });
 }
 };
-const reschedulePatientAppointment = async (req: Request, res: Response) => {
-  const id = req.params.id;
-  const aptId = req.body.apt;
-  
-}
 const chatWithPatients = async (req: Request, res: Response) => {
   console.log("In chat with patients");
   const dId = req.params.id;
@@ -666,30 +661,6 @@ const chatWithPatients = async (req: Request, res: Response) => {
 
 };
 
-
-const cancelPatientAppointment = async (req: Request, res: Response) => {
-  const id = req.params.id;
-  const aptId = req.body.apt;
-  console.log(req.body);
-  try {
- // const apt = await appointment.find({doctor:Pid}).exec();
-  const apt = await appointment.findById(aptId).exec()
-  if(!apt){
-    return res.status(404).send("No appointments found");
-  }
-  if (apt.doctor.toString() === id) {
-    // Update the appointment status to "canceled"
-    apt.status = "canceled";
-    await apt.save(); // Save the changes to the database
-    return res.status(200).json({ message: "Appointment canceled successfully" });
-  } else {
-    return res.status(403).json({ message: "Unauthorized to cancel this appointment" });
-  }
-} catch (error) {
-  console.error("Error canceling appointment:", error);
-  return res.status(500).json({ message: "Internal Server Error" });
-}
-};
 const reschedulePatientAppointment = async (req: Request, res: Response) => {
   const id = req.params.id;
   const aptId = req.body.apt;

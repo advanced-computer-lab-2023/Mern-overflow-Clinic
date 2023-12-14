@@ -800,7 +800,7 @@ const cancelAppointment = async (req: Request, res: Response) => {
     const patID = apt.patient;
     const price = apt.price;
     
-    const pat = await patient.findById(patID).exec();
+    const pat = await Patient.findById(patID).exec();
 
     if(!pat || pat ===undefined){
       return res.status(404).json({message : "Patient not found."});

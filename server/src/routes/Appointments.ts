@@ -56,10 +56,15 @@ router.post(
 );
 router.put(
   "/reschedule/:id",
-  //isAuthenticated,
+  isAuthenticated,
   appointmentController.rescheduleAppointment,
 );
 
+router.put(
+  "/cancel/:id",
+  isAuthenticated,
+  appointmentController.cancelAppointment,
+);
 
 //DELETE
 router.delete("/:id", isAuthenticated, appointmentController.deleteAppointment);

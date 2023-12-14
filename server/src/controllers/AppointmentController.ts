@@ -723,7 +723,65 @@ const getAllAppointments = async (req: Request, res: Response) => {
         res.status(400).json(err);
       });
   }
-};
+}
+
+
+const cancelAppointment = async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const isLessThan24Hours = req.body.isLessThan24Hours;
+
+  const apt = await appointment.findById(id).exec();
+
+  if (!apt) {
+    return res.status(404).json({ message: "Appointment not found." });
+  }
+
+  const appointmentDate = new Date(apt.date);
+  const currentDate = new Date();
+
+  const isFutureAppointment = appointmentDate.toISOString() > currentDate.toISOString();
+  if(isLessThan24Hours){
+    
+    apt.status = "cancelled";
+    await apt.save();
+
+    return res.status(200).json({message : "Appointment cancelled successfuly."});
+
+  }else{
+    apt.status = "cancelled";
+    
+    const patID = apt.patient;
+    const price = apt.price;
+    
+    const pat = await patient.findById(patID).exec();
+
+    if(!pat || pat ===undefined){
+      return res.status(404).json({message : "Patient not found."});
+    }
+
+    if(!price || price ===undefined){
+      return res.status(404).json({message : "Appointment price is undefined."});
+
+    }
+
+    if(!pat.wallet || pat.wallet ===undefined){
+      //return res.status(404).json({message : "Patient wallet is undefined."});
+      pat.wallet = price;
+
+    }else{
+      pat.wallet = pat.wallet + price;
+
+    }
+
+  
+    await pat.save();
+    await apt.save();
+
+    return res.status(200).json({message : "Appointment cancelled and money refunded successfuly. "});
+  }
+
+}
+
 
 export default {
   createAppointment,
@@ -740,4 +798,5 @@ export default {
   requestFollowUp,
   listAllPendingFllowUps,
   rescheduleAppointmentForMyPatient,
+  cancelAppointment
 };

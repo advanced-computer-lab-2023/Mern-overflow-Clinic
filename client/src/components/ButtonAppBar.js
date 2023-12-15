@@ -68,8 +68,13 @@ export default function ButtonAppBar(props) {
 	};
 
 	const handleClose = (link) => {
-		console.log("navigating to link:", link);	
-		navigate(link);
+		console.log("navigating to link:", link);
+
+		if(link.includes("meet.google")){
+			window.open(link, "_blank");
+		}else{
+			navigate(link);
+		}
 		setAnchorEl(null);
 	};
 

@@ -1,4 +1,4 @@
-import Doctor from '../../models/Doctor.js';
+import Doctor from '../../models/Doctor.ts';
 
 describe('Doctor model', () => {
   it('should throw an error if email is invalid', async () => {

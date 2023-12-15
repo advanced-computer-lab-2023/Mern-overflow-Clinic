@@ -794,17 +794,18 @@ const cancelAppointment = async (req: Request, res: Response) => {
       console.log(`cancelled apt `);
 
       const patID = apt.patient;
-      const price = apt.price;
+      var price = apt.price;
       
       const pat = await patient.findById(patID).exec();
       console.log(`found pat`);
 
       if(!pat || pat ===undefined){
+        console.log("no patient");
         return res.status(404).json({message : "Patient not found."});
       }
   
       if(!price || price ===undefined){
-        return res.status(404).json({message : "Appointment price is undefined."});
+        price = 0;
   
       }
 
@@ -823,7 +824,7 @@ const cancelAppointment = async (req: Request, res: Response) => {
   
       }
   
-     // doc.availableSlotsStartTime?.push(appointmentDate);
+      doc.availableSlotsStartTime?.push(appointmentDate);
   
       await doc.save();
       await pat.save();

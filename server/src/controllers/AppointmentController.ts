@@ -8,14 +8,20 @@ import dayjs from "dayjs";
 import Doctor from "../models/Doctor.js";
 import sendMailService from "../services/emails/sendMailService.js";
 import NotificationController from "./NotificationController.js";
+import Package from "../models/Package.js";
+import axios from "axios";
 
 const createAppointment = async (req: Request, res: Response) => {
 	//console.log("HELLO ");
 	req.body.duration = 1;
 	req.body.status = "upcoming";
 	req.body.appointmentType = "regular";
+
+  console.log("HI HI please print");
+  console.log("REQ BODY: "+req.body);
+
 	//req.body.paid = false;
-	//req.body.price = (await Doctor.findById(req.body.dId))?.hourlyRate;
+	req.body.price = (await Doctor.findById(req.body.dId))?.hourlyRate;
 
 	const patientEmail = await Users.findById(req.body.patient).then(
 		(pat) => pat?.email,
@@ -45,6 +51,15 @@ const createAppointment = async (req: Request, res: Response) => {
 		});
 };
 
+
+
+
+
+
+  
+
+
+
 const createAppointmentForFamilyMember = async (
 	req: Request,
 	res: Response,
@@ -52,12 +67,15 @@ const createAppointmentForFamilyMember = async (
 	try {
 		//console.log(req.body);
 		const docID = req.body.doctor;
+    console.log("DOC ID: "+docID);
+    console.log("rate: "+((await Doctor.findById(docID))?.hourlyRate));
 		req.body.duration = 1;
 		req.body.status = "upcoming";
 		req.body.appointmentType = "regular";
 		const id = req.params.id;
 		const flag = req.body.flag;
 		const relation = req.body.relation;
+    console.log("APP for family member");
 
 		if (flag) {
 			//console.log(req.body);
@@ -95,18 +113,52 @@ const createAppointmentForFamilyMember = async (
 				return res.status(400).json();
 			}
 
+      // req.body.price =  (await Doctor.findById(docID))?.hourlyRate;
+
+
+      req.body.price = doctorObj.hourlyRate * 1;
+      console.log("APT details: "+JSON.stringify(req.body));
 			// Create the new appointment
+
 			const newApt = await appointment.create(req.body);
-			const subject = "Appointment Booked";
-			let html = `Hello patient, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
-			sendMailService.sendMail(patientEmail, subject, html);
-			html = `Hello doctor, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
-			sendMailService.sendMail(doctorEmail, subject, html);
+			// const subject = "Appointment Booked";
+			// let html = `Hello patient, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
+			// sendMailService.sendMail(patientEmail, subject, html);
+			// html = `Hello doctor, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
+			// sendMailService.sendMail(doctorEmail, subject, html);
 			console.log("sending notification for appointmen: patient", req.body.patient, " | doctor", req.body.doctor);
 			NotificationController.createNotificationwithId(req.body.patient, "You have a new appointment", "/patient/appointments");
 			NotificationController.createNotificationwithId(req.body.doctor, "You have a new appointment", "/doctor/appointments");
 			return res.status(200).json(newApt);
 		} else {
+
+
+      // const pId = id;
+      // const patientFound = await Patient.findById(pId);
+      // var docSessDisc = 0; 
+      // const doctors = await doctor.findById(docID);
+    
+      // if (patientFound?.package !== undefined) {
+      //     const packageId = patientFound.package;
+      //     const packageData = await Package.findById(packageId);
+    
+          
+      //     let sessionPrice = 0;
+          
+      //     if (packageData) {
+      //         docSessDisc = (packageData.discountOnDoctorSessions / 100) * (doctors?.hourlyRate);
+      //     }
+      //     sessionPrice = doctors?.hourlyRate? + (0.1 * doctors?.hourlyRate) - docSessDisc:Number;
+    
+      // } 
+      // else {
+      //   let sessionPrice = 0;
+      //   sessionPrice = doctors?.hourlyRate? + (0.1 * doctors?.hourlyRate) - docSessDisc;    
+      // }
+      
+    
+
+
 			req.body.patient = id;
 			console.log(req.body);
 
@@ -140,12 +192,14 @@ const createAppointmentForFamilyMember = async (
 				return res.status(400).json();
 			}
 			// Create the new appointment
+      req.body.price = doctorObj.hourlyRate * 1;
+      console.log("APT details: "+JSON.stringify(req.body));
 			const newApt = await appointment.create(req.body);
-			const subject = "Appointment Booked";
-			let html = `Hello patient, <br /> A new appointment was booked with date ${req.body.date}. <br /> Please be on time. <br /> With Love, <br /> El7a2ni Clinic xoxo.`;
-			sendMailService.sendMail(patientEmail, subject, html);
-			html = `Hello doctor, <br /> A new appointment was booked with date ${req.body.date}. <br /> Please be on time. <br /> With Love, <br /> El7a2ni Clinic xoxo.`;
-			sendMailService.sendMail(doctorEmail, subject, html);
+			// const subject = "Appointment Booked";
+			// let html = `Hello patient, <br /> A new appointment was booked with date ${req.body.date}. <br /> Please be on time. <br /> With Love, <br /> El7a2ni Clinic xoxo.`;
+			// sendMailService.sendMail(patientEmail, subject, html);
+			// html = `Hello doctor, <br /> A new appointment was booked with date ${req.body.date}. <br /> Please be on time. <br /> With Love, <br /> El7a2ni Clinic xoxo.`;
+			// sendMailService.sendMail(doctorEmail, subject, html);
 			console.log("sending notification for appointmen: patient", req.body.patient, " | doctor", req.body.doctor);
 			NotificationController.createNotificationwithId(req.body.patient, "You have a new appointment", "/patient/appointments");
 			NotificationController.createNotificationwithId(req.body.doctor, "You have a new appointment", "/doctor/appointments");
@@ -621,43 +675,32 @@ const filterAppointments = async (req: Request, res: Response) => {
 	}
 };
 
-const rescheduleAppointment = async (req:Request, res:Response) => {
-  
-  const id = req.params.id;
-  const newDate = new Date(req.body.date);
-  try {
+const rescheduleAppointment = async (req: Request, res: Response) => {
 
-    //var apt=null; 
-     const apt = await appointment.findById(id).exec();
+	const id = req.params.id;
+	const newDate = new Date(req.body.date);
+	try {
 
-
-    if (!apt || apt===undefined) {
-      return res.status(404).send("No appointments found");
-    }
-    const oldDate = new Date(apt.date);
+		//var apt=null; 
+		const apt = await appointment.findById(id).exec();
 
 
-		if (!apt) {
+		if (!apt || apt === undefined) {
 			return res.status(404).send("No appointments found");
 		}
-    if (apt.status === "upcoming" && apt.appointmentType === "regular") {
-      if (foundDoc.availableSlotsStartTime && foundDoc.availableSlotsStartTime.length > 0) {
-        const isDateAvailable = foundDoc.availableSlotsStartTime.some((slot) => {
-          // Compare date strings without milliseconds
-          return slot.toDateString() === newDate.toDateString();
-        });
+		const oldDate = new Date(apt.date);
+		const docId = apt.doctor;
+		const foundDoc = await doctor.findById(docId).exec();
 
-        if (isDateAvailable) {
-          // Remove the date from available slots
-          foundDoc.availableSlotsStartTime = foundDoc.availableSlotsStartTime.filter(
-            (slot) => slot.toISOString().split(".")[0] !== newDate.toISOString().split(".")[0]
-          );
-          
-          foundDoc.availableSlotsStartTime.push(oldDate);
-          // Update the doctor's available slots
-          await doctor.findByIdAndUpdate(docId, {
-            $set: { availableSlotsStartTime: foundDoc.availableSlotsStartTime },
-          });
+		if (!foundDoc) {
+			return res.status(404).send("Doctor not found");
+		}
+		if (apt.status === "upcoming" && apt.appointmentType === "regular") {
+			if (foundDoc.availableSlotsStartTime && foundDoc.availableSlotsStartTime.length > 0) {
+				const isDateAvailable = foundDoc.availableSlotsStartTime.some((slot) => {
+					// Compare date strings without milliseconds
+					return slot.toDateString() === newDate.toDateString();
+				});
 
 				if (isDateAvailable) {
 					// Remove the date from available slots
@@ -665,53 +708,67 @@ const rescheduleAppointment = async (req:Request, res:Response) => {
 						(slot) => slot.toISOString().split(".")[0] !== newDate.toISOString().split(".")[0]
 					);
 
+					foundDoc.availableSlotsStartTime.push(oldDate);
 					// Update the doctor's available slots
 					await doctor.findByIdAndUpdate(docId, {
 						$set: { availableSlotsStartTime: foundDoc.availableSlotsStartTime },
 					});
 
-					// Update the appointment details
-					apt.date = newDate;
-					apt.status = "rescheduled";
+					if (isDateAvailable) {
+						// Remove the date from available slots
+						foundDoc.availableSlotsStartTime = foundDoc.availableSlotsStartTime.filter(
+							(slot) => slot.toISOString().split(".")[0] !== newDate.toISOString().split(".")[0]
+						);
 
-					// Save the updated appointment
-					await apt.save();
+						// Update the doctor's available slots
+						await doctor.findByIdAndUpdate(docId, {
+							$set: { availableSlotsStartTime: foundDoc.availableSlotsStartTime },
+						});
 
-					const patientEmail: string = await Users.findById(apt.patient).then((pat) => {
-						console.log(pat?.email);
-						return pat ? pat.email : "";
+						// Update the appointment details
+						apt.date = newDate;
+						apt.status = "rescheduled";
+
+						// Save the updated appointment
+						await apt.save();
+
+						const patientEmail: string = await Users.findById(apt.patient).then((pat) => {
+							console.log(pat?.email);
+							return pat ? pat.email : "";
+						}
+						);
+						const doctorEmail: string = await Users.findById(apt.doctor).then((doc) => {
+							console.log(doc?.email);
+							return doc ? doc.email : "";
+						}
+						);
+
+						const subject = "Appointment Resceduled";
+						let html = "Hello patient, \n your appointment was resceduled with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.";
+						sendMailService.sendMail(patientEmail, subject, html);
+						html = "Hello doctor, \n your appointment was resceduled with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.";
+						sendMailService.sendMail(doctorEmail, subject, html);
+						console.log("sending notification for appointmen: patient", req.body.patient, " | doctor", req.body.doctor);
+						NotificationController.createNotificationwithId(apt.patient.toString(), "Your appointment is rescheduled", "/patient/appointments");
+						NotificationController.createNotificationwithId(apt.doctor.toString(), "Your appointment is rescheduled", "/doctor/appointments");
+
+						return res.status(200).json({ message: "Appointment rescheduled successfully", appointment: apt });
+					} else {
+						return res.status(404).send("This date is not in the available slots of the doctor");
 					}
-					);
-					const doctorEmail: string = await Users.findById(apt.doctor).then((doc) => {
-						console.log(doc?.email);
-						return doc ? doc.email : "";
-					}
-					);
-
-					const subject = "Appointment Resceduled";
-					let html = `Hello patient, \n your appointment was resceduled with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
-					sendMailService.sendMail(patientEmail, subject, html);
-					html = `Hello doctor, \n your appointment was resceduled with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
-					sendMailService.sendMail(doctorEmail, subject, html);
-					console.log("sending notification for appointmen: patient", req.body.patient, " | doctor", req.body.doctor);
-					NotificationController.createNotificationwithId(apt.patient.toString(), "Your appointment is rescheduled", "/patient/appointments");
-					NotificationController.createNotificationwithId(apt.doctor.toString(), "Your appointment is rescheduled", "/doctor/appointments");
-
-					return res.status(200).json({ message: "Appointment rescheduled successfully", appointment: apt });
 				} else {
-					return res.status(404).send("This date is not in the available slots of the doctor");
+					return res.status(404).send("No available slots for the doctor");
 				}
-			} else {
-				return res.status(404).send("No available slots for the doctor");
 			}
-		}
 
-		return res.status(404).send("Cannot reschedule appointment. It may not be in an upcoming status.");
+			return res.status(404).send("Cannot reschedule appointment. It may not be in an upcoming status.");
+		}
 	} catch (error) {
 		console.error("Error rescheduling appointment:", error);
 		return res.status(500).json({ message: "Internal Server Error" });
 	}
 };
+
 const rescheduleAppointmentForMyPatient = async (req: Request, res: Response) => {
 	console.log("entered");
 	const aptId = req.body.appointmentId;// Update the property name to match the request body
@@ -784,6 +841,13 @@ const getAllAppointments = async (req: Request, res: Response) => {
 					return res.status(200).json([]);
 				}
 
+        // TODO: Handle patient not paying
+        // for (const apt of appointments){
+        //   if(!apt.paid){
+        //    appointment.findByIdAndDelete(apt._id);
+        //    axios.post(`http://localhost:8000/doctors/${apt.doctor}/addSlots`,{date:apt.date})
+        //   }
+        // }
 				// Add a new attribute 'state' based on the date comparison
 				const updatedAppointments = appointments.map((apt) => {
 					const aptDate = new Date(apt.date);
@@ -897,5 +961,5 @@ export default {
 	requestFollowUp,
 	listAllPendingFllowUps,
 	rescheduleAppointmentForMyPatient,
-	cancelAppointment
-};
+	cancelAppointment,
+}

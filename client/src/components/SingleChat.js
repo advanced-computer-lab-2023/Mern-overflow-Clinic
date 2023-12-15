@@ -9,7 +9,6 @@ import { getSender, getSenderFull } from "../config/ChatLogics";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { ArrowBackIcon } from "@chakra-ui/icons";
-import ProfileModal from "./miscellaneous/ProfileModal";
 import ScrollableChat from "./ScrollableChat";
 import Lottie from "react-lottie";
 import animationData from "../animations/typing.json";
@@ -39,9 +38,15 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       preserveAspectRatio: "xMidYMid slice",
     },
   };
-   const { selectedChat, setSelectedChat, user, notification, setNotification } =
-     ChatState();
-
+  const {
+    selectedChat,
+    setSelectedChat,
+    user,
+    notification,
+    setNotification,
+    chats,
+    setChats,
+  } = ChatState();
 
   const fetchMessages = async () => {
     console.log("HELLOOOO");
@@ -79,7 +84,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
   const sendMessage = async (event) => {
     if (event.key === "Enter" && newMessage) {
-      console.log("HERRRE")
+      console.log("HERRRE");
       socket.emit("stop typing", selectedChat._id);
       try {
         const config = {
@@ -94,11 +99,12 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           {
             content: newMessage,
             chatId: selectedChat,
-            userId:userId
+            userId: userId,
           },
           config
         );
-        console.log("Almost there "+JSON.stringify(data));
+
+        console.log("Almost there " + JSON.stringify(data));
         socket.emit("new message", data);
         console.log("emitted new msg");
         setMessages([...messages, data]);
@@ -115,15 +121,16 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       }
     }
   };
-  
 
-  const handleVideoCall =  async()=>{
+  const handleVideoCall = async () => {
     console.log(selectedChat.users);
-    const link = await axios.get(`http://localhost:8000/call/${selectedChat.users[0].email}/${selectedChat.users[1].email}`);
-    
-    console.log(link);
-    window.open(link.link,"_blank")
-  }
+    const link = await axios.get(
+      `http://localhost:8000/call/${userId}/${selectedChat.users[0].email}/${selectedChat.users[1].email}`
+    );
+
+    console.log("LINKKKKK:" + JSON.stringify(link));
+    window.open(link.data.link, "_blank");
+  };
 
   useEffect(() => {
     socket = io(ENDPOINT);
@@ -183,7 +190,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     <>
       {selectedChat ? (
         <>
-        
           <Text
             fontSize={{ base: "28px", md: "30px" }}
             pb={3}
@@ -194,36 +200,37 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             justifyContent={{ base: "space-between" }}
             alignItems="center"
           >
-            
             <IconButton
               display={{ base: "flex", md: "none" }}
               icon={<ArrowBackIcon />}
               onClick={() => setSelectedChat("")}
             />
-          
+
             {messages &&
               (!selectedChat.isGroupChat ? (
                 <>
-                
                   {getSender(user, selectedChat.users)}
-                  
-                  <div>
-                  <Tooltip label={"Videocall Doctor"} placement="bottom-start" hasArrow>
-                <IconButton d={{ base: "flex"}} marginRight="4" cursor="pointer" icon={<PhoneIcon />} 
-                onClick={()=>{
-                  handleVideoCall()}}  />
-              </Tooltip>
-                  
-                  <ProfileModal
-                    user={getSenderFull(user, selectedChat.users)}
-                  />
-                  </div>
 
-                  
+                  <div>
+                    <Tooltip
+                      label={"Videocall Doctor"}
+                      placement="bottom-start"
+                      hasArrow
+                    >
+                      <IconButton
+                        d={{ base: "flex" }}
+                        marginRight="4"
+                        cursor="pointer"
+                        icon={<PhoneIcon />}
+                        onClick={() => {
+                          handleVideoCall();
+                        }}
+                      />
+                    </Tooltip>
+                  </div>
                 </>
               ) : (
                 <>
-                
                   {selectedChat.chatName.toUpperCase()}
                   <UpdateGroupChatModal
                     fetchMessages={fetchMessages}
@@ -232,7 +239,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                   />
                 </>
               ))}
-              
           </Text>
           <Box
             display="flex"
@@ -289,7 +295,12 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         </>
       ) : (
         // to get socket.io on same page
-        <Box display="flex" alignItems="center" justifyContent="center" h="100%">
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          h="100%"
+        >
           <Text fontSize="3xl" pb={3} fontFamily="Work sans">
             Click on a user to start chatting
           </Text>

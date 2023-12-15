@@ -32,7 +32,7 @@ export default function SignIn() {
 
   axios.defaults.withCredentials = true;
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
 
     data["passwordHash"] = sha256(data["Password"]);
     data["username"] = data["Username"];
@@ -40,16 +40,18 @@ export default function SignIn() {
     delete data.Password;
     console.log("Data to server" + JSON.stringify(data));
 
-    axios
+
+     await axios
       .post("http://localhost:8000/auth/login", data)
       .then((response) => {
         console.log(response);
         const type = response.data.type;
         const userId = response.data.userId;
-        console.log(type);
+        console.log("Type: "+type);
         setUserId(userId);
         if (type === "Patient") {
           setUserRole("Patient");
+
           navigate("/patient/family");
         } else if (type === "Doctor") {
           setUserRole("Doctor");
@@ -58,11 +60,18 @@ export default function SignIn() {
           setUserRole("Admin");
           navigate("/admin/patients");
         }
+
+
+        
       })
       .catch((error) => {
         console.error("Error:", error);
       });
+
+
+
   };
+
   console.log(errors);
 
   const handleChange = (event) => {

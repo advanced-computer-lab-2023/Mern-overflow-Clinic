@@ -1,4 +1,9 @@
 import MenuIcon from "@mui/icons-material/Menu";
+import { Logout as LogoutIcon } from '@mui/icons-material';
+import {Popover} from '@mui/material';
+import { Avatar } from "@chakra-ui/avatar";
+import { BellIcon, ChevronDownIcon } from "@chakra-ui/icons";
+import { Link } from 'react-router-dom';
 import {
 	AppBar,
 	Box,
@@ -20,6 +25,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { useState } from "react";
 import io from 'socket.io-client';
+import { ChatState } from "../Context/ChatProvider";
 
 export default function ButtonAppBar(props) {
 	const { userId, setUserId, userRole, setUserRole } = useUser();
@@ -62,8 +68,13 @@ export default function ButtonAppBar(props) {
 	};
 
 	const handleClose = (link) => {
-		console.log("navigating to link:", link);	
-		navigate(link);
+		console.log("navigating to link:", link);
+
+		if(link.includes("meet.google")){
+			window.open(link, "_blank");
+		}else{
+			navigate(link);
+		}
 		setAnchorEl(null);
 	};
 
@@ -106,6 +117,7 @@ export default function ButtonAppBar(props) {
 		right: false,
 	});
 
+  
 
 	const toggleDrawer = (anchor, open) => (event) => {
 		if (
@@ -183,10 +195,77 @@ export default function ButtonAppBar(props) {
 								))}
 							</Menu>
 						</div>
-						<Button type="button" color="inherit" onClick={handleLogout}>
+
+						<>
+            {/* <IconButton
+    onClick={handleMenuOpen}
+    sx={{ p: 1 }} // Adjust the padding as needed
+  >
+    <Avatar
+      size="small"
+      sx={{ width: '32px', height: '32px' }} // Adjust the width and height as needed
+    />
+  </IconButton> */}
+  
+      {/* <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleMenuClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+      > */}
+        
+        {
+          (userRole === "Patient" || userRole == "Doctor") &&
+                  (
+
+                  <MenuItem>
+                  <Link to={userRole==="Patient"?`/patient/info`:`/doctor/info`}><span>My Profile</span></Link>
+                </MenuItem>
+                
+                )
+
+        }
+
+
+        <Divider />
+        <MenuItem onClick={handleLogout}>
+          <LogoutIcon sx={{ mr: 1 }} />
+          Logout
+        </MenuItem>
+      {/* </Popover> */}
+    </>
+
+            {/* <Menu>
+            <MenuButton as={Button} bg="white" rightIcon={<ChevronDownIcon />}>
+              <Avatar
+                size="sm"
+                cursor="pointer"
+                 name={user.name}
+                  src={user.pic}
+              />
+            </MenuButton>
+            <MenuList>
+              <ProfileModal 
+              user={user}
+              >
+                <MenuItem>My Profile</MenuItem>{" "}
+              </ProfileModal>
+              <MenuDivider />
+              <MenuItem onClick={handleLogout}>Logout</MenuItem>
+            </MenuList>
+          </Menu> */}
+            {/* <Button type="button" color="inherit" onClick={handleLogout}>
 							{" "}
 							Log out{" "}
-						</Button>
+						</Button> */}
 					</Toolbar>
 				</AppBar>
 			</Box >

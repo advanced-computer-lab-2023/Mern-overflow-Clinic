@@ -28,7 +28,9 @@ const storage = multer.diskStorage({
 
 router.use(express.json());
 
-router.get("/", isAuthenticated, doctorController.listDoctors);
+
+// TODO: Put authentication
+router.get("/", doctorController.listDoctors);
 router.get("/:id/slots", isAuthenticated, doctorController.listSlots);
 router.get("/:id/completedAppointments", isAuthenticated, doctorController.listCompletedPatients);
 router.get("/:id", isAuthenticated, doctorController.readDoctor);
@@ -50,6 +52,7 @@ router.get("/:id/patients/:pId", isAuthenticated, doctorController.selectPatient
 router.get("/:id/search", isAuthenticated, doctorController.selectPatientByName);
 router.get("/:id/res", isAuthenticated, doctorController.listAllMyPatientsUpcoming);
 router.get("/chatWithPatients/:id/:search",isAuthenticated,isAuthorized([UserType.DOCTOR]),doctorController.chatWithPatients);
+router.get("/getAllMyPatients/:id",isAuthenticated,isAuthorized([UserType.DOCTOR]),doctorController.getAllMyPatients);
 
 router.post("/filter", isAuthenticated, patientController.filterDoctor);
 router.post( "/:id/addHealthRecord", isAuthenticated, healthRecordController.createHealthRecord);
@@ -66,7 +69,7 @@ router.put("/:id", isAuthenticated, doctorController.updateDoctor);
 router.put("/:id/acceptContract", isAuthenticated, doctorController.acceptContract);
 router.put("/:id", isAuthenticated, doctorController.updateDoctor);
 router.put("/:id/rejectContract", isAuthenticated, doctorController.rejectContract);
-router.put("/:id/addSlots", isAuthenticated, doctorController.addFreeSlots);
+// router.put("/:id/addSlots", isAuthenticated, doctorController.addFreeSlots);
 router.put("/:id/acceptFollowUp", isAuthenticated, doctorController.acceptFollowUp);
 router.put("/:id/rejectFollowUp", isAuthenticated, doctorController.rejectFollowUp);
 router.put("/:id/cancelAppointment", isAuthenticated, doctorController.cancelPatientAppointment);

@@ -18,6 +18,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { useParams } from "react-router-dom";
 import { useUser } from "../../userContest";
+import { useNavigate } from 'react-router-dom';
 
 const PatientManageAppointments = ({ doctorId }) => {
   const { id } = useParams();
@@ -32,6 +33,7 @@ const PatientManageAppointments = ({ doctorId }) => {
   const [docID, setDocID] = useState(id);
   const { userId } = useUser();
   const [hourlyRate, setHourlyRate] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -118,7 +120,7 @@ const PatientManageAppointments = ({ doctorId }) => {
         endDate: formattedEndDate,
       };
 
-      await axios.post(
+      const newApt = await axios.post(
         `http://localhost:8000/appointments/createAppointmentsForRelations/${userId}`,
         appointmentData,
       );
@@ -143,6 +145,12 @@ const PatientManageAppointments = ({ doctorId }) => {
       setSelectedFamilyMember("");
       setSelectedFamilyMemberID(null);
       setBookForRelative(false);
+
+      //Payment code
+      console.log("We are here");
+      console.log(newApt);
+      navigate(`/patient/pay/appointment/${newApt.data._id}`);
+
     } catch (error) {
       const errorMessage = "Error booking appointment. Please try again.";
       setStatusMessage(errorMessage);

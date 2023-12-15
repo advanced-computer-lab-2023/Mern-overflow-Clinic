@@ -684,90 +684,94 @@ const rescheduleAppointment = async (req:Request, res:Response) => {
   console.log(`apt id = ${id}`);
   try {
 
-    //var apt=null; 
-     const apt = await appointment.findById(id).exec();
+		//var apt=null; 
+		const apt = await appointment.findById(id).exec();
 
 
-    if (!apt || apt===undefined) {
-      return res.status(404).send("No appointments found");
-    }
+		if (!apt || apt === undefined) {
+			return res.status(404).send("No appointments found");
+		}
     console.log("found apt");
 
-    const oldDate = new Date(apt.date);
+		const oldDate = new Date(apt.date);
+		const docId = apt.doctor;
+		const foundDoc = await doctor.findById(docId).exec();
 
-    const docId = apt.doctor;
-    const foundDoc = await doctor.findById(docId).exec();
+		if (!foundDoc) {
+			return res.status(404).send("Doctor not found");
+		}
+		if (apt.status === "upcoming" && apt.appointmentType === "regular") {
+			if (foundDoc.availableSlotsStartTime && foundDoc.availableSlotsStartTime.length > 0) {
+				const isDateAvailable = foundDoc.availableSlotsStartTime.some((slot) => {
+					// Compare date strings without milliseconds
+					return slot.toDateString() === newDate.toDateString();
+				});
 
-    if (!foundDoc) {
-      return res.status(404).send("Doctor not found");
-    }
-    console.log("found doc");
-    console.log(apt.status);
-    console.log(apt.appointmentType);
-    if (apt.status === "upcoming" && apt.appointmentType === "regular") {
-      console.log("here 22");
-      if (foundDoc.availableSlotsStartTime && foundDoc.availableSlotsStartTime.length > 0) {
-        const isDateAvailable = foundDoc.availableSlotsStartTime.some((slot) => {
-          // Compare date strings without milliseconds
-          return slot.toDateString() === newDate.toDateString();
-        });
+				if (isDateAvailable) {
+					// Remove the date from available slots
+					foundDoc.availableSlotsStartTime = foundDoc.availableSlotsStartTime.filter(
+						(slot) => slot.toISOString().split(".")[0] !== newDate.toISOString().split(".")[0]
+					);
 
-        if (isDateAvailable) {
-          // Remove the date from available slots
-          foundDoc.availableSlotsStartTime = foundDoc.availableSlotsStartTime.filter(
-            (slot) => slot.toISOString().split(".")[0] !== newDate.toISOString().split(".")[0]
-          );
-          
-          foundDoc.availableSlotsStartTime.push(oldDate);
-          // Update the doctor's available slots
-          await doctor.findByIdAndUpdate(docId, {
-            $set: { availableSlotsStartTime: foundDoc.availableSlotsStartTime },
-          });
+					foundDoc.availableSlotsStartTime.push(oldDate);
+					// Update the doctor's available slots
+					await doctor.findByIdAndUpdate(docId, {
+						$set: { availableSlotsStartTime: foundDoc.availableSlotsStartTime },
+					});
 
-          // Update the appointment details
-          apt.date = newDate;
-          apt.status = "rescheduled";
+					if (isDateAvailable) {
+						// Remove the date from available slots
+						foundDoc.availableSlotsStartTime = foundDoc.availableSlotsStartTime.filter(
+							(slot) => slot.toISOString().split(".")[0] !== newDate.toISOString().split(".")[0]
+						);
 
-          // Save the updated appointment
-          await apt.save();
+						// Update the doctor's available slots
+						await doctor.findByIdAndUpdate(docId, {
+							$set: { availableSlotsStartTime: foundDoc.availableSlotsStartTime },
+						});
 
+						// Update the appointment details
+						apt.date = newDate;
+						apt.status = "rescheduled";
 
-          const patientEmail: string = await Users.findById(apt.patient).then((pat) => {
-            console.log(pat?.email);
-            return pat ? pat.email : "";
-          }
-          );
-          const doctorEmail: string = await Users.findById(apt.doctor).then((doc) => {
-            console.log(doc?.email);
-            return doc ? doc.email : "";
-          }
-          );
+						// Save the updated appointment
+						await apt.save();
 
-          const subject = "Appointment Resceduled";
-          let html = "Hello patient, \n your appointment was resceduled with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.";
-          sendMailService.sendMail(patientEmail, subject, html);
-          html = "Hello doctor, \n your appointment was resceduled with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.";
-          sendMailService.sendMail(doctorEmail, subject, html);
-          console.log("sending notification for appointmen: patient", req.body.patient, " | doctor", req.body.doctor);
-          NotificationController.createNotificationwithId(apt.patient.toString(), "Your appointment is rescheduled", "/patient/appointments");
-          NotificationController.createNotificationwithId(apt.doctor.toString(), "Your appointment is rescheduled", "/doctor/appointments");
+						const patientEmail: string = await Users.findById(apt.patient).then((pat) => {
+							console.log(pat?.email);
+							return pat ? pat.email : "";
+						}
+						);
+						const doctorEmail: string = await Users.findById(apt.doctor).then((doc) => {
+							console.log(doc?.email);
+							return doc ? doc.email : "";
+						}
+						);
 
+						const subject = "Appointment Resceduled";
+						let html = "Hello patient, \n your appointment was resceduled with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.";
+						sendMailService.sendMail(patientEmail, subject, html);
+						html = "Hello doctor, \n your appointment was resceduled with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.";
+						sendMailService.sendMail(doctorEmail, subject, html);
+						console.log("sending notification for appointmen: patient", req.body.patient, " | doctor", req.body.doctor);
+						NotificationController.createNotificationwithId(apt.patient.toString(), "Your appointment is rescheduled", "/patient/appointments");
+						NotificationController.createNotificationwithId(apt.doctor.toString(), "Your appointment is rescheduled", "/doctor/appointments");
 
-          console.log("success");
-          return res.status(200).json({ message: "Appointment rescheduled successfully", appointment: apt });
-        } else {
-          return res.status(404).send("This date is not in the available slots of the doctor");
-        }
-      } else {
-        return res.status(404).send("No available slots for the doctor");
-      }
-    }
+						return res.status(200).json({ message: "Appointment rescheduled successfully", appointment: apt });
+					} else {
+						return res.status(404).send("This date is not in the available slots of the doctor");
+					}
+				} else {
+					return res.status(404).send("No available slots for the doctor");
+				}
+			}
 
-    return res.status(404).send("Cannot reschedule appointment. It may not be in an upcoming status.");
-  } catch (error) {
-    console.error("Error rescheduling appointment:", error);
-    return res.status(500).json({ message: "Internal Server Error" });
-  }
+			return res.status(404).send("Cannot reschedule appointment. It may not be in an upcoming status.");
+		}
+	} catch (error) {
+		console.error("Error rescheduling appointment:", error);
+		return res.status(500).json({ message: "Internal Server Error" });
+	}
 };
 
 const rescheduleAppointmentForMyPatient = async (req: Request, res: Response) => {

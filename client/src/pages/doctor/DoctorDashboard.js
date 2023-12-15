@@ -269,7 +269,7 @@ const DoctorDashboard = (props) => {
                     <SmsIcon sx={{ width: 30, height: 30 }} />
                   </Avatar>
                 </ListItemIcon>
-                <ListItemText primary="Chat With Patients" />
+                <ListItemText primary="Chat/VideoCall Patients" />
               </ListItemButton>
             </ListItem>
           </List>

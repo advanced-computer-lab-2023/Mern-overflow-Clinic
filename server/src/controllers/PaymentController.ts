@@ -20,7 +20,7 @@ const stripe = new Stripe(
 const payCCAppointment = async (req: Request, res: Response) => {
   try {
     const appPrice = (await appointment.findById(req.body.appId))?.price; // price in pounds
-
+    console.log("app price: "+appPrice);
     const appPriceIncents = appPrice ? appPrice * 100 : undefined;
 
     const dId = (await appointment.findById(req.body.appId))?.doctor;
@@ -31,7 +31,7 @@ const payCCAppointment = async (req: Request, res: Response) => {
       if (doc) {
         const update = {
           // Define the fields you want to update and their new values
-          wallet: doc.wallet && appPrice ? doc.wallet + appPrice : undefined,
+          wallet:  doc.wallet + appPrice,
         };
 
         // Set options for the update
@@ -48,6 +48,7 @@ const payCCAppointment = async (req: Request, res: Response) => {
         );
         console.log(updateWallet);
         console.log("CHANGED WALLET " + doc.wallet);
+        console.log("New Doc Entry: "+await Doctor.findById(dId));
       }
     }
     const app = await appointment.findById(req.body.appId);

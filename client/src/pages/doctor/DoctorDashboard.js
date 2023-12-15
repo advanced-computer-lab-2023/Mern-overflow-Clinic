@@ -20,6 +20,7 @@ import {
 import Avatar from "@mui/material/Avatar";
 import TodayIcon from "@mui/icons-material/Today";
 import PeopleIcon from "@mui/icons-material/People";
+import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
 import { Link } from "react-router-dom";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useUser } from "../../userContest";
@@ -166,7 +167,7 @@ const DoctorDashboard = (props) => {
           <List>
             <ListItem disablePadding>
               <ListItemButton component={Link} to="/doctor/prescriptions">
-                <ListItemIcon>
+              <ListItemIcon>
                   <Avatar
                     sx={{
                       m: 0,
@@ -177,7 +178,7 @@ const DoctorDashboard = (props) => {
                       padding: 0,
                     }}
                   >
-                    <PeopleIcon sx={{ width: 25, height: 25 }} />
+                    <HistoryEduIcon sx={{ width: 30, height: 30 }} />
                   </Avatar>
                 </ListItemIcon>
                 <ListItemText primary="My Prescriptions" />

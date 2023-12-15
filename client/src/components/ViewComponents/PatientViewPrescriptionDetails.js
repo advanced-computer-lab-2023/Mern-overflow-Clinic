@@ -6,6 +6,14 @@ import { Button } from '@mui/material';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useUser } from '../../userContest';
 import { set } from 'react-hook-form';
+import { styled } from '@mui/material/styles';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 
 
 const PatientViewPrescriptionDetails = ({ match }) => {
@@ -18,6 +26,26 @@ const PatientViewPrescriptionDetails = ({ match }) => {
   const [prescription, setPrescription] = useState([]);
   const [medicine, setMedicine] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
+
+  const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+      backgroundColor: theme.palette.primary.main,
+            color: theme.palette.common.white,
+    },
+    [`&.${tableCellClasses.body}`]: {
+      fontSize: 14,
+    },
+  }));
+
+  const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.action.hover,
+    },
+    // hide last border
+    '&:last-child td, &:last-child th': {
+      border: 0,
+    },
+  }));
 
   const fetchPrescription = async () => {
     try {
@@ -79,7 +107,7 @@ const PatientViewPrescriptionDetails = ({ match }) => {
       
       <h2>Prescription Details</h2>
     <br></br>
-      <table style={styles.table}>
+      {/* <table style={styles.table}>
         <thead>
           <tr>
             <th style={styles.th}>Doctor</th>
@@ -96,13 +124,34 @@ const PatientViewPrescriptionDetails = ({ match }) => {
             <td style={styles.td}>{prescription.filled ? 'Collected' : 'Not Collected'}</td>
           </tr>
         </tbody>
-      </table>
+      </table> */}
+
+<TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <StyledTableRow>
+            <StyledTableCell>Doctor</StyledTableCell>
+            <StyledTableCell>Speciality</StyledTableCell>
+            <StyledTableCell>Date</StyledTableCell>
+            <StyledTableCell>Prescription Collected</StyledTableCell>
+          </StyledTableRow>
+        </TableHead>
+        <TableBody>
+            <StyledTableRow>
+              <StyledTableCell>{prescription.doctor?.name}</StyledTableCell>
+              <StyledTableCell>{prescription.doctor?.speciality}</StyledTableCell>            
+              <StyledTableCell>{formatDate(prescription?.date)}</StyledTableCell>
+              <StyledTableCell>{prescription.filled ? 'Collected' : 'Not Collected'}</StyledTableCell>
+              </StyledTableRow>
+        </TableBody>
+      </Table>
+    </TableContainer>
 
       <br></br>
 
       <h4>Medicines Details</h4>
 
-      <table style={styles.table}>
+      {/* <table style={styles.table}>
         <thead>
           <tr>
             <th style={styles.th}>Name</th>
@@ -123,7 +172,34 @@ const PatientViewPrescriptionDetails = ({ match }) => {
             </tr>
           ))}
         </tbody>
-      </table>
+      </table> */}
+
+<TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <StyledTableRow>
+            <StyledTableCell>Name</StyledTableCell>
+            <StyledTableCell>Dosage</StyledTableCell>
+            <StyledTableCell>Medicinal Use</StyledTableCell>
+            <StyledTableCell>Price</StyledTableCell>
+            <StyledTableCell>Available Quantity</StyledTableCell>
+          </StyledTableRow>
+        </TableHead>
+        <TableBody>
+          {medicine.map((med, index) => (
+            <StyledTableRow key={index}>
+              <StyledTableCell>{med?.name}</StyledTableCell>
+              <StyledTableCell>{prescription.medicine[index]?.dailyDosage} {prescription.medicine[index]?.dailyDosage === 1 ? 'dosage' : 'dosages'} per day</StyledTableCell>
+              <StyledTableCell>{med?.medicinalUse}</StyledTableCell>            
+              <StyledTableCell>{med?.price}</StyledTableCell>
+              <StyledTableCell>{med?.availableQuantity}</StyledTableCell>
+              </StyledTableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+    
+    <br></br>
 
       {!prescription.filled && (
             <Button variant="contained" onClick={handleButtonClick}>

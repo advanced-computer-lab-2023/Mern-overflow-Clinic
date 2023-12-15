@@ -1,13 +1,23 @@
 import React, {useState, useEffect} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios'
-import {  Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import {  Typography, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, useTheme  } from '@mui/material';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useUser } from '../../userContest';
 import { useForm } from "react-hook-form";
+//import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Container,
-  Paper,
   TextField,
   FormControl,
   Button,
@@ -16,10 +26,10 @@ import {
   InputLabel,
 }from "@mui/material";
 import { set } from 'react-hook-form';
-import DeleteIcon from "@mui/icons-material/Delete";
-import IconButton from "@mui/material/IconButton";
+//import DeleteIcon from "@mui/icons-material/Delete";
+//import IconButton from "@mui/material/IconButton";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import EditIcon from "@mui/icons-material/Edit";
+//import EditIcon from "@mui/icons-material/Edit";
 import {Snackbar,Alert} from '@mui/material';
 
 
@@ -36,15 +46,17 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
   const [statusMessage, setStatusMessage] = useState("");
   const doctorId = userId;
   let { id } = useParams();
+  
    const [successOpen, setSuccessOpen] = useState(false);
    const [successMessage, setSuccessMessage] = useState("");
-  const [errorOpen, setErrorOpen] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-
+   const [errorOpen, setErrorOpen] = useState(false);
+   const [errorMessage, setErrorMessage] = useState("");
    const [prescription, setPrescription] = useState([]);
    const [medicine, setMedicine] = useState([]);
+   const [mid, setMid] = useState("");
    //const [errorMessage, setErrorMessage] = useState(null);
-  
+   //const [oldDosage, setOldDosage] = useState("");
+
 
   const fetchPrescription = async () => {
     try {
@@ -75,6 +87,26 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
     fetchPrescription();
   }, [doctorId]);
 
+  const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+      backgroundColor: theme.palette.primary.main,
+            color: theme.palette.common.white,
+    },
+    [`&.${tableCellClasses.body}`]: {
+      fontSize: 14,
+    },
+  }));
+
+  const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.action.hover,
+    },
+    // hide last border
+    '&:last-child td, &:last-child th': {
+      border: 0,
+    },
+  }));
+
    const handleSuccessClose = (event, reason) => {
      if (reason === "clickaway") {
        return;
@@ -95,6 +127,10 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
+  const handleClick = (pid) => {
+    navigate(`/doctor/prescriptions/${pid}/prescriptionDownload`);
+  };
+
   const onSubmit = (data) => {
     if(! (prescription.filled)){
     const requestData = {
@@ -105,25 +141,32 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
     axios
       .post(`http://localhost:8000/prescriptions/${id}/addMedicine`, requestData)
       .then((response) => {
-        setStatusMessage("medicine added successfully");
+        setSuccessOpen(true);
+        setSuccessMessage("Medicine added successfully!");       
         console.log("POST request successful", response);
-
         // Reset the form after successful submission
         reset();
         window.location.reload();
         // Optionally, you can handle other actions after resetting the form
       })
       .catch((error) => {
-        setStatusMessage("medicine not correct");
+        setErrorOpen(true);
+        setErrorMessage("Medicine not correct!");       
         console.error("Error making POST request", error);
       });
     }
     else{
-      // setError(true);
+       setErrorOpen(true);
       // setErrorMessage("prescription is already filled");
-      setStatusMessage("prescription is filled!");
+      setErrorMessage("prescription is already collected!");
     }
   }
+
+  const [deleteConfirmation, setDeleteConfirmation] = useState({
+    open: false,
+    idToDelete: null,
+  });
+
 
   const handleClickDelete = (mid) => {
     // const requestData = {
@@ -144,29 +187,116 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
     }
     else{
       setErrorOpen(true);
-      setErrorMessage("prescription is filled!");
+      setErrorMessage("prescription is already collected!");
     }
   };
 
-  const handleClickEdit = (mid) => {
-    if(!(prescription.filled)){
-    //console.log("medId! = " + mid);
-    navigate(`/doctor/prescriptions/${id}/medicine/${mid}`);
-    //console.log("medId! = " + mid);
-    }
-    else{
-      setErrorOpen(true);
-      setErrorMessage("prescription is filled!");
+  
+
+  
+  const handleDeleteClick = (id) => {
+    setDeleteConfirmation({
+      open: true,
+      idToDelete: id,
+    });
+  };
+
+  const handleDeleteConfirm = () => {
+    // Perform delete operation here
+    handleClickDelete(deleteConfirmation.idToDelete);
+    // Close the confirmation dialog
+    setDeleteConfirmation({
+      open: false,
+      idToDelete: null,
+    });
+  };
+
+  const handleDeleteCancel = () => {
+    // Close the confirmation dialog without performing delete operation
+    setDeleteConfirmation({
+      open: false,
+      idToDelete: null,
+    });
+  };
+
+  const [editDialog, setEditDialog] = useState({
+    open: false,
+    idToEdit: null,
+    editedValue: '',
+  });
+
+  const handleEditClick = async (id) => {
+    setMid(id);
+  
+    try {
+      // Using async/await to fetch the old dosage
+      const oldDosageValue = await fetchOldDosage(id);
+  
+      setEditDialog({
+        open: true,
+        idToEdit: id,
+        editedValue: oldDosageValue.toString(),
+      });
+    } catch (error) {
+      console.error('Error fetching old dosage:', error);
+      // Handle error appropriately
     }
   };
 
-  const handleClick = (pid) => {
-    navigate(`/doctor/prescriptions/${pid}/prescriptionDownload`);
+  const fetchOldDosage = async (mid) => {
+    try {
+        console.log("Heree ");
+        const response = await axios.get(`http://localhost:8000/prescriptions/${id}/medicineDosage/${mid}`);
+        console.log("Response:", response);
+        console.log("dosage = " + response.data);
+        //setOldDosage(response.data.dosage);
+        return response.data.dosage;
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+};
+
+  const handleEditConfirm = () => {
+    // Perform edit operation here
+    console.log('Edited value:', editDialog.editedValue);
+    // Close the edit dialog
+    //setDosage(editDialog.editedValue);
+
+    onSubmitDosage(editDialog.editedValue);
+    setEditDialog({
+      open: false,
+      idToEdit: null,
+      editedValue: '',
+    });
   };
+
+  const handleEditCancel = () => {
+    // Close the edit dialog without performing edit operation
+    setEditDialog({
+      open: false,
+      idToEdit: null,
+      editedValue: '',
+    });
+  };
+
+  const onSubmitDosage = (dosage) => {
+    const dataToServer = { dosage };
+    console.log('Dosage', dosage);
+    console.log('mid', mid);
+    axios.put(`http://localhost:8000/prescriptions/${id}/updateDosage/${mid}`, dataToServer)
+        .then((response) => {
+            console.log('PUT request successful', response);
+            // navigate(`/doctor/prescriptions/${id}`);
+            window.location.reload();
+          })
+        .catch((error) => {
+            console.error('Error making PUT request', error);
+        });
+}
 
   return (
     <div style={styles.container}>
-      {errorMessage && <div style={styles.errorMessage}>{errorMessage}</div>}
+      {/* {errorMessage && <div style={styles.errorMessage}>{errorMessage}</div>} */}
       
 
        <Snackbar
@@ -224,7 +354,7 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
         <Typography variant="h6" sx={{ mb: 2 }}>
           Add Medicine
         </Typography>
-        {statusMessage && (
+        {/* {statusMessage && (
           <Typography
             variant="body2"
             color={statusMessage.includes("Error") ? "error" : "success"}
@@ -232,7 +362,7 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
           >
             {statusMessage}
           </Typography>
-        )}
+        )} */}
         <form onSubmit={handleSubmit(onSubmit)}>
           <TextField
             label="Medicine Name"
@@ -266,7 +396,7 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
 
       <h4>Medicines Details</h4>
 
-      <table style={styles.table}>
+      {/* <table style={styles.table}>
         <thead>
           <tr>
             <th style={styles.th}>Name</th>
@@ -309,7 +439,100 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
             </tr>
           ))}
         </tbody>
-      </table>
+      </table> */}
+
+<TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <StyledTableRow>
+            <StyledTableCell>Name</StyledTableCell>
+            <StyledTableCell>Dosage</StyledTableCell>
+            <StyledTableCell>Medicinal Use</StyledTableCell>
+            <StyledTableCell>Description</StyledTableCell>
+            <StyledTableCell>Active Ingredients</StyledTableCell>
+            <StyledTableCell>Price</StyledTableCell>
+            <StyledTableCell>Available Quantity</StyledTableCell>
+            <StyledTableCell>Over The Counter</StyledTableCell>
+            <StyledTableCell>Archived</StyledTableCell>
+            <StyledTableCell>Edit</StyledTableCell>
+            <StyledTableCell>Delete</StyledTableCell>
+          </StyledTableRow>
+        </TableHead>
+        <TableBody>
+          {medicine.map((med, index) => (
+            <StyledTableRow key={index}>
+              <StyledTableCell>{med?.name}</StyledTableCell>
+              <StyledTableCell>{prescription.medicine[index]?.dailyDosage} {prescription.medicine[index]?.dailyDosage === 1 ? 'dosage' : 'dosages'} per day</StyledTableCell>
+              <StyledTableCell>{med?.medicinalUse}</StyledTableCell>
+              <StyledTableCell>{med?.details.description}</StyledTableCell>
+              <StyledTableCell>
+                <ul>
+                  {med?.details.activeIngredients.map((ingredient, i) => (
+                    <li key={i}>{ingredient}</li>
+                  ))}
+                </ul>
+              </StyledTableCell>
+              <StyledTableCell>{med?.price}</StyledTableCell>
+              <StyledTableCell>{med?.availableQuantity}</StyledTableCell>
+              <StyledTableCell>{med?.overTheCounter ? 'Yes' : 'No' }</StyledTableCell>
+              <StyledTableCell>{med?.isArchived ? 'Yes' : 'No' }</StyledTableCell>
+              <StyledTableCell>
+                <IconButton onClick={() => handleEditClick(med?._id)}>
+                  <EditIcon />
+                </IconButton>
+              </StyledTableCell>
+              <StyledTableCell>
+                <IconButton onClick={() => handleDeleteClick(med?._id)}>
+                  <DeleteIcon />
+                </IconButton>
+              </StyledTableCell>
+            </StyledTableRow>
+          ))}
+        </TableBody>
+      </Table>
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteConfirmation.open} onClose={handleDeleteCancel}>
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          Are you sure you want to delete this item?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteConfirm} style={{ color: 'red' }} autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Edit Dialog */}
+      <Dialog open={editDialog.open} onClose={handleEditCancel}>
+        <DialogTitle>Edit Dosage</DialogTitle>
+        <DialogContent>
+          <TextField
+            label=""
+            variant="outlined"
+            fullWidth
+            value={editDialog.editedValue}
+            onChange={(e) => setEditDialog({ ...editDialog, editedValue: e.target.value })}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleEditCancel} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleEditConfirm} color="primary" autoFocus>
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+    </TableContainer>
+
+    <br></br>
+
+
       <button className="btn btn-primary"  onClick={() => handleClick(id)}>
                 View Official Prescription Document
               </button>

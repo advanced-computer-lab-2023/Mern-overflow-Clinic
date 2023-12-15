@@ -23,10 +23,13 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
 import { useUser } from "../../userContest";
+import { Link } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 export default function PatientViewFamilyMembers() {
   const [data, setData] = useState([]);
   const { userId } = useUser();
+  const navigate = useNavigate();
 
   // const id = "655089b786a7e9fff5d1d36a";
   const id = userId;
@@ -49,7 +52,18 @@ export default function PatientViewFamilyMembers() {
   useEffect(() => {
     fetchTableData();
   }, []);
+  
 
+  const handleSelectFamily = (ID) => {
+    // Example action: console log the selected row data
+    const doctorDetailsURL = `/patient/family/appointments`;
+    // Add the 'id' parameter to the URL
+    const doctorDetailsURLWithId = `${doctorDetailsURL}/${ID}`;
+    
+    // Navigate to the doctor details page with the 'id' parameter
+    navigate(doctorDetailsURLWithId);
+  };
+  
   return (
     <Container maxWidth="xl">
       <Table>
@@ -70,6 +84,11 @@ export default function PatientViewFamilyMembers() {
               <TableCell>{row.age}</TableCell>
               <TableCell>{row.gender}</TableCell>
               <TableCell>{row.relation}</TableCell>
+              <TableCell>
+                  <Button onClick={() => handleSelectFamily(row.patientId)}>
+                    View Appointments
+                  </Button>
+                </TableCell>
             </TableRow>
           ))}
         </TableBody>

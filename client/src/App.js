@@ -41,7 +41,7 @@ import AdminEditPackage from "./pages/admin/AdminEditPackage";
 import axios from "axios";
 import PatientPayAppointment from "./pages/patient/PatientPayAppointment";
 import NotFoundPage from "./NotFoundPage";
-
+import PatientViewFamilyAppointments from "./pages/patient/PatientViewFamilyAppointments";
 
 function App() {
   axios.defaults.withCredentials = true;
@@ -190,6 +190,10 @@ function App() {
     {
       path: "/patient/bookAppointment/:id",
       element: <PatientBookAppointments />,
+    },
+    {
+      path: "/patient/family/appointments/:id",
+      element: <PatientViewFamilyAppointments />,
     },
     {
       path: "/doctor/reschedualAppointments/:id/:aptId",

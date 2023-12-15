@@ -593,14 +593,16 @@ const rejectContract = async (req: Request, res: Response) => {
 };
 
 const listSlots = async (req: Request, res: Response) => {
+  console.log("hereeee");
   const id = req.params.id;
+  console.log(id);
+
   const doctors = doctor
     .findById(id)
     .then((doctors) => {
-      //console.log("sjhkshkshkjs");
       if(doctors?.status === "accepted"){
-        //console.log("in the if");
-        //console.log(doctors.availableSlotsStartTime);
+        console.log(doctors.availableSlotsStartTime);
+
         res.status(200).json(doctors.availableSlotsStartTime);
       }
     })

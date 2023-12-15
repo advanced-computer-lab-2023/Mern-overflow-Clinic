@@ -9,7 +9,8 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle
+  DialogTitle,
+  DialogContentText
 } from "@mui/material";
 
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
@@ -38,12 +39,11 @@ export default function PatientViewAppointments() {
   const [data, setData] = useState([]);
   const { userId } = useUser();
   const [reschedulePopupOpen, setReschedulePopupOpen] = useState(false);
-  const [cancelPopupOpen, setCancelPopupOpen] = useState(false);
   const [selectedAppointmentId, setSelectedAppointmentId] = useState(null);
   const [selectedDoctorId, setSelectedDoctorId] = useState(null);
+  const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
 
   const id = userId;
-
   const fetchTableData = () => {
     axios
       .get(`http://localhost:8000/appointments/all/${id}`, {})
@@ -130,27 +130,76 @@ export default function PatientViewAppointments() {
   };
 
 
-  const handleRescheduleClick = (appointment) => {
-    setSelectedAppointmentId(appointment._id);
-    setSelectedDoctorId(appointment.doctor); 
-    setReschedulePopupOpen(true);
+  const handleRescheduleClick = (appointmentID,doctorID) => {
+    console.clear();  // Clear the console
+
+    const appointment = data.find(app => app._id === appointmentID);
+    console.log(appointmentID);
+    if (appointment) {
+      setSelectedAppointmentId(appointmentID);
+      setSelectedDoctorId(doctorID); // Assuming 'doctor' is the field in the appointment
+      setReschedulePopupOpen(true);
+    } else {
+      console.error('Appointment not found');
+    }
   };
   
-  const handleCancelClick = (id) => {
-    setSelectedAppointmentId(id);
-    setCancelPopupOpen(true);
+  
+  
+  const handleCancelClick = (appointmentId) => {
+    setSelectedAppointmentId(appointmentId);
+    setOpenConfirmationDialog(true); // Open confirmation dialog
+  };
+
+  const handleCancelConfirmation = () => {
+    // API call to cancel the appointment
+    axios.put(`http://localhost:8000/appointments/cancel/${selectedAppointmentId}`)
+      .then((res) => {
+        console.log('Appointment cancelled', res);
+        fetchTableData(); // Refresh the data
+      })
+      .catch((error) => {
+        console.error("Error canceling appointment:", error);
+      })
+      .finally(() => {
+        setOpenConfirmationDialog(false); // Close the dialog
+      });
   };
 
 
   
   return (
     <Container maxWidth="xl">
+
+      <Dialog
+        open={openConfirmationDialog}
+        onClose={() => setOpenConfirmationDialog(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Confirm Cancellation"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to cancel this appointment?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenConfirmationDialog(false)} color="primary">
+            No
+          </Button>
+          <Button onClick={handleCancelConfirmation} color="primary" autoFocus>
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
+     
      <ReschedulePopup
-        open={reschedulePopupOpen}
-        onClose={() => setReschedulePopupOpen(false)}
-        appointmentId={selectedAppointmentId}
-        doctorId={selectedDoctorId}
-      />
+      open={reschedulePopupOpen}
+      onClose={() => setReschedulePopupOpen(false)}
+      appointmentId={selectedAppointmentId}
+      doctorId={selectedDoctorId} 
+    />
+
 
 
 
@@ -232,6 +281,7 @@ export default function PatientViewAppointments() {
             <TableCell key="doctor">Doctor</TableCell>
             <TableCell key="duration">Duration</TableCell>
             <TableCell key="date">Date</TableCell>
+            <TableCell key="date">Type</TableCell>
             <TableCell key="status">Status</TableCell>
             <TableCell key="state">State</TableCell> {/* New column */}
           </TableRow>
@@ -245,6 +295,7 @@ export default function PatientViewAppointments() {
         <TableCell>{row.doctor?.name || "N/A"}</TableCell>
         <TableCell>{row.duration + " hour"}</TableCell>
         <TableCell>{dayjs(row.date).format("MMMM D, YYYY h:mm A")}</TableCell>
+        <TableCell>{row.appointmentType}</TableCell>
         <TableCell>{row.status}</TableCell>
         <TableCell>{calculateState(row.date)}</TableCell>
         <TableCell>
@@ -252,9 +303,9 @@ export default function PatientViewAppointments() {
             variant="contained"
             color="warning"
             size="small"
-            onClick={() => row.status === "upcoming" && handleRescheduleClick(row._id)}
+            onClick={() => row.status === "upcoming" && handleRescheduleClick(row._id, row.doctor._id)}
             sx={{
-              opacity: row.status === "upcoming" ? 1 : 0.5,
+              opacity: row.status === "upcoming" && row.appointmentType == "regular" ? 1 : 0.5,
               backgroundColor: row.status === "upcoming" ? undefined : '##F1974E',
               color: row.status === "upcoming" ? undefined : 'rgba(0, 0, 0, 0.7)',
               pointerEvents: row.status === "upcoming" ? 'auto' : 'none',
@@ -269,9 +320,9 @@ export default function PatientViewAppointments() {
             variant="contained"
             color="error"
             size="small"
-            //onClick={() => row.status === "upcoming" && handleCancelClick(row._id)}
+            onClick={() => row.status === "upcoming" && handleCancelClick(row._id)}
             sx={{
-              opacity: row.status === "upcoming" ? 1 : 0.5,
+              opacity: row.status === "upcoming" &&  row.appointmentType == "regular" ? 1 : 0.5,
               backgroundColor: row.status === "upcoming" ? undefined : '#f44336', // Custom dimmed red
               color: row.status === "upcoming" ? undefined : 'rgba(0, 0, 0, 0.7)',
               pointerEvents: row.status === "upcoming" ? 'auto' : 'none', // Disables click events when not upcoming

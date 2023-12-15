@@ -57,14 +57,14 @@ router.post(
 
 //2024-12-17T00:00:00.000+00:00
 router.put(
-  "/r/:id",
+  "/reschedule/:id",
   //isAuthenticated,
   appointmentController.rescheduleAppointment,
 );
 
 router.put(
   "/cancel/:id",
-  isAuthenticated,
+  //isAuthenticated,
   appointmentController.cancelAppointment,
 );
 

@@ -569,9 +569,12 @@ const filterAppointments = async (req: Request, res: Response) => {
 };
 
 const rescheduleAppointment = async (req:Request, res:Response) => {
-  
+  console.log(`hereee`);
+
   const id = req.params.id;
   const newDate = new Date(req.body.date);
+
+  console.log(`apt id = ${id}`);
   try {
 
     //var apt=null; 
@@ -581,6 +584,8 @@ const rescheduleAppointment = async (req:Request, res:Response) => {
     if (!apt || apt===undefined) {
       return res.status(404).send("No appointments found");
     }
+    console.log("found apt");
+
     const oldDate = new Date(apt.date);
 
     const docId = apt.doctor;
@@ -589,8 +594,11 @@ const rescheduleAppointment = async (req:Request, res:Response) => {
     if (!foundDoc) {
       return res.status(404).send("Doctor not found");
     }
-
+    console.log("found doc");
+    console.log(apt.status);
+    console.log(apt.appointmentType);
     if (apt.status === "upcoming" && apt.appointmentType === "regular") {
+      console.log("here 22");
       if (foundDoc.availableSlotsStartTime && foundDoc.availableSlotsStartTime.length > 0) {
         const isDateAvailable = foundDoc.availableSlotsStartTime.some((slot) => {
           // Compare date strings without milliseconds
@@ -615,6 +623,8 @@ const rescheduleAppointment = async (req:Request, res:Response) => {
 
           // Save the updated appointment
           await apt.save();
+
+          console.log("success");
           return res.status(200).json({ message: "Appointment rescheduled successfully", appointment: apt });
         } else {
           return res.status(404).send("This date is not in the available slots of the doctor");
@@ -726,7 +736,9 @@ const getAllAppointments = async (req: Request, res: Response) => {
 
 const cancelAppointment = async (req: Request, res: Response) => {
   const id = req.params.id;
-  const isLessThan24Hours = req.body.isLessThan24Hours;
+  console.log(`id = ${id}`);
+  
+  //const isLessThan24Hours = req.body.isLessThan24Hours;
 
   const apt = await appointment.findById(id).exec();
 
@@ -737,46 +749,93 @@ const cancelAppointment = async (req: Request, res: Response) => {
   const appointmentDate = new Date(apt.date);
   const currentDate = new Date();
 
+  if (isNaN(appointmentDate.getTime()) || isNaN(currentDate.getTime())) {
+    throw new Error('Invalid date format');
+  }
+
+  // Calculate the difference in hours
+  const diffInMs = Math.abs(appointmentDate.getTime() - currentDate.getTime());
+  const diffInHours = diffInMs / (1000 * 60 * 60);
+  console.log(`Difference in hours: ${diffInHours}`);
+
+
+  // Check if appointment is within the next 24 hours
+  const isLessThan24Hours = diffInHours < 24;
+  console.log(`Is the appointment less than 24 hours away? ${isLessThan24Hours}`);
+
+
+  const docID = apt.doctor;
+
+  const doc = await Doctor.findById(docID).exec();
+
+  if(!doc){
+    return res.status(404).json({ message: "Doctor not found." });
+
+  }
+
+  console.log(`got doc`);
+
+
   const isFutureAppointment = appointmentDate.toISOString() > currentDate.toISOString();
-  if(isLessThan24Hours){
-    
-    apt.status = "cancelled";
-    await apt.save();
+  if (appointmentDate > currentDate){
+    console.log(`future date`);
 
-    return res.status(200).json({message : "Appointment cancelled successfuly."});
+    if(isLessThan24Hours ){
+      console.log(`less than 34 hours`);
 
-  }else{
-    apt.status = "cancelled";
-    
-    const patID = apt.patient;
-    const price = apt.price;
-    
-    const pat = await patient.findById(patID).exec();
+      apt.status = "cancelled";
+      await apt.save();
+      console.log(`success`);
 
-    if(!pat || pat ===undefined){
-      return res.status(404).json({message : "Patient not found."});
-    }
-
-    if(!price || price ===undefined){
-      return res.status(404).json({message : "Appointment price is undefined."});
-
-    }
-
-    if(!pat.wallet || pat.wallet ===undefined){
-      //return res.status(404).json({message : "Patient wallet is undefined."});
-      pat.wallet = price;
-
+      return res.status(200).json({message : "Appointment cancelled successfuly."});
+  
     }else{
-      pat.wallet = pat.wallet + price;
+      apt.status = "cancelled";
+      console.log(`cancelled apt `);
 
-    }
+      const patID = apt.patient;
+      const price = apt.price;
+      
+      const pat = await patient.findById(patID).exec();
+      console.log(`found pat`);
+
+      if(!pat || pat ===undefined){
+        return res.status(404).json({message : "Patient not found."});
+      }
+  
+      if(!price || price ===undefined){
+        return res.status(404).json({message : "Appointment price is undefined."});
+  
+      }
 
   
-    await pat.save();
-    await apt.save();
+      if(!pat.wallet || pat.wallet ===undefined){
+        //return res.status(404).json({message : "Patient wallet is undefined."});
+        console.log("here1");
+        pat.wallet = price;
+  
+      }else{
+        console.log("here2");
+        const money = pat.wallet;
+        console.log(`money = ${money} and price = ${price} and sum = ${money+price}`);
+        pat.wallet = money + price;
+        //= money + price;
+  
+      }
+  
+     // doc.availableSlotsStartTime?.push(appointmentDate);
+  
+      await doc.save();
+      await pat.save();
+      await apt.save();
+      console.log(`success`);
 
-    return res.status(200).json({message : "Appointment cancelled and money refunded successfuly. "});
+      return res.status(200).json({message : "Appointment cancelled and money refunded successfuly. "});
+    }
   }
+
+  return res.status(400).json({message: "cannot cancel a past date"});
+ 
 
 }
 

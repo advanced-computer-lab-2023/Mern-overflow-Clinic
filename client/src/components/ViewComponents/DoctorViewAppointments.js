@@ -31,6 +31,7 @@ import { useNavigate } from 'react-router-dom';
 // Importing Material-UI Components
 import IconButton from '@mui/material/IconButton';
 import PaymentIcon from '@mui/icons-material/Payment';
+import ReschedulePopup from "../formComponents/RescheduleAppointments";
 
 
 
@@ -39,6 +40,10 @@ export default function DoctorViewAppointments() {
   const { userId } = useUser();
   const [cancelAppointmentId, setCancelAppointmentId] = useState(null);
   const [openCancelDialog, setOpenCancelDialog] = useState(false);
+  const [reschedulePopupOpen, setReschedulePopupOpen] = useState(false);
+  const [selectedAppointmentId, setSelectedAppointmentId] = useState(null);
+  const [selectedDoctorId, setSelectedDoctorId] = useState(null);
+  const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
   const navigate = useNavigate();
 
   const id = userId;
@@ -127,43 +132,74 @@ export default function DoctorViewAppointments() {
         .catch(() => setData([]));
     }
   };
-  const handleCancelDialogOpen = (appointmentId) => {
-    setCancelAppointmentId(appointmentId);
-    setOpenCancelDialog(true);
+  const handleRescheduleClick = (appointmentID,doctorID) => {
+    console.clear();  // Clear the console
+
+    const appointment = data.find(app => app._id === appointmentID);
+    console.log(appointmentID);
+    if (appointment) {
+      setSelectedAppointmentId(appointmentID);
+      setSelectedDoctorId(doctorID); // Assuming 'doctor' is the field in the appointment
+      setReschedulePopupOpen(true);
+    } else {
+      console.error('Appointment not found');
+    }
+  };
+  
+  
+  
+  const handleCancelClick = (appointmentId) => {
+    setSelectedAppointmentId(appointmentId);
+    setOpenConfirmationDialog(true); // Open confirmation dialog
   };
 
-  const handleCancelDialogClose = () => {
-    setOpenCancelDialog(false);
-  };
-  const handleRescheduleClick = (appointmentId) => {
-    // Navigate to the reschedule page with the doctor's ID and the appointment ID
-    navigate(`/doctor/reschedualAppointments/${id}/${appointmentId}`);
-  };
   const handleCancelConfirmation = () => {
-    // Trigger the cancellation method with the selected appointment ID
-    axios
-      .put(`http://localhost:8000/doctors/${id}/cancelAppointment`, {
-        apt: cancelAppointmentId,
-      })
+    // API call to cancel the appointment
+    axios.put(`http://localhost:8000/appointments/cancel/${selectedAppointmentId}`)
       .then((res) => {
-        console.log(res.data);
-        // You can handle the response if needed
-        // Refresh the table data after cancellation
-        fetchTableData();
+        console.log('Appointment cancelled', res);
+        fetchTableData(); // Refresh the data
       })
       .catch((error) => {
         console.error("Error canceling appointment:", error);
       })
       .finally(() => {
-        // Close the cancel dialog
-        setOpenCancelDialog(false);
-        // Reset the cancel appointment ID
-        setCancelAppointmentId(null);
+        setOpenConfirmationDialog(false); // Close the dialog
       });
   };
 
+
   return (
     <Container maxWidth="xl">
+
+<Dialog
+        open={openConfirmationDialog}
+        onClose={() => setOpenConfirmationDialog(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Confirm Cancellation"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to cancel this appointment?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenConfirmationDialog(false)} color="primary">
+            No
+          </Button>
+          <Button onClick={handleCancelConfirmation} color="primary" autoFocus>
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
+     
+     <ReschedulePopup
+      open={reschedulePopupOpen}
+      onClose={() => setReschedulePopupOpen(false)}
+      appointmentId={selectedAppointmentId}
+      doctorId={selectedDoctorId} 
+    />
       <Paper elevation={3} sx={{ p: 2, my: 2, paddingBottom: 2 }}>
         <Container
           sx={{
@@ -264,53 +300,44 @@ export default function DoctorViewAppointments() {
                 <TableCell>{row.status}</TableCell>
                 <TableCell>{calculateState(row.date)}</TableCell>
                 <TableCell>
-                <Link >
-                    <Button
-                      variant="contained"
-                      size="small" 
-                       
-                      disabled={!(row.status === "upcoming")}
-                      onClick={() => handleRescheduleClick(row._id)}
-                    >
-                      Reschedule                    
-                    </Button>
-                  </Link>
-                </TableCell>
-                <TableCell>
-                <Button
-                  variant="contained"
-                  size="small"
-                  disabled={!(row.status === "upcoming")}
-                  onClick={() => handleCancelDialogOpen(row._id)}
-                >
-                  Cancel
-                </Button>
-              </TableCell>
+          <Button
+            variant="contained"
+            color="warning"
+            size="small"
+            onClick={() => row.status === "upcoming" && handleRescheduleClick(row._id, row.doctor._id)}
+            sx={{
+              opacity: row.status === "upcoming" && row.appointmentType == "regular" ? 1 : 0.5,
+              backgroundColor: row.status === "upcoming" ? undefined : '##F1974E',
+              color: row.status === "upcoming" ? undefined : 'rgba(0, 0, 0, 0.7)',
+              pointerEvents: row.status === "upcoming" ? 'auto' : 'none',
+              textTransform: 'none' // Changes text to normal casing
+            }}
+          >
+            Reschedule
+          </Button>
+        </TableCell>
+        <TableCell>
+          <Button
+            variant="contained"
+            color="error"
+            size="small"
+            onClick={() => row.status === "upcoming" && handleCancelClick(row._id)}
+            sx={{
+              opacity: row.status === "upcoming" &&  row.appointmentType == "regular" ? 1 : 0.5,
+              backgroundColor: row.status === "upcoming" ? undefined : '#f44336', // Custom dimmed red
+              color: row.status === "upcoming" ? undefined : 'rgba(0, 0, 0, 0.7)',
+              pointerEvents: row.status === "upcoming" ? 'auto' : 'none', // Disables click events when not upcoming
+              textTransform: 'none' // Changes text to normal casing
+            }}
+          >
+            Cancel
+          </Button>
+        </TableCell>
               </TableRow>
             ))}
         </TableBody>
       </Table>
-      <Dialog
-        open={openCancelDialog}
-        onClose={handleCancelDialogClose}
-        aria-labelledby="cancel-appointment-dialog-title"
-        aria-describedby="cancel-appointment-dialog-description"
-      >
-        <DialogTitle id="cancel-appointment-dialog-title">
-          Confirm Appointment Cancellation
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="cancel-appointment-dialog-description">
-            Are you sure you want to cancel this appointment?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancelDialogClose}>Cancel</Button>
-          <Button onClick={handleCancelConfirmation} autoFocus>
-            Confirm
-          </Button>
-        </DialogActions>
-      </Dialog>
+      
     </Container>
   );
 }

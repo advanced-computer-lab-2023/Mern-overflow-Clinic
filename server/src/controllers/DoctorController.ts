@@ -320,20 +320,6 @@ const viewHealthRecordOfPatient = async (req: Request, res: Response) => {
 const viewWallet = async (req: Request, res: Response) => {
 	const dId = req.params.id;
 
-<<<<<<< HEAD
-	const doc = await doctor
-		.findById(dId)
-		.then((doc) => {
-			if (!doc || doc === undefined) {
-				return res.status(404).json({ message: "Doctor not found" });
-			} else {
-				return res.status(200).json(doc.wallet);
-			}
-		})
-		.catch((err) => {
-			return res.status(404).send(err);
-		});
-=======
   const doc = await doctor
     .findById(dId)
     .then((doc) => {
@@ -346,7 +332,6 @@ const viewWallet = async (req: Request, res: Response) => {
     .catch((err) => {
       return res.status(404).send(err);
     });
->>>>>>> refs/remotes/origin/main
 };
 
 const addFreeSlots = async (req: Request, res: Response) => {
@@ -615,20 +600,22 @@ const rejectContract = async (req: Request, res: Response) => {
 };
 
 const listSlots = async (req: Request, res: Response) => {
-	const id = req.params.id;
-	const doctors = doctor
-		.findById(id)
-		.then((doctors) => {
-			//console.log("sjhkshkshkjs");
-			if (doctors?.status === "accepted") {
-				//console.log("in the if");
-				//console.log(doctors.availableSlotsStartTime);
-				res.status(200).json(doctors.availableSlotsStartTime);
-			}
-		})
-		.catch((err) => {
-			return res.status(400).json(err);
-		});
+  console.log("hereeee");
+  const id = req.params.id;
+  console.log(id);
+
+  const doctors = doctor
+    .findById(id)
+    .then((doctors) => {
+      if(doctors?.status === "accepted"){
+        console.log(doctors.availableSlotsStartTime);
+
+        res.status(200).json(doctors.availableSlotsStartTime);
+      }
+    })
+    .catch((err) => {
+      return res.status(400).json(err);
+    });
 };
 
 const cancelPatientAppointment = async (req: Request, res: Response) => {

@@ -44,6 +44,7 @@ import NotFoundPage from "./NotFoundPage";
 import Chatpage from "./pages/Chatpage";
 
 
+import PatientViewFamilyAppointments from "./pages/patient/PatientViewFamilyAppointments";
 
 function App() {
   axios.defaults.withCredentials = true;
@@ -192,6 +193,10 @@ function App() {
     {
       path: "/patient/bookAppointment/:id",
       element: <PatientBookAppointments />,
+    },
+    {
+      path: "/patient/family/appointments/:id",
+      element: <PatientViewFamilyAppointments />,
     },
     {
       path: "/doctor/reschedualAppointments/:id/:aptId",

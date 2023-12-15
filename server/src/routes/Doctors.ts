@@ -71,6 +71,11 @@ router.put("/:id/acceptFollowUp", isAuthenticated, doctorController.acceptFollow
 router.put("/:id/rejectFollowUp", isAuthenticated, doctorController.rejectFollowUp);
 router.put("/:id/cancelAppointment", isAuthenticated, doctorController.cancelPatientAppointment);
 
+<<<<<<< HEAD
 //router.delete("/:id", isAuthenticated, doctorController.deleteDoctor);
+=======
+router.delete("/:id", isAuthenticated, doctorController.deleteDoctor);
+
+>>>>>>> 7amoand7amo
 
 export default router;

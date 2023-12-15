@@ -57,7 +57,20 @@ const PatientViewPrescriptionDetails = ({ match }) => {
   };
 
   const handleButtonClick = async () => {
-    
+    for(let i = 0; i < prescription.medicine.length; i++) {
+      let medicine = await axios.get(`http://localhost:8000/prescriptions/medicineDetails/${prescription.medicine[i].medId}`);
+      let medName = medicine.data.name;
+      let medPrice = medicine.data.price;
+      let medQuantity = prescription.medicine[i].quantity;
+      let dataToServer = {
+        medName,
+        medPrice,
+        medQuantity
+      }
+      await axios.post(`http://localhost:8000/prescriptions/${id}/addMedicineToCart`, dataToServer);
+
+      navigate(`http://localhost:3001/patient/cart`);
+    }
   }
 
   return (
@@ -122,9 +135,9 @@ const PatientViewPrescriptionDetails = ({ match }) => {
       <br></br>
       <br></br>
 
-      <button className="btn btn-primary"  onClick={() => handleClick(id)}>
+      <Button variant="contained"  onClick={() => handleClick(id)}>
                 View Official Prescription Document
-              </button>
+        </Button>
     </div>
   );
 };

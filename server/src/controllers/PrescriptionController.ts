@@ -3,7 +3,47 @@ import Prescription from '../models/Prescription.js';
 import Patient from '../models/Patient.js';
 import Doctor from '../models/Doctor.js';
 import Medicine from '../models/medicine.js';
+import carts from "../models/Cart.js";
+import medicine, {Imedicine} from "../models/medicine.js";
+import { HydratedDocument } from "mongoose";
 
+const addMedicineToCart = async (req: Request, res: Response) => {
+  const { medName, medPrice, medQuantity } = req.body;
+  const patientId = req.params.patientId;
+  try {
+      const cart = await carts.findOne({ patient: patientId });
+      if (!cart) {
+          return res.status(404).json({ message: 'Cart not found' });
+      }
+      const existingMedicine = cart.medicines.find(med => med.medName === medName);
+      const med : HydratedDocument<Imedicine> | null = await medicine.findOne({"name" : medName});
+      if(!med){
+          return res.status(404).send("medicine not found");
+      }
+
+      if (existingMedicine) {
+          if((existingMedicine.medQuantity + medQuantity)> med.availableQuantity){
+              return res.status(400).send("Not enough stock");
+          }
+          existingMedicine.medQuantity += medQuantity;
+      } else {
+          if(medQuantity > med.availableQuantity){
+              return res.status(400).send("Not enough stock");
+          }
+          const newMedicine = {
+              medName,
+              medPrice,
+              medQuantity,
+          };
+          cart.medicines.push(newMedicine);
+      }
+      await cart.save();
+      res.json({ message: 'Medicine added to cart successfully' });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal Server Error' });
+  }
+}
 
 const createPrescription = async (req: Request, res: Response) => {
   try {
@@ -91,6 +131,7 @@ const addMedicine = async (req: Request, res: Response) => {
   const presId = req.params.id;
   const newMedicineName = req.body.mName.toLowerCase();
   const newMedicineDosage = req.body.mDosage;
+  const newMedicineQuantity = req.body.mQuantity;
   //console.log(id)
   //console.log("File in BE : " + JSON.stringify(fileInfo))
   try {
@@ -111,7 +152,7 @@ const addMedicine = async (req: Request, res: Response) => {
           }
             const NewMedecine = await Medicine.findOne({name: newMedicineName});
             if (NewMedecine) {
-              pres.medicine?.push({medId: NewMedecine._id, dailyDosage: newMedicineDosage});
+              pres.medicine?.push({medId: NewMedecine._id, dailyDosage: newMedicineDosage, quantity: newMedicineQuantity});
               await pres.save();
   
               res.status(200).json(pres);
@@ -171,26 +212,26 @@ const deleteMedicine = async (req: Request, res: Response) => {
 };
 
 
-const updatePrescription = async (req: Request, res: Response) => {
-  const id = req.params.id;
-  const query = { _id: id };
-  const filled = req.body.filled;
-  const medicine = req.body.medicine;
-  const update: { [key: string]: any } = {};
-  if (filled !== undefined) update["filled"] = filled;
-  if (medicine !== undefined) update["medicine"] = medicine;
+// const updatePrescription = async (req: Request, res: Response) => {
+//   const id = req.params.id;
+//   const query = { _id: id };
+//   const filled = req.body.filled;
+//   const medicine = req.body.medicine;
+//   const update: { [key: string]: any } = {};
+//   if (filled !== undefined) update["filled"] = filled;
+//   if (medicine !== undefined) update["medicine"] = medicine;
 
-  Prescription
-    .findOneAndUpdate(query, update, { new: true })
-    .then((updatedPrescription) => {
-      if (updatedPrescription) {
-return res.status(200).send(updatedPrescription);
-      }
-    })
-    .catch((error) => {
-return res.status(400).send(error);
-    });
-}
+//   Prescription
+//     .findOneAndUpdate(query, update, { new: true })
+//     .then((updatedPrescription) => {
+//       if (updatedPrescription) {
+// return res.status(200).send(updatedPrescription);
+//       }
+//     })
+//     .catch((error) => {
+// return res.status(400).send(error);
+//     });
+// }
 
 const deletePrescription = async (req: Request, res: Response) => {
   const id = req.params.id;
@@ -225,11 +266,12 @@ return res.status(400).json(err);
     });
 }
 
-const updateDosage = async (req: Request, res: Response) => {
+const updatePrescriptionMedicine = async (req: Request, res: Response) => {
    const id = req.params.id;
    const mid = req.params.mid;
-   const newDosage = req.body.dosage
-   console.log("Hiii")
+   const newDosage = req.body.dosage;
+   const newQuantity = req.body.quantity;
+  //  console.log("Hiii")
    try {
      const pres = await Prescription.findById(id);
      if (!pres) {
@@ -240,6 +282,7 @@ const updateDosage = async (req: Request, res: Response) => {
              if((med.medId).equals(mid)){
               console.log("DailyDosage = " + med.dailyDosage)
               med.dailyDosage = newDosage;
+              med.quantity = newQuantity;
             }
             newPrescription.push(med);
        }
@@ -342,9 +385,10 @@ return res.status(400).json(err);
 
 
 export default {
+  addMedicineToCart,
   createPrescription,
   selectPrescription,
-  updatePrescription,
+  updatePrescriptionMedicine,
   deletePrescription,
   viewPatientPrescription,
   viewDoctorPrescription,
@@ -353,5 +397,5 @@ export default {
   deleteMedicine,
   listMedicine,
   listMedDosage,
-  updateDosage
+  // updateDosage
 }

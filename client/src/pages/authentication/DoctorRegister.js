@@ -108,7 +108,7 @@ export default function DoctorRegister() {
           <Typography variant="h4" sx={{
             color: "white", position: 'fixed',
             top: '15%', left: '22%'
-          }}>El7a2ni Clinic</Typography>
+          }}>El7a2ny Clinic</Typography>
           <img src={logo} alt="" style={{
             height: '50%',
             position: 'fixed',

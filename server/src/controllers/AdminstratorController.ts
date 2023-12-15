@@ -30,10 +30,10 @@ const updateAdminstrator = async (req: Request, res: Response) => {};
 
 const deleteAdmin = async (req: Request, res: Response) => {
   const id = req.params.id;
-  const newAdminstrator = adminstrator
+  const adminToDelete = adminstrator
     .findByIdAndDelete({ _id: id })
-    .then((newAdminstrator) => {
-      res.status(200).json(newAdminstrator);
+    .then((adminToDelete) => {
+      res.status(200).json(adminToDelete);
     })
     .catch((err) => {
       res.status(400).json(err);

@@ -98,7 +98,7 @@ export default function SignIn() {
               left: "22%",
             }}
           >
-            El7a2ni Clinic
+            El7a2ny Clinic
           </Typography>
           <img
             src={logo}

@@ -15,20 +15,27 @@ import { useNavigate } from "react-router-dom";
 import { useUser } from "../userContest";
 import { useEffect } from "react";
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import NotificationImportantIcon from '@mui/icons-material/NotificationImportant';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { useState } from "react";
 import io from 'socket.io-client';
 
-const socket = io('http://localhost:3001');
 export default function ButtonAppBar(props) {
-
+	const { userId, setUserId, userRole, setUserRole } = useUser();
 	const [notifications, setNotifications] = useState([]);
+	const [newNotifications, setNewNotifications] = useState(false);
 
 	useEffect(() => {
+		let socket = io('http://localhost:8000');
+
 		fetchNotifications();
+		socket.emit('setupNotifications', userId);
 		socket.on('newNotification', (newNotification) => {
+			console.log("newNotification:", newNotification);
 			setNotifications((prevNotifications) => [newNotification, ...prevNotifications]);
+			//fetchNotifications();
+			setNewNotifications(true);
 		});
 		return () => {
 			socket.disconnect();
@@ -37,8 +44,8 @@ export default function ButtonAppBar(props) {
 
 	const fetchNotifications = async () => {
 		try {
-			const response = await axios.get('http://localhost:3001/notifications');
-			const data = await response.json();
+			const response = await axios.get('http://localhost:8000/notifications/${userId}');
+			const data = await response.data;
 			setNotifications(data);
 		} catch (error) {
 			console.error('Error fetching notifications:', error);
@@ -50,6 +57,7 @@ export default function ButtonAppBar(props) {
 
 	const handleClick = (event) => {
 		setAnchorEl(event.currentTarget);
+		setNewNotifications(false);
 	};
 
 	const handleClose = () => {
@@ -96,7 +104,6 @@ export default function ButtonAppBar(props) {
 	});
 	const navigate = useNavigate();
 
-	const { userId, setUserId, userRole, setUserRole } = useUser();
 
 	const toggleDrawer = (anchor, open) => (event) => {
 		if (
@@ -156,15 +163,22 @@ export default function ButtonAppBar(props) {
 						</Typography>
 						<div>
 							<IconButton onClick={handleClick} color="inherit">
-								<NotificationsIcon />
+								{newNotifications ? (
+									<NotificationImportantIcon style={{ color: 'red' }}/>
+								) : (
+									<NotificationsIcon />
+								)}
 							</IconButton>
 							<Menu
 								anchorEl={anchorEl}
 								open={Boolean(anchorEl)}
 								onClose={handleClose}
 							>
-								<MenuItem onClick={handleClose}>Notification 1</MenuItem>
-								<MenuItem onClick={handleClose}>Notification 2</MenuItem>
+								{notifications.map((notification, index) => (
+									<MenuItem key={index} onClick={handleClose}>
+										{notification.content}
+									</MenuItem>
+								))}
 							</Menu>
 						</div>
 						<Button type="button" color="inherit" onClick={handleLogout}>

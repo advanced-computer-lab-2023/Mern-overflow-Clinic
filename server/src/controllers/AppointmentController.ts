@@ -9,13 +9,9 @@ import Doctor from "../models/Doctor.js";
 import sendMailService from "../services/emails/sendMailService.js";
 
 const createAppointment = async (req: Request, res: Response) => {
-  //console.log("HELLO ");
   req.body.duration = 1;
   req.body.status = "upcoming";
   req.body.appointmentType = "regular";
-  //req.body.paid = false;
-  //req.body.price = (await Doctor.findById(req.body.dId))?.hourlyRate;
-
   const patientEmail = await Users.findById(req.body.patient).then(
     (pat) => pat?.email,
   );
@@ -26,21 +22,18 @@ const createAppointment = async (req: Request, res: Response) => {
   if (patientEmail === undefined || doctorEmail === undefined) {
     return res.status(400).json();
   }
-
-  //console.log("BODY  ========" + req.body);
-  //console.log("DOCTOR ID" + req.body.dId);
   const newApt = appointment
     .create(req.body)
     .then((newApt) => {
       const subject = "Appointment Booked";
-      let html = `Hello patient, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
+      let html = `Hello patient, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ny Clinic xoxo.`;
       sendMailService.sendMail(patientEmail, subject, html);
-      html = `Hello doctor, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
+      html = `Hello doctor, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ny Clinic xoxo.`;
       sendMailService.sendMail(doctorEmail, subject, html);
       return res.status(200).json(newApt);
     })
     .catch((err) => {
-      console.log("error::::  " + err);
+      console.log(err);
       return res.status(400).json(err);
     });
 };
@@ -98,9 +91,9 @@ const createAppointmentForFamilyMember = async (
       // Create the new appointment
       const newApt = await appointment.create(req.body);
       const subject = "Appointment Booked";
-      let html = `Hello patient, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
+      let html = `Hello patient, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ny Clinic xoxo.`;
       sendMailService.sendMail(patientEmail, subject, html);
-      html = `Hello doctor, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
+      html = `Hello doctor, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ny Clinic xoxo.`;
       sendMailService.sendMail(doctorEmail, subject, html);
       return res.status(200).json(newApt);
     } else {
@@ -140,9 +133,9 @@ const createAppointmentForFamilyMember = async (
       // Create the new appointment
       const newApt = await appointment.create(req.body);
       const subject = "Appointment Booked";
-      let html = `Hello patient, <br /> A new appointment was booked with date ${req.body.date}. <br /> Please be on time. <br /> With Love, <br /> El7a2ni Clinic xoxo.`;
+      let html = `Hello patient, <br /> A new appointment was booked with date ${req.body.date}. <br /> Please be on time. <br /> With Love, <br /> El7a2ny Clinic xoxo.`;
       sendMailService.sendMail(patientEmail, subject, html);
-      html = `Hello doctor, <br /> A new appointment was booked with date ${req.body.date}. <br /> Please be on time. <br /> With Love, <br /> El7a2ni Clinic xoxo.`;
+      html = `Hello doctor, <br /> A new appointment was booked with date ${req.body.date}. <br /> Please be on time. <br /> With Love, <br /> El7a2ny Clinic xoxo.`;
       sendMailService.sendMail(doctorEmail, subject, html);
       return res.status(200).json(newApt);
     }

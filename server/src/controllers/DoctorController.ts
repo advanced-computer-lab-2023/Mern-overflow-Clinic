@@ -325,7 +325,7 @@ const viewWallet = async (req: Request, res: Response) => {
       if (!doc || doc === undefined) {
         return res.status(404).json({ message: "Doctor not found" });
       } else {
-        return res.status(200).json(doc.wallet);
+        return res.status(200).json(doc.wallet);  
       }
     })
     .catch((err) => {

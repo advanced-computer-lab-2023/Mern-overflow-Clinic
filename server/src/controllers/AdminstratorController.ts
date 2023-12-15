@@ -97,6 +97,8 @@ const acceptDoctorRequest = async (req: Request, res: Response) => {
     })
     .catch((err) => res.status(404).send(err));
 };
+
+
 const rejectDoctorRequest = async (req: Request, res: Response) => {
   // assuming doctor id passed as a parameter whenever entry is clciked from fe
   const reqid = req.body.id;

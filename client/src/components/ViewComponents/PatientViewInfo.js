@@ -1,154 +1,232 @@
-import {
-    Input,
-    Container,
-    Button,
-    List,
-    ListItem,
+  import {
+    IconButton,
     Paper,
-    FormControl,
-    Select,
+    Table,
+    Chip,
+    Avatar,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableRow,
+    CircularProgress,
+    Input,
+    Snackbar,
+    Alert,
     InputLabel,
+    TextField,
+    Grid,
+    Select,
     MenuItem,
+    Button,
+    Box,
+    Container,
+    FormControl,
     Typography,
-  } from "@mui/material";
-import {  ListItemText, Collapse, Divider } from '@mui/material';
-import { ExpandLess, ExpandMore } from '@mui/icons-material';
-  
-  import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-  import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-  import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-  import React, { useEffect, useState } from "react";
-  import Table from "@mui/material/Table";
-  import TableBody from "@mui/material/TableBody";
-  import TableCell from "@mui/material/TableCell";
-  import TableHead from "@mui/material/TableHead";
-  import TableRow from "@mui/material/TableRow";
-  import axios from "axios";
-  import { useParams } from 'react-router-dom';
-  import { useUser } from '../../userContest';
+    Divider,
+    FormLabel,
+    RadioGroup,
+    FormControlLabel,
+    Radio
+} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
+import PhoneIcon from "@mui/icons-material/Phone";
+import WcIcon from "@mui/icons-material/Wc";
+import TodayIcon from "@mui/icons-material/Today";
+import LinkIcon from "@mui/icons-material/Link";
+import LabelIcon from "@mui/icons-material/Label";
+import PinIcon from "@mui/icons-material/Pin";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import PasswordIcon from "@mui/icons-material/Password";
+import EmailIcon from "@mui/icons-material/Email";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { capitalize } from "../../utils";
+import { useUser } from "../../userContest";
 
-  export default function PatientViewInfo() {
-    const [data, setData] = useState([]);
+export default function PatientInfo(props) {
     const { userId } = useUser();
-    let id = userId;
-    const [openEmergency, setOpenEmergency] = React.useState(false);
-  const [openFamily, setOpenFamily] = React.useState(false);
+    const navigate = useNavigate();
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-  const handleEmergencyClick = () => {
-    setOpenEmergency(!openEmergency);
-  };
+    const fetchTableData = () => {
+        axios.get(`http://localhost:8000/patients/${userId}`).then((res) => {
+          console.log(res.data);
+            setData(res.data);
+            setTimeout(() => setLoading(false), 500);
+        });
+    };
 
-  const handleFamilyClick = () => {
-    setOpenFamily(!openFamily);
-  };
+    useEffect(() => {
+        fetchTableData();
+    }, []);
 
-  const fetchTableData = () => {
-    axios
-      .get(`http://localhost:8000/patients/${id}`)
-      .then((res) => {
-        setData(res.data);
-        console.log(res.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
+    const handleSuccessClose = (event, reason) => {
+        if (reason === "clickaway") {
+            return;
+        }
+        props.setSuccessOpen(false);
+    };
 
-useEffect(() => {
-  fetchTableData();
-}, []);
+    return (
+        <Container maxWidth="md">
+            <Snackbar open={props.successOpen} autoHideDuration={3000} onClose={handleSuccessClose}>
+                <Alert elevation={6} variant="filled" onClose={handleSuccessClose} severity="success">
+                    {props.successMessage}
+                </Alert>
+            </Snackbar>
+            <Paper elevation={3} sx={{ p: "20px", my: "40px", paddingBottom: 5 }}>
+                {loading ? (
+                    <CircularProgress sx={{ mt: "30px" }} />
+                ) : (
+                    <Container>
+                        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                            <Avatar
+                                sx={{
+                                    m: 0,
+                                    bgcolor: "white",
+                                    color: "#293241",
+                                    width: 100,
+                                    height: 100,
+                                    padding: 0,
+                                    textAlign: "center"
+                                }}
+                            >
+                                <AccountCircleIcon sx={{ width: 100, height: 100, textAlign: "center" }} />
+                            </Avatar>
+                            <Typography sx={{ fontWeight: "bold", my: "20px", fontFamily: "monospace" }}>
+                                {capitalize(data.name)}
+                            </Typography>
+                            <Table sx={{ width: "50%", ml: "50px" }}>
+                                <TableBody>
+                                    <TableRow sx={{ border: "none" }}>
+                                        <TableCell sx={{ width: "50%", textAlign: "right", border: "none" }}>
+                                            <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                                                <AlternateEmailIcon sx={{ mr: "10px" }} />
+                                                <Typography>Username</Typography>
+                                            </Box>
+                                        </TableCell>
+                                        <TableCell sx={{ border: "none", textAlign: "left" }}>
+                                            {data.username}
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow sx={{ border: "none" }}>
+                                        <TableCell sx={{ width: "50%", textAlign: "right", border: "none" }}>
+                                            <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                                                <PinIcon sx={{ mr: "10px" }} />
+                                                <Typography>Password</Typography>
+                                            </Box>
+                                        </TableCell>
+                                        <TableCell sx={{ border: "none", textAlign: "left" }}>
+                                            <a href="/auth/changepassword">Change Your Password</a>
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow sx={{ border: "none" }}>
+                                        <TableCell sx={{ width: "50%", textAlign: "right", border: "none" }}>
+                                            <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                                                <EmailIcon sx={{ mr: "10px" }} />
+                                                <Typography>Email</Typography>
+                                            </Box>
+                                        </TableCell>
+                                        <TableCell sx={{ border: "none", textAlign: "left" }}>
+                                            {data.email}
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow sx={{ border: "none" }}>
+                                        <TableCell sx={{ width: "50%", textAlign: "right", border: "none" }}>
+                                            <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                                                <PhoneIcon sx={{ mr: "10px" }} />
+                                                <Typography>Phone Number</Typography>
+                                            </Box>
+                                        </TableCell>
+                                        <TableCell sx={{ border: "none", textAlign: "left" }}>
+                                            {data.mobileNumber}
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow sx={{ border: "none" }}>
+                                        <TableCell sx={{ width: "50%", textAlign: "right", border: "none" }}>
+                                            <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                                                <TodayIcon sx={{ mr: "10px" }} />
+                                                <Typography>Date of Birth</Typography>
+                                            </Box>
+                                        </TableCell>
+                                        <TableCell sx={{ border: "none", textAlign: "left" }}>
+                                            {data.dateOfBirth
+                                                .substring(0, 10)
+                                                .replaceAll("-", "/")
+                                                .split("/")
+                                                .reverse()
+                                                .join("/")}
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow sx={{ borderBottomColor: "white" }}>
+                                        <TableCell sx={{ width: "50%", textAlign: "right", border: "none" }}>
+                                            <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                                                <WcIcon sx={{ mr: "10px" }} />
+                                                <Typography>Gender</Typography>
+                                            </Box>
+                                        </TableCell>
+                                        <TableCell sx={{ border: "none", textAlign: "left " }}>
+                                            {capitalize(data.gender)}
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow sx={{ border: "none" }}>
+                                        <TableCell sx={{ width: "50%", textAlign: "right", border: "none" }}>
+                                            <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                                                <AccountBalanceWalletIcon sx={{ mr: "10px", color: "brown" }} />
+                                                <Typography> Wallet Balance</Typography>
+                                            </Box>
+                                        </TableCell>
+                                        <TableCell sx={{ border: "none", textAlign: "left" }}>
+                                            EGP {data.wallet}
+                                        </TableCell>
+                                    </TableRow>
+                                </TableBody>
+                            </Table>
+                        </Box>
 
-  return (
-    <Container>
-      <Paper elevation={3} style={{ padding: '20px', margin: '20px' }}>
-        <Typography variant="h4" style={{ color: '#2196f3' }}>
-          User Profile
-        </Typography>
-        <Divider style={{ margin: '15px 0' }} />
+                        <Divider sx={{ mt: "30px", mb: "20px", borderWidth: "45px" }}>
+                            <Chip
+                                sx={{ mx: "10px", backgroundColor: "#293241", color: "white", fontSize: "15px" }}
+                                label="Emergency Contact"
+                            />
+                        </Divider>
 
-        {/* User Information */}
-        <List>
-          <ListItem>
-            <ListItemText primary="Name" secondary="John Doe" />
-          </ListItem>
-          <ListItem>
-            <ListItemText primary="National ID" secondary="123456789" />
-          </ListItem>
-          <ListItem>
-            <ListItemText primary="Date of Birth" secondary="01/01/1990" />
-          </ListItem>
-          <ListItem>
-            <ListItemText primary="Gender" secondary="Male" />
-          </ListItem>
-          <ListItem>
-            <ListItemText primary="Mobile Number" secondary="123-456-7890" />
-          </ListItem>
-        </List>
-
-        {/* Emergency Contact */}
-        <List>
-          <ListItem button onClick={handleEmergencyClick}>
-            <ListItemText primary="Emergency Contact" />
-            {openEmergency ? <ExpandLess /> : <ExpandMore />}
-          </ListItem>
-          <Collapse in={openEmergency} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              <ListItem>
-                <ListItemText primary="Mobile" secondary="987-654-3210" />
-              </ListItem>
-              <ListItem>
-                <ListItemText primary="Email" secondary="emergency@example.com" />
-              </ListItem>
-            </List>
-          </Collapse>
-        </List>
-
-        {/* Family Members */}
-        <List>
-          <ListItem button onClick={handleFamilyClick}>
-            <ListItemText primary="Family Members" />
-            {openFamily ? <ExpandLess /> : <ExpandMore />}
-          </ListItem>
-          <Collapse in={openFamily} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              {/* Family Member 1 */}
-              <ListItem>
-                <ListItemText primary="Name" secondary="Jane Doe" />
-              </ListItem>
-              <ListItem>
-                <ListItemText primary="National ID" secondary="987654321" />
-              </ListItem>
-              <ListItem>
-                <ListItemText primary="Gender" secondary="Female" />
-              </ListItem>
-              <ListItem>
-                <ListItemText primary="Relation" secondary="Spouse" />
-              </ListItem>
-
-              {/* Family Member 2 */}
-              <ListItem>
-                <ListItemText primary="Name" secondary="Tom Doe" />
-              </ListItem>
-              <ListItem>
-                <ListItemText primary="National ID" secondary="789456123" />
-              </ListItem>
-              <ListItem>
-                <ListItemText primary="Gender" secondary="Male" />
-              </ListItem>
-              <ListItem>
-                <ListItemText primary="Relation" secondary="Child" />
-              </ListItem>
-            </List>
-          </Collapse>
-        </List>
-
-        {/* Wallet Balance */}
-        <ListItem>
-          <ListItemText primary="Wallet Balance" secondary="$1000.00" />
-        </ListItem>
-      </Paper>
-    </Container>
-  );
-      
-  }
-  
+                        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                            <Table sx={{ width: "50%", ml: "50px" }}>
+                                <TableBody>
+                                    <TableRow sx={{ border: "none" }}>
+                                        <TableCell sx={{ width: "50%", textAlign: "right", border: "none" }}>
+                                            <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                                                <LabelIcon sx={{ mr: "10px" }} />
+                                                <Typography>Name</Typography>
+                                            </Box>
+                                        </TableCell>
+                                        <TableCell sx={{ border: "none", textAlign: "left" }}>
+                                            {data.emergencyContact[0].name}
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow sx={{ border: "none" }}>
+                                        <TableCell sx={{ width: "50%", textAlign: "right", border: "none" }}>
+                                            <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                                                <PhoneIcon sx={{ mr: "10px" }} />
+                                                <Typography>Phone Number</Typography>
+                                            </Box>
+                                        </TableCell>
+                                        <TableCell sx={{ border: "none", textAlign: "left" }}>
+                                            {data.emergencyContact[0].mobileNumber}
+                                        </TableCell>
+                                    </TableRow>
+                                </TableBody>
+                            </Table>
+                        </Box>
+                    </Container>
+                )}
+            </Paper>
+        </Container>
+    );
+}

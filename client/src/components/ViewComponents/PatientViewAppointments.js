@@ -6,7 +6,12 @@ import {
   Select,
   InputLabel,
   MenuItem,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle
 } from "@mui/material";
+
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -21,6 +26,7 @@ import dayjs from "dayjs"; // Import dayjs for date manipulation
 import { useUser } from "../../userContest";
 // Importing React Router Link
 import { Link } from 'react-router-dom';
+import ReschedulePopup from "../formComponents/RescheduleAppointments";
 
 // Importing Material-UI Components
 import IconButton from '@mui/material/IconButton';
@@ -28,9 +34,13 @@ import PaymentIcon from '@mui/icons-material/Payment';
 
 
 
-export default function DoctorViewAppointments() {
+export default function PatientViewAppointments() {
   const [data, setData] = useState([]);
   const { userId } = useUser();
+  const [reschedulePopupOpen, setReschedulePopupOpen] = useState(false);
+  const [cancelPopupOpen, setCancelPopupOpen] = useState(false);
+  const [selectedAppointmentId, setSelectedAppointmentId] = useState(null);
+  const [selectedDoctorId, setSelectedDoctorId] = useState(null);
 
   const id = userId;
 
@@ -119,8 +129,31 @@ export default function DoctorViewAppointments() {
     }
   };
 
+
+  const handleRescheduleClick = (appointment) => {
+    setSelectedAppointmentId(appointment._id);
+    setSelectedDoctorId(appointment.doctor); 
+    setReschedulePopupOpen(true);
+  };
+  
+  const handleCancelClick = (id) => {
+    setSelectedAppointmentId(id);
+    setCancelPopupOpen(true);
+  };
+
+
+  
   return (
     <Container maxWidth="xl">
+     <ReschedulePopup
+        open={reschedulePopupOpen}
+        onClose={() => setReschedulePopupOpen(false)}
+        appointmentId={selectedAppointmentId}
+        doctorId={selectedDoctorId}
+      />
+
+
+
       <Paper elevation={3} sx={{ p: 2, my: 2, paddingBottom: 2 }}>
         <Container
           sx={{
@@ -204,35 +237,62 @@ export default function DoctorViewAppointments() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data &&
-            data.map((row) => (
-              <TableRow
-                key={
-                  row.date +
-                  (row.doctor?.name || "") +
-                  row.status +
-                  Math.random()
-                }
-              >
-                <TableCell>{row.doctor?.name || "N/A"}</TableCell>
-                <TableCell>{row.duration + " hour"}</TableCell>
-                <TableCell>{dayjs(row.date).format("MMMM D, YYYY h:mm A")}</TableCell>
-                <TableCell>{row.status}</TableCell>
-                <TableCell>{calculateState(row.date)}</TableCell>
-                <TableCell>
-                  <Link to={row.status === "upcoming" ? `/patient/pay/appointment/${row._id}` : undefined}>
-                    <IconButton disabled={!(row.status === "upcoming")}>
-                      <PaymentIcon />
-                    </IconButton>
-                  </Link>
-                </TableCell>
-              </TableRow>
-            ))}
-        </TableBody>
+  {data &&
+    data.map((row) => (
+      <TableRow
+        key={row.date + (row.doctor?.name || "") + row.status + Math.random()}
+      >
+        <TableCell>{row.doctor?.name || "N/A"}</TableCell>
+        <TableCell>{row.duration + " hour"}</TableCell>
+        <TableCell>{dayjs(row.date).format("MMMM D, YYYY h:mm A")}</TableCell>
+        <TableCell>{row.status}</TableCell>
+        <TableCell>{calculateState(row.date)}</TableCell>
+        <TableCell>
+          <Button
+            variant="contained"
+            color="warning"
+            size="small"
+            onClick={() => row.status === "upcoming" && handleRescheduleClick(row._id)}
+            sx={{
+              opacity: row.status === "upcoming" ? 1 : 0.5,
+              backgroundColor: row.status === "upcoming" ? undefined : '##F1974E',
+              color: row.status === "upcoming" ? undefined : 'rgba(0, 0, 0, 0.7)',
+              pointerEvents: row.status === "upcoming" ? 'auto' : 'none',
+              textTransform: 'none' // Changes text to normal casing
+            }}
+          >
+            Reschedule
+          </Button>
+        </TableCell>
+        <TableCell>
+          <Button
+            variant="contained"
+            color="error"
+            size="small"
+            //onClick={() => row.status === "upcoming" && handleCancelClick(row._id)}
+            sx={{
+              opacity: row.status === "upcoming" ? 1 : 0.5,
+              backgroundColor: row.status === "upcoming" ? undefined : '#f44336', // Custom dimmed red
+              color: row.status === "upcoming" ? undefined : 'rgba(0, 0, 0, 0.7)',
+              pointerEvents: row.status === "upcoming" ? 'auto' : 'none', // Disables click events when not upcoming
+              textTransform: 'none' // Changes text to normal casing
+            }}
+          >
+            Cancel
+          </Button>
+        </TableCell>
+
+
+      </TableRow>
+    ))}
+</TableBody>
+
       </Table>
     </Container>
 
 
 
   );
+
+  
 }

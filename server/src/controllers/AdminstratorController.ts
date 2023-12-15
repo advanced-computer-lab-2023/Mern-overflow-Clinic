@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import adminstrator from "../models/Adminstrator.js";
 import doctor from "../models/Doctor.js";
 import user from "../models/User.js";
+import Contract from "../models/Contract.js";
 
 const createAdminstrator = async (req: Request, res: Response) => {
   //add another adminstrator with a set username and password
@@ -120,6 +121,28 @@ const rejectDoctorRequest = async (req: Request, res: Response) => {
     })
     .catch((err) => res.status(404).send(err));
 };
+const createContract = async (req: Request, res: Response) => {
+  // doctor: Types.ObjectId;
+  // admin: Types.ObjectId;
+  // date?: Date;
+  // clinicMarkup: number;
+  // status?:string;
+  const id = req.params.id;
+  req.body.id = id;
+  req.body.status = 'pending';
+  const date = new Date();
+  req.body.date = date;
+
+  const contract = Contract
+  .create(req.body)
+  .then((contract) => {
+    res.status(200).json(contract);
+  })
+  .catch((err) => {
+    res.status(400).json(err);
+  });
+
+}
 
 export default {
   createAdminstrator,
@@ -130,4 +153,5 @@ export default {
   rejectDoctorRequest,
   viewRequest,
   listAdminstrators,
+  createContract
 };

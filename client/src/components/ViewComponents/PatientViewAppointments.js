@@ -6,7 +6,12 @@ import {
   Select,
   InputLabel,
   MenuItem,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle
 } from "@mui/material";
+
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -21,6 +26,7 @@ import dayjs from "dayjs"; // Import dayjs for date manipulation
 import { useUser } from "../../userContest";
 // Importing React Router Link
 import { Link } from 'react-router-dom';
+import ReschedulePopup from "../formComponents/RescheduleAppointments";
 
 // Importing Material-UI Components
 import IconButton from '@mui/material/IconButton';
@@ -28,9 +34,13 @@ import PaymentIcon from '@mui/icons-material/Payment';
 
 
 
-export default function DoctorViewAppointments() {
+export default function PatientViewAppointments() {
   const [data, setData] = useState([]);
   const { userId } = useUser();
+  const [reschedulePopupOpen, setReschedulePopupOpen] = useState(false);
+  const [cancelPopupOpen, setCancelPopupOpen] = useState(false);
+  const [selectedAppointmentId, setSelectedAppointmentId] = useState(null);
+  const [selectedDoctorId, setSelectedDoctorId] = useState(null);
 
   const id = userId;
 
@@ -47,8 +57,42 @@ export default function DoctorViewAppointments() {
   };
 
   useEffect(() => {
+    // Fetch data on page load
     fetchTableData();
-  }, []);
+
+    // Call "appointments/refresh" on page load
+    axios
+      .put(`http://localhost:8000/appointments/refresh`)
+      .then((res) => {
+        console.log(res.data);
+        // You can handle the response if needed
+      })
+      .catch((error) => {
+        console.error("Error refreshing appointments", error);
+      });
+
+    // Fetch data on page refresh
+    const handleRefresh = () => {
+      fetchTableData();
+
+      // Call "appointments/refresh" on page refresh
+      axios
+        .put(`http://localhost:8000/appointments/refresh`)
+        .then((res) => {
+          console.log(res.data);
+          // You can handle the response if needed
+        })
+        .catch((error) => {
+          console.error("Error refreshing appointments", error);
+        });
+    };
+
+    window.addEventListener('beforeunload', handleRefresh);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleRefresh);
+    };
+  }, []); 
 
   const calculateState = (appointmentDate) => {
     const currentDate = dayjs();
@@ -85,15 +129,38 @@ export default function DoctorViewAppointments() {
     }
   };
 
+
+  const handleRescheduleClick = (appointment) => {
+    setSelectedAppointmentId(appointment._id);
+    setSelectedDoctorId(appointment.doctor); 
+    setReschedulePopupOpen(true);
+  };
+  
+  const handleCancelClick = (id) => {
+    setSelectedAppointmentId(id);
+    setCancelPopupOpen(true);
+  };
+
+
+  
   return (
     <Container maxWidth="xl">
-      <Paper elevation={3} sx={{ p: "20px", my: "40px", paddingBottom: 5 }}>
+     <ReschedulePopup
+        open={reschedulePopupOpen}
+        onClose={() => setReschedulePopupOpen(false)}
+        appointmentId={selectedAppointmentId}
+        doctorId={selectedDoctorId}
+      />
+
+
+
+      <Paper elevation={3} sx={{ p: 2, my: 2, paddingBottom: 2 }}>
         <Container
           sx={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            my: 5,
+            my: 2,
           }}
         >
           <Container sx={{ width: "48%" }}>
@@ -132,7 +199,7 @@ export default function DoctorViewAppointments() {
                   fullWidth
                   type="submit"
                   variant="contained"
-                  sx={{ mt: 3, mb: 2, p: 2, fontWeight: "bold" }}
+                  sx={{ mt: 1, mb: 1, p: 1, fontWeight: "bold" }}
                 >
                   Filter
                 </Button>
@@ -144,7 +211,7 @@ export default function DoctorViewAppointments() {
               type="submit"
               variant="contained"
               onClick={fetchTableData}
-              sx={{ mt: 3, mb: 2, p: 2, fontWeight: "bold" }}
+              sx={{ mt: 1, mb: 1, p: 1, fontWeight: "bold" }}
             >
               Clear
             </Button>
@@ -162,7 +229,6 @@ export default function DoctorViewAppointments() {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell key="patient">Patient</TableCell>
             <TableCell key="doctor">Doctor</TableCell>
             <TableCell key="duration">Duration</TableCell>
             <TableCell key="date">Date</TableCell>
@@ -171,27 +237,62 @@ export default function DoctorViewAppointments() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data &&
-            data.map((row) => (
-              <TableRow
-                key={
-                  row.date +
-                  (row.patient?.name || "") +
-                  (row.doctor?.name || "") +
-                  row.status +
-                  Math.random()
-                }
-              >
-                <TableCell>{row.patient?.name || "N/A"}</TableCell>
-                <TableCell>{row.doctor?.name || "N/A"}</TableCell>
-                <TableCell>{row.duration + " hour"}</TableCell>
-                <TableCell>{row.date}</TableCell>
-                <TableCell>{row.status}</TableCell>
-                <TableCell>{calculateState(row.date)}</TableCell>
-              </TableRow>
-            ))}
-        </TableBody>
+  {data &&
+    data.map((row) => (
+      <TableRow
+        key={row.date + (row.doctor?.name || "") + row.status + Math.random()}
+      >
+        <TableCell>{row.doctor?.name || "N/A"}</TableCell>
+        <TableCell>{row.duration + " hour"}</TableCell>
+        <TableCell>{dayjs(row.date).format("MMMM D, YYYY h:mm A")}</TableCell>
+        <TableCell>{row.status}</TableCell>
+        <TableCell>{calculateState(row.date)}</TableCell>
+        <TableCell>
+          <Button
+            variant="contained"
+            color="warning"
+            size="small"
+            onClick={() => row.status === "upcoming" && handleRescheduleClick(row._id)}
+            sx={{
+              opacity: row.status === "upcoming" ? 1 : 0.5,
+              backgroundColor: row.status === "upcoming" ? undefined : '##F1974E',
+              color: row.status === "upcoming" ? undefined : 'rgba(0, 0, 0, 0.7)',
+              pointerEvents: row.status === "upcoming" ? 'auto' : 'none',
+              textTransform: 'none' // Changes text to normal casing
+            }}
+          >
+            Reschedule
+          </Button>
+        </TableCell>
+        <TableCell>
+          <Button
+            variant="contained"
+            color="error"
+            size="small"
+            //onClick={() => row.status === "upcoming" && handleCancelClick(row._id)}
+            sx={{
+              opacity: row.status === "upcoming" ? 1 : 0.5,
+              backgroundColor: row.status === "upcoming" ? undefined : '#f44336', // Custom dimmed red
+              color: row.status === "upcoming" ? undefined : 'rgba(0, 0, 0, 0.7)',
+              pointerEvents: row.status === "upcoming" ? 'auto' : 'none', // Disables click events when not upcoming
+              textTransform: 'none' // Changes text to normal casing
+            }}
+          >
+            Cancel
+          </Button>
+        </TableCell>
+
+
+      </TableRow>
+    ))}
+</TableBody>
+
       </Table>
     </Container>
+
+
+
   );
+
+  
 }

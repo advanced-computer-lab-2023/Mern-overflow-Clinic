@@ -45,6 +45,7 @@ router.get("/:id/document", isAuthenticated, patientController.readPath);
 router.get("/:id/healthRecords",isAuthenticated,healthRecordController.patientListAllHealthRecords);
 // TODO: Authentication
 router.get("/chatWithDoctors/:id/:search",isAuthenticated,isAuthorized([UserType.PATIENT]),patientController.chatWithDoctors);
+router.get("/:id/completedAppointments", isAuthenticated, patientController.listCopmletedAppointmnetsForPatient);
 router.get("/getAllMyDoctors/:id",isAuthenticated,isAuthorized([UserType.PATIENT]),patientController.getAllMyDoctors);
 //POST
 router.post("/", patientController.createPatient);

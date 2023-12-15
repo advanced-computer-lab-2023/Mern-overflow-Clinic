@@ -40,6 +40,7 @@ El7a2ny Clinic is a comprehensive healthcare platform that caters to the diverse
 -   [Credits 🙏](#credits-)
 -   [Authors 🧑‍💻️](#authors-️)
 -   [License ⚖️](#license-️)
+-   [Feedback ⭐](#feedback-)
 
 ## Build Status 🔨
 
@@ -612,3 +613,7 @@ This project follows the [Contributor Covenant Code of Conduct](https://www.cont
 - Stripe is licensed under the Apache License 2.0 
 
 <p align="right" title="Return to Table of Contents"> <a href="#table-of-contents">&#11014;</a></p>
+
+## Feedback ⭐
+
+We would love to hear from you. If you have any feedback, please reach out to us at john.f.roufaeil@gmail.com

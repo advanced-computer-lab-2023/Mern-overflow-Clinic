@@ -139,7 +139,6 @@ const createAppointmentForFamilyMember = async (
 			if (patientEmail === undefined || doctorEmail === undefined) {
 				return res.status(400).json();
 			}
-
 			// Create the new appointment
 			const newApt = await appointment.create(req.body);
 			const subject = "Appointment Booked";
@@ -421,16 +420,14 @@ const changeToPastAppointment = async (req: Request, res: Response) => {
 
 		const result = await appointment.updateMany(filter, update);
 
-		// Check if any documents were updated
-		if (result.modifiedCount > 0) {
-			res.status(200).json(result);
-		} else {
-			res.status(404).json({ message: 'No matching appointments found.' });
-		}
-	} catch (error) {
-		console.error('Error:', error);
-		res.status(500).json({ message: 'Internal Server Error' });
-	}
+
+    // Check if any documents were updated
+    res.status(200).json(result);
+
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
 };
 
 
@@ -624,34 +621,43 @@ const filterAppointments = async (req: Request, res: Response) => {
 	}
 };
 
-const rescheduleAppointment = async (req: Request, res: Response) => {
+const rescheduleAppointment = async (req:Request, res:Response) => {
+  
+  const id = req.params.id;
+  const newDate = new Date(req.body.date);
+  try {
 
-	const id = req.params.id;
-	const newDate = new Date(req.body.date);
+    //var apt=null; 
+     const apt = await appointment.findById(id).exec();
 
-	try {
 
-		//var apt=null; 
-		const apt = await appointment.findById(id).exec();
+    if (!apt || apt===undefined) {
+      return res.status(404).send("No appointments found");
+    }
+    const oldDate = new Date(apt.date);
 
 
 		if (!apt) {
 			return res.status(404).send("No appointments found");
 		}
+    if (apt.status === "upcoming" && apt.appointmentType === "regular") {
+      if (foundDoc.availableSlotsStartTime && foundDoc.availableSlotsStartTime.length > 0) {
+        const isDateAvailable = foundDoc.availableSlotsStartTime.some((slot) => {
+          // Compare date strings without milliseconds
+          return slot.toDateString() === newDate.toDateString();
+        });
 
-		const docId = apt.doctor;
-		const foundDoc = await doctor.findById(docId).exec();
-
-		if (!foundDoc) {
-			return res.status(404).send("Doctor not found");
-		}
-
-		if (apt.status === "upcoming") {
-			if (foundDoc.availableSlotsStartTime && foundDoc.availableSlotsStartTime.length > 0) {
-				const isDateAvailable = foundDoc.availableSlotsStartTime.some((slot) => {
-					// Compare date strings without milliseconds
-					return slot.toDateString() === newDate.toDateString();
-				});
+        if (isDateAvailable) {
+          // Remove the date from available slots
+          foundDoc.availableSlotsStartTime = foundDoc.availableSlotsStartTime.filter(
+            (slot) => slot.toISOString().split(".")[0] !== newDate.toISOString().split(".")[0]
+          );
+          
+          foundDoc.availableSlotsStartTime.push(oldDate);
+          // Update the doctor's available slots
+          await doctor.findByIdAndUpdate(docId, {
+            $set: { availableSlotsStartTime: foundDoc.availableSlotsStartTime },
+          });
 
 				if (isDateAvailable) {
 					// Remove the date from available slots

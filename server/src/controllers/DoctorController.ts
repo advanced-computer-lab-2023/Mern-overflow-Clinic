@@ -320,6 +320,7 @@ const viewHealthRecordOfPatient = async (req: Request, res: Response) => {
 const viewWallet = async (req: Request, res: Response) => {
 	const dId = req.params.id;
 
+<<<<<<< HEAD
 	const doc = await doctor
 		.findById(dId)
 		.then((doc) => {
@@ -332,6 +333,20 @@ const viewWallet = async (req: Request, res: Response) => {
 		.catch((err) => {
 			return res.status(404).send(err);
 		});
+=======
+  const doc = await doctor
+    .findById(dId)
+    .then((doc) => {
+      if (!doc || doc === undefined) {
+        return res.status(404).json({ message: "Doctor not found" });
+      } else {
+        return res.status(200).json(doc.wallet);  
+      }
+    })
+    .catch((err) => {
+      return res.status(404).send(err);
+    });
+>>>>>>> refs/remotes/origin/main
 };
 
 const addFreeSlots = async (req: Request, res: Response) => {

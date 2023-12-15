@@ -13,10 +13,10 @@ router.put("/refresh",
   isAuthenticated,
   appointmentController.changeToPastAppointment,
 );
-router.put("/:id/reschedule",
-  isAuthenticated,
-  appointmentController.rescheduleAppointmentForMyPatient,
-);
+// router.put("/:id/reschedule",
+//   isAuthenticated,
+//   appointmentController.rescheduleAppointmentForMyPatient,
+// );
 router.get("/:id", isAuthenticated, appointmentController.readAppointment);
 
 //POST
@@ -54,9 +54,11 @@ router.post(
   isAuthenticated,
   appointmentController.requestFollowUp,
 );
+
+//2024-12-17T00:00:00.000+00:00
 router.put(
-  "/reschedule/:id",
-  isAuthenticated,
+  "/r/:id",
+  //isAuthenticated,
   appointmentController.rescheduleAppointment,
 );
 

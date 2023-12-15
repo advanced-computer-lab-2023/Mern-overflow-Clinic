@@ -416,11 +416,8 @@ const changeToPastAppointment = async (req: Request, res: Response) => {
     const result = await appointment.updateMany(filter, update);
 
     // Check if any documents were updated
-    if (result.modifiedCount > 0) {
-      res.status(200).json(result);
-    } else {
-      res.status(404).json({ message: 'No matching appointments found.' });
-    }
+    res.status(200).json(result);
+
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ message: 'Internal Server Error' });
@@ -622,16 +619,16 @@ const rescheduleAppointment = async (req:Request, res:Response) => {
   
   const id = req.params.id;
   const newDate = new Date(req.body.date);
-
   try {
 
     //var apt=null; 
      const apt = await appointment.findById(id).exec();
-    
 
-    if (!apt) {
+
+    if (!apt || apt===undefined) {
       return res.status(404).send("No appointments found");
     }
+    const oldDate = new Date(apt.date);
 
     const docId = apt.doctor;
     const foundDoc = await doctor.findById(docId).exec();
@@ -640,7 +637,7 @@ const rescheduleAppointment = async (req:Request, res:Response) => {
       return res.status(404).send("Doctor not found");
     }
 
-    if (apt.status === "upcoming") {
+    if (apt.status === "upcoming" && apt.appointmentType === "regular") {
       if (foundDoc.availableSlotsStartTime && foundDoc.availableSlotsStartTime.length > 0) {
         const isDateAvailable = foundDoc.availableSlotsStartTime.some((slot) => {
           // Compare date strings without milliseconds
@@ -652,7 +649,8 @@ const rescheduleAppointment = async (req:Request, res:Response) => {
           foundDoc.availableSlotsStartTime = foundDoc.availableSlotsStartTime.filter(
             (slot) => slot.toISOString().split(".")[0] !== newDate.toISOString().split(".")[0]
           );
-
+          
+          foundDoc.availableSlotsStartTime.push(oldDate);
           // Update the doctor's available slots
           await doctor.findByIdAndUpdate(docId, {
             $set: { availableSlotsStartTime: foundDoc.availableSlotsStartTime },

@@ -28,7 +28,9 @@ const storage = multer.diskStorage({
 
 router.use(express.json());
 
-router.get("/", isAuthenticated, doctorController.listDoctors);
+
+// TODO: Put authentication
+router.get("/", doctorController.listDoctors);
 router.get("/:id/slots", isAuthenticated, doctorController.listSlots);
 router.get("/:id/completedAppointments", isAuthenticated, doctorController.listCompletedPatients);
 router.get("/:id", isAuthenticated, doctorController.readDoctor);
@@ -67,7 +69,7 @@ router.put("/:id", isAuthenticated, doctorController.updateDoctor);
 router.put("/:id/acceptContract", isAuthenticated, doctorController.acceptContract);
 router.put("/:id", isAuthenticated, doctorController.updateDoctor);
 router.put("/:id/rejectContract", isAuthenticated, doctorController.rejectContract);
-router.put("/:id/addSlots", isAuthenticated, doctorController.addFreeSlots);
+// router.put("/:id/addSlots", isAuthenticated, doctorController.addFreeSlots);
 
 //router.delete("/:id", isAuthenticated, doctorController.deleteDoctor);
 //router.delete("/:id", isAuthenticated, doctorController.deleteDoctor);

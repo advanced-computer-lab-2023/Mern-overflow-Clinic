@@ -44,6 +44,7 @@ const createPatient = async (req: Request, res: Response) => {
     //const uploadedFiles = req.files;
     //req.body.documents = uploadedFiles;
     console.log(req.body)
+    req.body.wallet = 0;
     const entry = user.find({ 'username': req.body.username }).then((document) => {
         if (document.length === 0) {
 

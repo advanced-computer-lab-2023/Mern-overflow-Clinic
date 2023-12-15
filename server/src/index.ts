@@ -79,7 +79,7 @@ const MongoURI: string = config.mongo.URL;
 const app = express();
 
 const corsOptions = {
-  origin: ["http://localhost:3000", "http://127.0.0.1/"],
+  origin: ["http://localhost:3000", "http://127.0.0.1/","http://localhost:3001"],
   credentials: true,
   exposedHeaders: ["set-cookie"],
 };
@@ -248,7 +248,8 @@ console.log(server);
 const io = new Server(server, {
   pingTimeout: 60000,
   cors: {
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:3000","http://localhost:3001"],
+
     // credentials: true,
   },
 });

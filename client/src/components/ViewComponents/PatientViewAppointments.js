@@ -188,15 +188,6 @@ export default function DoctorViewAppointments() {
                 <TableCell>{row.date}</TableCell>
                 <TableCell>{row.status}</TableCell>
                 <TableCell>{calculateState(row.date)}</TableCell>
-
-                <TableCell>
-                
-              <Link to={row.status=="upcoming"?`/patient/pay/appointment/${row._id}`:undefined}>
-                    <IconButton disabled={!(row.status=="upcoming")}>
-                      <PaymentIcon />
-                    </IconButton>
-              </Link>
-                  </TableCell>
               </TableRow>
             ))}
         </TableBody>

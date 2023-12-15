@@ -40,7 +40,7 @@ export interface IPatient {
     subscribedToPackage?: boolean;
     packageRenewalDate?: Date;
     healthRecords?: Types.ObjectId[];
-    wallet?:number
+    wallet:number
 
 
     
@@ -93,7 +93,7 @@ const PatientSchema = new Schema<IPatient>({
           ref: "HealthRecord", // Reference to the HealthRecord model
         }
       ],
-    wallet: { type: Number, required: false }
+    wallet: { type: Number, required: true }
 });
 
 PatientSchema.pre('save', function(next) {

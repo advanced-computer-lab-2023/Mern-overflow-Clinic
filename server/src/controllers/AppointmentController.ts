@@ -7,14 +7,20 @@ import { stat } from "fs";
 import dayjs from "dayjs";
 import Doctor from "../models/Doctor.js";
 import sendMailService from "../services/emails/sendMailService.js";
+import Package from "../models/Package.js";
+import axios from "axios";
 
 const createAppointment = async (req: Request, res: Response) => {
   //console.log("HELLO ");
   req.body.duration = 1;
   req.body.status = "upcoming";
   req.body.appointmentType = "regular";
+
+  console.log("HI HI please print");
+  console.log("REQ BODY: "+req.body);
+
   //req.body.paid = false;
-  //req.body.price = (await Doctor.findById(req.body.dId))?.hourlyRate;
+  req.body.price = (await Doctor.findById(req.body.dId))?.hourlyRate;
 
   const patientEmail = await Users.findById(req.body.patient).then(
     (pat) => pat?.email,
@@ -32,11 +38,11 @@ const createAppointment = async (req: Request, res: Response) => {
   const newApt = appointment
     .create(req.body)
     .then((newApt) => {
-      const subject = "Appointment Booked";
-      let html = `Hello patient, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
-      sendMailService.sendMail(patientEmail, subject, html);
-      html = `Hello doctor, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
-      sendMailService.sendMail(doctorEmail, subject, html);
+      // const subject = "Appointment Booked";
+      // let html = `Hello patient, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
+      // sendMailService.sendMail(patientEmail, subject, html);
+      // html = `Hello doctor, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
+      // sendMailService.sendMail(doctorEmail, subject, html);
       return res.status(200).json(newApt);
     })
     .catch((err) => {
@@ -45,6 +51,15 @@ const createAppointment = async (req: Request, res: Response) => {
     });
 };
 
+
+
+
+
+
+  
+
+
+
 const createAppointmentForFamilyMember = async (
   req: Request,
   res: Response,
@@ -52,12 +67,15 @@ const createAppointmentForFamilyMember = async (
   try {
     //console.log(req.body);
     const docID = req.body.doctor;
+    console.log("DOC ID: "+docID);
+    console.log("rate: "+((await Doctor.findById(docID))?.hourlyRate));
     req.body.duration = 1;
     req.body.status = "upcoming";
     req.body.appointmentType = "regular";
     const id = req.params.id;
     const flag = req.body.flag;
     const relation = req.body.relation;
+    console.log("APP for family member");
 
     if (flag) {
       //console.log(req.body);
@@ -95,15 +113,49 @@ const createAppointmentForFamilyMember = async (
         return res.status(400).json();
       }
 
+      // req.body.price =  (await Doctor.findById(docID))?.hourlyRate;
+
+
+      req.body.price = doctorObj.hourlyRate * 1;
+      console.log("APT details: "+JSON.stringify(req.body));
       // Create the new appointment
+
       const newApt = await appointment.create(req.body);
-      const subject = "Appointment Booked";
-      let html = `Hello patient, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
-      sendMailService.sendMail(patientEmail, subject, html);
-      html = `Hello doctor, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
-      sendMailService.sendMail(doctorEmail, subject, html);
+      // const subject = "Appointment Booked";
+      // let html = `Hello patient, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
+      // sendMailService.sendMail(patientEmail, subject, html);
+      // html = `Hello doctor, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
+      // sendMailService.sendMail(doctorEmail, subject, html);
       return res.status(200).json(newApt);
     } else {
+
+
+      // const pId = id;
+      // const patientFound = await Patient.findById(pId);
+      // var docSessDisc = 0; 
+      // const doctors = await doctor.findById(docID);
+    
+      // if (patientFound?.package !== undefined) {
+      //     const packageId = patientFound.package;
+      //     const packageData = await Package.findById(packageId);
+    
+          
+      //     let sessionPrice = 0;
+          
+      //     if (packageData) {
+      //         docSessDisc = (packageData.discountOnDoctorSessions / 100) * (doctors?.hourlyRate);
+      //     }
+      //     sessionPrice = doctors?.hourlyRate? + (0.1 * doctors?.hourlyRate) - docSessDisc:Number;
+    
+      // } 
+      // else {
+      //   let sessionPrice = 0;
+      //   sessionPrice = doctors?.hourlyRate? + (0.1 * doctors?.hourlyRate) - docSessDisc;    
+      // }
+      
+    
+
+
       req.body.patient = id;
       console.log(req.body);
 
@@ -138,12 +190,14 @@ const createAppointmentForFamilyMember = async (
       }
 
       // Create the new appointment
+      req.body.price = doctorObj.hourlyRate * 1;
+      console.log("APT details: "+JSON.stringify(req.body));
       const newApt = await appointment.create(req.body);
-      const subject = "Appointment Booked";
-      let html = `Hello patient, <br /> A new appointment was booked with date ${req.body.date}. <br /> Please be on time. <br /> With Love, <br /> El7a2ni Clinic xoxo.`;
-      sendMailService.sendMail(patientEmail, subject, html);
-      html = `Hello doctor, <br /> A new appointment was booked with date ${req.body.date}. <br /> Please be on time. <br /> With Love, <br /> El7a2ni Clinic xoxo.`;
-      sendMailService.sendMail(doctorEmail, subject, html);
+      // const subject = "Appointment Booked";
+      // let html = `Hello patient, <br /> A new appointment was booked with date ${req.body.date}. <br /> Please be on time. <br /> With Love, <br /> El7a2ni Clinic xoxo.`;
+      // sendMailService.sendMail(patientEmail, subject, html);
+      // html = `Hello doctor, <br /> A new appointment was booked with date ${req.body.date}. <br /> Please be on time. <br /> With Love, <br /> El7a2ni Clinic xoxo.`;
+      // sendMailService.sendMail(doctorEmail, subject, html);
       return res.status(200).json(newApt);
     }
   } catch (err) {
@@ -443,16 +497,23 @@ const getAllAppointments = async (req: Request, res: Response) => {
   if (pat) {
     const currentDate = new Date();
 
-    const apt = appointment
+    try{    
+      const appointments = await appointment
       .find({ patient: id })
       .populate({ path: "doctor", select: "name" })
-      .populate({ path: "patient", select: "name" })
-      .then((appointments) => {
+      .populate({ path: "patient", select: "name" });
         if (appointments.length === 0) {
           // No appointments found for the patient
           return res.status(200).json([]);
         }
 
+        // TODO: Handle patient not paying
+        // for (const apt of appointments){
+        //   if(!apt.paid){
+        //    appointment.findByIdAndDelete(apt._id);
+        //    axios.post(`http://localhost:8000/doctors/${apt.doctor}/addSlots`,{date:apt.date})
+        //   }
+        // }
         // Add a new attribute 'state' based on the date comparison
         const updatedAppointments = appointments.map((apt) => {
           const aptDate = new Date(apt.date);
@@ -461,10 +522,10 @@ const getAllAppointments = async (req: Request, res: Response) => {
         });
 
         res.status(200).json(updatedAppointments);
-      })
-      .catch((err) => {
+    }
+    catch(err) {
         res.status(400).json(err);
-      });
+      };
   } else {
     const currentDate = new Date();
 

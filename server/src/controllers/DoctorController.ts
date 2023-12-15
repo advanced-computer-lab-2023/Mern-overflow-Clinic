@@ -10,6 +10,7 @@ const createDoctor = async (req: Request, res: Response) => {
   const data = req.body.datatoserver;
   console.log("DATA: " + JSON.stringify(data));
   const dataToServer = JSON.parse(data);
+  dataToServer.wallet = 0;
   console.log("im here");
   const entry = user
     .find({ username: dataToServer.username })
@@ -61,6 +62,7 @@ const createDoctor = async (req: Request, res: Response) => {
 };
 
 const readDoctor = async (req: Request, res: Response) => {
+  console.log("El7a20ooona");
   const pId = req.params.id;
   const doc = await doctor
     .findById(pId)

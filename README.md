@@ -43,9 +43,11 @@ El7a2ny Clinic is a comprehensive healthcare platform that caters to the diverse
 
 ## Build Status 🔨
 
-The project is currently in development.
+- The project is currently in development.
+- The project needs to be deployed through a cloud service.
+- The project needs more thorough testing.
+- Need to add screenshots, code examples, and tests to the README
 
--   Need to add screenshots, code examples, and tests to the README
 <p align="right" title="Return to Table of Contents"> <a href="#table-of-contents">&#11014;</a></p>
 
 ## Code Style 📜

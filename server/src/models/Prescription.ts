@@ -3,6 +3,7 @@ import mongoose, { Schema, Types ,model, connect } from 'mongoose';
 interface IMedicine {
     medId: Types.ObjectId;
     dailyDosage: number;
+    quantity: number;
 }
 
 export interface IPrescription {
@@ -17,7 +18,7 @@ export interface IPrescription {
 const PrescriptionSchema = new Schema<IPrescription>({
     patient: { type: Schema.Types.ObjectId, ref: "Patient", required: true },
     doctor: { type: Schema.Types.ObjectId, ref: "Doctor", required: true },
-    medicine: [ { medId: { type: Schema.Types.ObjectId, ref: "Medicine", required: true }, dailyDosage: { type: Number, required: true } } ],
+    medicine: [ { medId: { type: Schema.Types.ObjectId, ref: "Medicine", required: true }, dailyDosage: { type: Number, required: true }, quantity: { type: Number, default: 1 } } ],
     date: { type: Date, required: true, default: Date.now },
     filled: { type: Boolean, required: true, default: false },
 });

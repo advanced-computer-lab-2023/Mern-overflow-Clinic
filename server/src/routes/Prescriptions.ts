@@ -15,11 +15,12 @@ router.get("/:id/medicineDosage/:mid", prescriptionController.listMedDosage);
 //POST
 router.post("/doctors/:dId/patients/:pId/addPrescription", prescriptionController.createPrescription);
 router.post("/:id/addMedicine", prescriptionController.addMedicine);
+router.post("/:id/addMedicineToCart", prescriptionController.addMedicineToCart);
 
 
 //PUT
-router.put("/:id", prescriptionController.updatePrescription);
-router.put("/:id/updateDosage/:mid", prescriptionController.updateDosage);
+// router.put("/:id", prescriptionController.updatePrescription);
+router.put("/:id/update/:mid", prescriptionController.updatePrescriptionMedicine);
 
 //DELETE
 router.delete("/:id", isAuthenticated, prescriptionController.deletePrescription);

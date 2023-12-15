@@ -25,6 +25,7 @@ export default function ButtonAppBar(props) {
 	const { userId, setUserId, userRole, setUserRole } = useUser();
 	const [notifications, setNotifications] = useState([]);
 	const [newNotifications, setNewNotifications] = useState(false);
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		let socket = io('http://localhost:8000');
@@ -60,7 +61,9 @@ export default function ButtonAppBar(props) {
 		setNewNotifications(false);
 	};
 
-	const handleClose = () => {
+	const handleClose = (link) => {
+		console.log("navigating to link:", link);	
+		navigate(link);
 		setAnchorEl(null);
 	};
 
@@ -102,7 +105,6 @@ export default function ButtonAppBar(props) {
 		bottom: false,
 		right: false,
 	});
-	const navigate = useNavigate();
 
 
 	const toggleDrawer = (anchor, open) => (event) => {
@@ -164,7 +166,7 @@ export default function ButtonAppBar(props) {
 						<div>
 							<IconButton onClick={handleClick} color="inherit">
 								{newNotifications ? (
-									<NotificationImportantIcon style={{ color: 'red' }}/>
+									<NotificationImportantIcon style={{ color: 'red' }} />
 								) : (
 									<NotificationsIcon />
 								)}
@@ -172,10 +174,10 @@ export default function ButtonAppBar(props) {
 							<Menu
 								anchorEl={anchorEl}
 								open={Boolean(anchorEl)}
-								onClose={handleClose}
+								onClose={() => setAnchorEl(null)}
 							>
 								{notifications.map((notification, index) => (
-									<MenuItem key={index} onClick={handleClose}>
+									<MenuItem key={index} onClick={() => handleClose(notification.link)}>
 										{notification.content}
 									</MenuItem>
 								))}

@@ -18,7 +18,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useUser } from "../../userContest";
 
 const PatientManageAppointments = () => {
-  const { id } = useParams();
+  const { id,appointmentId } = useParams();
+  //TODO find why the second one is undefined
   const [bookForRelative, setBookForRelative] = useState(false);
   const [familyMembers, setFamilyMembers] = useState([]);
   const [selectedFamilyMember, setSelectedFamilyMember] = useState("");
@@ -33,6 +34,7 @@ const PatientManageAppointments = () => {
   const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
+	console.log("appointmentId ",appointmentId,id);
     const fetchData = async () => {
       try {
         const doctorResponse = await axios.get(`http://localhost:8000/doctors/${docID}`);
@@ -109,10 +111,11 @@ const PatientManageAppointments = () => {
 
       const formattedStartDate = formatDate(formatDateAndSubtractTwoHours(new Date(selectedSlot)));
       const formattedEndDate = formatDate(formatDateAndSubtractTwoHours(addOneHour(new Date(selectedSlot))));
-
+	  console.log("appointmentId :",appointmentId)
       const appointmentData = {
         date: selectedSlot,
         status: "rescheduled",
+		id:appointmentId,
       };
 
       await axios.put(`http://localhost:8000/appointments/${userId}/reschedule/`, appointmentData);

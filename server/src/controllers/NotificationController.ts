@@ -5,16 +5,23 @@ import {io} from '../index.js';
 import { getLoggedUserID } from "../middlewares/permissions/isAuthorized.js";
 
 const createNotification = async (req: Request, res: Response) => {
-    const { receiver, content } = req.body;
-    const newNotification: HydratedDocument<INotification> = new notification({ 'receiver': receiver, 'content': content, 'read': false })
+    const { receiver, content,link } = req.body;
+    const newNotification: HydratedDocument<INotification> = new notification({ 'receiver': receiver, 'content': content, 'link': link })
     newNotification.save().then((newNotification) => {
-		const id = getLoggedUserID(req);
-		io.to(id).emit('newNotification', newNotification);
+		//const id = getLoggedUserID(req);
+		io.to(receiver).emit('newNotification', newNotification);
 		
         return res.status(200).json(newNotification);
     }).catch((err) => {
         return res.status(400).json(err);
     });
+}
+
+const createNotificationwithId = async (receiver: string, content: string, link:string) => {
+    const newNotification: HydratedDocument<INotification> = new notification({ 'receiver': receiver, 'content': content, 'link': link })
+    newNotification.save().then((newNotification) => {
+		io.to(receiver).emit('newNotification', newNotification);
+    })
 }
 
 const readNotification = async (req: Request, res: Response) => {
@@ -35,4 +42,5 @@ export default {
     createNotification,
     //readNotification,
     listNotifiactions,
+	createNotificationwithId,
 }

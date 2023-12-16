@@ -474,7 +474,7 @@ To run this project, you will need to add the following environment variables to
 | GET    | `/patients/`                             | View all patients                                    |
 | GET    | `/patients/:id/`                         | View all details about a patient                     |
 | GET    | `/patients/:id/family/`                  | View all family members of a patient                 |
-| GET    | `/patients/:id/relatives/`               | ???                                                  |
+| GET    | `/patients/:id/relatives/`               | View all details of one relative                     |
 | GET    | `/patients/:id/price/`                   | View doctors by session price                        |
 | GET    | `/patients/:id/prescriptions/`           | View a patient's prescriptions                       |
 | GET    | `/patients/:id/packages/`                | View a patient's packages                            |
@@ -528,7 +528,7 @@ To run this project, you will need to add the following environment variables to
 | ------ | ----------------------------------------------- | ----------------------------------------- |
 | GET    | `/appointments/`                                | View all appointments                     |
 | GET    | `/appointments/:id/`                            | View details of an appointment            |
-| GET    | `/appointments/all/:id/`                        | ???                                       |
+| GET    | `/appointments/all/:id/`                        | View all appointments of a user (doctor/patient)|
 | POST   | `/appointments/`                                | Create an appointment                     |
 | POST   | `/appointments/filter/:id/`                     | Filter appointments                       |
 | POST   | `/appointments/update/`                         | Update an appointment                     |

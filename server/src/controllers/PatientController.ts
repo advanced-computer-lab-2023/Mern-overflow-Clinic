@@ -136,7 +136,7 @@ return res.status(400).json(err);
 const addFamilyMember = async (req: Request, res: Response) => {
     const familyMem = await patient.findOne({ "nationalId": req.body.nationalId });
     if (!familyMem) {
-        return res.status(404).send("Family Member should be registered as a patient.");
+        return res.status(404).json({message: "Family Member should be registered as a patient."});
     }
 
     //   const familyMemId:mongoose.Types.ObjectId = familyMem._id;

@@ -17,8 +17,8 @@ const createAppointment = async (req: Request, res: Response) => {
 	req.body.status = "upcoming";
 	req.body.appointmentType = "regular";
 
-  console.log("HI HI please print");
-  console.log("REQ BODY: "+req.body);
+	console.log("HI HI please print");
+	console.log("REQ BODY: " + req.body);
 
 	//req.body.paid = false;
 	req.body.price = (await Doctor.findById(req.body.dId))?.hourlyRate;
@@ -56,7 +56,7 @@ const createAppointment = async (req: Request, res: Response) => {
 
 
 
-  
+
 
 
 
@@ -67,15 +67,15 @@ const createAppointmentForFamilyMember = async (
 	try {
 		//console.log(req.body);
 		const docID = req.body.doctor;
-    console.log("DOC ID: "+docID);
-    console.log("rate: "+((await Doctor.findById(docID))?.hourlyRate));
+		console.log("DOC ID: " + docID);
+		console.log("rate: " + ((await Doctor.findById(docID))?.hourlyRate));
 		req.body.duration = 1;
 		req.body.status = "upcoming";
 		req.body.appointmentType = "regular";
 		const id = req.params.id;
 		const flag = req.body.flag;
 		const relation = req.body.relation;
-    console.log("APP for family member");
+		console.log("APP for family member");
 
 		if (flag) {
 			//console.log(req.body);
@@ -113,19 +113,19 @@ const createAppointmentForFamilyMember = async (
 				return res.status(400).json();
 			}
 
-      // req.body.price =  (await Doctor.findById(docID))?.hourlyRate;
+			// req.body.price =  (await Doctor.findById(docID))?.hourlyRate;
 
 
-      req.body.price = doctorObj.hourlyRate * 1;
-      console.log("APT details: "+JSON.stringify(req.body));
+			req.body.price = doctorObj.hourlyRate * 1;
+			console.log("APT details: " + JSON.stringify(req.body));
 			// Create the new appointment
 
 			const newApt = await appointment.create(req.body);
-			// const subject = "Appointment Booked";
-			// let html = `Hello patient, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
-			// sendMailService.sendMail(patientEmail, subject, html);
-			// html = `Hello doctor, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
-			// sendMailService.sendMail(doctorEmail, subject, html);
+			const subject = "Appointment Booked";
+			let html = `Hello patient, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
+			sendMailService.sendMail(patientEmail, subject, html);
+			html = `Hello doctor, \n A new appointment was booked with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
+			sendMailService.sendMail(doctorEmail, subject, html);
 			console.log("sending notification for appointmen: patient", req.body.patient, " | doctor", req.body.doctor);
 			NotificationController.createNotificationwithId(req.body.patient, "You have a new appointment", "/patient/appointments");
 			NotificationController.createNotificationwithId(req.body.doctor, "You have a new appointment", "/doctor/appointments");
@@ -133,30 +133,30 @@ const createAppointmentForFamilyMember = async (
 		} else {
 
 
-      // const pId = id;
-      // const patientFound = await Patient.findById(pId);
-      // var docSessDisc = 0; 
-      // const doctors = await doctor.findById(docID);
-    
-      // if (patientFound?.package !== undefined) {
-      //     const packageId = patientFound.package;
-      //     const packageData = await Package.findById(packageId);
-    
-          
-      //     let sessionPrice = 0;
-          
-      //     if (packageData) {
-      //         docSessDisc = (packageData.discountOnDoctorSessions / 100) * (doctors?.hourlyRate);
-      //     }
-      //     sessionPrice = doctors?.hourlyRate? + (0.1 * doctors?.hourlyRate) - docSessDisc:Number;
-    
-      // } 
-      // else {
-      //   let sessionPrice = 0;
-      //   sessionPrice = doctors?.hourlyRate? + (0.1 * doctors?.hourlyRate) - docSessDisc;    
-      // }
-      
-    
+			// const pId = id;
+			// const patientFound = await Patient.findById(pId);
+			// var docSessDisc = 0; 
+			// const doctors = await doctor.findById(docID);
+
+			// if (patientFound?.package !== undefined) {
+			//     const packageId = patientFound.package;
+			//     const packageData = await Package.findById(packageId);
+
+
+			//     let sessionPrice = 0;
+
+			//     if (packageData) {
+			//         docSessDisc = (packageData.discountOnDoctorSessions / 100) * (doctors?.hourlyRate);
+			//     }
+			//     sessionPrice = doctors?.hourlyRate? + (0.1 * doctors?.hourlyRate) - docSessDisc:Number;
+
+			// } 
+			// else {
+			//   let sessionPrice = 0;
+			//   sessionPrice = doctors?.hourlyRate? + (0.1 * doctors?.hourlyRate) - docSessDisc;    
+			// }
+
+
 
 
 			req.body.patient = id;
@@ -192,14 +192,14 @@ const createAppointmentForFamilyMember = async (
 				return res.status(400).json();
 			}
 			// Create the new appointment
-      req.body.price = doctorObj.hourlyRate * 1;
-      console.log("APT details: "+JSON.stringify(req.body));
+			req.body.price = doctorObj.hourlyRate * 1;
+			console.log("APT details: " + JSON.stringify(req.body));
 			const newApt = await appointment.create(req.body);
-			// const subject = "Appointment Booked";
-			// let html = `Hello patient, <br /> A new appointment was booked with date ${req.body.date}. <br /> Please be on time. <br /> With Love, <br /> El7a2ni Clinic xoxo.`;
-			// sendMailService.sendMail(patientEmail, subject, html);
-			// html = `Hello doctor, <br /> A new appointment was booked with date ${req.body.date}. <br /> Please be on time. <br /> With Love, <br /> El7a2ni Clinic xoxo.`;
-			// sendMailService.sendMail(doctorEmail, subject, html);
+			const subject = "Appointment Booked";
+			let html = `Hello patient, <br /> A new appointment was booked with date ${req.body.date}. <br /> Please be on time. <br /> With Love, <br /> El7a2ni Clinic xoxo.`;
+			sendMailService.sendMail(patientEmail, subject, html);
+			html = `Hello doctor, <br /> A new appointment was booked with date ${req.body.date}. <br /> Please be on time. <br /> With Love, <br /> El7a2ni Clinic xoxo.`;
+			sendMailService.sendMail(doctorEmail, subject, html);
 			console.log("sending notification for appointmen: patient", req.body.patient, " | doctor", req.body.doctor);
 			NotificationController.createNotificationwithId(req.body.patient, "You have a new appointment", "/patient/appointments");
 			NotificationController.createNotificationwithId(req.body.doctor, "You have a new appointment", "/doctor/appointments");
@@ -462,7 +462,6 @@ const readAppointment = async (req: Request, res: Response) => {
 const changeToPastAppointment = async (req: Request, res: Response) => {
 	try {
 		const currentDate = new Date();
-
 		const filter = {
 			date: { $lt: currentDate },
 			status: 'upcoming'
@@ -471,17 +470,14 @@ const changeToPastAppointment = async (req: Request, res: Response) => {
 		const update = {
 			$set: { status: 'completed' }
 		};
-
 		const result = await appointment.updateMany(filter, update);
 
+		res.status(200).json(result);
 
-    // Check if any documents were updated
-    res.status(200).json(result);
-
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
-  }
+	} catch (error) {
+		console.error('Error:', error);
+		res.status(500).json({ message: 'Internal Server Error' });
+	}
 };
 
 
@@ -675,14 +671,14 @@ const filterAppointments = async (req: Request, res: Response) => {
 	}
 };
 
-const rescheduleAppointment = async (req:Request, res:Response) => {
-  console.log(`hereee`);
+const rescheduleAppointment = async (req: Request, res: Response) => {
+	console.log(`hereee`);
 
-  const id = req.params.id;
-  const newDate = new Date(req.body.date);
+	const id = req.params.id;
+	const newDate = new Date(req.body.date);
 
-  console.log(`apt id = ${id}`);
-  try {
+	console.log(`apt id = ${id}`);
+	try {
 
 		//var apt=null; 
 		const apt = await appointment.findById(id).exec();
@@ -691,7 +687,7 @@ const rescheduleAppointment = async (req:Request, res:Response) => {
 		if (!apt || apt === undefined) {
 			return res.status(404).send("No appointments found");
 		}
-    console.log("found apt");
+		console.log("found apt");
 
 		const oldDate = new Date(apt.date);
 		const docId = apt.doctor;
@@ -737,25 +733,25 @@ const rescheduleAppointment = async (req:Request, res:Response) => {
 						// Save the updated appointment
 						await apt.save();
 
-						// const patientEmail: string = await Users.findById(apt.patient).then((pat) => {
-						// 	console.log(pat?.email);
-						// 	return pat ? pat.email : "";
-						// }
-						// );
-						// const doctorEmail: string = await Users.findById(apt.doctor).then((doc) => {
-						// 	console.log(doc?.email);
-						// 	return doc ? doc.email : "";
-						// }
-						// );
+						 const patientEmail: string = await Users.findById(apt.patient).then((pat) => {
+						 	console.log(pat?.email);
+						 	return pat ? pat.email : "";
+						 }
+						 );
+						 const doctorEmail: string = await Users.findById(apt.doctor).then((doc) => {
+						 	console.log(doc?.email);
+						 	return doc ? doc.email : "";
+						 }
+						 );
 
-						// const subject = "Appointment Resceduled";
-						// let html = "Hello patient, \n your appointment was resceduled with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.";
-						// sendMailService.sendMail(patientEmail, subject, html);
-						// html = "Hello doctor, \n your appointment was resceduled with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.";
-						// sendMailService.sendMail(doctorEmail, subject, html);
-						// console.log("sending notification for appointmen: patient", req.body.patient, " | doctor", req.body.doctor);
-						// NotificationController.createNotificationwithId(apt.patient.toString(), "Your appointment is rescheduled", "/patient/appointments");
-						// NotificationController.createNotificationwithId(apt.doctor.toString(), "Your appointment is rescheduled", "/doctor/appointments");
+						 const subject = "Appointment Resceduled";
+						 let html = "Hello patient, \n your appointment was resceduled with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.";
+						 sendMailService.sendMail(patientEmail, subject, html);
+						 html = "Hello doctor, \n your appointment was resceduled with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.";
+						 sendMailService.sendMail(doctorEmail, subject, html);
+						 console.log("sending notification for appointmen: patient", req.body.patient, " | doctor", req.body.doctor);
+						 NotificationController.createNotificationwithId(apt.patient.toString(), "Your appointment is rescheduled", "/patient/appointments");
+						 NotificationController.createNotificationwithId(apt.doctor.toString(), "Your appointment is rescheduled", "/doctor/appointments");
 
 						return res.status(200).json({ message: "Appointment rescheduled successfully", appointment: apt });
 					} else {
@@ -867,7 +863,7 @@ const listAllPendingFllowUps = async (req: Request, res: Response) => {
 // 				}
 
 
-	
+
 // 			})
 // 			.catch((err) => {
 // 				res.status(400).json(err);
@@ -903,46 +899,46 @@ const listAllPendingFllowUps = async (req: Request, res: Response) => {
 // }
 
 const getAllAppointments = async (req: Request, res: Response) => {
-    const id = req.params.id;
-    console.log(id);
-    console.log("here");
-    const apt = await appointment.find({ patient: id }).exec();
+	const id = req.params.id;
+	console.log(id);
+	console.log("here");
+	const apt = await appointment.find({ patient: id }).exec();
 
-    if (apt.length <= 0 || !apt || apt === undefined) {
-        console.log("empty");
-        return res.status(200).json([]);
-    }
+	if (apt.length <= 0 || !apt || apt === undefined) {
+		console.log("empty");
+		return res.status(200).json([]);
+	}
 
-    // Fetch doctor details for each appointment
-    const appointmentsWithDoctor = await Promise.all(apt.map(async (appointment) => {
-        try {
-            // Fetch the doctor's details based on appointment.doctor (assuming appointment.doctor is the doctor's ID)
-            const doctor = await Doctor.findById(appointment.doctor).exec(); // Replace `Doctor` with your doctor model
-            if (doctor) {
-                return {
-                    ...appointment.toObject(), // Convert Mongoose document to plain JavaScript object
-                    doctor: {
-                        name: doctor.name, // Assuming doctor has a 'name' field
-                        _id: doctor._id
-                    }
-                };
-            } else {
-                return appointment.toObject();
-            }
-        } catch (error) {
-            console.error('Error fetching doctor details:', error);
-            return appointment.toObject();
-        }
-    }));
+	// Fetch doctor details for each appointment
+	const appointmentsWithDoctor = await Promise.all(apt.map(async (appointment) => {
+		try {
+			// Fetch the doctor's details based on appointment.doctor (assuming appointment.doctor is the doctor's ID)
+			const doctor = await Doctor.findById(appointment.doctor).exec(); // Replace `Doctor` with your doctor model
+			if (doctor) {
+				return {
+					...appointment.toObject(), // Convert Mongoose document to plain JavaScript object
+					doctor: {
+						name: doctor.name, // Assuming doctor has a 'name' field
+						_id: doctor._id
+					}
+				};
+			} else {
+				return appointment.toObject();
+			}
+		} catch (error) {
+			console.error('Error fetching doctor details:', error);
+			return appointment.toObject();
+		}
+	}));
 
-    return res.status(200).json(appointmentsWithDoctor);
+	return res.status(200).json(appointmentsWithDoctor);
 };
 
 const cancelAppointment = async (req: Request, res: Response) => {
-  const id = req.params.id;
-  console.log(`id = ${id}`);
-  
-  //const isLessThan24Hours = req.body.isLessThan24Hours;
+	const id = req.params.id;
+	console.log(`id = ${id}`);
+
+	//const isLessThan24Hours = req.body.isLessThan24Hours;
 
 	const apt = await appointment.findById(id).exec();
 
@@ -953,94 +949,119 @@ const cancelAppointment = async (req: Request, res: Response) => {
 	const appointmentDate = new Date(apt.date);
 	const currentDate = new Date();
 
-  if (isNaN(appointmentDate.getTime()) || isNaN(currentDate.getTime())) {
-    throw new Error('Invalid date format');
-  }
+	if (isNaN(appointmentDate.getTime()) || isNaN(currentDate.getTime())) {
+		throw new Error('Invalid date format');
+	}
 
-  // Calculate the difference in hours
-  const diffInMs = Math.abs(appointmentDate.getTime() - currentDate.getTime());
-  const diffInHours = diffInMs / (1000 * 60 * 60);
-  console.log(`Difference in hours: ${diffInHours}`);
-
-
-  // Check if appointment is within the next 24 hours
-  const isLessThan24Hours = diffInHours < 24;
-  console.log(`Is the appointment less than 24 hours away? ${isLessThan24Hours}`);
+	// Calculate the difference in hours
+	const diffInMs = Math.abs(appointmentDate.getTime() - currentDate.getTime());
+	const diffInHours = diffInMs / (1000 * 60 * 60);
+	console.log(`Difference in hours: ${diffInHours}`);
 
 
-  const docID = apt.doctor;
-
-  const doc = await Doctor.findById(docID).exec();
-
-  if(!doc){
-    return res.status(404).json({ message: "Doctor not found." });
-
-  }
-
-  console.log(`got doc`);
+	// Check if appointment is within the next 24 hours
+	const isLessThan24Hours = diffInHours < 24;
+	console.log(`Is the appointment less than 24 hours away? ${isLessThan24Hours}`);
 
 
-  const isFutureAppointment = appointmentDate.toISOString() > currentDate.toISOString();
-  if (appointmentDate > currentDate){
-    console.log(`future date`);
+	const docID = apt.doctor;
 
-    if(isLessThan24Hours ){
-      console.log(`less than 34 hours`);
+	const doc = await Doctor.findById(docID).exec();
 
-      apt.status = "cancelled";
-      await apt.save();
-      console.log(`success`);
+	if (!doc) {
+		return res.status(404).json({ message: "Doctor not found." });
 
-      return res.status(200).json({message : "Appointment cancelled successfuly."});
-  
-    }else{
-      apt.status = "cancelled";
-      console.log(`cancelled apt `);
+	}
 
-      const patID = apt.patient;
-      var price = apt.price;
-      
-      const pat = await Patient.findById(patID).exec();
-      console.log(`found pat`);
+	console.log(`got doc`);
 
-      if(!pat || pat ===undefined){
-        console.log("no patient");
-        return res.status(404).json({message : "Patient not found."});
-      }
-  
-      if(!price || price ===undefined){
-        price = 0;
-  
-      }
 
-  
-      if(!pat.wallet || pat.wallet ===undefined){
-        //return res.status(404).json({message : "Patient wallet is undefined."});
-        console.log("here1");
-        pat.wallet = price;
-  
-      }else{
-        console.log("here2");
-        const money = pat.wallet;
-        console.log(`money = ${money} and price = ${price} and sum = ${money+price}`);
-        pat.wallet = money + price;
-        //= money + price;
-  
-      }
-  
-      doc.availableSlotsStartTime?.push(appointmentDate);
-  
-      await doc.save();
-      await pat.save();
-      await apt.save();
-      console.log(`success`);
+	const isFutureAppointment = appointmentDate.toISOString() > currentDate.toISOString();
+	const patientEmail = await Users.findById(apt.patient).then(
+		(pat) => pat?.email,
+	);
+	const doctorEmail = await Users.findById(apt.doctor).then(
+		(doc) => doc?.email,
+	);
+	if (!patientEmail || !doctorEmail) {
+		return
+	}
+	if (appointmentDate > currentDate) {
+		console.log(`future date`);
 
-      return res.status(200).json({message : "Appointment cancelled and money refunded successfuly. "});
-    }
-  }
+		if (isLessThan24Hours) {
+			console.log(`less than 34 hours`);
 
-  return res.status(400).json({message: "cannot cancel a past date"});
- 
+			apt.status = "cancelled";
+			await apt.save();
+			console.log(`success`);
+
+			const subject = "Appointment cancelled";
+			let html = `Hello patient, <br /> Your appointment with date ${appointmentDate} was cancelled .<br /> With Love, <br /> El7a2ni Clinic xoxo.`;
+			sendMailService.sendMail(patientEmail, subject, html);
+			html = `Hello doctor, <br /> Your appointment with date ${appointmentDate} was cancelled .<br /> With Love, <br /> El7a2ni Clinic xoxo.`;
+			sendMailService.sendMail(doctorEmail, subject, html);
+			console.log("sending notification for appointmen: patient", apt.patient, " | doctor", doc._id);
+			NotificationController.createNotificationwithId(apt.patient.toString(), "Your appointment was cancelled", "/patient/appointments");
+			NotificationController.createNotificationwithId(apt.doctor.toString(), "Your appointment was cancelled", "/doctor/appointments");
+			return res.status(200).json({ message: "Appointment cancelled successfuly." });
+
+		} else {
+			apt.status = "cancelled";
+			console.log(`cancelled apt `);
+
+			const patID = apt.patient;
+			var price = apt.price;
+
+			const pat = await Patient.findById(patID).exec();
+			console.log(`found pat`);
+
+			if (!pat || pat === undefined) {
+				console.log("no patient");
+				return res.status(404).json({ message: "Patient not found." });
+			}
+
+			if (!price || price === undefined) {
+				price = 0;
+
+			}
+
+
+			if (!pat.wallet || pat.wallet === undefined) {
+				//return res.status(404).json({message : "Patient wallet is undefined."});
+				console.log("here1");
+				pat.wallet = price;
+
+			} else {
+				console.log("here2");
+				const money = pat.wallet;
+				console.log(`money = ${money} and price = ${price} and sum = ${money + price}`);
+				pat.wallet = money + price;
+				//= money + price;
+
+			}
+
+			doc.availableSlotsStartTime?.push(appointmentDate);
+
+			await doc.save();
+			await pat.save();
+			await apt.save();
+			console.log(`success`);
+			
+			const subject = "Appointment cancelled";
+			let html = `Hello patient, <br /> Your appointment with date ${appointmentDate} was cancelled .<br /> With Love, <br /> El7a2ni Clinic xoxo.`;
+			sendMailService.sendMail(patientEmail, subject, html);
+			html = `Hello doctor, <br /> Your appointment with date ${appointmentDate} was cancelled .<br /> With Love, <br /> El7a2ni Clinic xoxo.`;
+			sendMailService.sendMail(doctorEmail, subject, html);
+			console.log("sending notification for appointmen: patient", apt.patient, " | doctor", doc._id);
+			NotificationController.createNotificationwithId(apt.patient.toString(), "Your appointment was cancelled", "/patient/appointments");
+			NotificationController.createNotificationwithId(apt.doctor.toString(), "Your appointment was cancelled", "/doctor/appointments");
+			return res.status(200).json({ message: "Appointment cancelled and money refunded successfuly. " });
+		}
+	}
+
+	return res.status(400).json({ message: "cannot cancel a past date" });
+
 
 }
 

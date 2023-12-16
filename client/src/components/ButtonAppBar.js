@@ -60,7 +60,6 @@ export default function ButtonAppBar(props) {
 		}
 	};
 
-	console.log("notifications:", notifications);
 	const [anchorEl, setAnchorEl] = useState(null);
 
 	const handleClick = (event) => {

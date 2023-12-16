@@ -905,13 +905,26 @@ const listAllPendingFllowUps = async (req: Request, res: Response) => {
 const getAllAppointments = async (req: Request, res: Response) => {
     const id = req.params.id;
     console.log(id);
-    console.log("here");
-    const apt = await appointment.find({ patient: id }).exec();
+    
+	console.log("here");
+
+
+
+    var apt = await appointment.find({ patient: id }).exec();
+
+
 
     if (apt.length <= 0 || !apt || apt === undefined) {
+
+		 apt = await appointment.find({ doctor: id }).exec();
+
+    }
+
+	if (apt.length <= 0 || !apt || apt === undefined) {
         console.log("empty");
         return res.status(200).json([]);
-    }
+	}
+
 
     // Fetch doctor details for each appointment
     const appointmentsWithDoctor = await Promise.all(apt.map(async (appointment) => {

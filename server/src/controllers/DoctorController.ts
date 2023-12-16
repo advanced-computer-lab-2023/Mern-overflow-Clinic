@@ -506,7 +506,7 @@ const rejectFollowUp = async (req: Request, res: Response) => {
     // Find and remove the appointment for the given doctor ID
     const deletedAppointment = await appointment.findOneAndDelete({ _id: appointmentId });
 
-    if (!apt) {
+    if (!deletedAppointment) {
       return res.status(404).json({
         success: false,
         message: "No pending appointments found for this doctor.",
@@ -514,10 +514,10 @@ const rejectFollowUp = async (req: Request, res: Response) => {
     }
 
     // Update the status to "accepted"
-    apt.followUpStatus = "rejected";
+    // apt.followUpStatus = "rejected";
 
-    // Save the updated appointment
-    await apt.save();
+    // // Save the updated appointment
+    // await apt.save();
 
     return res
       .status(200)

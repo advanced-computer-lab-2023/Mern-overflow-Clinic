@@ -149,7 +149,7 @@ export default function PatientViewPrescriptions() {
               <Button
                 fullWidth
                 type="submit"
-                variant="contained"
+                variant="outlined"
                 onClick={fetchTableData}
                 sx={{ mt: 3, mb: 2, p: 2, fontWeight: "bold", width: '85%', alignItems: 'center', justifyContent: 'center' }}
               >
@@ -165,7 +165,7 @@ export default function PatientViewPrescriptions() {
                                           margin: '5em -7.5em 5em 5em', width: '125%', position: 'sticky', maxHeight: '70vh',
                                           overflow: 'auto', border: '1px solid #ccc', borderRadius: '0.8em',
                                           '::-webkit-scrollbar': {width: '12px'}, '::-webkit-scrollbar-thumb': {backgroundColor: '#888', borderRadius: '6px'},
-                                          '::-webkit-scrollbar-track': {backgroundColor: '#eee', borderRadius: '8px'}, backgroundColor: theme.palette.primary.main }}>
+                                          '::-webkit-scrollbar-track': {backgroundColor: '#eee', borderRadius: '8px'} }}>
             {
               data && data.map((row) => (
                 <Card key={row._id} elevation={5} sx={{ maxWidth: 1000, margin: '2em -3em 2em 0em', width: '75%', borderRadius: '0.8em', transition: 'background-color 0.1s ease-in-out', 

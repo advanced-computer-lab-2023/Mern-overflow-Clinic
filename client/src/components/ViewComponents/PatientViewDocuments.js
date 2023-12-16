@@ -164,11 +164,11 @@ const PatientViewDocuments = () => {
     return (
         
         <div className="d-flex vh-50 bg-white justify-content-center align-items-center " style={{ paddingTop: '7.5em' }}>
-            <div className= 'w-50 bg-blue border-5 border rounded p-3'>
+            <div className= 'w-75 bg-blue border-5 border rounded p-3'>
             <Typography variant="h5" sx={{ fontWeight: "normal", my: 2 }}>Upload All Required Documents </Typography>
                
                
-               <h1>File Upload</h1>
+               {/* <h1>File Upload</h1> */}
                 <input type="file" onChange={handleFileChange} />
                 <button className='btn btn-success' onClick={handleFileUpload}>Upload</button>
  

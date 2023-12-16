@@ -859,6 +859,8 @@ test('should throw an error if patient is missing', async () => {
 ```
 </details>
 
+![image](https://github.com/advanced-computer-lab-2023/Mern-overflow-Clinic/assets/97978852/f98b6948-e7e6-485e-9558-764cf10749c8)
+
 
 <p align="right" title="Return to Table of Contents"> <a href="#table-of-contents">&#11014;</a></p>
 

@@ -27,6 +27,7 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import MedicationIcon from '@mui/icons-material/Medication';
+import EventIcon from '@mui/icons-material/Event';
 import { useTheme } from '@mui/material/styles';
 import axios from "axios";
 import { useUser } from "../../userContest";
@@ -170,15 +171,16 @@ export default function PatientViewPrescriptions() {
               data && data.map((row) => (
                 <Card key={row._id} elevation={5} sx={{ maxWidth: 1000, margin: '2em -3em 2em 0em', width: '75%', borderRadius: '0.8em', transition: 'background-color 0.1s ease-in-out', 
                 '&:hover': {
-                  backgroundColor: '#e0e0e0', // Change the text color on hover
+                  backgroundColor: theme.palette.primary.main, // Change the text color on hover
+                  color: "white",
                 }, }}>
                   <CardActionArea onClick={() => handleClick(row._id)}>
                     <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
                       <Typography gutterBottom variant="h5" component="div">
                         <MedicationIcon fontSize="large"></MedicationIcon> Doctor: {row.doctor?.name}
                       </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {formatDate(row.date)}
+                      <Typography variant="body2">
+                        <EventIcon></EventIcon> {formatDate(row.date)}
                       </Typography>
                     </CardContent>
                   </CardActionArea>

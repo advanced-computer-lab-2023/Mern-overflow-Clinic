@@ -34,6 +34,7 @@ const AddFamilyMember = () => {
     handleSubmit,
     setError,
     formState: { errors },
+    reset,
   } = useForm();
   
 
@@ -41,8 +42,15 @@ const AddFamilyMember = () => {
     const dataToServer = { id: userId, ...data };
     axios.post(`http://localhost:8000/patients/${userId}/familyMember`, dataToServer)
       .then((response) => {
-        window.location.reload();
+        
         setSnackbarSeverity('success');
+        setSnackbarMessage("Family member added successfuly.");
+        setSnackbarOpen(true); // Open the Snackbar to show the success message
+        reset(); // Clear the form
+        setTimeout(() => {
+          window.location.reload();
+        }, 5000); 
+
 
       })
       .catch((error) => {

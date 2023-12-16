@@ -13,12 +13,31 @@ import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardActionArea from '@mui/material/CardActionArea';
+import CardActions from '@mui/material/CardActions';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import MedicationIcon from '@mui/icons-material/Medication';
+import EventIcon from '@mui/icons-material/Event';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import DisabledByDefaultIcon from '@mui/icons-material/DisabledByDefault';
+import WorkIcon from '@mui/icons-material/Work';
+import PermIdentityIcon from '@mui/icons-material/PermIdentity';
+import AddAlarmIcon from '@mui/icons-material/AddAlarm';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import { useTheme } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 
 
 const PatientViewPrescriptionDetails = ({ match }) => {
 	const navigate = useNavigate();
 	const { userId } = useUser();
+	const theme = useTheme();
 	const patientId = userId;
 	let { id } = useParams();
 
@@ -109,119 +128,91 @@ const PatientViewPrescriptionDetails = ({ match }) => {
 	}
 
 	return (
-		<div style={styles.container}>
-			{errorMessage && <div style={styles.errorMessage}>{errorMessage}</div>}
 
-			<h2>Prescription Details</h2>
-			<br></br>
-			{/* <table style={styles.table}>
-        <thead>
-          <tr>
-            <th style={styles.th}>Doctor</th>
-            <th style={styles.th}>Specialty</th>
-            <th style={styles.th}>Date</th>
-            <th style={styles.th}>Prescription Collected</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style={styles.td}>{prescription.doctor?.name}</td>
-            <td style={styles.td}>{prescription.doctor?.speciality}</td>
-            <td style={styles.td}>{formatDate(prescription?.date)}</td>
-            <td style={styles.td}>{prescription.filled ? 'Collected' : 'Not Collected'}</td>
-          </tr>
-        </tbody>
-      </table> */}
+		<Container sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+			<Grid container spacing={10} sx={{ width: '100%' }}>
+				{/* Left third of the page */}
+				<Grid item xs={12} md={4} sx={{ width: '100%' }}>
+					<Card justifyContent="center" alignItems="center" elevation={5} sx={{ maxWidth: 500, width: '150%', height: '50vh', margin: '5em 0em 5em -7.5em', borderRadius: '0.8em', position: 'fixed' }}>
+						<CardContent>
+								<Typography variant="h5" component="div" sx={{ fontWeight: 'bold', textAlign: 'center', marginBottom: '3em', marginTop: '0.5em' }}>
+									Prescription Details
+								</Typography>
+							<Container sx={{ width: "100%", display: 'flex', flexDirection: 'column', justifyContent: 'left', alignItems: 'flex-start' }}>
+								<Typography gutterBottom variant="h5" component="div">
+									<PermIdentityIcon fontSize="large"></PermIdentityIcon> Doctor: {prescription.doctor?.name}
+								</Typography>
+								<Typography gutterBottom variant="h5" component="div">
+									<WorkIcon></WorkIcon> {prescription.doctor?.speciality}
+								</Typography>
+								<Typography variant="body2">
+									<EventIcon></EventIcon> {formatDate(prescription.date)}
+								</Typography>
+								<Typography variant="body2">
+									{prescription.filled ? <CheckBoxIcon></CheckBoxIcon> : <DisabledByDefaultIcon></DisabledByDefaultIcon>} Prescription Collected
+								</Typography>
 
-			<TableContainer component={Paper}>
-				<Table>
-					<TableHead>
-						<StyledTableRow>
-							<StyledTableCell>Doctor</StyledTableCell>
-							<StyledTableCell>Speciality</StyledTableCell>
-							<StyledTableCell>Date</StyledTableCell>
-							<StyledTableCell>Prescription Collected</StyledTableCell>
-						</StyledTableRow>
-					</TableHead>
-					<TableBody>
-						<StyledTableRow>
-							<StyledTableCell>{prescription.doctor?.name}</StyledTableCell>
-							<StyledTableCell>{prescription.doctor?.speciality}</StyledTableCell>
-							<StyledTableCell>{formatDate(prescription?.date)}</StyledTableCell>
-							<StyledTableCell>{prescription.filled ? 'Collected' : 'Not Collected'}</StyledTableCell>
-						</StyledTableRow>
-					</TableBody>
-				</Table>
-			</TableContainer>
+							</Container>
 
-			<br></br>
+						</CardContent>
+						<CardActions sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
 
-			<h4>Medicines Details</h4>
+							{!prescription.filled && (
+								<Button variant="outlined" onClick={handleButtonClick} sx={{ margin: '1em', width: '80%' }}>
+									Collect Prescription
+								</Button>
+							)}
 
-			{/* <table style={styles.table}>
-        <thead>
-          <tr>
-            <th style={styles.th}>Name</th>
-            <th style={styles.th}>Dosage</th>
-            <th style={styles.th}>Medicinal Use</th>
-            <th style={styles.th}>Price</th>
-            <th style={styles.th}>Available Quantity</th>
-          </tr>
-        </thead>
-        <tbody>
-          {medicine.map((med, index) => (
-            <tr key={index}>
-              <td style={styles.td}>{med?.name}</td>
-              <td style={styles.td}>{prescription.medicine[index]?.dailyDosage} {prescription.medicine[index]?.dailyDosage === 1 ? 'dosage' : 'dosages'} per day</td>  
-              <td style={styles.td}>{med?.medicinalUse}</td>
-              <td style={styles.td}>{med?.price}</td>
-              <td style={styles.td}>{med?.availableQuantity}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table> */}
+							<Button variant="contained" onClick={() => handleClick(id)} sx={{ margin: '1em', width: '80%' }}>
+								View Official Prescription Document
+							</Button>
 
-			<TableContainer component={Paper}>
-				<Table>
-					<TableHead>
-						<StyledTableRow>
-							<StyledTableCell>Name</StyledTableCell>
-							<StyledTableCell>Dosage</StyledTableCell>
-							<StyledTableCell>Medicinal Use</StyledTableCell>
-							<StyledTableCell>Price</StyledTableCell>
-							<StyledTableCell>Available Quantity</StyledTableCell>
-						</StyledTableRow>
-					</TableHead>
-					<TableBody>
+						</CardActions>
+					</Card>
+
+				</Grid>
+				{/* Right two thirds of the page */}
+				<Grid item xs={12} md={8} >
+					<Container elevation={5} sx={{
+						display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center',
+						margin: '5em -7.5em 5em 5em', width: '125%', position: 'sticky', maxHeight: '70vh',
+						overflow: 'auto', border: '1px solid #ccc', borderRadius: '0.8em',
+						'::-webkit-scrollbar': { width: '12px' }, '::-webkit-scrollbar-thumb': { backgroundColor: '#888', borderRadius: '6px' },
+						'::-webkit-scrollbar-track': { backgroundColor: '#eee', borderRadius: '8px' }
+					}}>
 						{medicine.map((med, index) => (
-							<StyledTableRow key={index}>
-								<StyledTableCell>{med?.name}</StyledTableCell>
-								<StyledTableCell>{prescription.medicine[index]?.dailyDosage} {prescription.medicine[index]?.dailyDosage === 1 ? 'dosage' : 'dosages'} per day</StyledTableCell>
-								<StyledTableCell>{med?.medicinalUse}</StyledTableCell>
-								<StyledTableCell>{med?.price}</StyledTableCell>
-								<StyledTableCell>{med?.availableQuantity}</StyledTableCell>
-							</StyledTableRow>
+							<Card key={index} elevation={5} sx={{
+								maxWidth: 1000, margin: '2em -3em 2em 0em', width: '75%', borderRadius: '0.8em', transition: 'background-color 0.1s ease-in-out',
+								'&:hover': {
+									backgroundColor: theme.palette.primary.main, // Change the text color on hover
+									color: "white",
+								},
+							}}>
+									<CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
+										<Typography gutterBottom variant="h5" component="div">
+											<MedicationIcon fontSize="large"></MedicationIcon> {med?.name.charAt(0).toUpperCase() + med.name.slice(1).toLowerCase()}
+										</Typography>
+										<Typography variant="body2">
+											<AddAlarmIcon></AddAlarmIcon> {prescription.medicine[index]?.dailyDosage} {prescription.medicine[index]?.dailyDosage === 1 ? 'dosage' : 'dosages'} per day
+										</Typography>
+										<Typography variant="body2">
+											<HelpOutlineIcon></HelpOutlineIcon> Used for {med?.medicinalUse}
+										</Typography>
+										<Typography variant="body2">
+											<AttachMoneyIcon></AttachMoneyIcon> Price: {med?.price}
+										</Typography>
+										<Typography variant="body2">
+											<ShoppingCartIcon></ShoppingCartIcon> Quantity: {prescription.medicine[index]?.quantity}
+										</Typography>
+									</CardContent>
+							</Card>
 						))}
-					</TableBody>
-				</Table>
-			</TableContainer>
 
-			<br></br>
+					</Container>
+				</Grid>
+			</Grid>
+		</Container>
 
-			{!prescription.filled && (
-				<Button variant="contained" onClick={handleButtonClick}>
-					Collect Prescription
-				</Button>
-			)}
-
-			<br></br>
-			<br></br>
-			<br></br>
-
-			<Button variant="contained" onClick={() => handleClick(id)}>
-				View Official Prescription Document
-			</Button>
-		</div>
 	);
 };
 

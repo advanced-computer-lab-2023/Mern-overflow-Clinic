@@ -10,10 +10,9 @@ router.use(bodyParser.json());
 
 
 
+router.get("/",contractController.listContracts);
+
 router.get("/:id",contractController.listAllDoctorContracts);
-
-router.put("/",contractController.updateContract);
-
 router.delete("/", contractController.deleteContract);
 
 router.get("/:id",contractController.readContract);

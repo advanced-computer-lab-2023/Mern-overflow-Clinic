@@ -2,6 +2,7 @@ import React from "react";
 import "./App.css";
 import AdminManageAdmins from "./pages/admin/AdminManageAdmins";
 import AdminManageDoctorRequests from "./pages/admin/AdminManageDoctorRequests";
+import AdminManageContracts from "./pages/admin/AdminManageContracts";
 import AdminManageDoctors from "./pages/admin/AdminManageDoctors";
 import AdminManagePackages from "./pages/admin/AdminManagePackages";
 import AdminManagePatients from "./pages/admin/AdminManagePatients";
@@ -84,6 +85,10 @@ function App() {
     {
       path: "/admin/patients",
       element: <AdminManagePatients />,
+    },
+    {
+      path: "/admin/contracts",
+      element: <AdminManageContracts />,
     },
     {
       path: "/admin/packages",

@@ -125,15 +125,12 @@ export default function AdminViewPatients() {
           <ListItem>
             {"Mobile Number: " + selectedPatient.mobileNumber}
           </ListItem>
-          <Typography>Emergency Contacts</Typography>
-          {selectedPatient.emergencyContact.map((item) => {
-            return (
+          <Typography>Emergency Contacts</Typography>  
               <List>
-                <ListItem>{"Name: " + item.name}</ListItem>
-                <ListItem>{"Mobile Number: " + item.mobileNumber}</ListItem>
+                <ListItem>{"Name: " + selectedPatient.emergencyContact.name}</ListItem>
+                <ListItem>{"Mobile Number: " + selectedPatient.emergencyContact.mobileNumber}</ListItem>
+                <ListItem>{"Relation: " + selectedPatient.emergencyContact.relation}</ListItem>
               </List>
-            );
-          })}
         </List>
       )}
     </Container>

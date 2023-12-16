@@ -26,21 +26,21 @@ El7a2ny Clinic is a comprehensive healthcare platform that caters to the diverse
 
 ## Table of Contents
 
--   [Build Status 🔨](#build-status-)
--   [Code Style 📜](#code-style-)
--   [Demo \& Screenshots 📸](#demo--screenshots-)
--   [Tech Stack 🧰🔧](#tech-stack-)
--   [Features ✨](#features-)
--   [Code Examples 👉](#code-examples-)
--   [Installation 📥](#installation-)
--   [How to Use ❓](#how-to-use-)
--   [API Reference 📖](#api-reference-)
--   [Tests 🧪](#tests-)
--   [Contribute 🤝](#contribute-)
--   [Credits 🙏](#credits-)
--   [Authors 🧑‍💻️](#authors-️)
--   [License ⚖️](#license-️)
--   [Feedback ⭐](#feedback-)
+- [Build Status 🔨](#build-status-)
+- [Code Style 📜](#code-style-)
+- [Demo \& Screenshots 📸](#demo--screenshots-)
+- [Tech Stack 🧰🔧](#tech-stack-)
+- [Features ✨](#features-)
+- [Code Examples 👉](#code-examples-)
+- [Installation 📥](#installation-)
+- [How to Use ❓](#how-to-use-)
+- [API Reference 📖](#api-reference-)
+- [Tests 🧪](#tests-)
+- [Contribute 🤝](#contribute-)
+- [Credits 🙏](#credits-)
+- [Authors 🧑‍💻️](#authors-️)
+- [License ⚖️](#license-️)
+- [Feedback ⭐](#feedback-)
 
 ## Build Status 🔨
 
@@ -83,15 +83,14 @@ You will then need to run the following command each time before your next commi
 <summary>Authentication</summary>
 
 | ![Sign in Page](https://github.com/advanced-computer-lab-2023/Mern-overflow-Pharmacy/assets/97978852/79045f97-1651-4a3d-81d0-70beb62bfe28) |
-|:---:|
-| <p style="text-align:center">Sign In Page</p>|
+| :----------------------------------------------------------------------------------------------------------------------------------------: |
+|                                               <p style="text-align:center">Sign In Page</p>                                                |
 
 | ![Patient Registration](https://github.com/advanced-computer-lab-2023/Mern-overflow-Pharmacy/assets/97978852/f68625a2-1893-41e2-bf83-107cee344989) |
-|:---:|
-| <p style="text-align:center">Patient Registration</p>|
+| :------------------------------------------------------------------------------------------------------------------------------------------------: |
+|                                               <p style="text-align:center">Patient Registration</p>                                                |
 
 </details>
-
 
 <p align="right" title="Return to Table of Contents"> <a href="#table-of-contents">&#11014;</a></p>
 
@@ -110,101 +109,101 @@ You will then need to run the following command each time before your next commi
 <details>
 <summary> Guests can </summary>
 
--   Sign in to their account
--   Sign up as a patient
--   Request to sign up as a doctor
--   Reset forgotten password through OTP sent to email
+- Sign in to their account
+- Sign up as a patient
+- Request to sign up as a doctor
+- Reset forgotten password through OTP sent to email
 </details>
 
 <details>
 <summary> Logged in System Users can </summary>
 
--   Change their password
--   Sign out
+- Change their password
+- Sign out
 </details>
 
 <details>
 <summary> Admins can </summary>
 
--   Add another admin with a set username and password
--   Remove doctor/admin from the system
--   View all information uploaded by doctors who applied to join the platform
--   Accept or reject doctor proposals
--   Add/Update/Delete health packages with different price ranges
--   View a total sales report based on a chosen month
--   View information about any user on the system
+- Add another admin with a set username and password
+- Remove doctor/admin from the system
+- View all information uploaded by doctors who applied to join the platform
+- Accept or reject doctor proposals
+- Add/Update/Delete health packages with different price ranges
+- View a total sales report based on a chosen month
+- View information about any user on the system
 </details>
 
 <details>
 <summary> Doctors can </summary>
 
--   Update their information (email, hourly rate, affiliation)
--   View and accept employment contract
--   Add their available time slots for appointments
--   Filter appointments by date/status
--   View information and health records of patients registered with them
--   View all new and old prescriptions and their statuses
--   View a list of all their patients
--   Search for a patient using their name
--   Filter patients based on upcoming appointments
--   Receive notifications of their appointments on the system and by mail
--   View a list of all their upcoming/past appointments
--   Filter appointments by date or status
--   Reschedule an appointment for a patient
--   Cancel an appointment
--   Receive notifications about canceled or rescheduled appointments on the system and by mail
--   Schedule a follow-up for a patient
--   Add / Delete medicine to/from the prescription from the pharmacy platform
--   Add / Update dosage for each medicine added to the prescription
--   Download the selected prescription (PDF)
--   Add new health records for a patient
--   Start / End a video call with a patient
--   Chat with a patient
--   Add a patient's prescription
--   Update a patient's prescription before it is submitted to the pharmacy
--   Accept or revoke a follow-up session request from a patient
--   View the amount in their wallet
+- Update their information (email, hourly rate, affiliation)
+- View and accept employment contract
+- Add their available time slots for appointments
+- Filter appointments by date/status
+- View information and health records of patients registered with them
+- View all new and old prescriptions and their statuses
+- View a list of all their patients
+- Search for a patient using their name
+- Filter patients based on upcoming appointments
+- Receive notifications of their appointments on the system and by mail
+- View a list of all their upcoming/past appointments
+- Filter appointments by date or status
+- Reschedule an appointment for a patient
+- Cancel an appointment
+- Receive notifications about canceled or rescheduled appointments on the system and by mail
+- Schedule a follow-up for a patient
+- Add / Delete medicine to/from the prescription from the pharmacy platform
+- Add / Update dosage for each medicine added to the prescription
+- Download the selected prescription (PDF)
+- Add new health records for a patient
+- Start / End a video call with a patient
+- Chat with a patient
+- Add a patient's prescription
+- Update a patient's prescription before it is submitted to the pharmacy
+- Accept or revoke a follow-up session request from a patient
+- View the amount in their wallet
 </details>
 
 <details>
 <summary> Patients can </summary>
 
--   Upload/remove documents (PDF, JPEG, JPG, PNG) for their medical history
--   View uploaded health records
--   Add family members to the system
--   Link another existing patient's account as a family member
--   View registered family members
--   Choose to pay for their appointments using a wallet or credit card
--   Enter credit card details and pay for an appointment using Stripe
--   Filter appointments by date/status
--   View all new and old prescriptions and their statuses
--   View health package options and details
--   Subscribe to a health package for themselves and their family members
--   Pay for the chosen health package using the wallet or credit card
--   View subscribed health packages for themselves and their family members
--   View the status of their health care package subscription
--   Cancel a subscription to a health package
--   View a list of all doctors along with their specialty, and session price (based on subscribed health package if any)
--   Search for a doctor by name and/or specialty
--   Filter a doctor by specialty and/or availability on a certain date and at a specific time
--   View details about a specific selected doctor
--   Select an appointment date and time for themselves or for a family member
--   Receive a notification of their appointment on the system and by mail
--   View a list of their upcoming/past appointments
--   Filter appointments by date or status
--   Reschedule an appointment for themselves or for a family member
--   Cancel an appointment for themselves or for a family member
--   Receive notification about canceled or rescheduled appointments on the system and by mail
--   View a list of all their prescriptions
--   Filter prescriptions based on date or doctor or fulfillment status
--   View the details of a selected prescription
--   Pay directly for the prescription items by wallet or credit card
--   Download a prescription (PDF)
--   Start / End a video call with a doctor
--   Chat with a doctor
--   Request a follow-up to a previous appointment for themselves or a family member
--   Receive a refund in their wallet when a doctor cancels an appointment
--   View the amount in their wallet
+- Upload/remove documents (PDF, JPEG, JPG, PNG) for their medical history
+- View uploaded health records
+- Add family members to the system
+- Link another existing patient's account as a family member
+- View registered family members
+- Choose to pay for their appointments using a wallet or credit card
+- Enter credit card details and pay for an appointment using Stripe
+- Filter appointments by date/status
+- View all new and old prescriptions and their statuses
+- View health package options and details
+- Subscribe to a health package for themselves and their family members
+- Pay for the chosen health package using the wallet or credit card
+- View subscribed health packages for themselves and their family members
+- View the status of their health care package subscription
+- Cancel a subscription to a health package
+- View a list of all doctors along with their specialty, and session price (based on subscribed health package if any)
+- Search for a doctor by name and/or specialty
+- Filter a doctor by specialty and/or availability on a certain date and at a specific time
+- View details about a specific selected doctor
+- Select an appointment date and time for themselves or for a family member
+- Receive a notification of their appointment on the system and by mail
+- View a list of their upcoming/past appointments
+- Filter appointments by date or status
+- Reschedule an appointment for themselves or for a family member
+- Cancel an appointment for themselves or for a family member
+- Receive notification about canceled or rescheduled appointments on the system and by mail
+- View a list of all their prescriptions
+- Filter prescriptions based on date or doctor or fulfillment status
+- View the details of a selected prescription
+- Pay directly for the prescription items by wallet or credit card
+- Download a prescription (PDF)
+- Start / End a video call with a doctor
+- Chat with a doctor
+- Request a follow-up to a previous appointment for themselves or a family member
+- Receive a refund in their wallet when a doctor cancels an appointment
+- View the amount in their wallet
 </details>
 
 <p align="right" title="Return to Table of Contents"> <a href="#table-of-contents">&#11014;</a></p>
@@ -293,12 +292,12 @@ const createContract = async (req: Request, res: Response) => {
 
 ```javascript
 <Box component="form" onSubmit={handleSubmit(onSubmit)}>
-    <TextField label="Username" />
-    <TextField label="Email" />
-    <TextField label="Password" />
-    <Button type="submit" variant="outlined">
-        Add Admin
-    </Button>
+  <TextField label="Username" />
+  <TextField label="Email" />
+  <TextField label="Password" />
+  <Button type="submit" variant="outlined">
+    Add Admin
+  </Button>
 </Box>
 ```
 
@@ -313,9 +312,7 @@ const createContract = async (req: Request, res: Response) => {
     <IconButton>
       <MenuIcon />
     </IconButton>
-    <Typography>
-      {props.title}
-    </Typography>
+    <Typography>{props.title}</Typography>
     <Button type="button" color="inherit" onClick={handleLogout}>
       {" "}
       Log out{" "}
@@ -390,6 +387,7 @@ Start the client side
 ```bash
 > cd client && npm start
 ```
+
 </details>
 
 ### Environment Variables 📃
@@ -413,150 +411,218 @@ To run this project, you will need to add the following environment variables to
 <details>
     <summary>Authentication routes</summary>
 
-|method|route|returns|
-|--|--|--|
-|POST|```/auth/login/```|Log in|
-|POST|```/auth/logout/```|Log out|
-|POST|```/auth/reset/```|Reset Password|
-|POST|```/auth/resetwithtoken/```|Reset Password with Token|
-|POST|```/auth/change/```|Change Password|
+| method | route                   | returns                   |
+| ------ | ----------------------- | ------------------------- |
+| POST   | `/auth/login/`          | Log in                    |
+| POST   | `/auth/logout/`         | Log out                   |
+| POST   | `/auth/reset/`          | Reset Password            |
+| POST   | `/auth/resetwithtoken/` | Reset Password with Token |
+| POST   | `/auth/change/`         | Change Password           |
+
 </details>
 
 <details>
     <summary>Admin routes</summary>
 
-|method|route|returns|
-|--|--|--|
-|GET|```/admins/```|View all admins|
-|POST|```/admins/:id/createContract```|Create a contract|
-|POST|```/admins/```|Create an admin|
-|POST|```/admins/acceptDoctorRequest/```|Accept a doctor request|
-|POST|```/admins/rejectDoctorRequest/```|Reject a doctor request|
-|DELETE|```/admins/:id/```|Delete an admin|
+| method | route                          | returns                 |
+| ------ | ------------------------------ | ----------------------- |
+| GET    | `/admins/`                     | View all admins         |
+| POST   | `/admins/:id/createContract`   | Create a contract       |
+| POST   | `/admins/`                     | Create an admin         |
+| POST   | `/admins/acceptDoctorRequest/` | Accept a doctor request |
+| POST   | `/admins/rejectDoctorRequest/` | Reject a doctor request |
+| DELETE | `/admins/:id/`                 | Delete an admin         |
+
 </details>
 
 <details>
     <summary>Doctor routes</summary>
 
-|method|route|returns|
-|--|--|--|
-|GET|```/doctors/```|View all doctors|
-|GET|```/doctors/pendingDoctors/```|View all pending doctors|
-|GET|```/doctors/:id/```|View all details about a doctor|
-|GET|```/doctors/:id/slots/```|View all slots of a doctor|
-|GET|```/doctors/:id/completedAppointments/```|View all completed appointments of a doctor|
-|GET|```/doctors/:id/```|View details of a doctor|
-|GET|```/doctors/:id/wallet/```|View wallet amount of a doctor|
-|GET|```/doctors/:id/patients/```|View all patients of a doctor|
-|GET|```/doctors/:id/registeredPatients/```|View all patients having upcoming appointment with a doctor|
-|GET|```/doctors/:id/patients/:pId/```|View all details about a patient by Id|
-|GET|```/doctors/:id/search/```|View all details about a patient by name|
-|GET|```/doctors/:id/res/```|View all patients having non-cancelled appointment with a doctor|
-|GET|```/doctors/:dId/search/```|Patients can view details of a selected doctor|
-|GET|```/doctors/doctorsSearch/```|Patients can search for a doctor by name or speciality|
-|POST|```/doctors/```|Create a doctor|
-|POST|```/doctors/filter/```|View doctors based on specialization|
-|POST|```/doctors/:id/addHealthRecord/```|Add a health record|
-|POST|```/doctors/:id/createFollowup/```|View doctors based on specialization|
-|PUT|```/doctors/:id/```|Update a doctor's details|
-|PUT|```/doctors/:id/acceptContract```|Accept a contract|
-|PUT|```/doctors/:id/rejectContract/```|Reject a contract|
-|PUT|```/doctors:id/addSlots/```|Add slots for a doctor|
-|DELETE|```/doctors:id/```|Delete a doctor|
+| method | route                                 | returns                                                          |
+| ------ | ------------------------------------- | ---------------------------------------------------------------- |
+| GET    | `/doctors/`                           | View all doctors                                                 |
+| GET    | `/doctors/pendingDoctors/`            | View all pending doctors                                         |
+| GET    | `/doctors/:id/`                       | View all details about a doctor                                  |
+| GET    | `/doctors/:id/slots/`                 | View all slots of a doctor                                       |
+| GET    | `/doctors/:id/completedAppointments/` | View all completed appointments of a doctor                      |
+| GET    | `/doctors/:id/`                       | View details of a doctor                                         |
+| GET    | `/doctors/:id/wallet/`                | View wallet amount of a doctor                                   |
+| GET    | `/doctors/:id/patients/`              | View all patients of a doctor                                    |
+| GET    | `/doctors/:id/registeredPatients/`    | View all patients having upcoming appointment with a doctor      |
+| GET    | `/doctors/:id/patients/:pId/`         | View all details about a patient by Id                           |
+| GET    | `/doctors/:id/search/`                | View all details about a patient by name                         |
+| GET    | `/doctors/:id/res/`                   | View all patients having non-cancelled appointment with a doctor |
+| GET    | `/doctors/:dId/search/`               | Patients can view details of a selected doctor                   |
+| GET    | `/doctors/doctorsSearch/`             | Patients can search for a doctor by name or speciality           |
+| POST   | `/doctors/`                           | Create a doctor                                                  |
+| POST   | `/doctors/filter/`                    | View doctors based on specialization                             |
+| POST   | `/doctors/:id/addHealthRecord/`       | Add a health record                                              |
+| POST   | `/doctors/:id/createFollowup/`        | View doctors based on specialization                             |
+| PUT    | `/doctors/:id/`                       | Update a doctor's details                                        |
+| PUT    | `/doctors/:id/acceptContract`         | Accept a contract                                                |
+| PUT    | `/doctors/:id/rejectContract/`        | Reject a contract                                                |
+| PUT    | `/doctors:id/addSlots/`               | Add slots for a doctor                                           |
+| DELETE | `/doctors:id/`                        | Delete a doctor                                                  |
+
 </details>
 
 <details>
     <summary>Patient routes</summary>
 
-|method|route|returns|
-|--|--|--|
-|GET|```/patients/```|View all patients|
-|GET|```/patients/:id/```|View all details about a patient|
-|GET|```/patients/:id/family/```|View all family members of a patient|
-|GET|```/patients/:id/relatives/```|???|
-|GET|```/patients/:id/price/```|View doctors by session price|
-|GET|```/patients/:id/prescriptions/```|View a patient's prescriptions|
-|GET|```/patients/:id/packages/```|View a patient's packages|
-|GET|```/patients/:id/packages/:pId/discount```|View a patient's package discount|
-|GET|```/patients/:id/wallet/```|View a patient's wallet amount|
-|GET|```/patients/:id/documents/```|View a patient's documents|
-|GET|```/patients/:id/document/```|View a patient's document|
-|GET|```/patients/:id/healthRecords/```|View a patient's health records|
-|POST|```/patients/```|Create a patient|
-|POST|```/patients/:id/familyMember/```|Add a family member to a patient|
-|POST|```/patients/linkfamilyMember/```|Link a patient's account to another patient's family|
-|POST|```/patients/:id/documents/```|Add a document to a patient's account|
-|POST|```/patients/:id/packages/:packageId```|Add a package to a patient's account|
-|POST|```/patients:id/packages/:pId/:packageId/```|Add a package to a family member|
-|POST|```/patients/:id/prescriptionsFilter/```|Filter a patient's prescriptions|
-|DELETE|```/patients/:id/```|Delete a patient|
-|DELETE|```/patients/:id/documents/```|Delete a document|
-|DELETE|```/patients/:id/packages/```|Delete a package|
-|DELETE|```/patients/:id/packages/pId/```|Delete a package from a family member|
+| method | route                                    | returns                                              |
+| ------ | ---------------------------------------- | ---------------------------------------------------- |
+| GET    | `/patients/`                             | View all patients                                    |
+| GET    | `/patients/:id/`                         | View all details about a patient                     |
+| GET    | `/patients/:id/family/`                  | View all family members of a patient                 |
+| GET    | `/patients/:id/relatives/`               | ???                                                  |
+| GET    | `/patients/:id/price/`                   | View doctors by session price                        |
+| GET    | `/patients/:id/prescriptions/`           | View a patient's prescriptions                       |
+| GET    | `/patients/:id/packages/`                | View a patient's packages                            |
+| GET    | `/patients/:id/packages/:pId/discount`   | View a patient's package discount                    |
+| GET    | `/patients/:id/wallet/`                  | View a patient's wallet amount                       |
+| GET    | `/patients/:id/documents/`               | View a patient's documents                           |
+| GET    | `/patients/:id/document/`                | View a patient's document                            |
+| GET    | `/patients/:id/healthRecords/`           | View a patient's health records                      |
+| POST   | `/patients/`                             | Create a patient                                     |
+| POST   | `/patients/:id/familyMember/`            | Add a family member to a patient                     |
+| POST   | `/patients/linkfamilyMember/`            | Link a patient's account to another patient's family |
+| POST   | `/patients/:id/documents/`               | Add a document to a patient's account                |
+| POST   | `/patients/:id/packages/:packageId`      | Add a package to a patient's account                 |
+| POST   | `/patients:id/packages/:pId/:packageId/` | Add a package to a family member                     |
+| POST   | `/patients/:id/prescriptionsFilter/`     | Filter a patient's prescriptions                     |
+| DELETE | `/patients/:id/`                         | Delete a patient                                     |
+| DELETE | `/patients/:id/documents/`               | Delete a document                                    |
+| DELETE | `/patients/:id/packages/`                | Delete a package                                     |
+| DELETE | `/patients/:id/packages/pId/`            | Delete a package from a family member                |
+
 </details>
 
 <details>
     <summary>Package routes</summary>
 
-|method|route|returns|
-|--|--|--|
-|GET|```/packages/```|View all packages|
-|GET|```/packages/:id/```|View details of a package|
-|POST|```/packages/```|Create a package|
-|PUT|```/packages/:id/```|Update details of a package|
-|DELETE|```/packages/:id/```|Delete a package|
+| method | route            | returns                     |
+| ------ | ---------------- | --------------------------- |
+| GET    | `/packages/`     | View all packages           |
+| GET    | `/packages/:id/` | View details of a package   |
+| POST   | `/packages/`     | Create a package            |
+| PUT    | `/packages/:id/` | Update details of a package |
+| DELETE | `/packages/:id/` | Delete a package            |
+
 </details>
 
 <details>
     <summary>Contract routes</summary>
 
-|method|route|returns|
-|--|--|--|
-|GET|```/contracts/:id/```|Read a contract|
-|PUT|```/contracts/```|Update a contract|
-|DELETE|```/contracts/```|Delete a contract|
+| method | route             | returns           |
+| ------ | ----------------- | ----------------- |
+| GET    | `/contracts/:id/` | Read a contract   |
+| PUT    | `/contracts/`     | Update a contract |
+| DELETE | `/contracts/`     | Delete a contract |
+
 </details>
 
 <details>
     <summary>Appointment routes</summary>
 
-|method|route|returns|
-|--|--|--|
-|GET|```/appointments/```|View all appointments|
-|GET|```/appointments/:id/```|View details of an appointment|
-|GET|```/appointments/all/:id/```|???|
-|POST|```/appointments/```|Create an appointment|
-|POST|```/appointments/filter/:id/```|Filter appointments|
-|POST|```/appointments/update/```|Update an appointment|
-|POST|```/appointments/createAppointmentsForRelations/```|Create an appointment for a family member|
-|DELETE|```/appointments/:id/```|Delete an appointment|
+| method | route                                           | returns                                   |
+| ------ | ----------------------------------------------- | ----------------------------------------- |
+| GET    | `/appointments/`                                | View all appointments                     |
+| GET    | `/appointments/:id/`                            | View details of an appointment            |
+| GET    | `/appointments/all/:id/`                        | ???                                       |
+| POST   | `/appointments/`                                | Create an appointment                     |
+| POST   | `/appointments/filter/:id/`                     | Filter appointments                       |
+| POST   | `/appointments/update/`                         | Update an appointment                     |
+| POST   | `/appointments/createAppointmentsForRelations/` | Create an appointment for a family member |
+| DELETE | `/appointments/:id/`                            | Delete an appointment                     |
+
 </details>
 
 <details>
     <summary>Prescription routes</summary>
 
-|method|route|returns|
-|--|--|--|
-|GET|```/prescriptions/:id```|View details of a prescription|
-|POST|```/prescriptions/```|Create a prescription|
-|PUT|```/prescriptions/:id```|Update details of a prescription|
-|DELETE|```/prescriptions/:id```|Delete a prescription|
+| method | route                | returns                          |
+| ------ | -------------------- | -------------------------------- |
+| GET    | `/prescriptions/:id` | View details of a prescription   |
+| POST   | `/prescriptions/`    | Create a prescription            |
+| PUT    | `/prescriptions/:id` | Update details of a prescription |
+| DELETE | `/prescriptions/:id` | Delete a prescription            |
+
 </details>
 
 <details>
     <summary>Payment routes</summary>
 
-|method|route|returns|
-|--|--|--|
-|POST|```/create-checkout-session/appointments/```|Pay for an appointment using credit card|
-|POST|```/create-checkout-session/healthPackages/```|Pay for a health package using credit card|
-|POST|```/walletPayment/appointments/```|Pay for an appointment using wallet|
-|POST|```/walletPayment/healthPackages/```|Pay for a health package using wallet|
+| method | route                                      | returns                                    |
+| ------ | ------------------------------------------ | ------------------------------------------ |
+| POST   | `/create-checkout-session/appointments/`   | Pay for an appointment using credit card   |
+| POST   | `/create-checkout-session/healthPackages/` | Pay for a health package using credit card |
+| POST   | `/walletPayment/appointments/`             | Pay for an appointment using wallet        |
+| POST   | `/walletPayment/healthPackages/`           | Pay for a health package using wallet      |
+
 </details>
 
 <p align="right" title="Return to Table of Contents"> <a href="#table-of-contents">&#11014;</a></p>
 
 ## Tests 🧪
+
+Testing is divided into frontend and backend tests.
+
+### Frontend Tests
+
+Frontend testing is done via the `React Testing Library` which has tests in the form `componentName.test.js`.
+
+It works by providing a `render` method to display the component to be tested, and a `screen` method to get the component outputs rendered on the screen.
+It also provides an `expect` method that's used to verify that the outputs rendered by the component are indeed the expected outputs.
+
+The following snippet illustrates the use of `React Testing Library` to write a test for `App.js` called `App.test.js`.
+
+```javascript
+import { render, screen } from "@testing-library/react";
+import App from "./App";
+
+test("renders learn react link", () => {
+  render(<App />);
+  const linkElement = screen.getByText(/learn react/i);
+  expect(linkElement).toBeInTheDocument();
+});
+```
+
+### Backend Tests
+
+Backend testing is done using `jest`. To run the tests, run the following command
+
+```bash
+> cd server && npm run test
+```
+
+Furthermore, backend tests are divided into model and controller tests.
+
+Controller tests verify that each controller is working correctly by providing example inputs and outputs and expecting the correct outputs, including edge cases.
+
+Model tests make sure the respective entity models are correct by creating new entities. They also make sure the Models raise the appropriate errors when required (i.e when an email is invalid)
+
+An example of model tests is the following snippet, which checks that the User model is working correctly:
+
+```javascript
+test("should save a new user", async () => {
+  await mongoose.connect(mongoUrl);
+  const newUser = new User({
+    username: "testuser",
+    name: "Test User",
+    email: "tesst@gmail.com",
+    passwordHash: "123456",
+    dateOfBirth: new Date("1999-01-01"),
+    gender: "male",
+    mobileNumber: "01000000000",
+    emergencyContact: {
+      name: "father",
+      mobileNumber: "01000000001",
+    },
+  });
+  const savedUser = await newUser.save();
+  expect(savedUser.username).toBe("testuser");
+});
+```
 
 <p align="right" title="Return to Table of Contents"> <a href="#table-of-contents">&#11014;</a></p>
 
@@ -583,26 +649,26 @@ This project follows the [Contributor Covenant Code of Conduct](https://www.cont
 
 ## Credits 🙏
 
--   [JWT docs](https://jwt.io/introduction)
--   [Stripe docs](https://stripe.com/docs)
--   [Node.js docs](https://nodejs.org/en/docs/)
--   [Express.js docs](https://expressjs.com/en/4x/api.html)
--   [React.js docs](https://legacy.reactjs.org/docs/getting-started.html)
--   [MongoDB docs](https://www.mongodb.com/docs/)
--   [Mongoose docs](https://mongoosejs.com/docs/)
--   [SimpliLearn Blog about MERN](https://www.simplilearn.com/tutorials/mongodb-tutorial/what-is-mern-stack-introduction-and-examples)
--   [MERN Stack | GeeksforGeeks](https://www.geeksforgeeks.org/mern-stack/)
--   [MongoDB guide to MERN](https://www.mongodb.com/languages/mern-stack-tutorial)
--   [NetNinja MERN playlist](https://www.youtube.com/watch?v=98BzS5Oz5E4&list=PL4cUxeGkcC9iJ_KkrkBZWZRHVwnzLIoUE)
--   [MERN stack tutorial | freeCodecAmp](https://www.youtube.com/watch?v=-42K44A1oMA)
+- [JWT docs](https://jwt.io/introduction)
+- [Stripe docs](https://stripe.com/docs)
+- [Node.js docs](https://nodejs.org/en/docs/)
+- [Express.js docs](https://expressjs.com/en/4x/api.html)
+- [React.js docs](https://legacy.reactjs.org/docs/getting-started.html)
+- [MongoDB docs](https://www.mongodb.com/docs/)
+- [Mongoose docs](https://mongoosejs.com/docs/)
+- [SimpliLearn Blog about MERN](https://www.simplilearn.com/tutorials/mongodb-tutorial/what-is-mern-stack-introduction-and-examples)
+- [MERN Stack | GeeksforGeeks](https://www.geeksforgeeks.org/mern-stack/)
+- [MongoDB guide to MERN](https://www.mongodb.com/languages/mern-stack-tutorial)
+- [NetNinja MERN playlist](https://www.youtube.com/watch?v=98BzS5Oz5E4&list=PL4cUxeGkcC9iJ_KkrkBZWZRHVwnzLIoUE)
+- [MERN stack tutorial | freeCodecAmp](https://www.youtube.com/watch?v=-42K44A1oMA)
 
  <p align="right" title="Return to Table of Contents"> <a href="#table-of-contents">&#11014;</a></p>
 
 ## Authors 🧑‍💻️
 
-| [Abdelrahman Saleh](https://github.com/19AbdelrahmanSalah19) | [Ahmed Wael](https://github.com/ahmedwael216) | [John Fayez](https://www.github.com/john-roufaeil)  | [Logine Mohamed](https://github.com/logine20)  | [Mohamed Mohey](https://github.com/mmi333) |
-| ------------------------------------------------------------ | --------------------------------------------- | --------------------------------------------------- | -------------------------------------- | ------------------------------------------ |
-| [Ahmed Yasser](https://github.com/ahmedyasser07)             | [Alaa Aref](https://github.com/AlaM-01)       | [Ibrahim Soltan](https://github.com/Ibrahim-Soltan) | [Omar Wael](https://github.com/o-wael) | [Mohamed Elsheka](https://github.com/MOHAMEDELSHEKHA)                            |
+| [Abdelrahman Saleh](https://github.com/19AbdelrahmanSalah19) | [Ahmed Wael](https://github.com/ahmedwael216) | [John Fayez](https://www.github.com/john-roufaeil)  | [Logine Mohamed](https://github.com/logine20) | [Mohamed Mohey](https://github.com/mmi333)            |
+| ------------------------------------------------------------ | --------------------------------------------- | --------------------------------------------------- | --------------------------------------------- | ----------------------------------------------------- |
+| [Ahmed Yasser](https://github.com/ahmedyasser07)             | [Alaa Aref](https://github.com/AlaM-01)       | [Ibrahim Soltan](https://github.com/Ibrahim-Soltan) | [Omar Wael](https://github.com/o-wael)        | [Mohamed Elsheka](https://github.com/MOHAMEDELSHEKHA) |
 
 <p align="right" title="Return to Table of Contents"> <a href="#table-of-contents">&#11014;</a></p>
 
@@ -610,7 +676,7 @@ This project follows the [Contributor Covenant Code of Conduct](https://www.cont
 
 - This software product is open source under the [Apache 2.0](https://choosealicense.com/licenses/apache-2.0/) License.
 
-- Stripe is licensed under the Apache License 2.0 
+- Stripe is licensed under the Apache License 2.0
 
 <p align="right" title="Return to Table of Contents"> <a href="#table-of-contents">&#11014;</a></p>
 

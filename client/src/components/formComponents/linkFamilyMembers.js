@@ -65,10 +65,10 @@ const LinkFamilyMember = () => {
         <Paper elevation={3} sx={{ p: "20px", my: "40px" }}>
           <Typography variant="h6" sx={{ mb: 4 }}>
             {" "}
-            Add a New Family Member{" "}
+            Link A Patient As A Family Member{" "}
           </Typography>
           <Box component="form" onSubmit={handleSubmit(onSubmit)}>
-            <Grid container spacing={2}>
+          <Grid container spacing={2} justifyContent="center">
               <Grid item xs={12} sm={4}>
                 <TextField
                   id="email"
@@ -116,11 +116,17 @@ const LinkFamilyMember = () => {
                 </FormControl>
               </Grid>
               <Grid item xs={12} sm={4}>
-                <Button
+              <Button
                   type="submit"
-                  variant="outlined"
+                  variant="contained" // Changed to 'contained' for solid background
+                  color="primary" // Sets the button color to primary theme color
                   fullWidth
-                  sx={{ p: 1.8, fontWeight: "bold" }}
+                  sx={{
+                    p: 1.8,
+                    fontWeight: "bold",
+                    color: "white", // Sets text color to white
+                    
+                  }}
                 >
                   Link Member
                 </Button>

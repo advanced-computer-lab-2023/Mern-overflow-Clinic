@@ -362,11 +362,11 @@ const addFreeSlots = async (req: Request, res: Response) => {
     const cont = await Contract.find({"doctor":id}).exec();
     if(!cont || cont === undefined){
       console.log("LINE 363");
-      return res.status(404).json({ message: "no contracts found"});
+      return res.status(404).json({ message: "No contracts found, can't use this functionality."});
     }
     if(cont.length ===0){
       console.log("LINE 367");
-      return res.status(404).json( {message: "no contracts found"});
+      return res.status(404).json( {message: "No contracts found, can't use this functionality."});
     }
     if(cont[0].status !== "accepted"){
       console.log("400");

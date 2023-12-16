@@ -351,10 +351,10 @@ const addFreeSlots = async (req: Request, res: Response) => {
 		}
 		const doc = await doctor.findById(id);
 
-		if (!doc || doc === undefined) {
-			console.log("LINE 351");
-			return res.status(404).json({ message: "Doctor not found." });
-		}
+    if (!doc || doc === undefined) {
+      console.log("LINE 351");
+      return res.status(404).json({ message: "Doctor not found." });
+    }
 
 		if (doc.status !== "accepted") {
 			return res
@@ -365,21 +365,17 @@ const addFreeSlots = async (req: Request, res: Response) => {
 		const cont = await Contract.find({ doctor: id }).exec();
 		if (!cont || cont === undefined) {
 			console.log("LINE 363");
-			return res.status(404).json({ message: "no contracts found" });
+			return res.status(404).json({ message: "No contracts found, can't use this functionality." });
 		}
 		if (cont.length === 0) {
 			console.log("LINE 367");
-			return res.status(404).json({ message: "no contracts found" });
+			return res.status(404).json({ message: "No contracts found, can't use this functionality." });
 		}
 		if (cont[0].status !== "accepted") {
 			console.log("400");
 
-			return res
-				.status(400)
-				.json({
-					message: "Doctor has not accepted the contract, can't add slots",
-				});
-		}
+      return res.status(400).json({message: "Doctor has not accepted the contract, can't add slots"});
+    }
 
 		if (doc.availableSlotsStartTime) {
 			for (const dt of doc.availableSlotsStartTime) {
@@ -433,6 +429,7 @@ const addFreeSlots = async (req: Request, res: Response) => {
 		return res.status(500).send(err);
 	}
 };
+
 
 const acceptContract = async (req: Request, res: Response) => {
 	const docId = req.params.id;

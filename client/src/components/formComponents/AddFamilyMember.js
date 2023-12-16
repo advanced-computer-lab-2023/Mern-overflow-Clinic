@@ -30,6 +30,7 @@ const AddFamilyMember = () => {
     setError,
     formState: { errors },
   } = useForm();
+  
 
   const onSubmit = (data) => {
     const dataToServer = { id: id, ...data };
@@ -66,7 +67,7 @@ const AddFamilyMember = () => {
             Add a New Family Member{" "}
           </Typography>
           <Box component="form" onSubmit={handleSubmit(onSubmit)}>
-            <Grid container spacing={2}>
+            <Grid container spacing={2} justifyContent="center">
               <Grid item xs={12} sm={4}>
                 <TextField
                   id="name"
@@ -74,6 +75,15 @@ const AddFamilyMember = () => {
                   {...register("name", { required: true, maxLength: 80 })}
                   error={!!errors["name"]}
                   helperText={errors["name"]?.message}
+                  fullWidth
+                  required
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <TextField
+                  id="email"
+                  label="Email"
+                  helperText={errors["Email"]?.message}
                   fullWidth
                   required
                 />
@@ -145,12 +155,18 @@ const AddFamilyMember = () => {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} sm={4}>
+              <Grid item xs={12} sm={4}> {/* Adjust the size of the Grid item containing the button */}
                 <Button
                   type="submit"
-                  variant="outlined"
+                  variant="contained" // Changed from 'outlined' to 'contained'
+                  color="primary" // Set the button color
                   fullWidth
-                  sx={{ p: 1.8, fontWeight: "bold" }}
+                  sx={{
+                    p: 1.8,
+                    fontWeight: "bold",
+                    color: "white", // Set text color
+                    mt: 2 // Add top margin for spacing
+                  }}
                 >
                   Add Member
                 </Button>

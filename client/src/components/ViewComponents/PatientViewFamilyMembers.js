@@ -37,7 +37,7 @@ export default function PatientViewFamilyMembers() {
 
   const fetchTableData = () => {
     axios
-      .get(`http://localhost:8000/patients/${id}/relatives`, {
+      .get(`http://localhost:8000/patients/${id}/family`, {
         params: { id: id },
       })
       .then((res) => {
@@ -85,7 +85,8 @@ export default function PatientViewFamilyMembers() {
               <TableCell>{row.gender}</TableCell>
               <TableCell>{row.relation}</TableCell>
               <TableCell>
-                  <Button onClick={() => handleSelectFamily(row.patientId)}>
+                  <Button onClick={() => handleSelectFamily(row)}>
+                    
                     View Appointments
                   </Button>
                 </TableCell>

@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import adminstrator from "../models/Adminstrator.js";
 import doctor from "../models/Doctor.js";
 import contract from "../models/Contract.js";
+import Contract from "../models/Contract.js";
 
 
 
@@ -33,8 +34,19 @@ return res.status(404).send(err);
         });
 }
 
-const updateContract = async (req: Request, res: Response) => {
 
+const listContracts = async (req: Request, res: Response) => {
+
+    const cont = await Contract.find().then((cont)=>{
+        if(!cont){
+            return res.status(404).json({message : "no contracts found"});
+        }else{
+            return res.status(200).json(cont);
+        }
+    }).catch((err)=>{
+       res.status(40).json({err});
+
+    })
 }
 
 const deleteContract = async (req: Request, res: Response) => {
@@ -61,7 +73,7 @@ return res.status(400).json(err);
 export default {
     createContract,
     readContract,
-    updateContract,
+    listContracts,
     deleteContract,
     listAllDoctorContracts,
 }

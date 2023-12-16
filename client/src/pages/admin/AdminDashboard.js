@@ -46,6 +46,19 @@ const AdminDashboard = (props) => {
             <Divider />
             <List>
                 <ListItem disablePadding>
+                    <ListItemButton component={Link} to='/admin/contracts'>
+                        <ListItemIcon>
+                            <Avatar sx={{ m: 0, bgcolor: 'white', color: 'black', width: 30, height: 30, padding: 0 }}>
+                                <HowToRegIcon sx={{ width: 25, height: 25 }} />
+                            </Avatar>
+                        </ListItemIcon>
+                        <ListItemText primary="Manage Contracts" />
+                    </ListItemButton>
+                </ListItem>
+            </List>
+            <Divider />
+            <List>
+                <ListItem disablePadding>
                     <ListItemButton component={Link} to='/admin/doctor-requests'>
                         <ListItemIcon>
                             <Avatar sx={{ m: 0, bgcolor: 'white', color: 'black', width: 30, height: 30, padding: 0 }}>

@@ -565,64 +565,300 @@ To run this project, you will need to add the following environment variables to
 
 ## Tests 🧪
 
-Testing is divided into frontend and backend tests.
-
-### Frontend Tests
-
-Frontend testing is done via the `React Testing Library` which has tests in the form `componentName.test.js`.
-
-It works by providing a `render` method to display the component to be tested, and a `screen` method to get the component outputs rendered on the screen.
-It also provides an `expect` method that's used to verify that the outputs rendered by the component are indeed the expected outputs.
-
-The following snippet illustrates the use of `React Testing Library` to write a test for `App.js` called `App.test.js`.
-
-```javascript
-import { render, screen } from "@testing-library/react";
-import App from "./App";
-
-test("renders learn react link", () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
-});
-```
-
-### Backend Tests
-
 Backend testing is done using `jest`. To run the tests, run the following command
 
 ```bash
 > cd server && npm run test
 ```
 
-Furthermore, backend tests are divided into model and controller tests.
-
-Controller tests verify that each controller is working correctly by providing example inputs and outputs and expecting the correct outputs, including edge cases.
-
 Model tests make sure the respective entity models are correct by creating new entities. They also make sure the Models raise the appropriate errors when required (i.e when an email is invalid)
 
-An example of model tests is the following snippet, which checks that the User model is working correctly:
+A few examples of model tests in the following snippets:
+
+<details>
+<summary>Check if Admin email exists</summary>
 
 ```javascript
-test("should save a new user", async () => {
-  await mongoose.connect(mongoUrl);
-  const newUser = new User({
-    username: "testuser",
-    name: "Test User",
-    email: "tesst@gmail.com",
-    passwordHash: "123456",
-    dateOfBirth: new Date("1999-01-01"),
-    gender: "male",
-    mobileNumber: "01000000000",
-    emergencyContact: {
-      name: "father",
-      mobileNumber: "01000000001",
-    },
-  });
-  const savedUser = await newUser.save();
-  expect(savedUser.username).toBe("testuser");
-});
+test('should throw an error if email is missing', async () => {
+        const admin = new Adminstrator({
+            username: 'testadmin',
+            passwordHash: 'password',
+        });
+        await expect(admin.save()).rejects.toThrow('Adminstrator validation failed: email: Path `email` is required.');
+    });
 ```
+</details>
+
+<details>
+<summary>Check if Appointment has a duration</summary>
+
+```javascript
+test('should throw an error if duration is missing', async () => {
+      const appointmentWithoutDuration = {
+          doctor: new Types.ObjectId(),
+          patient: new Types.ObjectId(),
+          date: new Date(),
+          status: 'upcoming',
+          price: 100,
+          appointmentType: 'regular',
+      };
+
+      const appointment = new Appointment(appointmentWithoutDuration);
+      await expect(appointment.save()).rejects.toThrow('Appointment validation failed: duration: Path `duration` is required.');
+    });
+```
+</details>
+
+<details>
+<summary>Check if Medicine has a quantity</summary>
+
+```javascript
+test('should throw an error if medQuantity is missing in medicines', async () => {
+        const cartWithMissingMedQuantity = {
+            patient: new mongoose.Types.ObjectId(),
+            medicines: [
+                { medName: 'Medicine1', medPrice: 10 },
+            ],
+        };
+        const cart = new Cart(cartWithMissingMedQuantity);
+        await expect(cart.save()).rejects.toThrow('Cart validation failed: medicines.0.medQuantity: Path `medQuantity` is required.');
+    });
+```
+</details>
+
+<details>
+<summary>Check if Cart's medicines have quantity</summary>
+
+```javascript
+test('should throw an error if medQuantity is missing in medicines', async () => {
+        const cartWithMissingMedQuantity = {
+            patient: new mongoose.Types.ObjectId(),
+            medicines: [
+                { medName: 'Medicine1', medPrice: 10 },
+            ],
+        };
+        const cart = new Cart(cartWithMissingMedQuantity);
+        await expect(cart.save()).rejects.toThrow('Cart validation failed: medicines.0.medQuantity: Path `medQuantity` is required.');
+    });
+```
+</details>
+
+<details>
+<summary>Check if a Chat updatedAt value is valid</summary>
+
+```javascript
+test('should throw an error for invalid updatedAt value', async () => {
+        const chatWithInvalidUpdatedAt = {
+            chatName: 'Test Chat',
+            isGroupChat: false,
+            users: [new Types.ObjectId(), new Types.ObjectId()],
+            createdAt: new Date(),
+            updatedAt: 'invalidDate',
+        };
+
+        const chat = new ChatModel(chatWithInvalidUpdatedAt);
+        await expect(chat.save()).rejects.toThrow('Chat validation failed: updatedAt: Cast to date failed for value "invalidDate" (type string) at path "updatedAt"');
+    });
+```
+</details>
+
+<details>
+<summary>Check if a Contract has a doctor</summary>
+
+```javascript
+test('should throw an error if doctor is missing', async () => {
+        const contractWithoutDoctor = {
+            admin: new Types.ObjectId(),
+            clinicMarkup: 10,
+        };
+
+        const contract = new Contract(contractWithoutDoctor);
+        await expect(contract.save()).rejects.toThrow('Contract validation failed: doctor: Path `doctor` is required.');
+    });
+```
+</details>
+
+<details>
+<summary>Check if a Doctor has an hourly rate</summary>
+
+```javascript
+test('should throw an error if hourlyRate is missing', async () => {
+        const doctorWithoutHourlyRate = {
+            email: "valid@gmail.com",
+            passwordHash: "password",
+            username: "username",
+            name: 'Dr. John Doe',
+            dateOfBirth: new Date(),
+            affiliation: 'Medical Center',
+            education: 'Medical Degree',
+            files: [{ filename: 'file1.txt', path: '/path/to/file1.txt' }],
+            status: 'pending',
+            speciality: 'Cardiology',
+            wallet: 0.0,
+        };
+
+        const doctor = new Doctor(doctorWithoutHourlyRate);
+        await expect(doctor.save()).rejects.toThrow('Doctor validation failed: hourlyRate: Path `hourlyRate` is required.');
+    });
+```
+</details>
+
+<details>
+<summary>Check if a Contract has a valid date</summary>
+
+```javascript
+test('should throw an error if date is invalid', async () => {
+        const healthRecordWithEmptyDiagnosis = {
+            patient: new Types.ObjectId(),
+            diagnosis: 'Headache',
+            date: "invalid"
+        };
+
+        const healthRecord = new HealthRecords(healthRecordWithEmptyDiagnosis);
+        await expect(healthRecord.save()).rejects.toThrow('HealthRecords validation failed: date: Cast to date failed for value \"invalid\" (type string) at path \"date\"');
+    });
+```
+</details>
+
+<details>
+<summary>Check if a Contract has a valid date</summary>
+
+```javascript
+test('should throw an error if date is invalid', async () => {
+        const healthRecordWithEmptyDiagnosis = {
+            patient: new Types.ObjectId(),
+            diagnosis: 'Headache',
+            date: "invalid"
+        };
+
+        const healthRecord = new HealthRecords(healthRecordWithEmptyDiagnosis);
+        await expect(healthRecord.save()).rejects.toThrow('HealthRecords validation failed: date: Cast to date failed for value \"invalid\" (type string) at path \"date\"');
+    });
+```
+</details>
+
+<details>
+<summary>Check if a Medicine has a valid price</summary>
+
+```javascript
+test('should throw an error for invalid price value (non-number)', async () => {
+    const medicineWithInvalidPrice = {
+      name: 'Test Medicine',
+      medicinalUse: 'Pain Relief',
+      details: { description: 'Test description', activeIngredients: ['Ingredient1', 'Ingredient2'] },
+      price: 'invalidPrice',
+      availableQuantity: 100,
+      sales: 50,
+      image: 'test_image.jpg',
+      overTheCounter: true,
+      isArchived: false,
+    };
+
+    const medicine = new Medicine(medicineWithInvalidPrice);
+    await expect(medicine.save()).rejects.toThrow('Medicine validation failed: price: Cast to Number failed for value "invalidPrice" (type string) at path "price"');
+  });
+
+```
+</details>
+
+<details>
+<summary>Check if a Message has a content</summary>
+
+```javascript
+test('should throw an error if content is missing', async () => {
+        const messageWithoutContent = {
+            sender: new Types.ObjectId(),
+            chat: new Types.ObjectId(),
+            readBy: [new Types.ObjectId()],
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        };
+
+        const message = new MessageModel(messageWithoutContent);
+        await expect(message.save()).rejects.toThrow('Message validation failed: content: Path `content` is required.');
+    });
+```
+</details>
+
+<details>
+<summary>Check if a Notification has a content</summary>
+
+```javascript
+test('should throw an error if content is empty', async () => {
+        const notificationWithEmptyContent = {
+            receiver: new Types.ObjectId(),
+            content: '',
+        };
+
+        const notification = new Notification(notificationWithEmptyContent);
+        await expect(notification.save()).rejects.toThrow('Notification validation failed: content: Path `content` is required.');
+    });
+```
+</details>
+
+<details>
+<summary>Check if a Package's discount is missing</summary>
+
+```javascript
+test('should throw an error if discountOnMedicine is missing', async () => {
+        const packageWithoutDiscountOnMedicine = {
+            name: 'Basic Package',
+            price: 50,
+            discountOnDoctorSessions: 10,
+            discountForFamily: 15,
+        };
+
+        const packageItem = new Package(packageWithoutDiscountOnMedicine);
+        await expect(packageItem.save()).rejects.toThrow('Package validation failed: subscriptionPeriod: Path `subscriptionPeriod` is required., discountOnMedicine: Path `discountOnMedicine` is required.');
+    });
+```
+</details>
+
+<details>
+<summary>Check if a Patient has a gender</summary>
+
+```javascript
+test('should throw an error if gender is missing', async () => {
+    const patientWithoutGender = {
+      wallet: 0,
+      email: "email@gmail.com",
+      passwordHash: "password",
+      username: "username",
+      name: 'John Doe',
+      nationalId: '123456789',
+      dateOfBirth: new Date(),
+      mobileNumber: '+12345678',
+      emergencyContact: {
+        name: 'EmergencyContact',
+        mobileNumber: '+12345678',
+        relation: 'parent',
+      },
+    };
+
+      const patient = new Patient(patientWithoutGender);
+      await expect(patient.save()).rejects.toThrow('Patient validation failed: gender: Path `gender` is required.');
+  });
+```
+</details>
+
+<details>
+<summary>Check if a Prescription has a patient</summary>
+
+```javascript
+test('should throw an error if patient is missing', async () => {
+        const prescriptionWithoutPatient = {
+            doctor: new Types.ObjectId(),
+            medicine: [{ medId: new Types.ObjectId(), dailyDosage: 1 }],
+            date: new Date(),
+            filled: false,
+        };
+
+        const prescription = new Prescription(prescriptionWithoutPatient);
+        await expect(prescription.save()).rejects.toThrow('Prescription validation failed: patient: Path `patient` is required.');
+    });
+```
+</details>
+
 
 <p align="right" title="Return to Table of Contents"> <a href="#table-of-contents">&#11014;</a></p>
 

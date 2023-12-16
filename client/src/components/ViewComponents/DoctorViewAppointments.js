@@ -57,7 +57,7 @@ export default function DoctorViewAppointments() {
 
   const fetchTableData = () => {
     axios
-      .get(`http://localhost:8000/appointments/all/${id}`, {})
+      .get(`http://localhost:8000/appointments/all/${id}`)
       .then((res) => {
         console.log(res.data);
         setData(res.data);
@@ -68,7 +68,7 @@ export default function DoctorViewAppointments() {
   };
 
   useEffect(() => {
-    // Fetch data on page load
+	axios.defaults.withCredentials = true;
     fetchTableData();
 
     // Call "appointments/refresh" on page load

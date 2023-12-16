@@ -14,6 +14,7 @@ const createDoctor = async (req: Request, res: Response) => {
 	const data = req.body.datatoserver;
 	console.log("DATA: " + JSON.stringify(data));
 	const dataToServer = JSON.parse(data);
+  dataToServer.wallet = 0;
 	console.log("im here");
 	const entry = user
 		.find({ username: dataToServer.username })
@@ -321,18 +322,18 @@ const viewHealthRecordOfPatient = async (req: Request, res: Response) => {
 const viewWallet = async (req: Request, res: Response) => {
 	const dId = req.params.id;
 
-  await doctor
-    .findById(dId)
-    .then((doc) => {
-      if (!doc || doc === undefined) {
-        return res.status(404).json({ message: "Doctor not found" });
-      } else {
-        return res.status(200).json(doc.wallet);  
-      }
-    })
-    .catch((err) => {
-      return res.status(404).send(err);
-    });
+	const doc = await doctor
+		.findById(dId)
+		.then((doc) => {
+			if (!doc || doc === undefined) {
+				return res.status(404).json({ message: "Doctor not found" });
+			} else {
+				return res.status(200).json(doc.wallet);
+			}
+		})
+		.catch((err) => {
+			return res.status(404).send(err);
+		});
 };
 
 const addFreeSlots = async (req: Request, res: Response) => {
@@ -648,11 +649,29 @@ const chatWithPatients = async (req: Request, res: Response) => {
 
 };
 
-const reschedulePatientAppointment = async (req: Request, res: Response) => {
-	const id = req.params.id;
-	const aptId = req.body.apt;
 
-}
+const getAllMyPatients = async (req: Request, res: Response) => {
+  
+  const dId = req.params.id;
+
+      const apts = await appointment.find({ doctor: dId });
+      const patients: any[] = [];
+      for (const apt of apts) {
+
+      const pat = await patient.findById(apt.patient);
+
+      
+
+      if(!patients.some(element => element.id === pat?.id)) patients.push(pat);
+      }
+      console.log(patients);
+      res.status(200).send(patients);
+  }
+
+
+
+
+
 
 export default {
 	createDoctor,
@@ -677,5 +696,5 @@ export default {
 	rejectFollowUp,
 	cancelPatientAppointment,
 	chatWithPatients,
-	reschedulePatientAppointment
+  getAllMyPatients
 };

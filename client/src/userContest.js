@@ -10,7 +10,8 @@ export function UserProvider({ children }) {
   const [userId, setUserId] = useState(localStorage.getItem("userId") || null);
   const [userRole, setUserRole] = useState(
     localStorage.getItem("userRole") || null,
-  );
+  ); 
+
 
   useEffect(() => {
     if (userId) {
@@ -18,15 +19,17 @@ export function UserProvider({ children }) {
     } else {
       localStorage.removeItem("userId");
     }
+
     if (userRole) {
-      localStorage.setItem("userRole", userRole);
+      localStorage.setItem("userRole",  userRole);
     } else {
       localStorage.removeItem("userRole");
     }
+
   }, [userId, userRole]);
 
   return (
-    <UserContext.Provider value={{ userId, setUserId, userRole, setUserRole }}>
+    <UserContext.Provider value={{ userId, setUserId, userRole, setUserRole,}}>
       {children}
     </UserContext.Provider>
   );

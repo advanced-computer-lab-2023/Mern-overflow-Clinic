@@ -97,7 +97,7 @@ const PatientSchema = new Schema<IPatient>({
         }
     ],
     address: [{ type: String, required: false, trim: true }],
-    wallet: { type: Number, required: false }
+    wallet: { type: Number, required: true }
 });
 
 const Patient = User.discriminator<IPatient>('Patient', PatientSchema);

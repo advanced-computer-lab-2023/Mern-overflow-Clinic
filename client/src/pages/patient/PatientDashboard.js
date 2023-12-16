@@ -172,28 +172,6 @@ const PatientDashboard = (props) => {
           </List>
           <Divider />
           <List>
-            <ListItem disablePadding>
-              <ListItemButton component={Link} to="/patient/linkFamilyMember">
-                <ListItemIcon>
-                  <Avatar
-                    sx={{
-                      m: 0,
-                      bgcolor: "white",
-                      color: "black",
-                      width: 30,
-                      height: 30,
-                      padding: 0,
-                    }}
-                  >
-                    <LinkIcon sx={{ width: 30, height: 30 }} />
-                  </Avatar>
-                </ListItemIcon>
-                <ListItemText primary="Link Family Members" />
-              </ListItemButton>
-            </ListItem>
-          </List>
-          <Divider />
-          <List>
               <ListItem disablePadding>
                   <ListItemButton component={Link} to='/patient/documents'>
                       <ListItemIcon>

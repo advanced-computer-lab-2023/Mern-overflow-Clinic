@@ -21,6 +21,7 @@ import {
 import Avatar from "@mui/material/Avatar";
 import TodayIcon from "@mui/icons-material/Today";
 import PeopleIcon from "@mui/icons-material/People";
+import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
 import { Link } from "react-router-dom";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useUser } from "../../userContest";
@@ -183,6 +184,28 @@ const DoctorDashboard = (props) => {
                   </Avatar>
                 </ListItemIcon>
                 <ListItemText primary="My Patients" />
+              </ListItemButton>
+            </ListItem>
+          </List>
+          <Divider />
+          <List>
+            <ListItem disablePadding>
+              <ListItemButton component={Link} to="/doctor/prescriptions">
+              <ListItemIcon>
+                  <Avatar
+                    sx={{
+                      m: 0,
+                      bgcolor: "white",
+                      color: "black",
+                      width: 30,
+                      height: 30,
+                      padding: 0,
+                    }}
+                  >
+                    <HistoryEduIcon sx={{ width: 30, height: 30 }} />
+                  </Avatar>
+                </ListItemIcon>
+                <ListItemText primary="My Prescriptions" />
               </ListItemButton>
             </ListItem>
           </List>

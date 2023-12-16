@@ -3,7 +3,8 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import {
   Dialog, DialogContent, DialogTitle, IconButton,
-  Button, FormControl, DialogActions,InputLabel, Select, MenuItem
+  Button, FormControl, DialogActions,InputLabel, Select, MenuItem,
+  Snackbar, Alert
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -13,7 +14,10 @@ const ReschedulePopup = ({ open, onClose, appointmentId , doctorId}) => {
   const [confirmationOpen, setConfirmationOpen] = useState(false);
   const [rescheduleMessage, setRescheduleMessage] = useState("");
   const [rescheduleMessageOpen, setRescheduleMessageOpen] = useState(false);
-  
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("info");
+
   useEffect(() => {
 
     if (open) { // Ensure doctorId is available
@@ -40,21 +44,24 @@ const ReschedulePopup = ({ open, onClose, appointmentId , doctorId}) => {
     axios.put(`http://localhost:8000/appointments/reschedule/${appointmentId}`, {
       date: selectedSlot
     }).then(response => {
-      setRescheduleMessage("Appointment successfully rescheduled.");
-      setRescheduleMessageOpen(true);
-      setTimeout(() => { // Set a timeout before refreshing
+      setSnackbarMessage("Appointment successfully rescheduled.");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
+      setTimeout(() => { // Optional: timeout before refreshing
         window.location.reload(); // Refresh the page
       }, 3000); // Adjust the timeout duration as needed
     }).catch(error => {
       console.error('Error rescheduling appointment', error);
-      setRescheduleMessage("Failed to reschedule the appointment.");
-      setRescheduleMessageOpen(true);
+      setSnackbarMessage("Failed to reschedule the appointment.");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
     });
   };
   
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+      
       <DialogTitle>
         Reschedule Appointment
         <IconButton
@@ -154,9 +161,25 @@ const ReschedulePopup = ({ open, onClose, appointmentId , doctorId}) => {
             </Button>
         </DialogActions>
         </Dialog>
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={6000}
+          onClose={() => setSnackbarOpen(false)}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }} // Positioning the Snackbar at the top center
 
-            </Dialog>
+        >
+          <Alert
+            onClose={() => setSnackbarOpen(false)}
+            severity={snackbarSeverity}
+            sx={{ width: '100%' }}
+          >
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
+      </Dialog>
+            
         );
+        
         };
 
 export default ReschedulePopup;

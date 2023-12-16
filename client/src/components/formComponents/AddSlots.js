@@ -9,6 +9,8 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Snackbar, 
+  Alert
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
@@ -24,6 +26,10 @@ export default function DoctorAddSlots() {
   const [message, setMessage] = useState("");
   const [slots, setSlots] = useState([]);
   const { userId } = useUser();
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("info"); // Can be "error", "warning", "info", "success"
+
   let id = userId;
 
   const fetchSlots = () => {
@@ -48,27 +54,35 @@ export default function DoctorAddSlots() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+  
     if (!date) {
-      setMessage("Please select a date.");
+      setSnackbarMessage("Please select a date.");
+      setSnackbarSeverity("warning");
+      setOpenSnackbar(true);
       return;
     }
-
+  
     axios
-      .put(`http://localhost:8000/doctors/${id}/addSlots`, {
-        date: date,
-      })
+      .put(`http://localhost:8000/doctors/${id}/addSlots`, { date: date })
       .then((res) => {
-        if (res.status === 200) {
-          setMessage("Slot added successfully.");
-          // Clear the date input after a successful submission
-          setDate(null);
-        }
+        const responseMessage = res.data.message || "Slot added successfully.";
+        setSnackbarMessage(responseMessage);
+        setSnackbarSeverity("success");
+        setOpenSnackbar(true);
+        setDate(null);
+        fetchSlots(); // Refresh slots
+        // Optional: window.location.reload();
       })
       .catch((error) => {
-        // Handle errors as before
+        const errorMessage = error.response?.data?.message || "Error adding slot.";
+        setSnackbarMessage(errorMessage);
+        setSnackbarSeverity("error");
+        setOpenSnackbar(true);
+        console.error("Error adding slot:", error);
       });
   };
+  
+  
 
   const handleRefresh = () => {
     fetchSlots();
@@ -83,7 +97,11 @@ export default function DoctorAddSlots() {
               Add a free slot start time
             </Typography>
             <FormControl fullWidth>
-              <DateTimePicker value={date} onChange={setDate} />
+            <DateTimePicker
+                views={['year', 'month', 'day', 'hours']}
+                value={date}
+                onChange={setDate}
+              />
             </FormControl>
             <Button
               type="submit"
@@ -94,6 +112,21 @@ export default function DoctorAddSlots() {
               Add Slot
             </Button>
           </form>
+          <Snackbar
+      open={openSnackbar}
+      autoHideDuration={6000}
+      onClose={() => setOpenSnackbar(false)}
+      anchorOrigin={{ vertical: 'top', horizontal: 'center' }} // Positioning the Snackbar at the top center
+
+    >
+      <Alert 
+        onClose={() => setOpenSnackbar(false)} 
+        severity={snackbarSeverity} 
+        sx={{ width: '100%' }}
+      >
+        {snackbarMessage}
+      </Alert>
+    </Snackbar>
           <Button
             variant="contained"
             fullWidth

@@ -11,6 +11,8 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Snackbar, 
+  Alert
 } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -44,6 +46,11 @@ export default function DoctorViewAppointments() {
   const [selectedAppointmentId, setSelectedAppointmentId] = useState(null);
   const [selectedDoctorId, setSelectedDoctorId] = useState(null);
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("info");
+
+
   const navigate = useNavigate();
 
   const id = userId;
@@ -154,25 +161,47 @@ export default function DoctorViewAppointments() {
   };
 
   const handleCancelConfirmation = () => {
-    // API call to cancel the appointment
     axios.put(`http://localhost:8000/appointments/cancel/${selectedAppointmentId}`)
       .then((res) => {
-        console.log('Appointment cancelled', res);
+        setSnackbarMessage(res.data.message || "Appointment cancelled successfully");
+        setSnackbarSeverity("success");
+        setOpenSnackbar(true);
         fetchTableData(); // Refresh the data
       })
       .catch((error) => {
+        setSnackbarMessage(error.response?.data?.message || "Error canceling appointment");
+        setSnackbarSeverity("error");
+        setOpenSnackbar(true);
         console.error("Error canceling appointment:", error);
       })
       .finally(() => {
         setOpenConfirmationDialog(false); // Close the dialog
       });
   };
-
+  
+  
+  
 
   return (
     <Container maxWidth="xl">
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }} // Positioning the Snackbar at the top center
 
-<Dialog
+      >
+        <Alert
+          onClose={() => setOpenSnackbar(false)}
+          severity={snackbarSeverity}
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+
+
+    <Dialog
         open={openConfirmationDialog}
         onClose={() => setOpenConfirmationDialog(false)}
         aria-labelledby="alert-dialog-title"
@@ -300,17 +329,22 @@ export default function DoctorViewAppointments() {
                 <TableCell>{row.status}</TableCell>
                 <TableCell>{calculateState(row.date)}</TableCell>
                 <TableCell>
-          <Button
+                <Button
             variant="contained"
             color="warning"
             size="small"
-            onClick={() => row.status === "upcoming" && handleRescheduleClick(row._id, row.doctor._id)}
+            disabled={row.status !== "upcoming" || row.appointmentType !== "regular"}
+            onClick={() => handleRescheduleClick(row._id, row.doctor._id)}
             sx={{
-              opacity: row.status === "upcoming" && row.appointmentType == "regular" ? 1 : 0.5,
-              backgroundColor: row.status === "upcoming" ? undefined : '##F1974E',
-              color: row.status === "upcoming" ? undefined : 'rgba(0, 0, 0, 0.7)',
-              pointerEvents: row.status === "upcoming" ? 'auto' : 'none',
-              textTransform: 'none' // Changes text to normal casing
+              opacity: row.status === "upcoming" && row.appointmentType === "regular" ? 1 : 0.5,
+              backgroundColor: row.status === "upcoming" && row.appointmentType === "regular" ? undefined : '#F1974E',
+              color: 'white',
+              textTransform: 'none', // Changes text to normal casing
+              '&.Mui-disabled': {
+                color: 'white',
+                backgroundColor: '#F1974E',
+                opacity: 0.5
+              }
             }}
           >
             Reschedule
@@ -321,13 +355,18 @@ export default function DoctorViewAppointments() {
             variant="contained"
             color="error"
             size="small"
-            onClick={() => row.status === "upcoming" && handleCancelClick(row._id)}
+            disabled={row.status !== "upcoming" || row.appointmentType !== "regular"}
+            onClick={() => handleCancelClick(row._id)}
             sx={{
-              opacity: row.status === "upcoming" &&  row.appointmentType == "regular" ? 1 : 0.5,
-              backgroundColor: row.status === "upcoming" ? undefined : '#f44336', // Custom dimmed red
-              color: row.status === "upcoming" ? undefined : 'rgba(0, 0, 0, 0.7)',
-              pointerEvents: row.status === "upcoming" ? 'auto' : 'none', // Disables click events when not upcoming
-              textTransform: 'none' // Changes text to normal casing
+              opacity: row.status === "upcoming" && row.appointmentType === "regular" ? 1 : 0.5,
+              backgroundColor: row.status === "upcoming" && row.appointmentType === "regular" ? undefined : '#f44336',
+              color: 'white',
+              textTransform: 'none', // Changes text to normal casing
+              '&.Mui-disabled': {
+                color: 'white',
+                backgroundColor: '#f44336',
+                opacity: 0.5
+              }
             }}
           >
             Cancel

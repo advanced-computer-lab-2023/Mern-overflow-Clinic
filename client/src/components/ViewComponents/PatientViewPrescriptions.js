@@ -23,6 +23,8 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
 import { useUser } from "../../userContest";
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function PatientViewPrescriptions() {
   const [data, setData] = useState([]);
@@ -30,6 +32,7 @@ export default function PatientViewPrescriptions() {
   const { userId } = useUser();
   // const id = "655089b786a7e9fff5d1d36a";
   const id = userId;
+  const navigate = useNavigate();
 
   const fetchTableData = () => {
     axios
@@ -65,6 +68,16 @@ export default function PatientViewPrescriptions() {
       })
       .catch(() => setData([]));
   };
+
+  const handleClick = (id) => {
+    navigate(`/patient/prescriptions/${id}`);
+  };
+
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
   return (
     <Container maxWidth="xl">
       <Paper elevation={3} sx={{ p: "20px", my: "40px", paddingBottom: 5 }}>
@@ -136,43 +149,30 @@ export default function PatientViewPrescriptions() {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell key="patient">Patient</TableCell>
+            {/* <TableCell key="patient">Patient</TableCell> */}
             <TableCell key="doctor">Doctor</TableCell>
-            <TableCell key="medicine">Medicine</TableCell>
-            <TableCell key="filled">Filled</TableCell>
+            <TableCell key="filled">Prescription Collected</TableCell>
             <TableCell key="date">Date</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {data &&
             data.map((row) => (
-              <TableRow key={row.patient?.name}>
-                <TableCell>{row.patient?.name}</TableCell>
+              <TableRow key={row.patient?.name} onClick={() => handleClick(row._id)} style={{ cursor: 'pointer', transition: 'background-color 0.3s' }} hover>
+                {/* <TableCell>{row.patient?.name}</TableCell> */}
                 <TableCell>{row.doctor?.name}</TableCell>
-                {row.medicine[0] && <TableCell>{row.medicine[0]}</TableCell>}
-
-                <TableCell>{row.filled.toString()}</TableCell>
-                <TableCell>{row.date}</TableCell>
-                <TableCell>
-                  <Button onClick={() => setSelectedPrescription(row)}>
+                <TableCell>{row.filled.toString() == "true"? "Collected": "Not Collected"}</TableCell>
+                <TableCell>{formatDate(row.date)}</TableCell>
+                {/* <TableCell>
+                  {console.log("ID is: "+row._id)}
+                  <Button onClick={() => handleClick(row._id)}>
                     Select Prescription
                   </Button>
-                </TableCell>
+                </TableCell> */}
               </TableRow>
             ))}
         </TableBody>
       </Table>
-      {typeof selectedPrescription.patient !== "undefined" && (
-        <List>
-          <ListItem>{"Patient: " + selectedPrescription.patient.name}</ListItem>
-          <ListItem>{"Doctor: " + selectedPrescription.doctor.name}</ListItem>
-          {selectedPrescription.medicine.map((med) => (
-            <ListItem>{"Medicine: " + med.name}</ListItem>
-          ))}
-          <ListItem>{"Filled: " + selectedPrescription.filled}</ListItem>
-          <ListItem>{"Date: " + selectedPrescription.date}</ListItem>
-        </List>
-      )}
     </Container>
   );
 }

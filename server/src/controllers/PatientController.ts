@@ -9,6 +9,7 @@ import { relative } from "path";
 import doctor from "../models/Doctor.js";
 import user from "../models/User.js";
 import healthRecord from "../models/HelthRecords.js";
+import cart from "../models/Cart.js";
 import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -58,6 +59,10 @@ return res.status(404).send("You are already registered , please sign in ");
                         .then((newPatient) => {
                             newPatient.wallet = 0;
                             newPatient.revFamilyMembers = [];
+                            const newCart = cart.create({
+                                patient: newPatient._id,
+                                medicines: [],
+                            });
                             newPatient.save();
 return res.status(200).json(newPatient);
                         })
@@ -92,14 +97,17 @@ const readPatient = async (req: Request, res: Response) => {
 
 const listFamilyMembers = async (req: Request, res: Response) => {
     const pId = req.params.id;
+    console.log("im here");
      const pat = await patient
         .findById(pId)
         .then((pat) => {
             if (!pat || pat === undefined) {
                 return res.status(404).json({ message: 'Patient not found' });
             } else {
-                if(pat.familyMembers?.length !==0)
+                if(pat.familyMembers?.length !==0){
+                    console.log(pat.familyMembers);
                     res.status(200).json(pat.familyMembers);
+                }
                 else
                 res.status(404).send("no family members");
             }
@@ -134,7 +142,7 @@ return res.status(400).json(err);
 const addFamilyMember = async (req: Request, res: Response) => {
     const familyMem = await patient.findOne({ "nationalId": req.body.nationalId });
     if (!familyMem) {
-        return res.status(404).send("Family Member should be registered as a patient.");
+        return res.status(404).json({message: "Family Member should be registered as a patient."});
     }
 
     //   const familyMemId:mongoose.Types.ObjectId = familyMem._id;

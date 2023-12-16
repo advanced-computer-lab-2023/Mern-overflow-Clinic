@@ -6,6 +6,9 @@ import user from "../models/User.js";
 import Contract from "../models/Contract.js";
 import sendMailService from "../services/emails/sendMailService.js";
 import NotificationController from "./NotificationController.js";
+// import medicine from "../models/medicine.js";
+import Prescription from "../models/Prescription.js";
+import fs from 'fs';
 
 const createDoctor = async (req: Request, res: Response) => {
 	const data = req.body.datatoserver;
@@ -64,7 +67,7 @@ const createDoctor = async (req: Request, res: Response) => {
 
 const readDoctor = async (req: Request, res: Response) => {
 	const pId = req.params.id;
-	const doc = await doctor
+	await doctor
 		.findById(pId)
 		.then((doc) => {
 			if (!doc || doc === undefined) {
@@ -80,7 +83,7 @@ const readDoctor = async (req: Request, res: Response) => {
 
 const isDoctorPending = async (req: Request, res: Response) => {
 	const id = req.params.id;
-	const doc = doctor
+	doctor
 		.find({ _id: id, status: { $in: ["pending", "rejected"] } })
 		.then((doc) => {
 			if (doc.length === 0)
@@ -106,7 +109,7 @@ const updateDoctor = async (req: Request, res: Response) => {
 	if (hourlyRate !== undefined) update["hourlyRate"] = hourlyRate;
 	if (affiliation !== undefined) update["affiliation"] = affiliation;
 
-	doctor
+	await doctor
 		.findOneAndUpdate(query, update, { new: true })
 		.then((updatedDoc) => {
 			if (updatedDoc) {
@@ -120,11 +123,10 @@ const updateDoctor = async (req: Request, res: Response) => {
 
 const deleteDoctor = async (req: Request, res: Response) => {
 	const id = req.params.id;
-	const doc = doctor
+	await doctor
 		.findByIdAndDelete({ _id: id })
 		.then((doc) => {
 			res.status(200).json(doc);
-
 			// if(doc !==null){
 			//   for(const file of doc.files){
 			//       const filePath = `./src/uploads/` + file.filename;
@@ -136,7 +138,6 @@ const deleteDoctor = async (req: Request, res: Response) => {
 			//         })
 			//       }
 			//     }
-
 		}
 		)
 		.catch((err) => {
@@ -145,7 +146,7 @@ const deleteDoctor = async (req: Request, res: Response) => {
 };
 
 const listDoctors = async (req: Request, res: Response) => {
-	const doctors = doctor
+	await doctor
 		.find({ status: "accepted" })
 		.then((doctors) => res.status(200).json(doctors))
 		.catch((err) => {
@@ -154,7 +155,7 @@ const listDoctors = async (req: Request, res: Response) => {
 };
 
 const listPendingDoctors = async (req: Request, res: Response) => {
-	const doctors = doctor
+	await doctor
 		.find({ status: "pending" })
 		.then((doctors) => res.status(200).json(doctors))
 		.catch((err) => {
@@ -309,7 +310,7 @@ const viewHealthRecordOfPatient = async (req: Request, res: Response) => {
 	// assuming in Fe , doctorn gets a table that has all HIS patients and upon selecting a specific entry has the option to view health record of a patient with him
 
 	const pid = req.params.id;
-	patient
+	await patient
 		.findById(pid)
 		.then((result) => {
 			if (result != null) res.status(200).send(result.healthRecords);
@@ -352,10 +353,10 @@ const addFreeSlots = async (req: Request, res: Response) => {
 		}
 		const doc = await doctor.findById(id);
 
-		if (!doc || doc === undefined) {
-			console.log("LINE 351");
-			return res.status(404).json({ message: "Doctor not found." });
-		}
+    if (!doc || doc === undefined) {
+      console.log("LINE 351");
+      return res.status(404).json({ message: "Doctor not found." });
+    }
 
 		if (doc.status !== "accepted") {
 			return res
@@ -366,21 +367,17 @@ const addFreeSlots = async (req: Request, res: Response) => {
 		const cont = await Contract.find({ doctor: id }).exec();
 		if (!cont || cont === undefined) {
 			console.log("LINE 363");
-			return res.status(404).json({ message: "no contracts found" });
+			return res.status(404).json({ message: "No contracts found, can't use this functionality." });
 		}
 		if (cont.length === 0) {
 			console.log("LINE 367");
-			return res.status(404).json({ message: "no contracts found" });
+			return res.status(404).json({ message: "No contracts found, can't use this functionality." });
 		}
 		if (cont[0].status !== "accepted") {
 			console.log("400");
 
-			return res
-				.status(400)
-				.json({
-					message: "Doctor has not accepted the contract, can't add slots",
-				});
-		}
+      return res.status(400).json({message: "Doctor has not accepted the contract, can't add slots"});
+    }
 
 		if (doc.availableSlotsStartTime) {
 			for (const dt of doc.availableSlotsStartTime) {
@@ -434,6 +431,7 @@ const addFreeSlots = async (req: Request, res: Response) => {
 		return res.status(500).send(err);
 	}
 };
+
 
 const acceptContract = async (req: Request, res: Response) => {
 	const docId = req.params.id;
@@ -499,6 +497,7 @@ const acceptFollowUp = async (req: Request, res: Response) => {
 		return res.status(500).json({ success: false, message: "Internal Server Error" });
 	}
 };
+
 const rejectFollowUp = async (req: Request, res: Response) => {
 	try {
 		const doctorId = req.params.id;
@@ -529,41 +528,6 @@ const rejectFollowUp = async (req: Request, res: Response) => {
 	}
 };
 
-
-// const acceptFollowUp = async (req: Request, res: Response) => {
-//   const docId = req.params.id;
-//   const aptId = req.body.apppointmentId;
-//   console.log(req.body);
-//   const apts = await appointment.find({ doctor: docId }).exec();
-//   if (apts.length === 0 || apts === undefined || !apts) {
-//     return res
-//       .status(404)
-//       .json({ success: false, message: "No followUp appointments found for this doctor." });
-//   }
-//   for (const contract of contracts) {
-//     if (
-//       contract._id.toString() === contractId &&
-//       contract.status === "pending"
-//     ) {
-//       console.log("true");
-//       contract.status = "accepted";
-//       try {
-//         await contract.save();
-//         break;
-//       } catch (err) {
-//         // Handle the error, e.g., log or send an error response.
-//         console.error(err);
-//         return res
-//           .status(500)
-//           .json({ success: false, message: "Error saving the contract." });
-//       }
-//     }
-//   }
-//   console.log("200");
-//   return res
-//     .status(200)
-//     .json({ success: true, message: "Contract accepted successfully" });
-// };
 const rejectContract = async (req: Request, res: Response) => {
 	const docId = req.params.id;
 	const contractId = req.body.contractId;
@@ -601,11 +565,10 @@ const rejectContract = async (req: Request, res: Response) => {
 };
 
 const listSlots = async (req: Request, res: Response) => {
-  console.log("hereeee");
   const id = req.params.id;
-  console.log(id);
+  console.log("listSlots id: " + id);
 
-  const doctors = doctor
+  await doctor
     .findById(id)
     .then((doctors) => {
       if(doctors?.status === "accepted"){
@@ -662,6 +625,7 @@ const cancelPatientAppointment = async (req: Request, res: Response) => {
 		return res.status(500).json({ message: "Internal Server Error" });
 	}
 };
+
 const chatWithPatients = async (req: Request, res: Response) => {
 	console.log("In chat with patients");
 	const dId = req.params.id;
@@ -708,11 +672,12 @@ const getAllMyPatients = async (req: Request, res: Response) => {
 
 
 
+
 export default {
 	createDoctor,
 	readDoctor,
 	updateDoctor,
-	// deleteDoctor,
+	deleteDoctor,
 	listDoctors,
 	listDoctorPatients,
 	selectPatient,

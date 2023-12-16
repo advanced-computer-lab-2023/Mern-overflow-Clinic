@@ -496,27 +496,21 @@ const rejectFollowUp = async (req: Request, res: Response) => {
     const doctorId = req.params.id;
     const appointmentId = req.body.appointmentId;
 
-    // Find the appointment for the given doctor ID
-    const apt = await appointment.findById(appointmentId).exec();
+    // Find and remove the appointment for the given doctor ID
+    const deletedAppointment = await appointment.findOneAndDelete({ _id: appointmentId });
 
-    if (!apt) {
+    if (!deletedAppointment) {
       return res.status(404).json({
         success: false,
-        message: "No pending appointments found for this doctor.",
+        message: "Appointment not found.",
       });
     }
 
-    // Update the status to "accepted"
-    apt.followUpStatus = "rejected";
-
-    // Save the updated appointment
-    await apt.save();
-
     return res
       .status(200)
-      .json({ success: true, message: "Appointment accepted successfully" });
+      .json({ success: true, message: "Follow Up canceled", deletedAppointment });
   } catch (error) {
-    console.error("Error accepting appointment:", error);
+    console.error("Error rejecting follow-up:", error);
     return res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };

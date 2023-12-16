@@ -147,11 +147,9 @@ const deleteDoctor = async (req: Request, res: Response) => {
 };
 
 const listDoctors = async (req: Request, res: Response) => {
-	console.log("im here");
 	await doctor
 		.find()
 		.then((doctors) =>{
-			console.log(doctors);
 			res.status(200).json(doctors);
 		}) 
 		.catch((err) => {

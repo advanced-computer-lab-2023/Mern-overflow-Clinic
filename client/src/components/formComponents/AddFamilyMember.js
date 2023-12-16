@@ -27,6 +27,8 @@ const AddFamilyMember = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState(false);
+  const [snackbarSeverity, setSnackbarSeverity] = useState('info');
+
   const {
     register,
     handleSubmit,
@@ -40,11 +42,15 @@ const AddFamilyMember = () => {
     axios.post(`http://localhost:8000/patients/${userId}/familyMember`, dataToServer)
       .then((response) => {
         window.location.reload();
+        setSnackbarSeverity('success');
+
       })
       .catch((error) => {
         const message = error.response?.data?.message || "An unknown error occurred";
         setSnackbarMessage(message);
         setSnackbarOpen(true);
+        setSnackbarSeverity('error');
+
       });
   };
 
@@ -172,9 +178,9 @@ const AddFamilyMember = () => {
         open={snackbarOpen}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
       >
-        <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
+        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
           {snackbarMessage}
         </Alert>
       </Snackbar>

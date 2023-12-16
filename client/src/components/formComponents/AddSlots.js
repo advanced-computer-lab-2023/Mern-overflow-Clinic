@@ -116,6 +116,8 @@ export default function DoctorAddSlots() {
       open={openSnackbar}
       autoHideDuration={6000}
       onClose={() => setOpenSnackbar(false)}
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }} 
+
     >
       <Alert 
         onClose={() => setOpenSnackbar(false)} 
@@ -144,7 +146,7 @@ export default function DoctorAddSlots() {
                 {slots.map((slot, index) => (
                   <TableRow key={index}>
                     <TableCell>
-                      {dayjs(slot).subtract(2, 'hour').format("MMMM D, YYYY h:mm A")}
+                      {dayjs(slot).format("MMMM D, YYYY h:mm A")}
                     </TableCell>
                   </TableRow>
                 ))}

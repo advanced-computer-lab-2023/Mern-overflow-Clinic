@@ -9,6 +9,7 @@ import { relative } from "path";
 import doctor from "../models/Doctor.js";
 import user from "../models/User.js";
 import healthRecord from "../models/HelthRecords.js";
+import cart from "../models/Cart.js";
 import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -44,6 +45,7 @@ const createPatient = async (req: Request, res: Response) => {
     //const uploadedFiles = req.files;
     //req.body.documents = uploadedFiles;
     console.log(req.body)
+    req.body.wallet = 0;
     const entry = user.find({ 'username': req.body.username }).then((document) => {
         if (document.length === 0) {
 
@@ -57,6 +59,10 @@ return res.status(404).send("You are already registered , please sign in ");
                         .then((newPatient) => {
                             newPatient.wallet = 0;
                             newPatient.revFamilyMembers = [];
+                            const newCart = cart.create({
+                                patient: newPatient._id,
+                                medicines: [],
+                            });
                             newPatient.save();
 return res.status(200).json(newPatient);
                         })
@@ -136,7 +142,7 @@ return res.status(400).json(err);
 const addFamilyMember = async (req: Request, res: Response) => {
     const familyMem = await patient.findOne({ "nationalId": req.body.nationalId });
     if (!familyMem) {
-        return res.status(404).send("Family Member should be registered as a patient.");
+        return res.status(404).json({message: "Family Member should be registered as a patient."});
     }
 
     //   const familyMemId:mongoose.Types.ObjectId = familyMem._id;
@@ -1252,6 +1258,47 @@ const linkfamilyMember = async (req: Request, res: Response) => {
     }
 }
 
+const chatWithDoctors = async (req: Request, res: Response) => {
+    console.log("We are HEREEEE");
+    const pId = req.params.id;
+    const search = req.params.search;
+
+    if (!search) res.status(400).send("No search text.");
+    else if(search!==undefined && search!==null && typeof search == "string") {
+        const apts = await appointment.find({ patient: pId });
+        const doctors: any[] = [];
+        for (const apt of apts) {
+
+        const doc = await doctor.findById(apt.doctor);
+
+        if((doc?.name)?.includes(search) && !doctors.some(element => element.id === doc?.id)) doctors.push(doc);
+
+        }
+        console.log(doctors);
+        res.status(200).send(doctors);
+    }
+
+  };
+
+
+  const getAllMyDoctors = async (req: Request, res: Response) => {
+    console.log("ALL DOCS");
+    const pId = req.params.id;
+
+        const apts = await appointment.find({ patient: pId });
+        const doctors: any[] = [];
+        for (const apt of apts) {
+
+        const doc = await doctor.findById(apt.doctor);
+
+        if(!doctors.some(element => element.id === doc?.id)) doctors.push(doc);
+
+        }
+        console.log(doctors);
+        res.status(200).send(doctors);
+
+  };
+
 
 export default {
     createPatient,
@@ -1279,5 +1326,7 @@ export default {
     readPath,
     linkfamilyMember,
     listFamilyMembers,
+    chatWithDoctors,
     listCopmletedAppointmnetsForPatient,
+    getAllMyDoctors
 };

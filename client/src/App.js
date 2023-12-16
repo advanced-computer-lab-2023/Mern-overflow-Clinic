@@ -18,6 +18,7 @@ import PatientManageFollowUp from "./pages/patient/PatientViewCompletedAppointme
 import PatientManageFamily from "./pages/patient/PatientManageFamily";
 import PatientManageInfo from "./pages/patient/PatientManageInfo";
 import PatientManagePrescriptions from "./pages/patient/PatientManagePrescriptions";
+import PatientManagePrescriptionDetails from "./pages/patient/PatientManagePrescriptionDetails";
 import ChangePassword from "./pages/authentication/ChangePassword";
 import ResetPassword from "./pages/authentication/ResetPassword";
 import ForgotPassword from "./pages/authentication/ForgotPassword";
@@ -26,21 +27,30 @@ import DoctorManageContracts from "./pages/doctor/DoctorManageContracts";
 import DoctorManageFollowUps from "./pages/doctor/DoctorManagePendingFollowUps";
 import DoctorManageFollowUp from "./pages/doctor/DoctorManageFollowUp";
 import DoctorManageRescheduaedlAppointments from "./pages/doctor/DoctorRechdualAppointment";
+import DoctorManagePrescriptions from "./pages/doctor/DoctorManagePrescriptions";
+import DoctorManagePrescriptionDetails from "./pages/doctor/DoctorManagePrescriptionDetails";
 import PatientBookAppointments from "./pages/patient/patientBookAppointment";
 import PatientBookFollowUp from "./pages/patient/patientBookAFollowUp";
 import AddHealthRecords from "./pages/doctor/DoctorAddHealthRecords";
 import PatientManageDocuments from './pages/patient/PatientManageDocuments';
 import PatientManagePackages from './pages/patient/PatientManagePackages';
-import PatientPayPackage from "./components/ViewComponents/PatientPayPackage";import PatientManageHealthRecords from "./pages/patient/PatientManageHealthRecords";
+import PatientPayPackage from "./components/ViewComponents/PatientPayPackage";
+import PatientManageHealthRecords from "./pages/patient/PatientManageHealthRecords";
 import AddFamilyMember from "./components/formComponents/linkFamilyMembers";
 import PatientManageFamilyLinks from "./pages/patient/PatientManageFamilyLinks";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AdminEditPackage from "./pages/admin/AdminEditPackage";
+import DoctorDownloadPdf from "./pages/doctor/DoctorDownloadPdf";
+import PatientDownloadPdf from "./pages/patient/PatientDownloadPdf";
+
 // import PatientManageFamily from "./pages/patient/PatientManageFamily";
 // import EditDoctorProfile from './components/formComponents/EditDoctorProfile';
 import axios from "axios";
 import PatientPayAppointment from "./pages/patient/PatientPayAppointment";
 import NotFoundPage from "./NotFoundPage";
+import Chatpage from "./pages/Chatpage";
+
+
 import PatientViewFamilyAppointments from "./pages/patient/PatientViewFamilyAppointments";
 
 function App() {
@@ -116,6 +126,14 @@ function App() {
       element: <DoctorManageFreeSlots />,
     },
     {
+      path: "/doctor/prescriptions",
+      element: <DoctorManagePrescriptions />,
+    },
+    {
+      path: "/doctor/prescriptions/:id",
+      element: <DoctorManagePrescriptionDetails />
+    },
+    {
       path: "/patient/family",
       element: <PatientManageFamily />,
     },
@@ -142,6 +160,10 @@ function App() {
     {
       path: "/patient/prescriptions",
       element: <PatientManagePrescriptions />,
+    },
+    {
+      path: "/patient/prescriptions/:id",
+      element: <PatientManagePrescriptionDetails />,
     },
     {
       path: "/patient/info",
@@ -188,6 +210,14 @@ function App() {
       element: <AddHealthRecords />,
     },
     {
+      path: "/doctor/prescriptions/:id/prescriptionDownload",
+      element: <DoctorDownloadPdf />,
+    },
+    {
+      path: "/patient/prescriptions/:id/prescriptionDownload",
+      element: <PatientDownloadPdf />,
+    },
+    {
       path: "/patient/bookAppointment/:id",
       element: <PatientBookAppointments />,
     },
@@ -217,6 +247,11 @@ function App() {
     },
 
     { path: "*", element: <NotFoundPage /> },
+
+    {
+      path:"/chat",
+      element: <Chatpage/>
+    }
   ]);
 
   return (

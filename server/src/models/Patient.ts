@@ -5,6 +5,7 @@ import HealthRecords, { IHealthRecord } from './HelthRecords.js';
 interface emergencyContact {
   name: string;
   mobileNumber: string;
+  relation: string;
 }
 
 interface familyMember {
@@ -30,7 +31,7 @@ export interface IPatient {
     dateOfBirth: Date;
     gender: string;
     mobileNumber: string;
-    emergencyContact: emergencyContact[];
+    emergencyContact: emergencyContact; //TODO remove array from register
     files?: document[];
     familyMembers?: familyMember[];
     revFamilyMembers?: Types.ObjectId[];
@@ -40,6 +41,7 @@ export interface IPatient {
     subscribedToPackage?: boolean;
     packageRenewalDate?: Date;
     healthRecords?: Types.ObjectId[];
+    address: string[];
     wallet?:number
 
 
@@ -51,19 +53,20 @@ export interface IPatient {
 
 const PatientSchema = new Schema<IPatient>({
     // username: { type: String, required: true, unique: true },
-    name: { type: String, required: true, trim: true },
+    name: { type: String, lowercase: true, required: true, trim: true },
     // email: { type: String, required: true, unique: true, match: [/\S+@\S+\.\S+/, "invalid email"], },
     nationalId: { type: String, required: true },
     // passwordHash: { type: String, required: true },
     dateOfBirth: { type: Date, required: true },
     gender: { type: String, required: true, lowercase: true, enum: ['male', 'female'] },
     mobileNumber: { type: String, required: true, unique: true, min: 8, max: 16, match: [/^(\+\d{8,15}|\d{8,15})$/, "invalid charachters"] },
-    emergencyContact: [
+    emergencyContact: 
         {
             name: { type: String, required: true, trim: true },
             mobileNumber: { type: String, required: true, min: 8, max: 16, match: [/^(\+\d{8,15}|\d{8,15})$/, "invalid charachters"] },
+            relation: { type: String, required: true, lowercase: true, enum: ['wife', 'husband', 'parent', 'child', 'sibling'] },
         }
-    ],
+    ,
     files: [
         {
             filename: { type: String, required: true, trim: true, unique:true },
@@ -92,16 +95,9 @@ const PatientSchema = new Schema<IPatient>({
           type: mongoose.Schema.Types.ObjectId,
           ref: "HealthRecord", // Reference to the HealthRecord model
         }
-      ],
-    wallet: { type: Number, required: false }
-});
-
-PatientSchema.pre('save', function(next) {
-    if (this.isModified('name')) {
-        this.name = this.name.toLowerCase();
-    }
-
-  next();
+    ],
+    address: [{ type: String, required: false, trim: true }],
+    wallet: { type: Number, required: true }
 });
 
 const Patient = User.discriminator<IPatient>('Patient', PatientSchema);

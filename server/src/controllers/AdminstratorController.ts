@@ -30,10 +30,10 @@ const updateAdminstrator = async (req: Request, res: Response) => {};
 
 const deleteAdmin = async (req: Request, res: Response) => {
   const id = req.params.id;
-  const newAdminstrator = adminstrator
+  const adminToDelete = adminstrator
     .findByIdAndDelete({ _id: id })
-    .then((newAdminstrator) => {
-      res.status(200).json(newAdminstrator);
+    .then((adminToDelete) => {
+      res.status(200).json(adminToDelete);
     })
     .catch((err) => {
       res.status(400).json(err);
@@ -97,6 +97,8 @@ const acceptDoctorRequest = async (req: Request, res: Response) => {
     })
     .catch((err) => res.status(404).send(err));
 };
+
+
 const rejectDoctorRequest = async (req: Request, res: Response) => {
   // assuming doctor id passed as a parameter whenever entry is clciked from fe
   const reqid = req.body.id;

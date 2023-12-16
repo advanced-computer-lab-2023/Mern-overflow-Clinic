@@ -1,5 +1,6 @@
 import ButtonAppBar from "../../components/ButtonAppBar";
 import * as React from "react";
+import SmsIcon from '@mui/icons-material/Sms';
 import {
   Typography,
   Toolbar,
@@ -36,7 +37,7 @@ const PatientDashboard = (props) => {
   return (
     <>
       {userRole === "Patient" ? (
-        <ButtonAppBar user="Patient" actionButton="Log out" title={props.title}>
+        <ButtonAppBar user="Patient" actionButton="Log out" title={props.title} sx={{ position: 'fixed', width: '100%', zIndex: '1000' }} >
           <Divider />
           <List>
             <ListItem disablePadding>
@@ -230,6 +231,27 @@ const PatientDashboard = (props) => {
             </ListItem>
           </List>
           <Divider />
+          <List>
+            <ListItem disablePadding>
+              <ListItemButton component={Link} to="/chat">
+                <ListItemIcon>
+                  <Avatar
+                    sx={{
+                      m: 0,
+                      bgcolor: "white",
+                      color: "black",
+                      width: 30,
+                      height: 30,
+                      padding: 0,
+                    }}
+                  >
+                    <SmsIcon sx={{ width: 30, height: 30 }} />
+                  </Avatar>
+                </ListItemIcon>
+                <ListItemText primary="Chat/Videocall Doctors" />
+              </ListItemButton>
+            </ListItem>
+          </List>
         </ButtonAppBar>
       ) : (
         <p>Excuse me, are you a Patient?</p>

@@ -10,6 +10,8 @@ import {
   Container,
   Paper,
   TextField,
+  Snackbar, 
+  Alert
 } from "@mui/material";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
@@ -23,6 +25,8 @@ const LinkFamilyMember = () => {
   let id = userId;
   const [errorMessage, setErrorMessage] = useState(false);
   const [err, setErr] = useState("false");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
   const {
     register,
     handleSubmit,
@@ -31,30 +35,19 @@ const LinkFamilyMember = () => {
   } = useForm();
 
   const onSubmit = (data) => {
-    //    const id = "6529347d1b1e1b92fd454eff";
-
-    axios
-      .post(`http://localhost:8000/patients/${id}/linkfamilyMember`, data) // Send the data object with the request
+    axios.post(`http://localhost:8000/patients/${userId}/linkfamilyMember`, data)
       .then((response) => {
-        console.log("POST request successful", response);
-        setErrorMessage(false);
         window.location.reload();
       })
       .catch((error) => {
-        console.error("Error making POST request", error);
-        setErrorMessage(true);
-        setErr(error.response.data.message || "An unknown error occurred");
+        const message = error.response?.data?.message || "An unknown error occurred";
+        setSnackbarMessage(message);
+        setSnackbarOpen(true);
       });
-
   };
 
-  const handleChange = (event) => {
-    if (errors[event.target.name]) {
-      setError(event.target.name, {
-        type: errors[event.target.name]["type"],
-        message: errors[event.target.name]["type"],
-      });
-    }
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
   };
 
 
@@ -62,6 +55,7 @@ const LinkFamilyMember = () => {
   return (
     <>
       <Container maxWidth="lg">
+ 
         <Paper elevation={3} sx={{ p: "20px", my: "40px" }}>
           <Typography variant="h6" sx={{ mb: 4 }}>
             {" "}
@@ -131,15 +125,21 @@ const LinkFamilyMember = () => {
                   Link Member
                 </Button>
               </Grid>
-              {errorMessage && (
-                <Typography color="red">
-                  {err}
-                </Typography>
-              )}
+              
             </Grid>
           </Box>
         </Paper>
       </Container>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </>
   );
 };

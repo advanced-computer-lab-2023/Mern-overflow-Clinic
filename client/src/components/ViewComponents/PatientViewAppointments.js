@@ -185,6 +185,8 @@ export default function PatientViewAppointments() {
           open={snackbarOpen}
           autoHideDuration={6000}
           onClose={() => setSnackbarOpen(false)}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }} 
+
         >
           <Alert
             onClose={() => setSnackbarOpen(false)}

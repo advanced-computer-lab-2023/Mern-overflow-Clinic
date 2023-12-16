@@ -16,6 +16,10 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormHelperText,
 } from "@mui/material";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -55,9 +59,11 @@ export default function PatientRegister() {
     dataToServer["emergencyContact"] = {
       name: data["EmergencyName"],
       mobileNumber: data["EmergencyPhone"],
+      relation: data["EmergencyRelation"],
     };
     delete dataToServer.EmergencyName;
     delete dataToServer.EmergencyPhone;
+    delete dataToServer.EmergencyRelation;
     delete dataToServer.password;
 
     console.log("Data to server" + JSON.stringify(dataToServer));
@@ -120,7 +126,7 @@ export default function PatientRegister() {
               left: "22%",
             }}
           >
-            El7a2ni Clinic
+            El7a2ny Clinic
           </Typography>
           <img
             src={logo}
@@ -345,6 +351,48 @@ export default function PatientRegister() {
                     helperText={errors["EmergencyPhone"]?.message}
                     onBlur={handleChange}
                   />
+                </Grid>
+                {/* <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    id="emergencyRelation"
+                    label="Relation"
+                    {...register("EmergencyRelation", {
+                      required: true,
+                      minLength: 8,
+                      maxLength: 16,
+                    })}
+                    error={!!errors["EmergencyRelation"]}
+                    helperText={errors["EmergencyRelation"]?.message}
+                    onBlur={handleChange}
+                  />
+                </Grid> */}
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <InputLabel id="emergencyRelation-label">Relation</InputLabel>
+                    <Select
+                      labelId="emergencyRelation-label"
+                      id="emergencyRelation"
+                      {...register("EmergencyRelation", {
+                        required: true,
+                      })}
+                      error={!!errors["EmergencyRelation"]}
+                      onBlur={handleChange}
+                    >
+                      <MenuItem value="">
+                        <em>Choose a relation</em>
+                      </MenuItem>
+                      <MenuItem value="wife">Wife</MenuItem>
+                      <MenuItem value="husband">Husband</MenuItem>
+                      <MenuItem value="parent">Parent</MenuItem>
+                      <MenuItem value="child">Child</MenuItem>
+                      <MenuItem value="sibling">Sibling</MenuItem>
+                      {/* Add more choices as needed */}
+                    </Select>
+                    {errors["EmergencyRelation"] && (
+                      <FormHelperText error>{errors["EmergencyRelation"]?.message}</FormHelperText>
+                    )}
+                  </FormControl>
                 </Grid>
               </Grid>
               <Button

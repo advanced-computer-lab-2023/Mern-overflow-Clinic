@@ -10,6 +10,8 @@ import {
   Container,
   Paper,
   TextField,
+  Snackbar, 
+  Alert
 } from "@mui/material";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
@@ -22,7 +24,8 @@ const AddFamilyMember = () => {
   // let id = "6529347d1b1e1b92fd454eff";
   const { userId } = useUser();
   let id = userId;
-  console.log(id);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState(false);
   const {
     register,
@@ -33,32 +36,24 @@ const AddFamilyMember = () => {
   
 
   const onSubmit = (data) => {
-    const dataToServer = { id: id, ...data };
-    axios
-      .post(`http://localhost:8000/patients/${id}/familyMember`, dataToServer)
+    const dataToServer = { id: userId, ...data };
+    axios.post(`http://localhost:8000/patients/${userId}/familyMember`, dataToServer)
       .then((response) => {
-        console.log("PUT request successful", response);
-        setErrorMessage(false);
         window.location.reload();
       })
       .catch((error) => {
-        console.log(dataToServer);
-        console.error("Error making PUT request", error);
-        setErrorMessage(true);
+        const message = error.response?.data?.message || "An unknown error occurred";
+        setSnackbarMessage(message);
+        setSnackbarOpen(true);
       });
-    
   };
 
-  const handleChange = (event) => {
-    if (errors[event.target.name]) {
-      setError(event.target.name, {
-        type: errors[event.target.name]["type"],
-        message: errors[event.target.name]["type"],
-      });
-    }
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
   };
 
   return (
+    
     <>
       <Container maxWidth="lg">
         <Paper elevation={3} sx={{ p: "20px", my: "40px" }}>
@@ -150,8 +145,6 @@ const AddFamilyMember = () => {
                     <MenuItem value="husband">Husband</MenuItem>
                     <MenuItem value="wife">Wife</MenuItem>
                     <MenuItem value="child">Child</MenuItem>
-                    <MenuItem value="parent">Parent</MenuItem>
-                    <MenuItem value="sibling">Sibling</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
@@ -171,28 +164,20 @@ const AddFamilyMember = () => {
                   Add Member
                 </Button>
               </Grid>
-              {(errorMessage &&
-                //TODO: 
-      // <Modal
-      //   open={open}
-      //   onClose={setErr}
-      //   aria-labelledby="modal-modal-title"
-      //   aria-describedby="modal-modal-description"
-      // >
-      //   <Box>
-      //     <Typography id="modal-modal-title" variant="h6" component="h2">
-      //       Text in a modal
-      //     </Typography>
-      //     <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-      //       Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-      //     </Typography>
-      //   </Box>
-      // </Modal>
-             <Typography color="red">Family Member should be registered as patient with correct NationalID</Typography>
-              )}
+              
             </Grid>
           </Box>
         </Paper>
+        <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
       </Container>
     </>
   );

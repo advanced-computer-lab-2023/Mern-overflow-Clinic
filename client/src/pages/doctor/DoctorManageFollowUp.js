@@ -8,7 +8,7 @@ const DoctorManageFollowUp = () => {
     <>
       {userRole === "Doctor" ? (
         <>
-          <DoctorDashboard title="Manage My Contracts" />
+          <DoctorDashboard title="Manage Follow Ups" />
           <ScheduleFollowUp />
         </>
       ) : (

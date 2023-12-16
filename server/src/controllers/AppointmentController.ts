@@ -737,25 +737,25 @@ const rescheduleAppointment = async (req:Request, res:Response) => {
 						// Save the updated appointment
 						await apt.save();
 
-						const patientEmail: string = await Users.findById(apt.patient).then((pat) => {
-							console.log(pat?.email);
-							return pat ? pat.email : "";
-						}
-						);
-						const doctorEmail: string = await Users.findById(apt.doctor).then((doc) => {
-							console.log(doc?.email);
-							return doc ? doc.email : "";
-						}
-						);
+						// const patientEmail: string = await Users.findById(apt.patient).then((pat) => {
+						// 	console.log(pat?.email);
+						// 	return pat ? pat.email : "";
+						// }
+						// );
+						// const doctorEmail: string = await Users.findById(apt.doctor).then((doc) => {
+						// 	console.log(doc?.email);
+						// 	return doc ? doc.email : "";
+						// }
+						// );
 
-						const subject = "Appointment Resceduled";
-						let html = "Hello patient, \n your appointment was resceduled with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.";
-						sendMailService.sendMail(patientEmail, subject, html);
-						html = "Hello doctor, \n your appointment was resceduled with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.";
-						sendMailService.sendMail(doctorEmail, subject, html);
-						console.log("sending notification for appointmen: patient", req.body.patient, " | doctor", req.body.doctor);
-						NotificationController.createNotificationwithId(apt.patient.toString(), "Your appointment is rescheduled", "/patient/appointments");
-						NotificationController.createNotificationwithId(apt.doctor.toString(), "Your appointment is rescheduled", "/doctor/appointments");
+						// const subject = "Appointment Resceduled";
+						// let html = "Hello patient, \n your appointment was resceduled with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.";
+						// sendMailService.sendMail(patientEmail, subject, html);
+						// html = "Hello doctor, \n your appointment was resceduled with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.";
+						// sendMailService.sendMail(doctorEmail, subject, html);
+						// console.log("sending notification for appointmen: patient", req.body.patient, " | doctor", req.body.doctor);
+						// NotificationController.createNotificationwithId(apt.patient.toString(), "Your appointment is rescheduled", "/patient/appointments");
+						// NotificationController.createNotificationwithId(apt.doctor.toString(), "Your appointment is rescheduled", "/doctor/appointments");
 
 						return res.status(200).json({ message: "Appointment rescheduled successfully", appointment: apt });
 					} else {
@@ -821,78 +821,122 @@ const listAllPendingFllowUps = async (req: Request, res: Response) => {
 }
 
 
+// const getAllAppointments = async (req: Request, res: Response) => {
+// 	const id = req.params.id;
+// 	var doc;
+// 	console.log("here");
+// 	const pat = await Patient.findById(id).exec();
+// 	if (!pat || pat === undefined) {
+// 		//return res.status(404).send("no user found");
+// 		doc = await doctor.findById(id).exec();
+// 		if (!doc || doc === undefined) {
+// 			return res.status(404).send("no user found with this ID");
+// 		}
+// 		console.log("not patient");
+// 	}
+
+
+// 	if (pat) {
+// 		const currentDate = new Date();
+
+// 		console.log("getting apt");
+// 		const apt = appointment
+// 			.find({ patient: id })
+// 			.populate({ path: "doctor", select: "name" })
+// 			.populate({ path: "patient", select: "name" })
+// 			.then((appointments) => {
+
+// 				console.log("apt here ");
+
+// 				if (appointments.length === 0) {
+// 					// No appointments found for the patient
+// 					console.log("apt 0");
+
+// 					return res.status(200).json([]);
+// 				}else{
+// 			// Add a new attribute 'state' based on the date comparison
+// 					console.log("apt != 0");
+
+// 				const updatedAppointments = appointments.map((apt) => {
+// 					const aptDate = new Date(apt.date);
+// 					const state = aptDate < currentDate ? "past" : "upcoming";
+// 					return { ...apt.toObject(), state };
+// 				});
+
+// 				res.status(200).json(updatedAppointments);
+// 				}
+
+
+	
+// 			})
+// 			.catch((err) => {
+// 				res.status(400).json(err);
+// 			});
+// 	} else {
+// 		console.log(" doctor");
+
+// 		const currentDate = new Date();
+
+// 		const apt = appointment
+// 			.find({ doctor: id })
+// 			.populate({ path: "doctor", select: "name" })
+// 			.populate({ path: "patient", select: "name" })
+// 			.then((appointments) => {
+// 				if (appointments.length === 0) {
+// 					// No appointments found for the patient
+// 					return res.status(200).json([]);
+// 				}
+
+// 				// Add a new attribute 'state' based on the date comparison
+// 				const updatedAppointments = appointments.map((apt) => {
+// 					const aptDate = new Date(apt.date);
+// 					const state = aptDate < currentDate ? "past" : "upcoming";
+// 					return { ...apt.toObject(), state };
+// 				});
+
+// 				res.status(200).json(updatedAppointments);
+// 			})
+// 			.catch((err) => {
+// 				res.status(400).json(err);
+// 			});
+// 	}
+// }
+
 const getAllAppointments = async (req: Request, res: Response) => {
-	const id = req.params.id;
-	var doc;
-	const pat = await Patient.findById(id).exec();
-	if (!pat || pat === undefined) {
-		//return res.status(404).send("no user found");
-		doc = await doctor.findById(id).exec();
-		if (!doc || doc === undefined) {
-			return res.status(404).send("no user found with this ID");
-		}
-	}
+    const id = req.params.id;
+    console.log(id);
+    console.log("here");
+    const apt = await appointment.find({ patient: id }).exec();
 
-	if (pat) {
-		const currentDate = new Date();
+    if (apt.length <= 0 || !apt || apt === undefined) {
+        console.log("empty");
+        return res.status(200).json([]);
+    }
 
-		const apt = appointment
-			.find({ patient: id })
-			.populate({ path: "doctor", select: "name" })
-			.populate({ path: "patient", select: "name" })
-			.then((appointments) => {
-				if (appointments.length === 0) {
-					// No appointments found for the patient
-					return res.status(200).json([]);
-				}
+    // Fetch doctor details for each appointment
+    const appointmentsWithDoctor = await Promise.all(apt.map(async (appointment) => {
+        try {
+            // Fetch the doctor's details based on appointment.doctor (assuming appointment.doctor is the doctor's ID)
+            const doctor = await Doctor.findById(appointment.doctor).exec(); // Replace `Doctor` with your doctor model
+            if (doctor) {
+                return {
+                    ...appointment.toObject(), // Convert Mongoose document to plain JavaScript object
+                    doctor: {
+                        name: doctor.name, // Assuming doctor has a 'name' field
+                        _id: doctor._id
+                    }
+                };
+            } else {
+                return appointment.toObject();
+            }
+        } catch (error) {
+            console.error('Error fetching doctor details:', error);
+            return appointment.toObject();
+        }
+    }));
 
-        // TODO: Handle patient not paying
-        // for (const apt of appointments){
-        //   if(!apt.paid){
-        //    appointment.findByIdAndDelete(apt._id);
-        //    axios.post(`http://localhost:8000/doctors/${apt.doctor}/addSlots`,{date:apt.date})
-        //   }
-        // }
-				// Add a new attribute 'state' based on the date comparison
-				const updatedAppointments = appointments.map((apt) => {
-					const aptDate = new Date(apt.date);
-					const state = aptDate < currentDate ? "past" : "upcoming";
-					return { ...apt.toObject(), state };
-				});
-
-				res.status(200).json(updatedAppointments);
-			})
-			.catch((err) => {
-				res.status(400).json(err);
-			});
-	} else {
-		const currentDate = new Date();
-
-		const apt = appointment
-			.find({ doctor: id })
-			.populate({ path: "doctor", select: "name" })
-			.populate({ path: "patient", select: "name" })
-			.then((appointments) => {
-				if (appointments.length === 0) {
-					// No appointments found for the patient
-					return res.status(200).json([]);
-				}
-
-				// Add a new attribute 'state' based on the date comparison
-				const updatedAppointments = appointments.map((apt) => {
-					const aptDate = new Date(apt.date);
-					const state = aptDate < currentDate ? "past" : "upcoming";
-					return { ...apt.toObject(), state };
-				});
-
-				res.status(200).json(updatedAppointments);
-			})
-			.catch((err) => {
-				res.status(400).json(err);
-			});
-	}
-}
-
+    return res.status(200).json(appointmentsWithDoctor);
+};
 
 const cancelAppointment = async (req: Request, res: Response) => {
   const id = req.params.id;

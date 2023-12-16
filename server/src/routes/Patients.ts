@@ -7,6 +7,10 @@ import patientController from "../controllers/PatientController.js";
 import prescriptionController from "../controllers/PrescriptionController.js";
 import isAuthenticated from "../middlewares/permissions/isAuthenticated.js";
 import healthRecordController from "../controllers/HealthRecordController.js";
+import Patient from "../models/Patient.js";
+import PatientController from "../controllers/PatientController.js";
+import isAuthorized from "../middlewares/permissions/isAuthorized.js";
+import { UserType } from "../enums/UserTypes.js";
 
 const router = express.Router();
 router.use(bodyParser.json());
@@ -39,6 +43,9 @@ router.get("/:id/documents", isAuthenticated, patientController.readDocuments);
 router.get("/:id/document", isAuthenticated, patientController.readPath);
 // router.get("/:id/healthRecords",patientController.viewMyHealthRecords);
 router.get("/:id/healthRecords",isAuthenticated,healthRecordController.patientListAllHealthRecords);
+// TODO: Authentication
+router.get("/chatWithDoctors/:id/:search",isAuthenticated,isAuthorized([UserType.PATIENT]),patientController.chatWithDoctors);
+router.get("/:id/completedAppointments", isAuthenticated, patientController.listCopmletedAppointmnetsForPatient);
 
 
 //POST
@@ -55,6 +62,7 @@ router.delete("/:id", isAuthenticated, patientController.deletePatient);
 router.delete("/:id/documents", isAuthenticated, patientController.deleteDocument);
 router.delete("/:id/packages", isAuthenticated, patientController.deletePackage);
 router.delete("/:id/packages/:pId", isAuthenticated, patientController.deletePackageFromFamMem);
+
 
 
 export default router;

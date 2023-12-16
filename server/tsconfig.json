@@ -1,6 +1,6 @@
 {
-    "compilerOptions": {
-    "moduleResolution": "NodeNext",     
+  "compilerOptions": {
+    "moduleResolution": "NodeNext",
     "target": "ES2020",
     "module": "NodeNext",
     "outDir": "./dist",
@@ -8,12 +8,7 @@
     "strict": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": [
-    "src/**/*.ts",
-    "dotenv/config",
-    "src/jest.config.ts"  
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["src/**/*.ts", "dotenv/config", "src/jest.config.ts"],
+  "exclude": ["node_modules"]
 }
+

@@ -1,4 +1,5 @@
 import ButtonAppBar from "../../components/ButtonAppBar";
+import SmsIcon from '@mui/icons-material/Sms';
 import * as React from "react";
 import {
   Typography,
@@ -142,6 +143,29 @@ const DoctorDashboard = (props) => {
             </ListItem>
           </List>
           <Divider />
+
+          <List>
+            <ListItem disablePadding>
+              <ListItemButton component={Link} to="/doctor/pendingFollowUps">
+                <ListItemIcon>
+                  <Avatar
+                    sx={{
+                      m: 0,
+                      bgcolor: "white",
+                      color: "black",
+                      width: 30,
+                      height: 30,
+                      padding: 0,
+                    }}
+                  >
+                    <TodayIcon sx={{ width: 25, height: 25 }} />
+                  </Avatar>
+                </ListItemIcon>
+                <ListItemText primary="Pending Follow Ups" />
+              </ListItemButton>
+            </ListItem>
+          </List>
+          <Divider />
           <List>
             <ListItem disablePadding>
               <ListItemButton component={Link} to="/doctor/patients">
@@ -250,7 +274,28 @@ const DoctorDashboard = (props) => {
               </ListItemButton>
             </ListItem>
           </List>
-
+          <Divider />
+          <List>
+            <ListItem disablePadding>
+              <ListItemButton component={Link} to="/chat">
+                <ListItemIcon>
+                  <Avatar
+                    sx={{
+                      m: 0,
+                      bgcolor: "white",
+                      color: "black",
+                      width: 30,
+                      height: 30,
+                      padding: 0,
+                    }}
+                  >
+                    <SmsIcon sx={{ width: 30, height: 30 }} />
+                  </Avatar>
+                </ListItemIcon>
+                <ListItemText primary="Chat With Patients" />
+              </ListItemButton>
+            </ListItem>
+          </List>
           <Divider />
         </ButtonAppBar>
       ) : (

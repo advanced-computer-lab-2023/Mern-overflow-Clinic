@@ -1,5 +1,6 @@
 import ButtonAppBar from "../../components/ButtonAppBar";
 import * as React from "react";
+import SmsIcon from '@mui/icons-material/Sms';
 import {
   Typography,
   Toolbar,
@@ -171,28 +172,6 @@ const PatientDashboard = (props) => {
           </List>
           <Divider />
           <List>
-            <ListItem disablePadding>
-              <ListItemButton component={Link} to="/patient/linkFamilyMember">
-                <ListItemIcon>
-                  <Avatar
-                    sx={{
-                      m: 0,
-                      bgcolor: "white",
-                      color: "black",
-                      width: 30,
-                      height: 30,
-                      padding: 0,
-                    }}
-                  >
-                    <LinkIcon sx={{ width: 30, height: 30 }} />
-                  </Avatar>
-                </ListItemIcon>
-                <ListItemText primary="Link Family Members" />
-              </ListItemButton>
-            </ListItem>
-          </List>
-          <Divider />
-          <List>
               <ListItem disablePadding>
                   <ListItemButton component={Link} to='/patient/documents'>
                       <ListItemIcon>
@@ -214,6 +193,18 @@ const PatientDashboard = (props) => {
                           </Avatar>
                       </ListItemIcon>
                       <ListItemText primary="My Packages" />
+                  </ListItemButton>
+              </ListItem>
+          </List>
+          <List>
+              <ListItem disablePadding>
+                  <ListItemButton component={Link} to='/patient/followups'>
+                      <ListItemIcon>
+                          <Avatar sx={{ m: 0, bgcolor: 'white', color: 'black', width: 30, height: 30, padding: 0 }}>
+                              <InventoryIcon sx={{ width: 30, height: 30 }} />
+                          </Avatar>
+                      </ListItemIcon>
+                      <ListItemText primary="FollowUps" />
                   </ListItemButton>
               </ListItem>
           </List>
@@ -240,6 +231,27 @@ const PatientDashboard = (props) => {
             </ListItem>
           </List>
           <Divider />
+          <List>
+            <ListItem disablePadding>
+              <ListItemButton component={Link} to="/chat">
+                <ListItemIcon>
+                  <Avatar
+                    sx={{
+                      m: 0,
+                      bgcolor: "white",
+                      color: "black",
+                      width: 30,
+                      height: 30,
+                      padding: 0,
+                    }}
+                  >
+                    <SmsIcon sx={{ width: 30, height: 30 }} />
+                  </Avatar>
+                </ListItemIcon>
+                <ListItemText primary="Chat/Videocall Doctors" />
+              </ListItemButton>
+            </ListItem>
+          </List>
         </ButtonAppBar>
       ) : (
         <p>Excuse me, are you a Patient?</p>

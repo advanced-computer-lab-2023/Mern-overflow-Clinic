@@ -96,14 +96,17 @@ const readPatient = async (req: Request, res: Response) => {
 
 const listFamilyMembers = async (req: Request, res: Response) => {
     const pId = req.params.id;
+    console.log("im here");
      const pat = await patient
         .findById(pId)
         .then((pat) => {
             if (!pat || pat === undefined) {
                 return res.status(404).json({ message: 'Patient not found' });
             } else {
-                if(pat.familyMembers?.length !==0)
+                if(pat.familyMembers?.length !==0){
+                    console.log(pat.familyMembers);
                     res.status(200).json(pat.familyMembers);
+                }
                 else
                 res.status(404).send("no family members");
             }
@@ -138,7 +141,7 @@ return res.status(400).json(err);
 const addFamilyMember = async (req: Request, res: Response) => {
     const familyMem = await patient.findOne({ "nationalId": req.body.nationalId });
     if (!familyMem) {
-        return res.status(404).send("Family Member should be registered as a patient.");
+        return res.status(404).json({message: "Family Member should be registered as a patient."});
     }
 
     //   const familyMemId:mongoose.Types.ObjectId = familyMem._id;
@@ -1039,6 +1042,30 @@ const viewWallet = async (req: Request, res: Response) => {
         });
 }
 
+
+ const listCopmletedAppointmnetsForPatient = async (req: Request, res: Response) => {
+    try {
+        const id = req.params.id;
+
+        // Find completed appointments for the patient and populate the 'doctor' field
+        const appointments = await appointment
+            .find({ patient: id, status: "completed" })
+            .populate("doctor")
+            .exec();
+
+        // The 'doctor' field in 'appointments' is already populated, so you can access the doctors directly
+        const doctors = appointments.map((appointment) => appointment.doctor);
+        const completedAppointments = appointments.filter(appointment => appointment.status === "completed");
+        return res.status(200).json({ doctors, appointments: completedAppointments });
+
+        //return res.status(200).json({ doctors, appointments });
+    } catch (error) {
+        console.error("Error retrieving completed appointments:", error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+
+  
 // const linkfamilyMember = async (req: Request, res: Response) => {
 //     console.log(req.body);
 //     const patId = req.params.id;
@@ -1121,6 +1148,7 @@ const linkfamilyMember = async (req: Request, res: Response) => {
     if (relation !== "wife" && relation !== "husband" && relation !== "child" && relation !== "parent" && relation !== "sibling") {
         return res.status(404).json({ message: 'Not a valid relation.' });
     } 
+    console.log(req.body)
     try {
         const rPatient = await patient.findById(patId);
         if (!rPatient || rPatient === undefined) {
@@ -1229,6 +1257,28 @@ const linkfamilyMember = async (req: Request, res: Response) => {
     }
 }
 
+const chatWithDoctors = async (req: Request, res: Response) => {
+    console.log("We are HEREEEE");
+    const pId = req.params.id;
+    const search = req.params.search;
+
+    if (!search) res.status(400).send("No search text.");
+    else if(search!==undefined && search!==null && typeof search == "string") {
+        const apts = await appointment.find({ patient: pId });
+        const doctors: any[] = [];
+        for (const apt of apts) {
+
+        const doc = await doctor.findById(apt.doctor);
+
+        if((doc?.name)?.includes(search) && !doctors.some(element => element.id === doc?.id)) doctors.push(doc);
+
+        }
+        console.log(doctors);
+        res.status(200).send(doctors);
+    }
+
+  };
+
 
 export default {
     createPatient,
@@ -1255,5 +1305,7 @@ export default {
     deleteDocument,
     readPath,
     linkfamilyMember,
-    listFamilyMembers
+    listFamilyMembers,
+    chatWithDoctors,
+    listCopmletedAppointmnetsForPatient,
 };

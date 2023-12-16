@@ -14,6 +14,7 @@ import DoctorManagePatients from "./pages/doctor/DoctorManagePatients";
 import DoctorManageProfile from "./pages/doctor/DoctorManageProfile";
 import PatientManageAppointments from "./pages/patient/PatientManageAppointments";
 import PatientManageDoctors from "./pages/patient/PatientManageDoctors";
+import PatientManageFollowUp from "./pages/patient/PatientViewCompletedAppointments";
 import PatientManageFamily from "./pages/patient/PatientManageFamily";
 import PatientManageInfo from "./pages/patient/PatientManageInfo";
 import PatientManagePrescriptions from "./pages/patient/PatientManagePrescriptions";
@@ -23,10 +24,13 @@ import ResetPassword from "./pages/authentication/ResetPassword";
 import ForgotPassword from "./pages/authentication/ForgotPassword";
 import DoctorManageFreeSlots from "./pages/doctor/DoctorManageFreeSlots";
 import DoctorManageContracts from "./pages/doctor/DoctorManageContracts";
+import DoctorManageFollowUps from "./pages/doctor/DoctorManagePendingFollowUps";
 import DoctorManageFollowUp from "./pages/doctor/DoctorManageFollowUp";
+import DoctorManageRescheduaedlAppointments from "./pages/doctor/DoctorRechdualAppointment";
 import DoctorManagePrescriptions from "./pages/doctor/DoctorManagePrescriptions";
 import DoctorManagePrescriptionDetails from "./pages/doctor/DoctorManagePrescriptionDetails";
 import PatientBookAppointments from "./pages/patient/patientBookAppointment";
+import PatientBookFollowUp from "./pages/patient/patientBookAFollowUp";
 import AddHealthRecords from "./pages/doctor/DoctorAddHealthRecords";
 import PatientManageDocuments from './pages/patient/PatientManageDocuments';
 import PatientManagePackages from './pages/patient/PatientManagePackages';
@@ -44,7 +48,10 @@ import PatientDownloadPdf from "./pages/patient/PatientDownloadPdf";
 import axios from "axios";
 import PatientPayAppointment from "./pages/patient/PatientPayAppointment";
 import NotFoundPage from "./NotFoundPage";
+import Chatpage from "./pages/Chatpage";
 
+
+import PatientViewFamilyAppointments from "./pages/patient/PatientViewFamilyAppointments";
 
 function App() {
   axios.defaults.withCredentials = true;
@@ -101,6 +108,10 @@ function App() {
     {
       path: "/doctor/appointments",
       element: <DoctorManageAppointments />,
+    },
+    {
+      path: "/doctor/pendingFollowUps",
+      element: <DoctorManageFollowUps />,
     },
     {
       path: "/doctor/info",
@@ -179,6 +190,10 @@ function App() {
       element: <DoctorManageFollowUp />,
     },
     {
+      path: "/patient/followups",
+      element: <PatientManageFollowUp/>,
+    },
+    {
       path: "/patient/pay/appointment/:appid",
       element: <PatientPayAppointment />,
     },
@@ -207,6 +222,18 @@ function App() {
       element: <PatientBookAppointments />,
     },
     {
+      path: "/patient/family/appointments/:id",
+      element: <PatientViewFamilyAppointments />,
+    },
+    {
+      path: "/doctor/reschedualAppointments/:id/:aptId",
+      element: <DoctorManageRescheduaedlAppointments />,
+    },
+    {
+      path: "/patient/bookFollowUp/:id",
+      element: <PatientBookFollowUp/>,
+    },
+    {
       path: "/auth/changepassword",
       element: <ChangePassword />,
     },
@@ -220,6 +247,11 @@ function App() {
     },
 
     { path: "*", element: <NotFoundPage /> },
+
+    {
+      path:"/chat",
+      element: <Chatpage/>
+    }
   ]);
 
   return (

@@ -745,11 +745,10 @@ const rescheduleAppointment = async (req: Request, res: Response) => {
 						 );
 
 						 const subject = "Appointment Resceduled";
-						 let html = "Hello patient, \n your appointment was resceduled with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.";
+						 let html = `Hello patient, \n your appointment was resceduled with date ${newDate}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
 						 sendMailService.sendMail(patientEmail, subject, html);
-						 html = "Hello doctor, \n your appointment was resceduled with date ${req.body.date}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.";
+						 html = `Hello doctor, \n your appointment was resceduled with date ${newDate}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
 						 sendMailService.sendMail(doctorEmail, subject, html);
-						 console.log("sending notification for appointmen: patient", req.body.patient, " | doctor", req.body.doctor);
 						 NotificationController.createNotificationwithId(apt.patient.toString(), "Your appointment is rescheduled", "/patient/appointments");
 						 NotificationController.createNotificationwithId(apt.doctor.toString(), "Your appointment is rescheduled", "/doctor/appointments");
 

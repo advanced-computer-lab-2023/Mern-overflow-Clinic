@@ -2,14 +2,64 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useUser } from "../../userContest";
+import { styled } from '@mui/material/styles';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import {Snackbar,Alert} from '@mui/material';
+
+import {Button} from '@mui/material';
 
 const ContractPage = ({ match }) => {
   const { userId } = useUser();
   let id = userId;
   const [contracts, setContracts] = useState([]);
   const [selectedContractId, setSelectedContractId] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
+  // const [successMessage, setSuccessMessage] = useState(null);
+  // const [errorMessage, setErrorMessage] = useState(null);
+   const [statusMessage, setStatusMessage] = useState("");
+   const [successOpen, setSuccessOpen] = useState(false);
+   const [successMessage, setSuccessMessage] = useState("");
+   const [errorOpen, setErrorOpen] = useState(false);
+   const [errorMessage, setErrorMessage] = useState("");
+   const [prescription, setPrescription] = useState([]);
+
+  const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+      backgroundColor: theme.palette.primary.main,
+            color: theme.palette.common.white,
+    },
+    [`&.${tableCellClasses.body}`]: {
+      fontSize: 14,
+    },
+  }));
+
+  const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.action.hover,
+    },
+    // hide last border
+    '&:last-child td, &:last-child th': {
+      border: 0,
+    },
+  }));
+
+  const handleSuccessClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSuccessOpen(false);
+  };
+  const handleErrorClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setErrorOpen(false);
+  };
 
   const fetchContracts = async () => {
     try {
@@ -53,13 +103,17 @@ const ContractPage = ({ match }) => {
         );
 
         if (response.data.success) {
-          setSuccessMessage("Contract accepted successfully");
+          // setSuccessMessage("Contract accepted successfully");
+          setSuccessOpen(true);
+          setSuccessMessage("Contract accepted successfully"); 
           fetchContracts();
         } else {
-          setErrorMessage("Error accepting contract");
-        }
+          setErrorOpen(true);
+          setErrorMessage("Error accepting contract!");        }
       } catch (error) {
-        setErrorMessage("Error accepting contract");
+        // setErrorMessage("Error accepting contract");
+        setErrorOpen(true);
+        setErrorMessage("Error accepting contract!");
         console.error("Error accepting contract:", error);
       }
     }
@@ -84,13 +138,16 @@ const ContractPage = ({ match }) => {
         );
 
         if (response.data.success) {
-          setSuccessMessage("Contract rejected successfully");
+          // setSuccessMessage("Contract rejected successfully");
+          setSuccessOpen(true);
+          setSuccessMessage("Contract rejected successfully"); 
           fetchContracts();
         } else {
-          setErrorMessage("Error rejecting contract");
-        }
+          setErrorOpen(true);
+          setErrorMessage("Error rejecting contract!");        }
       } catch (error) {
-        setErrorMessage("Error rejecting contract");
+        setErrorOpen(true);
+        setErrorMessage("Error rejecting contract!");
         console.error("Error rejecting contract:", error);
       }
     }
@@ -98,12 +155,42 @@ const ContractPage = ({ match }) => {
 
   return (
     <div style={styles.container}>
+
+<Snackbar
+        open={successOpen}
+        autoHideDuration={3000}
+        onClose={handleSuccessClose}
+      >
+        <Alert
+          elevation={6}
+          variant="filled"
+          onClose={handleSuccessClose}
+          severity="success"
+        >
+          {successMessage}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={errorOpen}
+        autoHideDuration={3000}
+        onClose={handleErrorClose}
+      >
+        <Alert
+          elevation={6}
+          variant="filled"
+          onClose={handleErrorClose}
+          severity="error"
+        >
+          {errorMessage}
+        </Alert>
+      </Snackbar> 
+
       <h1 style={styles.header}>Doctor's Contracts</h1>
-      {successMessage && (
+      {/* {successMessage && (
         <div style={styles.successMessage}>{successMessage}</div>
       )}
-      {errorMessage && <div style={styles.errorMessage}>{errorMessage}</div>}
-      <table style={styles.contractTable}>
+      {errorMessage && <div style={styles.errorMessage}>{errorMessage}</div>} */}
+      {/* <table style={styles.contractTable}>
         <thead>
           <tr>
             <th>Date</th>
@@ -154,7 +241,64 @@ const ContractPage = ({ match }) => {
             </tr>
           ))}
         </tbody>
-      </table>
+      </table> */}
+
+
+      <TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <StyledTableRow>
+            <StyledTableCell>Date</StyledTableCell>
+            <StyledTableCell>Clinic Markup</StyledTableCell>
+            <StyledTableCell>Status</StyledTableCell>
+            <StyledTableCell>Action</StyledTableCell>
+            </StyledTableRow>
+        </TableHead>
+        <TableBody>
+          {contracts.map((contract, index) => (
+            <StyledTableRow key={contract._id}>
+              <StyledTableCell>{formatDate(contract.date)}</StyledTableCell>
+              <StyledTableCell>{formatMarkup(contract.clinicMarkup)}</StyledTableCell>
+              <StyledTableCell>{contract.status}</StyledTableCell>
+              <StyledTableCell>
+                {contract.status === "pending" ? (
+                  <>
+                    <button
+                      style={styles.acceptButton}
+                      onClick={() => {
+                        setSelectedContractId(contract._id);
+                        handleAccept();
+                      }}
+                    >
+                      Accept
+                    </button>
+                    <button
+                      style={styles.rejectButton}
+                      onClick={() => {
+                        setSelectedContractId(contract._id);
+                        handleReject();
+                      }}
+                    >
+                      Reject
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button style={styles.acceptButtonDimmed} disabled>
+                      Accept
+                    </button>
+                    <button style={styles.rejectButtonDimmed} disabled>
+                      Reject
+                    </button>
+                  </>
+                )}
+              </StyledTableCell>
+            </StyledTableRow>
+          ))}
+        </TableBody>
+      </Table>
+      </TableContainer>
+
     </div>
   );
 };

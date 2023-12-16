@@ -104,12 +104,13 @@ const listFamilyMembers = async (req: Request, res: Response) => {
             if (!pat || pat === undefined) {
                 return res.status(404).json({ message: 'Patient not found' });
             } else {
-                if(pat.familyMembers?.length !==0){
+                if(pat.familyMembers && pat.familyMembers.length !==0){
                     console.log(pat.familyMembers);
-                    res.status(200).json(pat.familyMembers);
+                    return res.status(200).json(pat.familyMembers);
                 }
-                else
-                res.status(404).send("no family members");
+                else{
+                  return  res.status(404).send("no family members");
+                }
             }
         }).catch((err) => {
             res.status(404).send(err);
@@ -1330,3 +1331,4 @@ export default {
     listCopmletedAppointmnetsForPatient,
     getAllMyDoctors
 };
+

@@ -57,7 +57,6 @@ import {
       axios
         .get(`http://localhost:8000/appointments/all/${id}`, {})
         .then((res) => {
-          console.log(res.data);
           setData(res.data);
         })
         .catch((error) => {

@@ -37,7 +37,7 @@ const PatientDashboard = (props) => {
   return (
     <>
       {userRole === "Patient" ? (
-        <ButtonAppBar user="Patient" actionButton="Log out" title={props.title}>
+        <ButtonAppBar user="Patient" actionButton="Log out" title={props.title} sx={{ position: 'fixed', width: '100%', zIndex: '1000' }} >
           <Divider />
           <List>
             <ListItem disablePadding>

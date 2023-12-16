@@ -15,7 +15,7 @@ const FamilyMemberManagement = () => {
   }, []);
 
   const fetchFamilyMembers = () => {
-    axios.get(`http://localhost:8000/patients/${userId}/familyMembers`)
+    axios.get(`http://localhost:8000/patients/${userId}/family`)
       .then(response => setFamilyMembers(response.data))
       .catch(error => console.error('Error fetching family members', error));
   };

@@ -165,7 +165,7 @@ const ReschedulePopup = ({ open, onClose, appointmentId , doctorId}) => {
           open={snackbarOpen}
           autoHideDuration={6000}
           onClose={() => setSnackbarOpen(false)}
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }} // Positioning the Snackbar at the top center
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }} 
 
         >
           <Alert

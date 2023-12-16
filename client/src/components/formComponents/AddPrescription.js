@@ -10,7 +10,7 @@ import React from "react";
 const AddPrescription = () => {
     const { register, handleSubmit, setError, formState: { errors } } = useForm();
     const [patients, setPatients] = useState([]);
-    const [inputs, setInputs] = useState([{ medName: '', dailyDosage: '' }]); // State to keep track of input values
+    const [inputs, setInputs] = useState([{ medName: '', dailyDosage: '', quantity: '' }]); // State to keep track of input values
     const [selectedPatient, setselectedPatient] = useState();
     const { userId } = useUser();
     // const id = "655089b786a7e9fff5d1d36a";
@@ -42,7 +42,7 @@ const AddPrescription = () => {
     };
     
     const handleAddInput = () => {
-        setInputs([...inputs, { medName: '', dailyDosage: '' }]);
+        setInputs([...inputs, { medName: '', dailyDosage: '', quantity: '' }]);
     };
     
       const handleRemoveInput = (index) => {
@@ -62,10 +62,10 @@ const AddPrescription = () => {
         const medicines = [];
         for (const input of inputs) {
             console.log("Input: "+JSON.stringify(input));
-            if (input.medName === '' || input.dailyDosage === '') {
+            if (input.medName === '' || input.dailyDosage === '' || input.quantity === '') {
                 continue;
             }
-            medicines.push({ medName: input.medName, dailyDosage: input.dailyDosage });
+            medicines.push({ medName: input.medName, dailyDosage: input.dailyDosage, quantity: input.quantity });
         }
         console.log("Medicines: "+JSON.stringify(medicines));
 
@@ -108,10 +108,10 @@ const AddPrescription = () => {
 
                             {inputs.map((input, index) => (
                                 
-                                <Grid container spacing={2} key={index} >
+                                <Grid container spacing={2} key={index} style={{ marginTop: '0.2em' }} >
                                     { index === 0 && (
                                         <React.Fragment key={index}>
-                                            <Grid item xs={8}>
+                                            <Grid item xs={6}>
                                             <TextField
                                                 fullWidth
                                                 label={`Medicine ${index + 1} Name`}
@@ -119,7 +119,7 @@ const AddPrescription = () => {
                                                 onChange={(e) => handleInputChange(index, 'medName', e.target.value)}
                                             />
                                             </Grid>
-                                            <Grid item xs={4}>
+                                            <Grid item xs={3}>
                                             <TextField
                                                 fullWidth
                                                 label={`Medicine ${index + 1} Daily Dosage`}
@@ -128,12 +128,21 @@ const AddPrescription = () => {
                                                 onChange={(e) => handleInputChange(index, 'dailyDosage', e.target.value)}
                                             />
                                             </Grid>
+                                            <Grid item xs={3}>
+                                            <TextField
+                                                fullWidth
+                                                label={`Medicine ${index + 1} Quantity`}
+                                                value={input.quantity}
+                                                type='number'
+                                                onChange={(e) => handleInputChange(index, 'quantity', e.target.value)}
+                                            />
+                                            </Grid>
                                         </React.Fragment>
                                     )}
                                 {index !== 0 && (
                                 <React.Fragment key={index}>
                                     <React.Fragment key={"sub" + index}>
-                                        <Grid item xs={8}>
+                                        <Grid item xs={6}>
                                         <TextField
                                             fullWidth
                                             label={`Medicine ${index + 1} Name`}
@@ -141,13 +150,22 @@ const AddPrescription = () => {
                                             onChange={(e) => handleInputChange(index, 'medName', e.target.value)}
                                         />
                                         </Grid>
-                                        <Grid item xs={3}>
+                                        <Grid item xs={2.5}>
                                         <TextField
                                             fullWidth
                                             label={`Medicine ${index + 1} Daily Dosage`}
                                             value={input.dailyDosage}
                                             type='number'
                                             onChange={(e) => handleInputChange(index, 'dailyDosage', e.target.value)}
+                                        />
+                                        </Grid>
+                                        <Grid item xs={2.5}>
+                                        <TextField
+                                            fullWidth
+                                            label={`Medicine ${index + 1} Quantity`}
+                                            value={input.quantity}
+                                            type='number'
+                                            onChange={(e) => handleInputChange(index, 'quantity', e.target.value)}
                                         />
                                         </Grid>
                                     </React.Fragment>

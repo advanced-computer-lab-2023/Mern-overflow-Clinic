@@ -9,9 +9,14 @@ import { HydratedDocument } from "mongoose";
 
 const addMedicineToCart = async (req: Request, res: Response) => {
   const { medName, medPrice, medQuantity } = req.body;
-  const patientId = req.params.patientId;
+  // const patientId = req.params.id;
+  const prescriptionId = req.params.id;
+  const prescription = await Prescription.findById(prescriptionId);
+  const patientId = prescription?.patient;
+  console.log("I AM HEREE!!!");
   try {
       const cart = await carts.findOne({ patient: patientId });
+      console.log("CARTSS HEREE!!!" + cart + "PatientID: " + patientId);
       if (!cart) {
           return res.status(404).json({ message: 'Cart not found' });
       }
@@ -54,11 +59,12 @@ const createPrescription = async (req: Request, res: Response) => {
     for (const medicine of medicines) {
       const medicineName = medicine.medName;
       const medicineDosage = medicine.dailyDosage;
+      const medicineQuantity = medicine.quantity;
       const med = await Medicine.findOne({ name: medicineName });
       if (!med) {
         return res.status(404).json({ message: "Medicine not found" });
       }
-      medicineJSON.push({medId: med._id, dailyDosage: medicineDosage});
+      medicineJSON.push({medId: med._id, dailyDosage: medicineDosage, quantity: medicineQuantity});
     }
     const newBody = {"doctor": docId, "patient": patientId, "medicine": medicineJSON};
     const newPrescription = await Prescription.create(newBody);
@@ -73,8 +79,13 @@ const createPrescription = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Doctor not found" });
     }
 
+    console.log("Pres IDDDD: " + newPrescription._id);
+
     patient.prescriptions?.push(newPrescription._id);
     doctor.prescriptions?.push(newPrescription._id);
+
+    console.log("Patient: " + patient.prescriptions);
+    console.log("Doctor: " + doctor.prescriptions);
 
     await patient.save();
     await doctor.save();
@@ -132,8 +143,6 @@ const addMedicine = async (req: Request, res: Response) => {
   const newMedicineName = req.body.mName.toLowerCase();
   const newMedicineDosage = req.body.mDosage;
   const newMedicineQuantity = req.body.mQuantity;
-  //console.log(id)
-  //console.log("File in BE : " + JSON.stringify(fileInfo))
   try {
       const pres = await Prescription.findById(presId);
 
@@ -141,10 +150,8 @@ const addMedicine = async (req: Request, res: Response) => {
           return res.status(404).json({ message: "Prescription not found" });
       } else {
           if(pres.medicine !== undefined){
-              // i want to loop on the list of medicines of pres
               for(const medId of pres.medicine){
                   const med = await Medicine.findById(medId.medId);
-                  // const newMed = await Medicine.findById(newMedicineName)
                   if(med?.name.toLowerCase() === newMedicineName){
                       return res.status(400).json({ message: "Medicine already exists in the prescription" });
                   }
@@ -180,24 +187,15 @@ const deleteMedicine = async (req: Request, res: Response) => {
       } else {
 
           
-          // let newFiles = pat.files;
-          // if (newFiles === undefined) {
-          //     newFiles = [];
+          
           const newPrescription= [];
           if(pres.medicine !== undefined){
-            console.log("medicineIdToBeDel: " + medicineId)
+            // console.log("medicineIdToBeDel: " + medicineId)
               for (const med of pres.medicine){
                  if (!((med.medId).equals(medicineId))){
-                           console.log("medId: " + med.medId)
+                          //  console.log("medId: " + med.medId)
                            newPrescription.push(med);
-                   }  
-              //   if (med.medId && medicineId && med.medId.toString && medicineId.toString) {
-              //     if (med.medId.toString() !== medicineId.toString()) {
-              //         newPrescription.push(med);
-              //     }
-              // } else {
-              //   return res.status(404).json({ message: "medicine not found" });
-              // }        
+                   }       
       }
                   pres.medicine = newPrescription;
                   await pres.save();   
@@ -211,28 +209,6 @@ const deleteMedicine = async (req: Request, res: Response) => {
   }
 };
 
-
-// const updatePrescription = async (req: Request, res: Response) => {
-//   const id = req.params.id;
-//   const query = { _id: id };
-//   const filled = req.body.filled;
-//   const medicine = req.body.medicine;
-//   const update: { [key: string]: any } = {};
-//   if (filled !== undefined) update["filled"] = filled;
-//   if (medicine !== undefined) update["medicine"] = medicine;
-
-//   Prescription
-//     .findOneAndUpdate(query, update, { new: true })
-//     .then((updatedPrescription) => {
-//       if (updatedPrescription) {
-// return res.status(200).send(updatedPrescription);
-//       }
-//     })
-//     .catch((error) => {
-// return res.status(400).send(error);
-//     });
-// }
-
 const deletePrescription = async (req: Request, res: Response) => {
   const id = req.params.id;
   const prescription = await Prescription
@@ -245,8 +221,7 @@ return res.status(400).json(err);
     });
 }
 
-
-const selectPrescription = async (req: Request, res: Response) => {
+const readPrescription = async (req: Request, res: Response) => {
   const id = req.params.id;
   const pres = await Prescription
     .findById(id).populate('doctor').populate('patient')
@@ -280,7 +255,7 @@ const updatePrescriptionMedicine = async (req: Request, res: Response) => {
       const newPrescription= [];
       for (const med of pres.medicine){
              if((med.medId).equals(mid)){
-              console.log("DailyDosage = " + med.dailyDosage)
+              // console.log("DailyDosage = " + med.dailyDosage)
               med.dailyDosage = newDosage;
               med.quantity = newQuantity;
             }
@@ -297,10 +272,10 @@ const updatePrescriptionMedicine = async (req: Request, res: Response) => {
  }
 }
 
- const listMedDosage = async (req: Request, res: Response) => {
+const readPresMedDetails = async (req: Request, res: Response) => {
    const id = req.params.id;
    const mid = req.params.mid;
-   console.log("Hiii")
+  //  console.log("Hiii")
    try {
      const pres = await Prescription.findById(id);
      if (!pres) {
@@ -308,8 +283,8 @@ const updatePrescriptionMedicine = async (req: Request, res: Response) => {
      } else {
        for (const med of pres.medicine){
              if((med.medId).equals(mid)){
-              console.log("DailyDosage = " + med.dailyDosage)
-              return res.json({ dosage: med.dailyDosage }); // Send JSON response
+              // console.log("DailyDosage = " + med.dailyDosage)
+              return res.json({ dosage: med.dailyDosage, quantity: med.quantity }); // Send JSON response
             }
        }
    }
@@ -319,39 +294,8 @@ const updatePrescriptionMedicine = async (req: Request, res: Response) => {
    return res.status(500).json({ message: "Server error" });
  }
 
- }
+}
 
-
-// const filterPrescriptions = async (req: Request, res: Response) => {
-//   const id = req.params.id;
-//   try {
-//     const filters: any = req.body; // Assuming the filters are sent in the request body
-
-//     const queryConditions: any = {};
-
-//     // Add conditions based on the filters
-//     if (filters.date) {
-//       queryConditions.date = filters.date;
-//     }
-//     if (filters.doctorName) {
-//       // "doctor" is a reference to the "Doctor" model with a "name" property
-//       const doctors = await Doctor.find({ name: filters.doctorName });
-//       const doctorIds = doctors.map((doctor) => doctor._id);
-//       queryConditions.doctor = { $in: doctorIds };
-//     }
-//     if (filters.filled !== undefined) {
-//       queryConditions.filled = filters.filled;
-//     }
-
-//     const prescriptions = await Prescription.find(queryConditions)
-//       .populate('patient', '_id') // Select only the "_id" property of the "patient"
-//       .populate('doctor', '_id'); // Select only the "_id" property of the "doctor"
-
-//     res.status(200).json(prescriptions);
-//   } catch (err) {
-//     res.status(400).json(err);
-//   }
-// };
 const filterPrescriptions = async (req: Request, res: Response) => {
   const patientId = req.params.id; // Assuming you have the patient's ID in the route parameter
   try {
@@ -381,13 +325,10 @@ return res.status(400).json(err);
   }
 };
 
-
-
-
 export default {
   addMedicineToCart,
   createPrescription,
-  selectPrescription,
+  readPrescription,
   updatePrescriptionMedicine,
   deletePrescription,
   viewPatientPrescription,
@@ -396,6 +337,5 @@ export default {
   addMedicine,
   deleteMedicine,
   listMedicine,
-  listMedDosage,
-  // updateDosage
+  readPresMedDetails,
 }

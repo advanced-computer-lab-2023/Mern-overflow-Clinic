@@ -96,9 +96,10 @@ const PatientViewPrescriptionDetails = ({ match }) => {
         medQuantity
       }
       await axios.post(`http://localhost:8000/prescriptions/${id}/addMedicineToCart`, dataToServer);
-
-      navigate(`http://localhost:3001/patient/cart`);
+      console.log("LOOP: " + i);
     }
+    console.log("DONE");
+    window.location.href = `http://localhost:3001/patient/cart`;
   }
 
   return (

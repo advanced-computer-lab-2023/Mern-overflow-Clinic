@@ -136,6 +136,7 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
     const requestData = {
       mName: data.medicineName,
       mDosage: data.dosage,
+      mQuantity: data.quantity,
     };
 
     axios
@@ -222,35 +223,40 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
   const [editDialog, setEditDialog] = useState({
     open: false,
     idToEdit: null,
-    editedValue: '',
+    editedDosage: '',
+    editedQuantity: '',
   });
 
   const handleEditClick = async (id) => {
     setMid(id);
   
     try {
-      // Using async/await to fetch the old dosage
-      const oldDosageValue = await fetchOldDosage(id);
+      // Using async/await to fetch the old data
+      const oldData = await fetchOldData(id);
+      const oldDosageValue = oldData.dosage;
+      console.log("oldDosageValue = " + oldDosageValue);
+      const oldQuantityValue = oldData.quantity;
   
       setEditDialog({
         open: true,
         idToEdit: id,
-        editedValue: oldDosageValue.toString(),
+        editedDosage: oldDosageValue.toString(),
+        editedQuantity: oldQuantityValue.toString(),
       });
     } catch (error) {
-      console.error('Error fetching old dosage:', error);
+      console.error('Error fetching old data:', error);
       // Handle error appropriately
     }
   };
 
-  const fetchOldDosage = async (mid) => {
+  const fetchOldData = async (mid) => {
     try {
         console.log("Heree ");
-        const response = await axios.get(`http://localhost:8000/prescriptions/${id}/medicineDosage/${mid}`);
+        const response = await axios.get(`http://localhost:8000/prescriptions/${id}/medicineDosageQuantity/${mid}`);
         console.log("Response:", response);
         console.log("dosage = " + response.data);
         //setOldDosage(response.data.dosage);
-        return response.data.dosage;
+        return {dosage: response.data.dosage, quantity: response.data.quantity};
     } catch (error) {
         console.error('Error fetching data:', error);
     }
@@ -258,15 +264,16 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
 
   const handleEditConfirm = () => {
     // Perform edit operation here
-    console.log('Edited value:', editDialog.editedValue);
+    console.log('Edited value:', editDialog.editedDosage);
     // Close the edit dialog
     //setDosage(editDialog.editedValue);
 
-    onSubmitDosage(editDialog.editedValue);
+    onSubmitDosage(editDialog.editedDosage, editDialog.editedQuantity);
     setEditDialog({
       open: false,
       idToEdit: null,
-      editedValue: '',
+      editedDosage: '',
+      editedQuantity: '',
     });
   };
 
@@ -275,15 +282,16 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
     setEditDialog({
       open: false,
       idToEdit: null,
-      editedValue: '',
+      editedDosage: '',
+      editedQuantity: '',
     });
   };
 
-  const onSubmitDosage = (dosage) => {
-    const dataToServer = { dosage };
+  const onSubmitDosage = (dosage, quantity) => {
+    const dataToServer = { dosage: dosage, quantity: quantity };
     console.log('Dosage', dosage);
     console.log('mid', mid);
-    axios.put(`http://localhost:8000/prescriptions/${id}/updateDosage/${mid}`, dataToServer)
+    axios.put(`http://localhost:8000/prescriptions/${id}/update/${mid}`, dataToServer)
         .then((response) => {
             console.log('PUT request successful', response);
             // navigate(`/doctor/prescriptions/${id}`);
@@ -377,6 +385,13 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
             fullWidth
             sx={{ mb: 2 }}
           />
+          <TextField
+            label="Quantity"
+            type="number"
+            {...register("quantity", { required: "quantity is required" })}
+            fullWidth
+            sx={{ mb: 2 }}
+          />
           {/* {errors.diagnosis && (
             <Typography color="error">{errors.diagnosis.message}</Typography>
           )} */}
@@ -451,9 +466,8 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
             <StyledTableCell>Description</StyledTableCell>
             <StyledTableCell>Active Ingredients</StyledTableCell>
             <StyledTableCell>Price</StyledTableCell>
-            <StyledTableCell>Available Quantity</StyledTableCell>
+            <StyledTableCell>Quantity</StyledTableCell>
             <StyledTableCell>Over The Counter</StyledTableCell>
-            <StyledTableCell>Archived</StyledTableCell>
             <StyledTableCell>Edit</StyledTableCell>
             <StyledTableCell>Delete</StyledTableCell>
           </StyledTableRow>
@@ -473,9 +487,8 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
                 </ul>
               </StyledTableCell>
               <StyledTableCell>{med?.price}</StyledTableCell>
-              <StyledTableCell>{med?.availableQuantity}</StyledTableCell>
+              <StyledTableCell>{prescription.medicine[index]?.quantity}</StyledTableCell>
               <StyledTableCell>{med?.overTheCounter ? 'Yes' : 'No' }</StyledTableCell>
-              <StyledTableCell>{med?.isArchived ? 'Yes' : 'No' }</StyledTableCell>
               <StyledTableCell>
                 <IconButton onClick={() => handleEditClick(med?._id)}>
                   <EditIcon />
@@ -508,14 +521,23 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
 
       {/* Edit Dialog */}
       <Dialog open={editDialog.open} onClose={handleEditCancel}>
-        <DialogTitle>Edit Dosage</DialogTitle>
+        <DialogTitle>Edit Details</DialogTitle>
         <DialogContent>
           <TextField
-            label=""
+            label="Dosage"
             variant="outlined"
             fullWidth
-            value={editDialog.editedValue}
-            onChange={(e) => setEditDialog({ ...editDialog, editedValue: e.target.value })}
+            style={{ marginTop: '1em', paddingBottom: '1em' }} 
+            value={editDialog.editedDosage}
+            onChange={(e) => setEditDialog({ ...editDialog, editedDosage: e.target.value })}
+          />
+          <TextField
+            label="Quantity"
+            variant="outlined"
+            fullWidth
+            style={{ paddingBottom: '1em' }}
+            value={editDialog.editedQuantity}
+            onChange={(e) => setEditDialog({ ...editDialog, editedQuantity: e.target.value })}
           />
         </DialogContent>
         <DialogActions>

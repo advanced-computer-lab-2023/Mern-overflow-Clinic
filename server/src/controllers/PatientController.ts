@@ -9,6 +9,7 @@ import { relative } from "path";
 import doctor from "../models/Doctor.js";
 import user from "../models/User.js";
 import healthRecord from "../models/HelthRecords.js";
+import cart from "../models/Cart.js";
 import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -57,6 +58,10 @@ return res.status(404).send("You are already registered , please sign in ");
                         .then((newPatient) => {
                             newPatient.wallet = 0;
                             newPatient.revFamilyMembers = [];
+                            const newCart = cart.create({
+                                patient: newPatient._id,
+                                medicines: [],
+                            });
                             newPatient.save();
 return res.status(200).json(newPatient);
                         })

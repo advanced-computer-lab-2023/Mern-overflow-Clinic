@@ -7,9 +7,9 @@ const router = express.Router();
 router.use(bodyParser.json());
 
 //GET
-router.get("/:id",isAuthenticated, prescriptionController.selectPrescription);
+router.get("/:id",isAuthenticated, prescriptionController.readPrescription);
 router.get("/medicineDetails/:mId",isAuthenticated, prescriptionController.listMedicine);
-router.get("/:id/medicineDosage/:mid",isAuthenticated, prescriptionController.listMedDosage);
+router.get("/:id/medicineDosageQuantity/:mid",isAuthenticated, prescriptionController.readPresMedDetails);
 
 
 //POST

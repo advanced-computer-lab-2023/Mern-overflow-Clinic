@@ -418,6 +418,7 @@ To run this project, you will need to add the following environment variables to
 | POST   | `/auth/reset/`          | Reset Password            |
 | POST   | `/auth/resetwithtoken/` | Reset Password with Token |
 | POST   | `/auth/change/`         | Change Password           |
+| POST   | `/auth/token/`          | Sends User Token to Pharmacy|
 
 </details>
 

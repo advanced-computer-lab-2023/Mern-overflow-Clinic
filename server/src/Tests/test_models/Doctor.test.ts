@@ -2,7 +2,7 @@ import { Types } from 'mongoose';
 import Doctor from '../../models/Doctor.ts';
 
 describe('doctor model', () => {
-    it('should throw an error if name is missing', async () => {
+    test('should throw an error if name is missing', async () => {
         const doctorWithoutName = {
             email: "valid@gmail.com",
             passwordHash: "password",
@@ -21,7 +21,7 @@ describe('doctor model', () => {
         await expect(doctor.save()).rejects.toThrow('Doctor validation failed: name: Path `name` is required.');
     });
 
-    it('should throw an error if dateOfBirth is missing', async () => {
+    test('should throw an error if dateOfBirth is missing', async () => {
         const doctorWithoutDateOfBirth = {
             email: "valid@gmail.com",
             passwordHash: "password",
@@ -40,7 +40,7 @@ describe('doctor model', () => {
         await expect(doctor.save()).rejects.toThrow('Doctor validation failed: dateOfBirth: Path `dateOfBirth` is required.');
     });
 
-    it('should throw an error if hourlyRate is missing', async () => {
+    test('should throw an error if hourlyRate is missing', async () => {
         const doctorWithoutHourlyRate = {
             email: "valid@gmail.com",
             passwordHash: "password",
@@ -59,7 +59,7 @@ describe('doctor model', () => {
         await expect(doctor.save()).rejects.toThrow('Doctor validation failed: hourlyRate: Path `hourlyRate` is required.');
     });
 
-    it('should throw an error if affiliation is missing', async () => {
+    test('should throw an error if affiliation is missing', async () => {
         const doctorWithoutAffiliation = {
             email: "valid@gmail.com",
             passwordHash: "password",
@@ -78,7 +78,7 @@ describe('doctor model', () => {
         await expect(doctor.save()).rejects.toThrow('Doctor validation failed: affiliation: Path `affiliation` is required.');
     });
 
-    it('should throw an error if speciality is missing', async () => {
+    test('should throw an error if speciality is missing', async () => {
         const doctorWithoutSpeciality = {
             email: "valid@gmail.com",
             passwordHash: "password",

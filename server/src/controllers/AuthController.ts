@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { HydratedDocument } from "mongoose";
 import User, { IUser } from "../models/User.js";
+import Doctor, { IDoctor } from "../models/Doctor.js";
 import TokenUtils from "../utils/Token.js";
 import jwt from "jsonwebtoken";
 import config from "../config/config.js";
@@ -16,10 +17,16 @@ const login = async (req: Request, res: Response) => {
 			username: username.trim(),
 			passwordHash: passwordHash.trim(),
 		});
-		console.log(user);
+		//console.log(user);
 		if (!user) {
 			return res.status(404).json({ message: "User not found" });
 		} else {
+			if(user.__t === "Doctor"){
+				const doc = await Doctor.findById(user._id).exec();
+				if (doc?.status !== "accepted") {
+				  return res.status(401).json({ message: "Unauthorized - Doctor Still Not Accepted" });
+				}
+			}
 			const token = await TokenUtils.generateToken(user);
 			res.cookie("authorization", token, {
 				httpOnly: true, // Make the cookie accessible only via HTTP (not JavaScript)

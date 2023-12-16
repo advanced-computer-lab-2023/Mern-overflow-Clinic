@@ -41,7 +41,7 @@ export interface IPatient {
     subscribedToPackage?: boolean;
     packageRenewalDate?: Date;
     healthRecords?: Types.ObjectId[];
-    address: string[];
+    address?: string[];
     wallet?:number
 
 
@@ -69,7 +69,7 @@ const PatientSchema = new Schema<IPatient>({
     ,
     files: [
         {
-            filename: { type: String, required: true, trim: true, unique:true },
+            filename: { type: String, required: true, trim: true },
             path: { type: String, required:true, trim: true },
         }
     ],

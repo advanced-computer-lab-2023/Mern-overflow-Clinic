@@ -188,7 +188,7 @@ export default function DoctorViewAppointments() {
         open={openSnackbar}
         autoHideDuration={6000}
         onClose={() => setOpenSnackbar(false)}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }} // Positioning the Snackbar at the top center
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }} 
 
       >
         <Alert

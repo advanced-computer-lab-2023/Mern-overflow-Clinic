@@ -123,6 +123,7 @@ const updateDoctor = async (req: Request, res: Response) => {
 
 const deleteDoctor = async (req: Request, res: Response) => {
 	const id = req.params.id;
+	console.log("id: " + id);
 	await doctor
 		.findByIdAndDelete({ _id: id })
 		.then((doc) => {

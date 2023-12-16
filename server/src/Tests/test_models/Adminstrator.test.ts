@@ -34,11 +34,11 @@ describe('admin model', () => {
         await expect(admin.save()).rejects.toThrow('Adminstrator validation failed: email: Path `email` is required.');
     });
 
-      test('should throw an error if email is not provided', async () => {
+    test('should throw an error if email is not provided', async () => {
         const admin = new Adminstrator({
-          username: 'testadmin',
-          passwordHash: 'password',
+            username: 'testadmin',
+            passwordHash: 'password',
         });
         await expect(admin.save()).rejects.toThrow('Adminstrator validation failed: email: Path `email` is required.');
-      });
+    });
 });

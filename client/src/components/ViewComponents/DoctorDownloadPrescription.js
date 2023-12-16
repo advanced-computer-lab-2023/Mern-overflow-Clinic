@@ -107,9 +107,9 @@ export default function PDF() {
               </div>
             </div>
     
-            <div className="col-2 text-end">
-                <h5>Doctor Name: {prescription.doctor?.name}</h5>
-                <h5>Patient Name: {prescription.patient?.name}</h5>
+            <div className="col-2 text-start">
+                <h6>Doctor Name: {prescription.doctor?.name}</h6>
+                <h6>Patient Name: {prescription.patient?.name}</h6>
             </div>
 
         

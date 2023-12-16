@@ -7,7 +7,7 @@ const PatientManagePrescriptions = () => {
     <>
       {userRole === "Patient" ? (
         <>
-          <PatientDashboard title="View My Prescriptions" />
+          <PatientDashboard title="View My Prescriptions" sx={{ position: 'fixed', width: '100%' }} />
           <PatientViewPrescriptions />
         </>
       ) : (

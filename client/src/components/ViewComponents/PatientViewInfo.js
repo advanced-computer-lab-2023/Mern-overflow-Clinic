@@ -40,6 +40,7 @@ import LabelIcon from "@mui/icons-material/Label";
 import PinIcon from "@mui/icons-material/Pin";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import FamilyRestroomIcon from "@mui/icons-material/FamilyRestroom";
 import PasswordIcon from "@mui/icons-material/Password";
 import EmailIcon from "@mui/icons-material/Email";
 import { Link, useNavigate } from "react-router-dom";
@@ -207,7 +208,7 @@ export default function PatientInfo(props) {
                                             </Box>
                                         </TableCell>
                                         <TableCell sx={{ border: "none", textAlign: "left" }}>
-                                            {data.emergencyContact[0].name}
+                                            {data.emergencyContact.name}
                                         </TableCell>
                                     </TableRow>
                                     <TableRow sx={{ border: "none" }}>
@@ -218,7 +219,18 @@ export default function PatientInfo(props) {
                                             </Box>
                                         </TableCell>
                                         <TableCell sx={{ border: "none", textAlign: "left" }}>
-                                            {data.emergencyContact[0].mobileNumber}
+                                            {data.emergencyContact.mobileNumber}
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow sx={{ border: "none" }}>
+                                        <TableCell sx={{ width: "50%", textAlign: "right", border: "none" }}>
+                                            <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                                                <FamilyRestroomIcon sx={{ mr: "10px" }} />
+                                                <Typography>Relation</Typography>
+                                            </Box>
+                                        </TableCell>
+                                        <TableCell sx={{ border: "none", textAlign: "left" }}>
+                                            {data.emergencyContact.relation}
                                         </TableCell>
                                     </TableRow>
                                 </TableBody>

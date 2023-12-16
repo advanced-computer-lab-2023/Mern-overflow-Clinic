@@ -206,38 +206,48 @@ import {
             <TableCell>{row.status}</TableCell>
             <TableCell>{calculateState(row.date)}</TableCell>
             <TableCell>
-              <Button
-                variant="contained"
-                color="warning"
-                size="small"
-                onClick={() => row.status === "upcoming" && handleRescheduleClick(row._id, row.doctor._id)}
-                sx={{
-                  opacity: row.status === "upcoming" && row.appointmentType == "regular" ? 1 : 0.5,
-                  backgroundColor: row.status === "upcoming" ? undefined : '##F1974E',
-                  color: row.status === "upcoming" ? undefined : 'rgba(0, 0, 0, 0.7)',
-                  pointerEvents: row.status === "upcoming" ? 'auto' : 'none',
-                  textTransform: 'none' // Changes text to normal casing
-                }}
-              >
-                Reschedule
-              </Button>
-            </TableCell>
-            <TableCell>
-              <Button
-                variant="contained"
-                color="error"
-                size="small"
-                onClick={() => row.status === "upcoming" && handleCancelClick(row._id)}
-                sx={{
-                  opacity: row.status === "upcoming" && row.appointmentType == "regular" ? 1 : 0.5,
-                  backgroundColor: row.status === "upcoming" ? undefined : '#f44336', // Custom dimmed red
-                  color: row.status === "upcoming" ? undefined : 'rgba(0, 0, 0, 0.7)',
-                  pointerEvents: row.status === "upcoming" ? 'auto' : 'none', // Disables click events when not upcoming
-                  textTransform: 'none' // Changes text to normal casing
-                }}
-              >
-                Cancel
-              </Button>
+            <Button
+            variant="contained"
+            color="warning"
+            size="small"
+            disabled={row.status !== "upcoming" || row.appointmentType !== "regular"}
+            onClick={() => handleRescheduleClick(row._id, row.doctor._id)}
+            sx={{
+              opacity: row.status === "upcoming" && row.appointmentType === "regular" ? 1 : 0.5,
+              backgroundColor: row.status === "upcoming" && row.appointmentType === "regular" ? undefined : '#F1974E',
+              color: 'white',
+              textTransform: 'none', // Changes text to normal casing
+              '&.Mui-disabled': {
+                color: 'white',
+                backgroundColor: '#F1974E',
+                opacity: 0.5
+              }
+            }}
+          >
+            Reschedule
+          </Button>
+        </TableCell>
+        <TableCell>
+          <Button
+            variant="contained"
+            color="error"
+            size="small"
+            disabled={row.status !== "upcoming" || row.appointmentType !== "regular"}
+            onClick={() => handleCancelClick(row._id)}
+            sx={{
+              opacity: row.status === "upcoming" && row.appointmentType === "regular" ? 1 : 0.5,
+              backgroundColor: row.status === "upcoming" && row.appointmentType === "regular" ? undefined : '#f44336',
+              color: 'white',
+              textTransform: 'none', // Changes text to normal casing
+              '&.Mui-disabled': {
+                color: 'white',
+                backgroundColor: '#f44336',
+                opacity: 0.5
+              }
+            }}
+          >
+            Cancel
+          </Button>
             </TableCell>
     
     

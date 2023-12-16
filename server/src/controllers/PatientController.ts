@@ -91,14 +91,17 @@ const readPatient = async (req: Request, res: Response) => {
 
 const listFamilyMembers = async (req: Request, res: Response) => {
     const pId = req.params.id;
+    console.log("im here");
      const pat = await patient
         .findById(pId)
         .then((pat) => {
             if (!pat || pat === undefined) {
                 return res.status(404).json({ message: 'Patient not found' });
             } else {
-                if(pat.familyMembers?.length !==0)
+                if(pat.familyMembers?.length !==0){
+                    console.log(pat.familyMembers);
                     res.status(200).json(pat.familyMembers);
+                }
                 else
                 res.status(404).send("no family members");
             }

@@ -14,19 +14,47 @@ import {
   FormLabel,
   RadioGroup,
   FormControlLabel,
+  Dialog, 
+  DialogTitle,
+  DialogContent,
+  DialogActions,
   Radio,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import IconButton from "@mui/material/IconButton";
+import { styled } from '@mui/material/styles';
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import Paper from '@mui/material/Paper';import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "axios";
+import {Snackbar,Alert} from '@mui/material';
+
+
+
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.primary.main,
+          color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: theme.palette.action.hover,
+  },
+  // hide last border
+  '&:last-child td, &:last-child th': {
+    border: 0,
+  },
+}));
 
 const columns = [
   {
@@ -80,6 +108,10 @@ export default function AdminViewDoctors() {
   const [data, setData] = useState([]);
   const [uniqueSpecialties, setUniqueSpecialties] = useState(["No filter"]);
   const [filteredData, setFilteredData] = useState([]);
+  const [successOpen, setSuccessOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorOpen, setErrorOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const fetchTableData = () => {
     axios.get(`http://localhost:8000/doctors`)
@@ -101,61 +133,166 @@ export default function AdminViewDoctors() {
       });
   };
 
+  const handleSuccessClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSuccessOpen(false);
+  };
+  const handleErrorClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setErrorOpen(false);
+  };
+
+  const [deleteConfirmation, setDeleteConfirmation] = useState({
+    open: false,
+    idToDelete: null,
+  });
+
+  const handleDeleteClick = (id) => {
+    setDeleteConfirmation({
+      open: true,
+      idToDelete: id,
+    });
+  };
+
+  const handleDeleteConfirm = () => {
+    // Perform delete operation here
+    handleDelete(deleteConfirmation.idToDelete);
+    // Close the confirmation dialog
+    setDeleteConfirmation({
+      open: false,
+      idToDelete: null,
+    });
+  };
+
+  const handleDeleteCancel = () => {
+    // Close the confirmation dialog without performing delete operation
+    setDeleteConfirmation({
+      open: false,
+      idToDelete: null,
+    });
+  };
+
   const handleDelete = (id) => {
+    console.log("Delete id: ", id);
+    setSuccessOpen(true);
+    setSuccessMessage("Doctor Deleted Successfully!");
     axios
       .delete(`http://localhost:8000/doctors/${id}`)
       .then((response) => {
-        console.log("DELETE request successful", response);
-        fetchTableData();
-      })
-      .catch((error) => {
-        console.error("Error making DELETE request", error);
-      });
+         setSuccessOpen(true);
+         setSuccessMessage("Doctor Deleted Successfully!");
+        //console.log("DELETE request successful", response);
+         fetchTableData();
+       })
+       .catch((error) => {
+         setErrorOpen(true);
+         setErrorMessage("Can't Delete!");   
+         console.error("Error making DELETE request", error);
+       });
   };
 
   useEffect(() => {
     fetchTableData();
   }, []);
 
+ 
+
   return (
-    <Container maxWidth="xl">
+    <div>
+      {/* {errorMessage && <div style={styles.errorMessage}>{errorMessage}</div>} */}
+      
+
+       <Snackbar
+        open={successOpen}
+        autoHideDuration={3000}
+        onClose={handleSuccessClose}
+      >
+        <Alert
+          elevation={6}
+          variant="filled"
+          onClose={handleSuccessClose}
+          severity="success"
+        >
+          {successMessage}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={errorOpen}
+        autoHideDuration={3000}
+        onClose={handleErrorClose}
+      >
+        <Alert
+          elevation={6}
+          variant="filled"
+          onClose={handleErrorClose}
+          severity="error"
+        >
+          {errorMessage}
+        </Alert>
+      </Snackbar> 
+
+    <TableContainer component={Paper} style={{ paddingTop: 50 }}>
           <Table>
             <TableHead>
-              <TableRow>
+              <StyledTableRow>
                 {columns.map((column) => (
-                  <TableCell key={column.key} sx={{ fontWeight: 'bold' }}>{column.label}</TableCell>
+                  <StyledTableCell key={column.key} sx={{ fontWeight: 'bold' }}>{column.label}</StyledTableCell>
                 ))}
-              </TableRow>
+              </StyledTableRow>
             </TableHead>
             <TableBody>
               {filteredData.map((row) => (
-                <TableRow key={row.username}>
-                  <TableCell>{row.username}</TableCell>
-                  <TableCell>{row.name}</TableCell>
-                  <TableCell>{row.email}</TableCell>
-                  <TableCell>{row.dateOfBirth}</TableCell>
-                  <TableCell>{row.affiliation}</TableCell>
-                  <TableCell>{row.education}</TableCell>
-                  <TableCell>{row.status}</TableCell>
-                  <TableCell>{row.speciality}</TableCell>
-                  <TableCell>{row.hourlyRate}</TableCell>
-                  <TableCell>{
+                <StyledTableRow key={row.username}>
+                  <StyledTableCell>{row.username}</StyledTableCell>
+                  <StyledTableCell>{row.name}</StyledTableCell>
+                  <StyledTableCell>{row.email}</StyledTableCell>
+                  <StyledTableCell>{row.dateOfBirth}</StyledTableCell>
+                  <StyledTableCell>{row.affiliation}</StyledTableCell>
+                  <StyledTableCell>{row.education}</StyledTableCell>
+                  <StyledTableCell>{row.status}</StyledTableCell>
+                  <StyledTableCell>{row.speciality}</StyledTableCell>
+                  <StyledTableCell>{row.hourlyRate}</StyledTableCell>
+                  <StyledTableCell>{
                     <ul>
                       {row.files.map((file, index) => (
                       <li key={index}>{file.filename}
                       <a href = {`http://localhost:8000/uploads/` + file.filename} target = "_blank">            View</a></li>
                       ))}
                     </ul>}
-                  </TableCell>
-                  <TableCell>
-                    <IconButton onClick={() => handleDelete(row._id)}>
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <IconButton onClick={() => handleDeleteClick(row._id)}>
                       <DeleteIcon />
                     </IconButton>
-                  </TableCell>
-                </TableRow>
+                  </StyledTableCell>
+                </StyledTableRow>
               ))}
             </TableBody>
           </Table>
-    </Container>
+
+          <Dialog open={deleteConfirmation.open} onClose={handleDeleteCancel}>
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          Are you sure you want to delete this item?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteConfirm} style={{ color: 'red' }} autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+    </TableContainer>
+    </div>
   );
 }
+
+
+

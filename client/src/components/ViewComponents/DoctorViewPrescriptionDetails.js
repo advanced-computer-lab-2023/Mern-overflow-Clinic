@@ -147,7 +147,7 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
         console.log("POST request successful", response);
         // Reset the form after successful submission
         reset();
-        window.location.reload();
+        fetchPrescription()
         // Optionally, you can handle other actions after resetting the form
       })
       .catch((error) => {
@@ -180,7 +180,10 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
           console.log("medicineId:  " + mid);
           console.log("DELETE request successful", response);
           // fetchTableData();
-          window.location.reload();
+          setSuccessOpen(true);
+          setSuccessMessage("Medicine deleted successfully!");
+          fetchPrescription()
+          // window.location.reload();
         })
         .catch((error) => {
           console.error("Error making DELETE request", error);

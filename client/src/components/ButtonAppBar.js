@@ -4,6 +4,7 @@ import {Popover} from '@mui/material';
 import { Avatar } from "@chakra-ui/avatar";
 import { BellIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import { Link } from 'react-router-dom';
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import {
 	AppBar,
 	Box,
@@ -227,7 +228,24 @@ export default function ButtonAppBar(props) {
                   (
 
                   <MenuItem>
-                  <Link to={userRole==="Patient"?`/patient/info`:`/doctor/info`}><span>My Profile</span></Link>
+                  {/* <Link to={userRole==="Patient"?`/patient/info`:`/doctor/info`}><span>My Profile</span></Link> */}
+				<Link
+					to={userRole === "Patient" ? `/patient/info` : `/doctor/info`}
+					style={{ color: 'white' }}
+				>
+                  <Avatar
+                    sx={{
+                      m: 0,
+                      bgcolor: "white",
+                      color: "white",
+                      width: 30,
+                      height: 10,
+                      padding: 0,
+                    }}
+                  >
+                    <AccountCircleIcon sx={{ width: 30, height: 30 }} />
+                  </Avatar>
+				</Link>
                 </MenuItem>
                 
                 )

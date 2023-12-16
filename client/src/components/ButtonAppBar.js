@@ -73,7 +73,10 @@ export default function ButtonAppBar(props) {
 
 		if(link.includes("meet.google")){
 			window.open(link, "_blank");
-		}else{
+		}else if (link.includes("chat")){
+			if(!window.location.href.includes("chat"))window.location.href = link;
+		}
+		else{
 			navigate(link);
 		}
 		setAnchorEl(null);

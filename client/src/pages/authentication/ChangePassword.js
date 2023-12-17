@@ -44,7 +44,6 @@ const theme = createTheme({
 export default function ChangePassword() {
   const { userId, setUserId, userRole, setUserRole } = useUser();
   const navigate = useNavigate();
-  const { userId, setUserId, userRole, setUserRole } = useUser();
 
 
   const handleSubmit = (event) => {

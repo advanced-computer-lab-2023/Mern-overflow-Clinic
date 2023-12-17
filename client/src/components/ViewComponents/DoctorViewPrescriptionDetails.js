@@ -16,6 +16,16 @@ import { useForm } from "react-hook-form";
 //import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddAlarmIcon from '@mui/icons-material/AddAlarm';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import MedicationIcon from '@mui/icons-material/Medication';
+import MedicationLiquidIcon from '@mui/icons-material/MedicationLiquid';
+import NoteAddIcon from '@mui/icons-material/NoteAdd';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import { Grid, Card, CardContent, CardActions, CardActionArea} from '@mui/material';
 import {
   Container,
   TextField,
@@ -29,14 +39,16 @@ import { set } from 'react-hook-form';
 //import DeleteIcon from "@mui/icons-material/Delete";
 //import IconButton from "@mui/material/IconButton";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-//import EditIcon from "@mui/icons-material/Edit";
+// import EditIcon from "@mui/icons-material/Edit";
 import {Snackbar,Alert} from '@mui/material';
+import DescriptionIcon from '@mui/icons-material/Description';
 
 
 
 const DoctorViewPrescriptionDetails = ({ match }) => {
   const navigate = useNavigate();
   const { userId } = useUser();
+  const theme = useTheme();
   const {
     register,
     handleSubmit,
@@ -53,6 +65,9 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
    const [errorMessage, setErrorMessage] = useState("");
    const [prescription, setPrescription] = useState([]);
    const [medicine, setMedicine] = useState([]);
+   const [selectedMedicine, setSelectedMedicine] = useState();
+   const [selectedIndex, setSelectedIndex] = useState();
+   const [input, setInput] = useState({ medName: '', dailyDosage: '', quantity: '' });
    const [mid, setMid] = useState("");
    //const [errorMessage, setErrorMessage] = useState(null);
    //const [oldDosage, setOldDosage] = useState("");
@@ -133,6 +148,7 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
 
   const onSubmit = (data) => {
     if(! (prescription.filled)){
+
     const requestData = {
       mName: data.medicineName,
       mDosage: data.dosage,
@@ -182,7 +198,9 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
           // fetchTableData();
           setSuccessOpen(true);
           setSuccessMessage("Medicine deleted successfully!");
-          fetchPrescription()
+          setSelectedMedicine(null);
+          setSelectedIndex(null);
+          fetchPrescription();
           // window.location.reload();
         })
         .catch((error) => {
@@ -307,159 +325,237 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
 
   return (
     <div style={styles.container}>
-      {/* {errorMessage && <div style={styles.errorMessage}>{errorMessage}</div>} */}
-      
 
-       <Snackbar
-        open={successOpen}
-        autoHideDuration={3000}
-        onClose={handleSuccessClose}
-      >
-        <Alert
-          elevation={6}
-          variant="filled"
-          onClose={handleSuccessClose}
-          severity="success"
-        >
-          {successMessage}
-        </Alert>
-      </Snackbar>
-      <Snackbar
-        open={errorOpen}
-        autoHideDuration={3000}
-        onClose={handleErrorClose}
-      >
-        <Alert
-          elevation={6}
-          variant="filled"
-          onClose={handleErrorClose}
-          severity="error"
-        >
-          {errorMessage}
-        </Alert>
-      </Snackbar> 
+      <Container sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+			<Grid container spacing={10} sx={{ width: '100%' }}>
+				{/* Left third of the page */}
+				<Grid item xs={12} md={4} sx={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
+          {/* <Grid> */}
+					<Card justifyContent="center" alignItems="center" elevation={5} sx={{ maxWidth: 500, width: '150%', height: '40vh', margin: '5em 0em 5em -7.5em', borderRadius: '0.8em', position: 'fixed' }}>
+						<CardContent>
+								<Typography variant="h5" component="div" sx={{ fontWeight: 'bold', textAlign: 'center', marginBottom: '1.5em', marginTop: '0.5em' }}>
+									Add Medicine
+								</Typography>
+                        <Grid container spacing={2} style={{ width: '80%', marginTop: '0.2em', display: 'flex', 
+                                                            justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }} >
+                                
+                                        <form onSubmit={handleSubmit(onSubmit)}>
+                                            <TextField
+                                                {...register("medicineName", { required: "medicine is required" })}
+                                                fullWidth
+                                                sx={{ marginLeft: '3.5em' }}
+                                                label={`Medicine Name`}
+                                            />
+                                        <Grid sx={{ display: 'flex', width: '100%' }}>
+                                            <TextField
+                                                {...register("dosage", { required: "dosage is required" })}
+                                                fullWidth
+                                                sx={{ marginTop: '1em', marginLeft: '3.5em' }}
+                                                label={`Dosage`}
+                                                type='number'
+                                            />
+                                            <TextField
+                                                fullWidth
+                                                {...register("quantity", { required: "quantity is required" })}
+                                                sx={{ marginTop: '1em', marginLeft: '1em', marginRight: '-3.5em' }}
+                                                label={`Quantity`}
+                                                type='number'
+                                            />
+                                            
+                                        </Grid>
+                                        <Button
+                                          type="submit"
+                                          variant="outlined"
+                                          fullWidth
+                                          sx={{ p: 1.8, fontWeight: "bold", mb: 2, marginTop: '1em', marginLeft: '4em' }}
+                                        >
+                                          Add Medicine
+                                        </Button>
+                                        </form>
+                            </Grid>
 
+						</CardContent>
+						<CardActions sx={{ alignItems: 'center', justifyContent: 'center' }}>
+              
+							<Button variant="contained" onClick={() => handleClick(id)} sx={{ margin: '-2em 1.75em 0.5em 0.5em', width: '75%' }}>
+								View Official Prescription Document
+							</Button>
 
-      {/* <h2>Prescription Details</h2>
-    <br></br>
-      <table style={styles.table}>
-        <thead>
-          <tr>
-            <th style={styles.th}>Doctor</th>
-            <th style={styles.th}>Patient</th>
-            <th style={styles.th}>Date</th>
-            <th style={styles.th}>Filled</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style={styles.td}>{prescription.doctor?.name}</td>
-            <td style={styles.td}>{prescription.patient?.name}</td>
-            <td style={styles.td}>{formatDate(prescription?.date)}</td>
-            <td style={styles.td}>{prescription.filled ? 'Filled' : 'Not Filled'}</td>
-          </tr>
-        </tbody>
-      </table> */}
-      <Container maxWidth="lg">
-      <Paper elevation={3} sx={{ p: "20px", my: "40px" }}>
-        <Typography variant="h6" sx={{ mb: 2 }}>
-          Add Medicine
-        </Typography>
-        {/* {statusMessage && (
-          <Typography
-            variant="body2"
-            color={statusMessage.includes("Error") ? "error" : "success"}
-            sx={{ mb: 2 }}
-          >
-            {statusMessage}
-          </Typography>
-        )} */}
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <TextField
-            label="Medicine Name"
-            {...register("medicineName", { required: "medicine is required" })}
-            fullWidth
-            sx={{ mb: 2 }}
-          />
+						</CardActions>
+					</Card>
+
+          {
+            selectedMedicine && (
+              <Card elevation={5} sx={{ maxWidth: 500, width: '150%', height: '30vh', margin: '30em 0em 5em -7.5em', borderRadius: '0.8em', position: 'fixed' }}>
+                <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
+										<Typography gutterBottom variant="h5" component="div">
+											<MedicationIcon fontSize="large"></MedicationIcon> {selectedMedicine?.name.charAt(0).toUpperCase() + selectedMedicine.name.slice(1).toLowerCase()}
+										</Typography>
+                    <Grid sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', margin: '0.5em 2em 0.5em 2em'}}>
+										<Typography variant="body2">
+											<AddAlarmIcon></AddAlarmIcon> {prescription.medicine[selectedIndex]?.dailyDosage} {prescription.medicine[selectedIndex]?.dailyDosage === 1 ? 'dosage' : 'dosages'} per day
+										</Typography>
+										<Typography variant="body2">
+											Used for {selectedMedicine?.medicinalUse} <HelpOutlineIcon></HelpOutlineIcon>
+										</Typography>
+                    </Grid>
+                    <Grid sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', margin: '0.5em 2em 0.5em 2em'}}>
+										<Typography variant="body2">
+											<AttachMoneyIcon></AttachMoneyIcon> Price: {selectedMedicine?.price}
+										</Typography>
+										<Typography variant="body2">
+											Quantity: {prescription.medicine[selectedIndex]?.quantity} <ShoppingCartIcon></ShoppingCartIcon>
+										</Typography>
+                    </Grid>
+                    <Grid sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', margin: '0.5em 2em 0.5em 2em'}}>
+                    <Typography variant="body2">
+                      <MedicationLiquidIcon></MedicationLiquidIcon> Medicinal Use: {selectedMedicine?.medicinalUse}
+                    </Typography>
+                    <Typography variant="body2">
+                      Prescription Med: {selectedMedicine?.overTheCounter ? 'No' : 'Yes'} <NoteAddIcon></NoteAddIcon>
+                    </Typography>
+                    </Grid>
+                    <Grid sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', margin: '0.5em 2em 0.5em 2em'}}>
+                      <Button variant="contained" onClick={() => handleEditClick(selectedMedicine?._id)} sx={{ margin: '0.5em', width: '80%' }}>
+                        Edit Medicine
+                      </Button>
+                      <Button variant="contained" onClick={() => handleClickDelete(selectedMedicine?._id)} sx={{ margin: '0.5em', width: '80%', backgroundColor: 'red' }}>
+                        Delete Medicine
+                      </Button>
+                    </Grid>
+									</CardContent>
+              </Card>
+            )
+          }
+
+        </Grid>
+				{/* Right two thirds of the page */}
+				<Grid item xs={12} md={8} >
+					<Container elevation={5} sx={{
+						display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center',
+						margin: '5em -7.5em 5em 5em', width: '125%', position: 'sticky', maxHeight: '74vh',
+						overflow: 'auto', border: '1px solid #ccc', borderRadius: '0.8em',
+						'::-webkit-scrollbar': { width: '12px' }, '::-webkit-scrollbar-thumb': { backgroundColor: '#888', borderRadius: '6px' },
+						'::-webkit-scrollbar-track': { backgroundColor: '#eee', borderRadius: '8px' }
+					}}>
+						{medicine.map((med, index) => (
+							<Card key={index} elevation={5} sx={{
+								maxWidth: 1000, margin: '2em -3em 2em 0em', width: '75%', borderRadius: '0.8em', transition: 'background-color 0.1s ease-in-out',
+								'&:hover': {
+									backgroundColor: theme.palette.primary.main, // Change the text color on hover
+									color: "white",
+								},
+							}}>
+                <CardActionArea onClick={() => { setSelectedMedicine(med); setSelectedIndex(index); }}>
+									<CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
+										<Typography gutterBottom variant="h5" component="div">
+											<MedicationIcon fontSize="large"></MedicationIcon> {med?.name.charAt(0).toUpperCase() + med.name.slice(1).toLowerCase()}
+										</Typography>
+										<Typography variant="body2">
+											<AddAlarmIcon></AddAlarmIcon> {prescription.medicine[index]?.dailyDosage} {prescription.medicine[index]?.dailyDosage === 1 ? 'dosage' : 'dosages'} per day
+										</Typography>
+										<Typography variant="body2">
+											<HelpOutlineIcon></HelpOutlineIcon> Used for {med?.medicinalUse}
+										</Typography>
+										<Typography variant="body2">
+											<AttachMoneyIcon></AttachMoneyIcon> Price: {med?.price}
+										</Typography>
+									</CardContent>
+                  </CardActionArea>
+							</Card>
+						))}
+
+					</Container>
+				</Grid>
+			</Grid>
+
+            {/* Delete Confirmation Dialog  */}
+      <Dialog open={deleteConfirmation.open} onClose={handleDeleteCancel}>
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          Are you sure you want to delete this item?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteConfirm} style={{ color: 'red' }} autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Edit Dialog  */}
+      <Dialog open={editDialog.open} onClose={handleEditCancel}>
+        <DialogTitle>Edit Details</DialogTitle>
+        <DialogContent>
           <TextField
             label="Dosage"
-            type="number"
-            {...register("dosage", { required: "dosage is required" })}
+            variant="outlined"
             fullWidth
-            sx={{ mb: 2 }}
+            style={{ marginTop: '1em', paddingBottom: '1em' }} 
+            value={editDialog.editedDosage}
+            onChange={(e) => setEditDialog({ ...editDialog, editedDosage: e.target.value })}
           />
           <TextField
             label="Quantity"
-            type="number"
-            {...register("quantity", { required: "quantity is required" })}
+            variant="outlined"
             fullWidth
-            sx={{ mb: 2 }}
+            style={{ paddingBottom: '1em' }}
+            value={editDialog.editedQuantity}
+            onChange={(e) => setEditDialog({ ...editDialog, editedQuantity: e.target.value })}
           />
-          {/* {errors.diagnosis && (
-            <Typography color="error">{errors.diagnosis.message}</Typography>
-          )} */}
-          <Button
-            type="submit"
-            variant="contained"
-            fullWidth
-            sx={{ p: 1.8, fontWeight: "bold", mb: 2 }}
-          >
-            Add Medicine
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleEditCancel} color="primary">
+            Cancel
           </Button>
-        </form>
-      </Paper>
-    </Container>
+          <Button onClick={handleEditConfirm} color="primary" autoFocus>
+            Save
+          </Button>
+        </DialogActions>
+            </Dialog>
 
-      <br></br>
 
-      <h4>Medicines Details</h4>
+			<Snackbar
+				open={successOpen}
+				autoHideDuration={3000}
+				onClose={handleSuccessClose}
+			>
+				<Alert
+				elevation={6}
+				variant="filled"
+				onClose={handleSuccessClose}
+				severity="success"
+				>
+				{successMessage}
+				</Alert>
+			</Snackbar>
+			<Snackbar
+				open={errorOpen}
+				autoHideDuration={3000}
+				onClose={handleErrorClose}
+			>
+				<Alert
+				elevation={6}
+				variant="filled"
+				onClose={handleErrorClose}
+				severity="error"
+				>
+				{errorMessage}
+				</Alert>
+			</Snackbar>
 
-      {/* <table style={styles.table}>
-        <thead>
-          <tr>
-            <th style={styles.th}>Name</th>
-            <th style={styles.th}>Dosage</th>
-            <th style={styles.th}>Medicinal Use</th>
-            <th style={styles.th}>Description</th>
-            <th style={styles.th}>Active Ingredients</th>
-            <th style={styles.th}>Price</th>
-            <th style={styles.th}>Available Quantity</th>
-            <th style={styles.th}>Over The Counter</th>
-            <th style={styles.th}>Archived</th>
-            <th style={styles.th}>Edit</th>
-            <th style={styles.th}>Delete</th>
-          </tr>
-        </thead>
-        <tbody>
-          {medicine.map((med, index) => (
-            <tr key={index}>
-              <td style={styles.td}>{med?.name}</td>
-              <td style={styles.td}>{prescription.medicine[index]?.dailyDosage} {prescription.medicine[index]?.dailyDosage === 1 ? 'dosage' : 'dosages'} per day</td>  
-              <td style={styles.td}>{med?.medicinalUse}</td>
-              <td style={styles.td}>{med?.details.description}</td>
-              <td style={styles.td}>{med?.details.activeIngredients.map((ingredient, i) => (
-                <li key={i} style={styles.td}>{ingredient}</li>
-              ))}</td>
-              <td style={styles.td}>{med?.price}</td>
-              <td style={styles.td}>{med?.availableQuantity}</td>
-              <td style={styles.td}>{med?.overTheCounter ? 'Yes' : 'No' }</td>
-              <td style={styles.td}>{med?.isArchived ? 'Yes' : 'No' }</td>
-              <td style={styles.td}>
-                        <IconButton onClick={() => handleClickEdit(med?._id)}>
-                          <EditIcon />
-                        </IconButton>
-                      </td>
-              <td style={styles.td}>
-                        <IconButton onClick={() => handleClickDelete(med?._id)}>
-                          <DeleteIcon />
-                        </IconButton>
-                      </td>
-            </tr>
-          ))}
-        </tbody>
-      </table> */}
+		</Container>
 
-<TableContainer component={Paper}>
+
+      
+
+      {/* <h4>Medicines Details</h4> */}
+
+      
+
+{/* <TableContainer component={Paper}>
       <Table>
         <TableHead>
           <StyledTableRow>
@@ -506,7 +602,7 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
           ))}
         </TableBody>
       </Table>
-      {/* Delete Confirmation Dialog */}
+      {/* Delete Confirmation Dialog 
       <Dialog open={deleteConfirmation.open} onClose={handleDeleteCancel}>
         <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>
@@ -522,7 +618,7 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
         </DialogActions>
       </Dialog>
 
-      {/* Edit Dialog */}
+      {/* Edit Dialog 
       <Dialog open={editDialog.open} onClose={handleEditCancel}>
         <DialogTitle>Edit Details</DialogTitle>
         <DialogContent>
@@ -553,14 +649,14 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
         </DialogActions>
       </Dialog>
 
-    </TableContainer>
+    </TableContainer> */}
 
-    <br></br>
+    {/* <br></br> */}
 
 
-      <button className="btn btn-primary"  onClick={() => handleClick(id)}>
+      {/* <button className="btn btn-primary"  onClick={() => handleClick(id)}>
                 View Official Prescription Document
-              </button>
+              </button> */}
     </div>
   );
 };

@@ -47,10 +47,10 @@ const DoctorDashboard = (props) => {
                       padding: 0,
                     }}
                   >
-                    <TodayIcon sx={{ width: 25, height: 25 }} />
+                    <AccountCircleIcon sx={{ width: 25, height: 25 }} />
                   </Avatar>
                 </ListItemIcon>
-                <ListItemText primary="My Information" />
+                <ListItemText primary="My Profile" />
               </ListItemButton>
             </ListItem>
           </List>
@@ -69,7 +69,7 @@ const DoctorDashboard = (props) => {
                       padding: 0,
                     }}
                   >
-                    <AccountCircleIcon sx={{ width: 30, height: 30 }} />
+                    <AccountCircleIcon sx={{ width: 25, height: 25 }} />
                   </Avatar>
                 </ListItemIcon>
                 <ListItemText primary="Profile" />
@@ -202,7 +202,7 @@ const DoctorDashboard = (props) => {
                       padding: 0,
                     }}
                   >
-                    <HistoryEduIcon sx={{ width: 30, height: 30 }} />
+                    <HistoryEduIcon sx={{ width: 25, height: 25 }} />
                   </Avatar>
                 </ListItemIcon>
                 <ListItemText primary="My Prescriptions" />
@@ -267,7 +267,7 @@ const DoctorDashboard = (props) => {
                       padding: 0,
                     }}
                   >
-                    <PeopleIcon sx={{ width: 30, height: 30 }} />
+                    <PeopleIcon sx={{ width: 25, height: 25 }} />
                   </Avatar>
                 </ListItemIcon>
                 <ListItemText primary="Change My Password" />
@@ -289,7 +289,7 @@ const DoctorDashboard = (props) => {
                       padding: 0,
                     }}
                   >
-                    <SmsIcon sx={{ width: 30, height: 30 }} />
+                    <SmsIcon sx={{ width: 25, height: 25 }} />
                   </Avatar>
                 </ListItemIcon>
                 <ListItemText primary="Chat/VideoCall Patients" />

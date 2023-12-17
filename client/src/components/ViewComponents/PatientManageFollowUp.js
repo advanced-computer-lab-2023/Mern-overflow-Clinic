@@ -346,7 +346,8 @@ const PatientManageAppointmentsPopup = ({ open, onClose, doctorId }) => {
         doctor: doctorId,
         relativeId: bookForRelative ? selectedFamilyMemberID : userId,
         date: selectedSlot,
-        flag: bookForRelative
+        flag: bookForRelative,
+        price : 0
       };
 
       await axios.post(`http://localhost:8000/appointments/requestFollowUp/${userId}`, appointmentData);

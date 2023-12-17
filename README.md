@@ -82,13 +82,76 @@ You will then need to run the following command each time before your next commi
 <details>
 <summary>Authentication</summary>
 
-| ![Sign in Page](https://github.com/advanced-computer-lab-2023/Mern-overflow-Pharmacy/assets/97978852/79045f97-1651-4a3d-81d0-70beb62bfe28) |
+| ![Sign in Page](https://github.com/advanced-computer-lab-2023/Mern-overflow-Clinic/assets/97978852/81acfa7d-9271-4f2b-9a5d-143ed9c9898c)   |
 | :----------------------------------------------------------------------------------------------------------------------------------------: |
 |                                               <p style="text-align:center">Sign In Page</p>                                                |
 
-| ![Patient Registration](https://github.com/advanced-computer-lab-2023/Mern-overflow-Pharmacy/assets/97978852/f68625a2-1893-41e2-bf83-107cee344989) |
+| ![Patient Registration](https://github.com/advanced-computer-lab-2023/Mern-overflow-Clinic/assets/97978852/5ce37788-94d7-4586-ab5f-6e697c1e3b1b)   |
 | :------------------------------------------------------------------------------------------------------------------------------------------------: |
 |                                               <p style="text-align:center">Patient Registration</p>                                                |
+
+</details>
+
+<details>
+<summary>Admin Controls</summary>
+
+| ![Manage Admins](https://github.com/advanced-computer-lab-2023/Mern-overflow-Clinic/assets/97978852/35ccbeea-9b54-43b9-8203-4946b6274976)   |
+| :----------------------------------------------------------------------------------------------------------------------------------------: |
+|                                               <p style="text-align:center">Manage Admins</p>                                                |
+
+| ![Manage Packages](https://github.com/advanced-computer-lab-2023/Mern-overflow-Clinic/assets/97978852/5262bf79-fa62-4b35-b997-42b37634be1b)   |
+| :----------------------------------------------------------------------------------------------------------------------------------------: |
+|                                               <p style="text-align:center">Manage Packages</p>                                                |
+
+| ![Manage Doctor Requests](https://github.com/advanced-computer-lab-2023/Mern-overflow-Clinic/assets/97978852/28b4d06b-a314-4ace-9cc7-d54aa25d65a2)   |
+| :----------------------------------------------------------------------------------------------------------------------------------------: |
+|                                               <p style="text-align:center">Manage Doctor Requests</p>                                                |
+
+| ![Change Password](https://github.com/advanced-computer-lab-2023/Mern-overflow-Clinic/assets/97978852/49b11ce0-1b2a-42b6-b031-6379bce3bbbb)   |
+| :----------------------------------------------------------------------------------------------------------------------------------------: |
+|                                               <p style="text-align:center">Change Password</p>                                                |
+
+</details>
+
+<details>
+<summary>Patient Controls</summary>
+
+| ![Manage Family](https://github.com/advanced-computer-lab-2023/Mern-overflow-Clinic/assets/97978852/81f0f471-4728-4134-9d3d-17dac9e3a0d3)   |
+| :----------------------------------------------------------------------------------------------------------------------------------------: |
+|                                               <p style="text-align:center">Manage Family</p>                                                |
+
+| ![Manage Profile](https://github.com/advanced-computer-lab-2023/Mern-overflow-Clinic/assets/97978852/a5a3e4f9-4916-4633-b5e2-c738b646a598)   |
+| :----------------------------------------------------------------------------------------------------------------------------------------: |
+|                                               <p style="text-align:center">View My Profile</p>                                                |
+
+| ![Manage Prescriptions](https://github.com/advanced-computer-lab-2023/Mern-overflow-Clinic/assets/97978852/623acaf9-121b-46b6-8698-c1791d3f7500)   |
+| :----------------------------------------------------------------------------------------------------------------------------------------: |
+|                                               <p style="text-align:center">Manage Prescriptions</p>                                                |
+
+| ![Chat/Video](https://github.com/advanced-computer-lab-2023/Mern-overflow-Clinic/assets/97978852/e20084a7-eeb7-4450-a2f3-50a4349005a7)   |
+| :----------------------------------------------------------------------------------------------------------------------------------------: |
+|                                               <p style="text-align:center">Chat/Video</p>                                                |
+
+</details>
+
+<details>
+<summary>Doctor Controls</summary>
+
+| ![Manage Profile](https://github.com/advanced-computer-lab-2023/Mern-overflow-Clinic/assets/97978852/fcb08465-e18d-422e-99a6-1fa35c813f69)  |
+| :----------------------------------------------------------------------------------------------------------------------------------------: |
+|                                               <p style="text-align:center">Manage Profile</p>                                                |
+
+| ![Manage Contracts]https://github.com/advanced-computer-lab-2023/Mern-overflow-Clinic/assets/97978852/b3831609-c568-4a50-8e81-29c60b80775b)  |
+| :----------------------------------------------------------------------------------------------------------------------------------------: |
+|                                               <p style="text-align:center">Manage Contracts</p>                                                |
+
+| ![Manage Appointments](https://github.com/advanced-computer-lab-2023/Mern-overflow-Clinic/assets/97978852/43956c06-cd4a-4b13-a321-d346981b21a4)  |
+| :----------------------------------------------------------------------------------------------------------------------------------------: |
+|                                               <p style="text-align:center">Manage Appointments</p>                                                |
+
+| ![Manage Prescriptions](https://github.com/advanced-computer-lab-2023/Mern-overflow-Clinic/assets/97978852/7e59dd69-4518-461f-98d5-27765b942437) |
+| :----------------------------------------------------------------------------------------------------------------------------------------: |
+|                                               <p style="text-align:center">Manage Prescriptions</p>                                                |
 
 </details>
 
@@ -546,6 +609,7 @@ To run this project, you will need to add the following environment variables to
 | GET    | `/prescriptions/:id` | View details of a prescription   |
 | POST   | `/prescriptions/`    | Create a prescription            |
 | PUT    | `/prescriptions/:id` | Update details of a prescription |
+| PUT    | `/prescriptions/:id/collect|Collect a prescription|
 | DELETE | `/prescriptions/:id` | Delete a prescription            |
 
 </details>

@@ -19,7 +19,7 @@ const AdminDashboard = (props) => {
                 <Typography variant="body1" sx={{ fontWeight: "normal", verticalAlign: "text-bottom", ml: 1 }}> System Users</Typography>
             </Box>
             <List>
-                {[{ name: 'Admins', route: '/admin/admins' }, { name: 'Pharmacists', route: '/admin/pharmacists' }, { name: 'Patients', route: '/admin/patients' }].map((text, index) => (
+                {[{ name: 'Admins', route: '/admin/admins' }, { name: 'Doctors', route: '/admin/doctors' }, { name: 'Patients', route: '/admin/patients' }].map((text, index) => (
                     <ListItem key={text.name} disablePadding>
                         <ListItemButton component={Link} to={text.route} >
                             <ListItemIcon>

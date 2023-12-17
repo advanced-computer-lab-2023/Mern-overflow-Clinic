@@ -368,9 +368,9 @@ const PatientManageAppointmentsPopup = ({ open, onClose, doctorId }) => {
             control={<Checkbox checked={bookForRelative} onChange={handleBookForRelativeChange} />}
             label="Booking for a relative?"
           />
-          {hourlyRate && (
+          {/* {hourlyRate && (
             <Typography sx={{ mb: 3 }}>Doctor's Hourly Rate: {hourlyRate}</Typography>
-          )}
+          )} */}
           <FormControl fullWidth margin="normal">
             <InputLabel htmlFor="slot-select">Select a Time Slot</InputLabel>
             <Select

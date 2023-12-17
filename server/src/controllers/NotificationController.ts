@@ -6,22 +6,8 @@ import { getLoggedUserID } from "../middlewares/permissions/isAuthorized.js";
 
 const createNotification = async (req: Request, res: Response) => {
   const { receiver, content, link } = req.body;
-  const newNotification: HydratedDocument<INotification> = new notification({
-    receiver: receiver,
-    content: content,
-    link: link,
-  });
-  newNotification
-    .save()
-    .then((newNotification) => {
-      //const id = getLoggedUserID(req);
-      io.to(receiver).emit("newNotification", newNotification);
-
-      return res.status(200).json(newNotification);
-    })
-    .catch((err) => {
-      return res.status(400).json(err);
-    });
+  createNotificationwithId(receiver, content, link);
+  return res.status(200).json({ message: "Notification sent" });
 };
 
 const createNotificationwithId = async (

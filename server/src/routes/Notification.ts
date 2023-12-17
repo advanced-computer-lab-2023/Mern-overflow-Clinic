@@ -11,6 +11,7 @@ router.get("/:id", notificationController.listNotifiactions);
 
 router.post("/", notificationController.createNotification);
 
+
 // router.delete("/", notificationController.deleteContract);
 
 // router.get("/:id",notificationController.readContract);

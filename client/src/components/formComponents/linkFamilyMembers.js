@@ -27,6 +27,8 @@ const LinkFamilyMember = () => {
   const [err, setErr] = useState("false");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('info');
+
   const {
     register,
     handleSubmit,
@@ -38,9 +40,13 @@ const LinkFamilyMember = () => {
     axios.post(`http://localhost:8000/patients/${userId}/linkfamilyMember`, data)
       .then((response) => {
         window.location.reload();
+        setSnackbarSeverity('success');
+        setSnackbarMessage("Patient linked as a family member successfuly");
+        setSnackbarOpen(true);
       })
       .catch((error) => {
         const message = error.response?.data?.message || "An unknown error occurred";
+        setSnackbarSeverity('error');
         setSnackbarMessage(message);
         setSnackbarOpen(true);
       });
@@ -134,9 +140,9 @@ const LinkFamilyMember = () => {
         open={snackbarOpen}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
       >
-        <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
+        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
           {snackbarMessage}
         </Alert>
       </Snackbar>

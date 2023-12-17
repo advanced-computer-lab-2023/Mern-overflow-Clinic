@@ -1,36 +1,32 @@
-
-
-
-
 import {
-  IconButton,
-  Paper,
-  Table,
-  Chip,
-  Avatar,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  CircularProgress,
-  Input,
-  Snackbar,
-  Alert,
-  InputLabel,
-  TextField,
-  Grid,
-  Select,
-  MenuItem,
-  Button,
-  Box,
-  Container,
-  FormControl,
-  Typography,
-  Divider,
-  FormLabel,
-  RadioGroup,
-  FormControlLabel,
-  Radio
+    IconButton,
+    Paper,
+    Table,
+    Chip,
+    Avatar,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableRow,
+    CircularProgress,
+    Input,
+    Snackbar,
+    Alert,
+    InputLabel,
+    TextField,
+    Grid,
+    Select,
+    MenuItem,
+    Button,
+    Box,
+    Container,
+    FormControl,
+    Typography,
+    Divider,
+    FormLabel,
+    RadioGroup,
+    FormControlLabel,
+    Radio
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
@@ -38,6 +34,10 @@ import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
 import PhoneIcon from "@mui/icons-material/Phone";
+import { useForm } from "react-hook-form";
+import SaveIcon from '@mui/icons-material/Save';
+import CancelIcon from '@mui/icons-material/Cancel';
+import EditIcon from '@mui/icons-material/Edit';
 import WcIcon from "@mui/icons-material/Wc";
 import TodayIcon from "@mui/icons-material/Today";
 import LinkIcon from "@mui/icons-material/Link";
@@ -54,34 +54,72 @@ import { useUser } from "../../userContest";
 import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
 import HealingIcon from '@mui/icons-material/Healing';
 import SchoolIcon from '@mui/icons-material/School';
+import { Save } from "@mui/icons-material";
 
 export default function DoctorViewInfo(props) {
-  const { userId } = useUser();
-  const navigate = useNavigate();
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+    const { userId } = useUser();
+    const navigate = useNavigate();
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [editing, setEditing] = useState(false);
 
-  const fetchTableData = () => {
-    axios.get(`http://localhost:8000/doctors/${userId}`).then((res) => {
-        console.log(res.data);
-          setData(res.data);
-          setTimeout(() => setLoading(false), 500);
-      });
-  };
+    const {
+        register,
+        handleSubmit,
+        setError,
+        formState: { errors },
+    } = useForm();
 
-  useEffect(() => {
-      fetchTableData();
-  }, []);
+    const [email, setEmail] = useState("");
+    const [hourlyRate, setHourlyRate] = useState("");
+    const [affiliation, setAffiliation] = useState("");
 
-  const handleSuccessClose = (event, reason) => {
-      if (reason === "clickaway") {
-          return;
-      }
-      props.setSuccessOpen(false);
-  };
+    const fetchTableData = () => {
+        axios.get(`http://localhost:8000/doctors/${userId}`).then((res) => {
+            console.log(res.data);
+            setData(res.data);
+            setEmail(res.data.email);
+            setHourlyRate(res.data.hourlyRate);
+            setAffiliation(res.data.affiliation);
+            setTimeout(() => setLoading(false), 500);
+        });
+    };
 
-  return (
-    <Container maxWidth="md">
+    const onSubmit = (data) => {
+        const dataToServer = { email, hourlyRate, affiliation };
+        axios
+            .put(`http://localhost:8000/doctors/${userId}`, dataToServer)
+            .then((response) => {
+                console.log("PUT request successful", response);
+                setEditing(false);
+                fetchTableData();
+            })
+            .catch((error) => {
+                console.error("Error making PUT request", error);
+            });
+    };
+
+    const onEdit = () => {
+        setEditing(true);
+    }
+
+    const onCancel = () => {
+        setEditing(false);
+    }
+
+    useEffect(() => {
+        fetchTableData();
+    }, []);
+
+    const handleSuccessClose = (event, reason) => {
+        if (reason === "clickaway") {
+            return;
+        }
+        props.setSuccessOpen(false);
+    };
+
+    return (
+        <Container maxWidth="md">
             <Snackbar open={props.successOpen} autoHideDuration={3000} onClose={handleSuccessClose}>
                 <Alert elevation={6} variant="filled" onClose={handleSuccessClose} severity="success">
                     {props.successMessage}
@@ -107,7 +145,7 @@ export default function DoctorViewInfo(props) {
                                 <AccountCircleIcon sx={{ width: 100, height: 100, textAlign: "center" }} />
                             </Avatar>
                             <Typography sx={{ fontWeight: "bold", my: "20px", fontFamily: "monospace" }}>
-                                {capitalize(data.name)}
+                                Hello, {capitalize(data.name)}
                             </Typography>
                             <Table sx={{ width: "50%", ml: "50px" }}>
                                 <TableBody>
@@ -141,18 +179,19 @@ export default function DoctorViewInfo(props) {
                                             </Box>
                                         </TableCell>
                                         <TableCell sx={{ border: "none", textAlign: "left" }}>
-                                            {data.email}
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow sx={{ border: "none" }}>
-                                        <TableCell sx={{ width: "50%", textAlign: "right", border: "none" }}>
-                                            <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-                                                <PhoneIcon sx={{ mr: "10px" }} />
-                                                <Typography>Phone Number</Typography>
-                                            </Box>
-                                        </TableCell>
-                                        <TableCell sx={{ border: "none", textAlign: "left" }}>
-                                            {data.mobileNumber}
+                                            {!editing ?
+                                                <>{data.email}</>
+                                                : <TextField variant="standard"
+                                                    value={email}
+                                                    InputProps={{ style: { fontSize: '12px' } }}
+                                                    onChange={(e) => {
+                                                        setEmail(e.target.value);
+                                                    }}
+                                                    type="email"
+                                                    required
+                                                    fullWidth
+                                                    autoFocus></TextField >
+                                            }
                                         </TableCell>
                                     </TableRow>
                                     <TableRow sx={{ border: "none" }}>
@@ -182,20 +221,32 @@ export default function DoctorViewInfo(props) {
                                             EGP {data.wallet}
                                         </TableCell>
                                     </TableRow>
-  
+
                                     <TableRow sx={{ border: "none" }}>
                                         <TableCell sx={{ width: "50%", textAlign: "right", border: "none" }}>
                                             <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-                                                <MonetizationOnIcon sx={{ mr: "10px", color: "black" }} />
+                                                <MonetizationOnIcon sx={{ mr: "10px", color: "#008080" }} />
                                                 <Typography>Hourly Rate</Typography>
                                             </Box>
                                         </TableCell>
                                         <TableCell sx={{ border: "none", textAlign: "left" }}>
-                                            EGP {data.hourlyRate}
+                                            {!editing ?
+                                                <>EGP {data.hourlyRate}</>
+                                                : <TextField variant="standard" sx={{}}
+                                                    value={`${hourlyRate}`}
+                                                    InputProps={{ style: { fontSize: '12px' } }}
+                                                    onChange={(e) => {
+                                                        setHourlyRate(e.target.value);
+                                                    }}
+                                                    type="number"
+                                                    required
+                                                    fullWidth
+                                                    autoFocus></TextField >
+                                            }
                                         </TableCell>
                                     </TableRow>
-  
-  
+
+
                                     <TableRow sx={{ border: "none" }}>
                                         <TableCell sx={{ width: "50%", textAlign: "right", border: "none" }}>
                                             <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
@@ -204,11 +255,23 @@ export default function DoctorViewInfo(props) {
                                             </Box>
                                         </TableCell>
                                         <TableCell sx={{ border: "none", textAlign: "left" }}>
-                                            EGP {data.affiliation}
+                                            {!editing ?
+                                                <>{capitalize(data.affiliation)}</>
+                                                : <TextField variant="standard" sx={{}}
+                                                    value={affiliation}
+                                                    InputProps={{ style: { fontSize: '12px' } }}
+                                                    onChange={(e) => {
+                                                        setAffiliation(e.target.value);
+                                                    }}
+                                                    type="text"
+                                                    required
+                                                    fullWidth
+                                                    autoFocus></TextField >
+                                            }
                                         </TableCell>
                                     </TableRow>
-  
-  
+
+
                                     <TableRow sx={{ border: "none" }}>
                                         <TableCell sx={{ width: "50%", textAlign: "right", border: "none" }}>
                                             <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
@@ -217,39 +280,54 @@ export default function DoctorViewInfo(props) {
                                             </Box>
                                         </TableCell>
                                         <TableCell sx={{ border: "none", textAlign: "left" }}>
-                                            EGP {data.speciality}
+                                            {capitalize(data.speciality)}
                                         </TableCell>
                                     </TableRow>
-  
-  
+
+
                                     <TableRow sx={{ border: "none" }}>
                                         <TableCell sx={{ width: "50%", textAlign: "right", border: "none" }}>
                                             <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-                                                <SchoolIcon sx={{ mr: "10px", color: "black" }} />
+                                                <SchoolIcon sx={{ mr: "10px", color: "#008080" }} />
                                                 <Typography>Education</Typography>
                                             </Box>
                                         </TableCell>
                                         <TableCell sx={{ border: "none", textAlign: "left" }}>
-                                            EGP {data.Education}
+                                            {capitalize(data.education)}
                                         </TableCell>
                                     </TableRow>
-  
+
                                 </TableBody>
                             </Table>
+                            {editing ?
+                                <>
+                                    <Button variant="contained" sx={{ mt: "25px" }} onClick={onSubmit}>
+                                        <SaveIcon sx={{ mr: "5px" }} /> Save Changes
+                                    </Button>
+                                    <Button variant="outlined" sx={{ mt: "25px" }} onClick={onCancel}>
+                                        <CancelIcon sx={{ mr: "5px" }} /> Cancel
+                                    </Button>
+                                </>
+                                :
+                                <Button variant="outlined" sx={{ mt: "25px" }} onClick={onEdit}>
+                                    <EditIcon sx={{ mr: "5px" }} /> Edit your profile
+                                </Button>
+                            }
                         </Box>
-  
-  
-  
-  
-  
+
+
+
+
+
                     </Container>
-                )}
-            </Paper>
-        </Container>
-  
-  
-    
-  );
-  
+                )
+                }
+            </Paper >
+        </Container >
+
+
+
+    );
+
 }
 

@@ -1,21 +1,25 @@
 import { Request, Response } from "express";
 import adminstrator from "../models/Adminstrator.js";
-import doctor from "../models/Doctor.js";
+import Doctor from "../models/Doctor.js";
 import contract from "../models/Contract.js";
 import Contract from "../models/Contract.js";
 
 
 
 const createContract = async (req: Request, res: Response) => {
+
     req.body.date = Date.now();
     req.body.admin = req.params.id;
+    req.body.doctor = req.body.doctorId;
+    console.log(req.body);
     const newContract = contract
     .create(req.body)
     .then((newContract) => {
-return res.status(200).json(newContract);
+        console.log("success");
+        return res.status(200).json(newContract);
     })
     .catch((err) => {
-return res.status(400).json(err);
+        return res.status(400).json(err);
     });
 }
 
@@ -36,18 +40,31 @@ return res.status(404).send(err);
 
 
 const listContracts = async (req: Request, res: Response) => {
-
-    const cont = await Contract.find().then((cont)=>{
-        if(!cont){
-            return res.status(404).json({message : "no contracts found"});
-        }else{
-            return res.status(200).json(cont);
-        }
-    }).catch((err)=>{
-       res.status(40).json({err});
-
-    })
-}
+    try {
+      const contracts = await Contract.find().exec();
+  
+      if (!contracts || contracts.length === 0) {
+        return res.status(404).json({ message: "No contracts found" });
+      }
+  
+      const updatedContracts = await Promise.all(
+        contracts.map(async (contract) => {
+          const doctor = await Doctor.findById(contract.doctor).exec();
+          const doctorName = doctor ? doctor.name : "Unknown"; // Use "Unknown" if no doctor is found
+  
+          return {
+            ...contract.toJSON(),
+            doctorName: doctorName,
+          };
+        })
+      );
+  
+      return res.status(200).json(updatedContracts);
+    } catch (err) {
+      return res.status(400).json({ err });
+    }
+  };
+  
 
 const deleteContract = async (req: Request, res: Response) => {
     const id = req.params.id;

@@ -1,14 +1,17 @@
 import MenuIcon from "@mui/icons-material/Menu";
 import { Logout as LogoutIcon } from '@mui/icons-material';
-import {Popover} from '@mui/material';
+import { Popover } from '@mui/material';
 import { Avatar } from "@chakra-ui/avatar";
 import { BellIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import { Link } from 'react-router-dom';
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import {
 	AppBar,
+	Zoom,
+	Chip,
 	Box,
 	Button,
+	Fab,
 	Divider,
 	Drawer,
 	IconButton,
@@ -20,9 +23,12 @@ import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../userContest";
 import { useEffect } from "react";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import CloseIcon from "@mui/icons-material/Close";
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import NotificationImportantIcon from '@mui/icons-material/NotificationImportant';
 import Menu from '@mui/material/Menu';
+import logo from "../assets/photos/logo.png";
 import MenuItem from '@mui/material/MenuItem';
 import { useState } from "react";
 import io from 'socket.io-client';
@@ -60,7 +66,6 @@ export default function ButtonAppBar(props) {
 		}
 	};
 
-	console.log("notifications:", notifications);
 	const [anchorEl, setAnchorEl] = useState(null);
 
 	const handleClick = (event) => {
@@ -69,48 +74,42 @@ export default function ButtonAppBar(props) {
 	};
 
 	const handleClose = (link) => {
-		console.log("navigating to link:", link);
-
-		if(link.includes("meet.google")){
-			window.open(link, "_blank");
-		}else if (link.includes("chat")){
-			if(!window.location.href.includes("chat"))window.location.href = link;
-		}
-		else{
-			navigate(link);
+		console.log("navigating to link:", typeof link);
+		if (typeof link !== 'object') {
+			if (link.includes("chat")) {
+				if (!window.location.href.includes("chat")) window.location.href = link;
+			}
+			else {
+				navigate(link);
+			}
 		}
 		setAnchorEl(null);
 	};
 
 	const list = (anchor) => (
-		<Box
-			sx={{ width: anchor === "top" || anchor === "bottom" ? "auto" : 250 }}
-			role="presentation"
-			onClick={toggleDrawer(anchor, false)}
-			onKeyDown={toggleDrawer(anchor, false)}
-		>
+		<Box sx={{ display: "flex", justifyContent: "space-between", flexDirection: "column", height: "100%" }}>
 			<Box
-				sx={{
-					display: "flex",
-					alignItems: "center",
-					justifyContent: "center",
-					my: 4,
-				}}
+				sx={{ width: anchor === "top" || anchor === "bottom" ? "auto" : 250 }}
+				role="presentation"
+				onClick={toggleDrawer(anchor, false)}
+				onKeyDown={toggleDrawer(anchor, false)}
 			>
-				<Box sx={{ display: "inline-flex", alignItems: "center" }}>
-					<Typography
-						sx={{
-							fontWeight: "bold",
-							verticalAlign: "text-bottom",
-							fontSize: "20px",
-						}}
-					>
-						{props.user} Dashboard
-					</Typography>
-				</Box>
+				<Box sx={{ my: "30px" }}></Box>
+				<Divider>
+					<Chip
+						sx={{ mx: "10px", color: "#333", backgroundColor: "#293241", color: "white", fontSize: "15px" }}
+						label={`${props.user} Dashboard`}
+					/>
+				</Divider>
+				<Box sx={{ my: "20px" }}></Box>
+				{props.children}
 			</Box>
-			<Divider />
-			{props.children}
+
+			<Box>
+				<Typography sx={{ fontFamily: "rubik", fontSize: "14px", margin: "10px", color: "#293241" }}>
+					© 2023 El7a2ny Solutions
+				</Typography>
+			</Box>
 		</Box>
 	);
 
@@ -121,7 +120,22 @@ export default function ButtonAppBar(props) {
 		right: false,
 	});
 
-  
+	const [isVisible, setIsVisible] = useState(false);
+
+	const scrollToTop = () => {
+		window.scrollTo({
+			top: 0,
+			behavior: "smooth"
+		});
+	};
+
+	const handleScroll = () => {
+		if (window.pageYOffset > 300) {
+			setIsVisible(true);
+		} else {
+			setIsVisible(false);
+		}
+	};
 
 	const toggleDrawer = (anchor, open) => (event) => {
 		if (
@@ -150,12 +164,27 @@ export default function ButtonAppBar(props) {
 
 	return (
 		<>
+			<Zoom in={isVisible}>
+				<Fab color="primary" onClick={scrollToTop} sx={{ position: "fixed", bottom: 30, right: 30 }}>
+					<ArrowUpwardIcon />
+				</Fab>
+			</Zoom>
 			<div>
-				<Drawer
-					anchor={"left"}
-					open={state["left"]}
-					onClose={toggleDrawer("left", false)}
-				>
+				<Drawer anchor={"left"} open={state["left"]} onClose={toggleDrawer("left", false)}>
+					<Box sx={{ display: "flex", justifyContent: "space-between" }}>
+						<img src={logo} alt="Logo" style={{ width: "50px", height: "auto", margin: "10px" }} />
+						<IconButton
+							variant="contained"
+							sx={{ height: "50px", width: "50px", margin: "10px" }}
+							onClick={toggleDrawer("left", false)}
+						>
+							<CloseIcon />
+						</IconButton>
+					</Box>
+					<Typography sx={{ mx: "10px", fontFamily: "cursive", fontWeight: "bold", color: "#1564C0" }}>
+						{" "}
+						El7a2ny Clinic
+					</Typography>
 					{list("left")}
 				</Drawer>
 			</div>
@@ -172,11 +201,7 @@ export default function ButtonAppBar(props) {
 						>
 							<MenuIcon />
 						</IconButton>
-						<Typography
-							variant="h6"
-							component="div"
-							sx={{ flexGrow: 1, textAlign: "left" }}
-						>
+						<Typography variant="h6" component="div" sx={{ flexGrow: 1, textAlign: "left" }}>
 							{props.title}
 						</Typography>
 						<div>
@@ -190,7 +215,7 @@ export default function ButtonAppBar(props) {
 							<Menu
 								anchorEl={anchorEl}
 								open={Boolean(anchorEl)}
-								onClose={() => setAnchorEl(null)}
+								onClose={handleClose}
 							>
 								{notifications.map((notification, index) => (
 									<MenuItem key={index} onClick={() => handleClose(notification.link)}>
@@ -199,97 +224,20 @@ export default function ButtonAppBar(props) {
 								))}
 							</Menu>
 						</div>
-
-						<>
-            {/* <IconButton
-    onClick={handleMenuOpen}
-    sx={{ p: 1 }} // Adjust the padding as needed
-  >
-    <Avatar
-      size="small"
-      sx={{ width: '32px', height: '32px' }} // Adjust the width and height as needed
-    />
-  </IconButton> */}
-  
-      {/* <Popover
-        id={id}
-        open={open}
-        anchorEl={anchorEl}
-        onClose={handleMenuClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-      > */}
-        
-        {
-          (userRole === "Patient" || userRole == "Doctor") &&
-                  (
-
-                  <MenuItem>
-                  {/* <Link to={userRole==="Patient"?`/patient/info`:`/doctor/info`}><span>My Profile</span></Link> */}
-				<Link
-					to={userRole === "Patient" ? `/patient/info` : `/doctor/info`}
-					style={{ color: 'white' }}
-				>
-                  <Avatar
-                    sx={{
-                      m: 0,
-                      bgcolor: "white",
-                      color: "white",
-                      width: 30,
-                      height: 10,
-                      padding: 0,
-                    }}
-                  >
-                    <AccountCircleIcon sx={{ width: 30, height: 30 }} />
-                  </Avatar>
-				</Link>
-                </MenuItem>
-                
-                )
-
-        }
-
-
-        <Divider />
-        <MenuItem onClick={handleLogout}>
-          <LogoutIcon sx={{ mr: 1 }} />
-          Logout
-        </MenuItem>
-      {/* </Popover> */}
-    </>
-
-            {/* <Menu>
-            <MenuButton as={Button} bg="white" rightIcon={<ChevronDownIcon />}>
-              <Avatar
-                size="sm"
-                cursor="pointer"
-                 name={user.name}
-                  src={user.pic}
-              />
-            </MenuButton>
-            <MenuList>
-              <ProfileModal 
-              user={user}
-              >
-                <MenuItem>My Profile</MenuItem>{" "}
-              </ProfileModal>
-              <MenuDivider />
-              <MenuItem onClick={handleLogout}>Logout</MenuItem>
-            </MenuList>
-          </Menu> */}
-            {/* <Button type="button" color="inherit" onClick={handleLogout}>
-							{" "}
-							Log out{" "}
-						</Button> */}
+						<IconButton
+							size="large"
+							edge="end"
+							color="inherit"
+							aria-label="logout"
+							sx={{ mr: 2 }}
+							component={Link}
+							onClick={handleLogout}
+						>
+							<LogoutIcon />
+						</IconButton>
 					</Toolbar>
 				</AppBar>
-			</Box >
+			</Box>
 		</>
 	);
 }

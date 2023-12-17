@@ -19,12 +19,20 @@ import {
   Divider,
 } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
+import EventRepeatIcon from '@mui/icons-material/EventRepeat';
+import FeedIcon from '@mui/icons-material/Feed';
+import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import TodayIcon from "@mui/icons-material/Today";
+import MoreTimeIcon from '@mui/icons-material/MoreTime';
 import PeopleIcon from "@mui/icons-material/People";
+import PostAddIcon from '@mui/icons-material/PostAdd';
 import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
 import { Link } from "react-router-dom";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useUser } from "../../userContest";
+import { RepeatIcon } from "@chakra-ui/icons";
+import { More, PostAdd } from "@mui/icons-material";
+import PasswordIcon from '@mui/icons-material/Password';
 
 const DoctorDashboard = (props) => {
   const { userId, setUserId, userRole, setUserRole } = useUser();
@@ -47,32 +55,10 @@ const DoctorDashboard = (props) => {
                       padding: 0,
                     }}
                   >
-                    <TodayIcon sx={{ width: 25, height: 25 }} />
+                    <AccountCircleIcon sx={{ width: 25, height: 25 }} />
                   </Avatar>
                 </ListItemIcon>
-                <ListItemText primary="My Information" />
-              </ListItemButton>
-            </ListItem>
-          </List>
-          <Divider />
-          <List>
-            <ListItem disablePadding>
-              <ListItemButton component={Link} to="/doctor/profile">
-                <ListItemIcon>
-                  <Avatar
-                    sx={{
-                      m: 0,
-                      bgcolor: "white",
-                      color: "black",
-                      width: 30,
-                      height: 30,
-                      padding: 0,
-                    }}
-                  >
-                    <AccountCircleIcon sx={{ width: 30, height: 30 }} />
-                  </Avatar>
-                </ListItemIcon>
-                <ListItemText primary="Profile" />
+                <ListItemText primary="My Profile" />
               </ListItemButton>
             </ListItem>
           </List>
@@ -91,7 +77,7 @@ const DoctorDashboard = (props) => {
                       padding: 0,
                     }}
                   >
-                    <TodayIcon sx={{ width: 25, height: 25 }} />
+                    <FeedIcon sx={{ width: 25, height: 25 }} />
                   </Avatar>
                 </ListItemIcon>
                 <ListItemText primary="My Contracts" />
@@ -135,10 +121,10 @@ const DoctorDashboard = (props) => {
                       padding: 0,
                     }}
                   >
-                    <TodayIcon sx={{ width: 25, height: 25 }} />
+                    <EventRepeatIcon sx={{ width: 25, height: 25 }} />
                   </Avatar>
                 </ListItemIcon>
-                <ListItemText primary="Follow Ups" />
+                <ListItemText primary="My Follow Ups" />
               </ListItemButton>
             </ListItem>
           </List>
@@ -158,7 +144,7 @@ const DoctorDashboard = (props) => {
                       padding: 0,
                     }}
                   >
-                    <TodayIcon sx={{ width: 25, height: 25 }} />
+                    <PendingActionsIcon sx={{ width: 25, height: 25 }} />
                   </Avatar>
                 </ListItemIcon>
                 <ListItemText primary="Pending Follow Ups" />
@@ -202,7 +188,7 @@ const DoctorDashboard = (props) => {
                       padding: 0,
                     }}
                   >
-                    <HistoryEduIcon sx={{ width: 30, height: 30 }} />
+                    <HistoryEduIcon sx={{ width: 25, height: 25 }} />
                   </Avatar>
                 </ListItemIcon>
                 <ListItemText primary="My Prescriptions" />
@@ -224,7 +210,7 @@ const DoctorDashboard = (props) => {
                       padding: 0,
                     }}
                   >
-                    <PeopleIcon sx={{ width: 25, height: 25 }} />
+                    <PostAddIcon sx={{ width: 25, height: 25 }} />
                   </Avatar>
                 </ListItemIcon>
                 <ListItemText primary="Add Health Records" />
@@ -246,7 +232,7 @@ const DoctorDashboard = (props) => {
                       padding: 0,
                     }}
                   >
-                    <PeopleIcon sx={{ width: 25, height: 25 }} />
+                    <MoreTimeIcon sx={{ width: 25, height: 25 }} />
                   </Avatar>
                 </ListItemIcon>
                 <ListItemText primary="Add Free Slots" />
@@ -267,7 +253,7 @@ const DoctorDashboard = (props) => {
                       padding: 0,
                     }}
                   >
-                    <PeopleIcon sx={{ width: 30, height: 30 }} />
+                    <PasswordIcon sx={{ width: 25, height: 25 }} />
                   </Avatar>
                 </ListItemIcon>
                 <ListItemText primary="Change My Password" />
@@ -289,7 +275,7 @@ const DoctorDashboard = (props) => {
                       padding: 0,
                     }}
                   >
-                    <SmsIcon sx={{ width: 30, height: 30 }} />
+                    <SmsIcon sx={{ width: 25, height: 25 }} />
                   </Avatar>
                 </ListItemIcon>
                 <ListItemText primary="Chat/VideoCall Patients" />

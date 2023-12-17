@@ -61,7 +61,7 @@ export default function SignIn() {
 					navigate("/patient/family");
 				} else if (type === "Doctor") {
 					setUserRole("Doctor");
-					navigate("/doctor/profile");
+					navigate("/doctor/info");
 				} else if (type === "Adminstrator") {
 					setUserRole("Admin");
 					navigate("/admin/patients");
@@ -194,7 +194,7 @@ export default function SignIn() {
 							<Button
 								fullWidth
 								type="submit"
-								variant="contained"
+								variant="text"
 								sx={{ mt: 3, mb: 2, p: 2, fontWeight: "bold" }}
 								component={Link}
 								to="/auth/forgotpassword"

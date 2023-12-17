@@ -2,8 +2,10 @@ import React from 'react';
 import NotFoundImg from "./assets/photos/not-found.png"
 import { IconButton, Button } from "@mui/material";
 import { Link } from 'react-router-dom';
+import { useUser } from "./userContest.js";
 
 export default function NotFoundPage() {
+  const { userId, setUserId, userRole, setUserRole } = useUser();
   return (
     <>
       <div>
@@ -12,7 +14,8 @@ export default function NotFoundPage() {
         <img src={NotFoundImg} />
       </div>
       <Button variant="contained" component={Link}
-        to="/patient/medicines"> Return to Homepage </Button>
+        to={(userRole == "Patient")? "/patient/info" : (userRole == "Doctor")? "/doctor/info" : "/admin/admins"}>
+           Return to Homepage </Button>
     </>
   );
 };

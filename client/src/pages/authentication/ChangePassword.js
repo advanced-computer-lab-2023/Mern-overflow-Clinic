@@ -8,8 +8,10 @@ import {
   TextField,
   Typography,
   Grid,
-  Link,
 } from "@mui/material";
+import { useUser } from "../../userContest";
+
+import { Link } from "react-router-dom";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
@@ -23,7 +25,7 @@ import DoctorDashboard from "../doctor/DoctorDashboard";
 
 
 
-
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 
@@ -42,6 +44,8 @@ const theme = createTheme({
 export default function ChangePassword() {
   const { userId, setUserId, userRole, setUserRole } = useUser();
   const navigate = useNavigate();
+  const { userId, setUserId, userRole, setUserRole } = useUser();
+
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -158,11 +162,14 @@ export default function ChangePassword() {
           </Typography>
           {contentBox}
         </Box>
-        <GridContainer container>
-          <Link href="/auth/forgotpassword" variant="body2" fontWeight={"bold"}>
+        <Box display="flex" flexDirection="column">
+          <Button variant="outlined" component={Link} to="/auth/forgotpassword">
             Forgot password?
-          </Link>
-        </GridContainer>
+          </Button>
+          <Button sx={{ mt: "25px" }} component={Link} to={(userRole == "Patient")? "/patient/info" : (userRole == "Doctor")? "/doctor/info" : "/admin/admins"}>
+            <ArrowBackIcon sx={{ mr: "5px" }} /> Back to Homepage
+          </Button>
+        </Box>
       </Container>
     </ThemeProvider>
 </>

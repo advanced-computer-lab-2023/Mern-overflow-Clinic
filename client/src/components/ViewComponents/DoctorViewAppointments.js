@@ -9,11 +9,15 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
-  Snackbar, 
-  Alert
+  DialogContentText,
+  Snackbar,
+  Alert,
+  Card, CardContent, CardActions, Typography,
+  Grid,TextField,
+  Tooltip
 } from "@mui/material";
+
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -49,7 +53,7 @@ export default function DoctorViewAppointments() {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("info");
-
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -112,6 +116,11 @@ export default function DoctorViewAppointments() {
     return formattedAppointmentDate.isAfter(currentDate) ? "upcoming" : "past";
   };
 
+
+  const refreshPage = () => {
+    fetchTableData(); // This function will refresh the data
+  };
+
   const handleFilter = (e) => {
     e.preventDefault();
     let status = e.target[0].value;
@@ -165,13 +174,13 @@ export default function DoctorViewAppointments() {
       .then((res) => {
         setSnackbarMessage(res.data.message || "Appointment cancelled successfully");
         setSnackbarSeverity("success");
-        setOpenSnackbar(true);
+        setSnackbarOpen(true);
         fetchTableData(); // Refresh the data
       })
       .catch((error) => {
         setSnackbarMessage(error.response?.data?.message || "Error canceling appointment");
         setSnackbarSeverity("error");
-        setOpenSnackbar(true);
+        setSnackbarOpen(true);
         console.error("Error canceling appointment:", error);
       })
       .finally(() => {
@@ -184,24 +193,24 @@ export default function DoctorViewAppointments() {
 
   return (
     <Container maxWidth="xl">
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={6000}
-        onClose={() => setOpenSnackbar(false)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }} 
 
-      >
-        <Alert
-          onClose={() => setOpenSnackbar(false)}
-          severity={snackbarSeverity}
-          sx={{ width: '100%' }}
+      
+    <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={6000}
+          onClose={() => setSnackbarOpen(false)}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }} 
+
         >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
-
-
-    <Dialog
+          <Alert
+            onClose={() => setSnackbarOpen(false)}
+            severity={snackbarSeverity}
+            sx={{ width: '100%' }}
+          >
+            {snackbarMessage}
+          </Alert>
+    </Snackbar>
+      <Dialog
         open={openConfirmationDialog}
         onClose={() => setOpenConfirmationDialog(false)}
         aria-labelledby="alert-dialog-title"
@@ -229,154 +238,133 @@ export default function DoctorViewAppointments() {
       appointmentId={selectedAppointmentId}
       doctorId={selectedDoctorId} 
     />
-      <Paper elevation={3} sx={{ p: 2, my: 2, paddingBottom: 2 }}>
-        <Container
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            my: 2,
-          }}
-        >
-          <Container sx={{ width: "48%" }}>
-            <form onSubmit={handleFilter}>
-              <FormControl fullWidth>
-                <InputLabel id="filter-by-upcoming"></InputLabel>
-                <Select
-                  labelId="filter-by-upcoming"
-                  id="filter-by-upcoming"
-                  label="upcoming"
-                  defaultValue="upcoming"
-                  uncontrolled="true"
-                  fullWidth
-                >
-                  <MenuItem value="upcoming">Upcoming</MenuItem>
-                  <MenuItem value="completed">Completed</MenuItem>
-                  <MenuItem value="cancelled">Cancelled</MenuItem>
-                  <MenuItem value="rescheduled">Rescheduled</MenuItem>
-                </Select>
-              </FormControl>
 
-              <FormControl fullWidth>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DateTimePicker
-                    slotProps={{
-                      actionBar: {
-                        actions: ["accept", "clear"],
-                      },
-                    }}
-                  ></DateTimePicker>
-                </LocalizationProvider>
-              </FormControl>
+    <Grid container spacing={2}>
+        {/* Left Half - Form */}
+        <Grid item xs={12} md={6}>
+        <Paper elevation={3} sx={{ p: 2, my: 2, minHeight: '650px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <form onSubmit={handleFilter} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
+                <FormControl fullWidth sx={{ mb: 2 }}>
+                    <InputLabel id="filter-by-upcoming-label">Appointment Status</InputLabel>
+                    <Select
+                        labelId="filter-by-upcoming-label"
+                        id="filter-by-upcoming"
+                        label="Appointment Status"
+                        defaultValue="upcoming"
+                    >
+                        <MenuItem value="upcoming">Upcoming</MenuItem>
+                        <MenuItem value="completed">Completed</MenuItem>
+                        <MenuItem value="cancelled">Cancelled</MenuItem>
+                        <MenuItem value="rescheduled">Rescheduled</MenuItem>
+                    </Select>
+                </FormControl>
 
-              <FormControl fullWidth>
+                <FormControl fullWidth sx={{ mb: 2 }}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DateTimePicker
+                            renderInput={(props) => <TextField {...props} />}
+                            label="Select Date"
+                        />
+                    </LocalizationProvider>
+                </FormControl>
+
                 <Button
-                  fullWidth
-                  type="submit"
-                  variant="contained"
-                  sx={{ mt: 1, mb: 1, p: 1, fontWeight: "bold" }}
+                    fullWidth
+                    type="submit"
+                    variant="contained"
+                    sx={{ mb: 2, p: 1, fontWeight: "bold" }}
                 >
-                  Filter
+                    Filter
                 </Button>
-              </FormControl>
-            </form>
 
-            <Button
-              fullWidth
-              type="submit"
-              variant="contained"
-              onClick={fetchTableData}
-              sx={{ mt: 1, mb: 1, p: 1, fontWeight: "bold" }}
-            >
-              Clear
-            </Button>
-          </Container>
-        </Container>
-      </Paper>
-      <Button
-        fullWidth
-        variant="contained"
-        onClick={fetchTableData}
-        sx={{ mt: 3, mb: 2, p: 2, fontWeight: "bold" }}
-      >
-        View All
-      </Button>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell key="patient">Patient</TableCell>
-            <TableCell key="duration">Duration</TableCell>
-            <TableCell key="date">Date</TableCell>
-            <TableCell key="status">Status</TableCell>
-            <TableCell key="state">State</TableCell> 
-            <TableCell key="actions">Actions</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data &&
-            data.map((row) => (
-              <TableRow
-                key={
-                  row.date +
-                  (row.patient?.name || "") +
-                  row.status +
-                  Math.random()
-                }
-              >
-                <TableCell>{row.patient?.name || "N/A"}</TableCell>
-                <TableCell>{row.duration + " hour"}</TableCell>
-                <TableCell>{dayjs(row.date).format("MMMM D, YYYY h:mm A")}</TableCell>
-                <TableCell>{row.status}</TableCell>
-                <TableCell>{calculateState(row.date)}</TableCell>
-                <TableCell>
                 <Button
-            variant="contained"
-            color="warning"
-            size="small"
-            disabled={row.status !== "upcoming" || row.appointmentType !== "regular"}
-            onClick={() => handleRescheduleClick(row._id, row.doctor._id)}
-            sx={{
-              opacity: row.status === "upcoming" && row.appointmentType === "regular" ? 1 : 0.5,
-              backgroundColor: row.status === "upcoming" && row.appointmentType === "regular" ? undefined : '#F1974E',
-              color: 'white',
-              textTransform: 'none', // Changes text to normal casing
-              '&.Mui-disabled': {
-                color: 'white',
-                backgroundColor: '#F1974E',
-                opacity: 0.5
-              }
-            }}
-          >
-            Reschedule
-          </Button>
-        </TableCell>
-        <TableCell>
-          <Button
-            variant="contained"
-            color="error"
-            size="small"
-            disabled={row.status !== "upcoming" || row.appointmentType !== "regular"}
-            onClick={() => handleCancelClick(row._id)}
-            sx={{
-              opacity: row.status === "upcoming" && row.appointmentType === "regular" ? 1 : 0.5,
-              backgroundColor: row.status === "upcoming" && row.appointmentType === "regular" ? undefined : '#f44336',
-              color: 'white',
-              textTransform: 'none', // Changes text to normal casing
-              '&.Mui-disabled': {
-                color: 'white',
-                backgroundColor: '#f44336',
-                opacity: 0.5
-              }
-            }}
-          >
-            Cancel
-          </Button>
-        </TableCell>
-              </TableRow>
-            ))}
-        </TableBody>
-      </Table>
-      
+                    fullWidth
+                    variant="contained"
+                    onClick={refreshPage}
+                    sx={{ p: 1, fontWeight: "bold" }}
+                >
+                    Refresh
+                </Button>
+            </form>
+        </Paper>
+    </Grid>
+
+        {/* Right Half - Scrollable Paper with Cards */}
+        <Grid item xs={12} md={6}>
+        <Paper elevation={3} sx={{ maxHeight: 650, overflow: 'auto', p: 2, my: 2, minHeight: '650px' }}>
+        {data.map((appointment) => {
+            const statusColor = appointment.status === 'cancelled' ? 'red' :
+                               appointment.status === 'rescheduled' ? 'orange' :
+                               appointment.status === 'upcoming' ? 'blue' : 'green';
+
+                               const isDisabled = appointment.status !== "upcoming" || appointment.appointmentType !== "regular";
+                               const disabledReason = isDisabled ? "Only upcoming and regular appointments can be rescheduled or cancelled." : "";                   
+
+            return (
+                <Card key={appointment._id} sx={{ minWidth: 275, backgroundColor: '#fff', marginBottom: 2, padding: 1, display: 'flex', alignItems: 'center' }}>
+                    <Tooltip title={appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}>
+                        <div style={{ height: 20, width: 20, borderRadius: '50%', backgroundColor: statusColor, marginRight: 2 }} />
+                    </Tooltip>
+                    <CardContent sx={{ flexGrow: 1 }}>
+                        <Typography variant="body1" component="div" sx={{ fontWeight: 'normal' }}>
+                            With <span style={{ fontWeight: 'bold' }}>{appointment.patient?.name || "N/A"}</span>
+                        </Typography>
+                        <Typography sx={{ mb: 1.5, color: 'text.secondary' }}>
+                            {dayjs(appointment.date).format("MMMM D, YYYY h:mm A")}
+                        </Typography>
+                    </CardContent>
+                    <CardActions sx={{ justifyContent: 'center', flexGrow: 0 }}>
+                        <Tooltip title={disabledReason} arrow>
+                            <span>
+                                <Button 
+                                    size="small" 
+                                    style={{ color: 'blue' }}
+                                    disabled={isDisabled}
+                                    onClick={() => handleRescheduleClick(appointment._id, appointment.doctor._id)}
+                                    sx={{
+                                        opacity: isDisabled ? 0.5 : 1,  // Dim the button if disabled
+                                        '&:hover': {
+                                            backgroundColor: isDisabled ? 'transparent' : '',  // Prevent hover effects if disabled
+                                        },
+                                    }}
+                                >
+                                    Reschedule
+                                </Button>
+                            </span>
+                        </Tooltip>
+                        <Tooltip title={disabledReason} arrow>
+                            <span>
+                                <Button 
+                                    size="small" 
+                                    style={{ color: 'red' }}
+                                    disabled={isDisabled}
+                                    onClick={() => handleCancelClick(appointment._id)}
+                                    sx={{
+                                        opacity: isDisabled ? 0.5 : 1,  // Dim the button if disabled
+                                        '&:hover': {
+                                            backgroundColor: isDisabled ? 'transparent' : '',  // Prevent hover effects if disabled
+                                        },
+                                    }}
+                                >
+                                    Cancel
+                                </Button>
+                            </span>
+                        </Tooltip>
+                    </CardActions>
+                </Card>
+            );
+        })}
+    </Paper>
+</Grid>
+
+
+      </Grid>
+
+
+     
     </Container>
+
+
+
   );
 }

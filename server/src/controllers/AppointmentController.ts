@@ -744,13 +744,13 @@ const rescheduleAppointment = async (req: Request, res: Response) => {
 						 }
 						 );
 
-						 const subject = "Appointment Resceduled";
-						 let html = `Hello patient, \n your appointment was resceduled with date ${newDate}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
-						 sendMailService.sendMail(patientEmail, subject, html);
-						 html = `Hello doctor, \n your appointment was resceduled with date ${newDate}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
-						 sendMailService.sendMail(doctorEmail, subject, html);
-						 NotificationController.createNotificationwithId(apt.patient.toString(), "Your appointment is rescheduled", "/patient/appointments");
-						 NotificationController.createNotificationwithId(apt.doctor.toString(), "Your appointment is rescheduled", "/doctor/appointments");
+						  const subject = "Appointment Resceduled";
+						  let html = `Hello patient, \n your appointment was resceduled with date ${newDate}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
+						  sendMailService.sendMail(patientEmail, subject, html);
+						  html = `Hello doctor, \n your appointment was resceduled with date ${newDate}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
+						  sendMailService.sendMail(doctorEmail, subject, html);
+						  NotificationController.createNotificationwithId(apt.patient.toString(), "Your appointment is rescheduled", "/patient/appointments");
+						  NotificationController.createNotificationwithId(apt.doctor.toString(), "Your appointment is rescheduled", "/doctor/appointments");
 
 						return res.status(200).json({ message: "Appointment rescheduled successfully", appointment: apt });
 					} else {
@@ -898,53 +898,62 @@ const listAllPendingFllowUps = async (req: Request, res: Response) => {
 // }
 
 const getAllAppointments = async (req: Request, res: Response) => {
-    const id = req.params.id;
-    console.log(id);
-    
-	console.log("here");
+	const patientId = req.params.id;
+  
+	console.log(patientId);
+	try {
+	  // Find all appointments with the given patient ID
+	  var appointments = await appointment.find({ patient: patientId }).exec();
+  
+	  if (!appointments || appointments.length === 0) {
+		var appointments = await appointment.find({ doctor : patientId }).exec();
+		//return res.status(200).json([]);
+	  }
 
-
-
-    var apt = await appointment.find({ patient: id }).exec();
-
-
-
-    if (apt.length <= 0 || !apt || apt === undefined) {
-
-		 apt = await appointment.find({ doctor: id }).exec();
-
-    }
-
-	if (apt.length <= 0 || !apt || apt === undefined) {
-        console.log("empty");
-        return res.status(200).json([]);
-	}
-
-
-	// Fetch doctor details for each appointment
-	const appointmentsWithDoctor = await Promise.all(apt.map(async (appointment) => {
+	  if (!appointments || appointments.length === 0) {
+		//var appointments = await appointment.find({ doctor : patientId }).exec();
+		return res.status(200).json([]);
+	  }
+  
+	  // Fetch patient and doctor details for each appointment
+	  const appointmentsWithDetails = await Promise.all(appointments.map(async (apt) => {
 		try {
-			// Fetch the doctor's details based on appointment.doctor (assuming appointment.doctor is the doctor's ID)
-			const doctor = await Doctor.findById(appointment.doctor).exec(); // Replace `Doctor` with your doctor model
-			if (doctor) {
-				return {
-					...appointment.toObject(), // Convert Mongoose document to plain JavaScript object
-					doctor: {
-						name: doctor.name, // Assuming doctor has a 'name' field
-						_id: doctor._id
-					}
-				};
-			} else {
-				return appointment.toObject();
-			}
-		} catch (error) {
-			console.error('Error fetching doctor details:', error);
-			return appointment.toObject();
-		}
-	}));
+		  // Fetch the patient's details based on appointment.patient (assuming appointment.patient is the patient's ID)
+		  const patient = await Patient.findById(apt.patient).exec(); // Replace `Patient` with your patient model
+  
+		  // Fetch the doctor's details based on appointment.doctor (assuming appointment.doctor is the doctor's ID)
+		  const doctor = await Doctor.findById(apt.doctor).exec(); // Replace `Doctor` with your doctor model
+  
+		  if (patient && doctor) {
 
-	return res.status(200).json(appointmentsWithDoctor);
-};
+			console.log(apt);
+			return {
+			  ...apt.toObject(), // Convert Mongoose document to plain JavaScript object
+			  patient: {
+				name: patient.name, // Assuming patient has a 'name' field
+				_id: patient._id
+			  },
+			  doctor: {
+				name: doctor.name, // Assuming doctor has a 'name' field
+				_id: doctor._id
+			  }
+			};
+		  } else {
+			return apt.toObject();
+		  }
+		} catch (error) {
+		  console.error('Error fetching details:', error);
+		  return apt.toObject();
+		}
+	  }));
+  
+	  return res.status(200).json(appointmentsWithDetails);
+	} catch (error) {
+	  console.error('Error fetching appointments:', error);
+	  return res.status(500).json({ message: 'Internal Server Error' });
+	}
+  };
+  
 
 const cancelAppointment = async (req: Request, res: Response) => {
 	const id = req.params.id;
@@ -1002,7 +1011,7 @@ const cancelAppointment = async (req: Request, res: Response) => {
 		console.log(`future date`);
 
 		if (isLessThan24Hours) {
-			console.log(`less than 34 hours`);
+			console.log(`less than 24 hours`);
 
 			apt.status = "cancelled";
 			await apt.save();
@@ -1016,8 +1025,9 @@ const cancelAppointment = async (req: Request, res: Response) => {
 			console.log("sending notification for appointmen: patient", apt.patient, " | doctor", doc._id);
 			NotificationController.createNotificationwithId(apt.patient.toString(), "Your appointment was cancelled", "/patient/appointments");
 			NotificationController.createNotificationwithId(apt.doctor.toString(), "Your appointment was cancelled", "/doctor/appointments");
-			return res.status(200).json({ message: "Appointment cancelled successfuly." });
+			 return res.status(200).json({ message: "Appointment cancelled successfuly." });
 
+			 
 		} else {
 			apt.status = "cancelled";
 			console.log(`cancelled apt `);
@@ -1060,14 +1070,14 @@ const cancelAppointment = async (req: Request, res: Response) => {
 			await apt.save();
 			console.log(`success`);
 			
-			const subject = "Appointment cancelled";
-			let html = `Hello patient, <br /> Your appointment with date ${appointmentDate} was cancelled .<br /> With Love, <br /> El7a2ni Clinic xoxo.`;
-			sendMailService.sendMail(patientEmail, subject, html);
-			html = `Hello doctor, <br /> Your appointment with date ${appointmentDate} was cancelled .<br /> With Love, <br /> El7a2ni Clinic xoxo.`;
-			sendMailService.sendMail(doctorEmail, subject, html);
-			console.log("sending notification for appointmen: patient", apt.patient, " | doctor", doc._id);
-			NotificationController.createNotificationwithId(apt.patient.toString(), "Your appointment was cancelled", "/patient/appointments");
-			NotificationController.createNotificationwithId(apt.doctor.toString(), "Your appointment was cancelled", "/doctor/appointments");
+			 const subject = "Appointment cancelled";
+			 let html = `Hello patient, <br /> Your appointment with date ${appointmentDate} was cancelled .<br /> With Love, <br /> El7a2ni Clinic xoxo.`;
+			 sendMailService.sendMail(patientEmail, subject, html);
+			 html = `Hello doctor, <br /> Your appointment with date ${appointmentDate} was cancelled .<br /> With Love, <br /> El7a2ni Clinic xoxo.`;
+			 sendMailService.sendMail(doctorEmail, subject, html);
+			 console.log("sending notification for appointmen: patient", apt.patient, " | doctor", doc._id);
+			 NotificationController.createNotificationwithId(apt.patient.toString(), "Your appointment was cancelled", "/patient/appointments");
+			 NotificationController.createNotificationwithId(apt.doctor.toString(), "Your appointment was cancelled", "/doctor/appointments");
 			return res.status(200).json({ message: "Appointment cancelled and money refunded successfuly. " });
 		}
 	}

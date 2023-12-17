@@ -227,12 +227,27 @@ export default function ButtonAppBar(props) {
 								))}
 							</Menu>
 						</div>
+						{
+							userRole && (userRole === "Patient" || userRole === "Doctor") && (
+								<IconButton
+								size="large"
+								edge="end"
+								color="inherit"
+								aria-label="menu"
+								sx={{ mr: 0 }}
+								component={Link}
+								to={`/${userRole.toLowerCase()}/info`}
+								>
+								<AccountCircleIcon />
+								</IconButton>
+							)
+						}
 						<IconButton
 							size="large"
 							edge="end"
 							color="inherit"
 							aria-label="logout"
-							sx={{ mr: 2 }}
+							sx={{ mr: 3 }}
 							component={Link}
 							onClick={handleLogout}
 						>

@@ -41,7 +41,7 @@ const onSubmit = data => {
   const dataToServer = { ...data };
   dataToServer["passwordHash"] = sha256(data["password"]);
   delete dataToServer.password
-  axios.post('http://localhost:80010/adminstrators', dataToServer)
+  axios.post('http://localhost:8000/admins', dataToServer)
     .then((response) => {
       setSuccessMessage('Admin created succesfully');
       setSuccessOpen(true);

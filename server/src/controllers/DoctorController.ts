@@ -23,8 +23,8 @@ const createDoctor = async (req: Request, res: Response) => {
 				doctor.find({ email: dataToServer.email }).then((emailRes) => {
 					if (emailRes.length !== 0)
 						return res
-							.status(404)
-							.send("You are already registered , please sign in ");
+							.status(409)
+							.send("Email already exists! Please choose another one");
 					else {
 						const files = req.files as Express.Multer.File[];
 						console.log("Files:", files);
@@ -60,8 +60,8 @@ const createDoctor = async (req: Request, res: Response) => {
 				});
 			} else if (document.length !== 0)
 				return res
-					.status(400)
-					.send("username taken , please choose another one ");
+					.status(409)
+					.send("Username already exists! Please choose another one");
 		});
 };
 

@@ -4,7 +4,6 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import {
   TextField,
-  Alert,
   Grid,
   Button,
   Box,
@@ -35,6 +34,7 @@ import { useState } from "react";
 import sha256 from "js-sha256";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../userContest";
+import { Snackbar, Alert } from "@mui/material";
 
 const defaultTheme = createTheme();
 
@@ -45,6 +45,10 @@ const defaultTheme = createTheme();
 export default function PatientRegister() {
   const { userId, setUserId, userRole, setUserRole } = useUser();
   const navigate = useNavigate();
+  const [successOpen, setSuccessOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorOpen, setErrorOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const {
     register,
     handleSubmit,
@@ -86,8 +90,9 @@ export default function PatientRegister() {
         navigate("/");
       })
       .catch((error) => {
+        setErrorMessage(error.response.data.message);
+        setErrorOpen(true);
         console.error("Error making POST request", error);
-        alert("Error making POST request: " + error.message);
       });
   };
 
@@ -102,8 +107,51 @@ export default function PatientRegister() {
     }
   };
 
+  const handleSuccessClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSuccessOpen(false);
+  };
+  const handleErrorClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setErrorOpen(false);
+  };
+
   return (
     <ThemeProvider theme={defaultTheme}>
+
+      <Snackbar
+        open={successOpen}
+        autoHideDuration={3000}
+        onClose={handleSuccessClose}
+      >
+        <Alert
+          elevation={6}
+          variant="filled"
+          onClose={handleSuccessClose}
+          severity="success"
+        >
+          {successMessage}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={errorOpen}
+        autoHideDuration={3000}
+        onClose={handleErrorClose}
+      >
+        <Alert
+          elevation={6}
+          variant="filled"
+          onClose={handleErrorClose}
+          severity="error"
+        >
+          {errorMessage}
+        </Alert>
+      </Snackbar> 
+
       <Grid container component="main" sx={{ height: "100vh" }}>
         <CssBaseline />
         <Grid

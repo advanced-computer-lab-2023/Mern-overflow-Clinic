@@ -36,6 +36,7 @@
     "jspdf": "^2.5.1",
     "react": "^18.2.0",
     "react-chips": "^0.8.0",
+    "react-custom-scrollbars": "^4.2.1",
     "react-datepicker": "^4.21.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.47.0",

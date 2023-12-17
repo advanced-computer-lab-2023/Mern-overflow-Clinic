@@ -51,7 +51,7 @@ const createPatient = async (req: Request, res: Response) => {
 
             patient.find({ 'email': req.body.email }).then((emailRes) => {// TODO rfactor this and test for uniqe mobile number
                 if (emailRes.length !== 0)
-return res.status(404).send("You are already registered , please sign in ");
+return res.status(409).send("Email already exists! Please choose another one");
 
                 else {
                     const newPatient = patient
@@ -74,7 +74,7 @@ return res.status(200).json(newPatient);
             })
         }
         else if (document.length !== 0)
-return res.status(400).send("username taken , please choose another one ");
+return res.status(409).send("Username already exists! Please choose another one");
     })
 
 };

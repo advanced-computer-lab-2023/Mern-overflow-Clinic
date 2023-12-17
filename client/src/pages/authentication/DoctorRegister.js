@@ -19,6 +19,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import sha256 from 'js-sha256';
 import { useNavigate } from 'react-router-dom';
+import { Snackbar, Alert } from '@mui/material';
 
 const defaultTheme = createTheme();
 
@@ -27,6 +28,10 @@ export default function DoctorRegister() {
   const [file, setFiles] = useState([]);
   const [selectedType, setSelectedType] = useState('nationalID');
   const [allTypes, setAllTypes] = useState([]);
+  const [successOpen, setSuccessOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorOpen, setErrorOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   
   const navigate = useNavigate();
   const { register, handleSubmit, setError, formState: { errors }, control } = useForm();
@@ -85,8 +90,9 @@ export default function DoctorRegister() {
         navigate("/");
       })
       .catch((error) => {
+        setErrorMessage(error.response.data);
+        setErrorOpen(true);
         console.error('Error making POST request', error);
-        alert('Error making POST request: ' + error.message);
       });
   }
   console.log(errors);
@@ -101,8 +107,51 @@ export default function DoctorRegister() {
     }
   }
 
+  const handleSuccessClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSuccessOpen(false);
+  };
+  const handleErrorClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setErrorOpen(false);
+  };
+
   return (
     <ThemeProvider theme={defaultTheme}>
+
+      <Snackbar
+        open={successOpen}
+        autoHideDuration={3000}
+        onClose={handleSuccessClose}
+      >
+        <Alert
+          elevation={6}
+          variant="filled"
+          onClose={handleSuccessClose}
+          severity="success"
+        >
+          {successMessage}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={errorOpen}
+        autoHideDuration={3000}
+        onClose={handleErrorClose}
+      >
+        <Alert
+          elevation={6}
+          variant="filled"
+          onClose={handleErrorClose}
+          severity="error"
+        >
+          {errorMessage}
+        </Alert>
+      </Snackbar> 
+
       <Grid container component="main" sx={{ height: '100vh' }}>
         <CssBaseline />
         <Grid item xs={false} sm={4} md={7} sx={{ backgroundSize: 'cover', backgroundColor: '#132629', backgroundPosition: 'center' }}>

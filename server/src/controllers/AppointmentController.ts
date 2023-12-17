@@ -1017,16 +1017,17 @@ const cancelAppointment = async (req: Request, res: Response) => {
 			await apt.save();
 			console.log(`success`);
 
-			// const subject = "Appointment cancelled";
-			// let html = `Hello patient, <br /> Your appointment with date ${appointmentDate} was cancelled .<br /> With Love, <br /> El7a2ni Clinic xoxo.`;
-			// sendMailService.sendMail(patientEmail, subject, html);
-			// html = `Hello doctor, <br /> Your appointment with date ${appointmentDate} was cancelled .<br /> With Love, <br /> El7a2ni Clinic xoxo.`;
-			// sendMailService.sendMail(doctorEmail, subject, html);
-			// console.log("sending notification for appointmen: patient", apt.patient, " | doctor", doc._id);
-			// NotificationController.createNotificationwithId(apt.patient.toString(), "Your appointment was cancelled", "/patient/appointments");
-			// NotificationController.createNotificationwithId(apt.doctor.toString(), "Your appointment was cancelled", "/doctor/appointments");
+			const subject = "Appointment cancelled";
+			let html = `Hello patient, <br /> Your appointment with date ${appointmentDate} was cancelled .<br /> With Love, <br /> El7a2ni Clinic xoxo.`;
+			sendMailService.sendMail(patientEmail, subject, html);
+			html = `Hello doctor, <br /> Your appointment with date ${appointmentDate} was cancelled .<br /> With Love, <br /> El7a2ni Clinic xoxo.`;
+			sendMailService.sendMail(doctorEmail, subject, html);
+			console.log("sending notification for appointmen: patient", apt.patient, " | doctor", doc._id);
+			NotificationController.createNotificationwithId(apt.patient.toString(), "Your appointment was cancelled", "/patient/appointments");
+			NotificationController.createNotificationwithId(apt.doctor.toString(), "Your appointment was cancelled", "/doctor/appointments");
 			 return res.status(200).json({ message: "Appointment cancelled successfuly." });
 
+			 
 		} else {
 			apt.status = "cancelled";
 			console.log(`cancelled apt `);

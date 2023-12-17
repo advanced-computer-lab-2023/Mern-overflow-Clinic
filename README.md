@@ -609,7 +609,7 @@ To run this project, you will need to add the following environment variables to
 | GET    | `/prescriptions/:id` | View details of a prescription   |
 | POST   | `/prescriptions/`    | Create a prescription            |
 | PUT    | `/prescriptions/:id` | Update details of a prescription |
-| PUT    | `/prescriptions/:id/collect|Collect a prescription|
+| PUT    | `/prescriptions/:id/collect` |Collect a prescription|
 | DELETE | `/prescriptions/:id` | Delete a prescription            |
 
 </details>

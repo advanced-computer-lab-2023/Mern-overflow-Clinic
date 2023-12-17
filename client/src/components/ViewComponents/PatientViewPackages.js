@@ -197,7 +197,6 @@ import {
 
     return(
         <Container maxWidth="xl">
-          < LineStripWithWords text="Your Package Information" />
           <Table>
               <TableHead>
               <TableRow>
@@ -264,7 +263,7 @@ import {
               <TableRow>
                 <TableCell key="Fname">Name</TableCell>
                 {/* <TableCell key="FnationalId">National ID</TableCell> */}
-                <TableCell key="Frelation">Relation</TableCell>
+                {/* <TableCell key="Frelation">Relation</TableCell> */}
                 <TableCell key="Fpname">Package Name</TableCell>
                 <TableCell key="Fprice">Price</TableCell>
                 <TableCell key="FdiscountOnDoctorSessions">Discount On Doctor Sessions</TableCell>
@@ -283,7 +282,7 @@ import {
                   <TableRow key={row.name + row.nationalId + row.age + row.gender}>
                     <TableCell>{row.name}</TableCell>
                     {/* <TableCell>{row.nationalId}</TableCell> */}
-                    <TableCell>{selectedFamRelArr[index]}</TableCell>
+                    {/* <TableCell>{selectedFamRelArr[index]}</TableCell> */}
                     <TableCell>{selectedFamPacArr[index].name}</TableCell>
                     <TableCell>{selectedFamPacArr[index].price}</TableCell>
                     <TableCell>{selectedFamPacArr[index].discountOnDoctorSessions}</TableCell>

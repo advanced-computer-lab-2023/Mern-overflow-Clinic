@@ -70,6 +70,7 @@ const corsOptions = {
     "http://localhost:3000",
     "http://127.0.0.1/",
     "http://localhost:3001",
+	"http://localhost:8001",
   ],
   credentials: true,
   exposedHeaders: ["set-cookie"],
@@ -182,7 +183,7 @@ app.use("/api/chat", chatRoutes);
 app.use("/api/message", messageRoutes);
 
 app.use("/contracts", contractRouter);
-app.use(cors({ origin: "http://localhost:3000" }));
+//app.use(cors({ origin: "http://localhost:3000" }));
 
 // //GET
 // app.get("/", (req, res) => {

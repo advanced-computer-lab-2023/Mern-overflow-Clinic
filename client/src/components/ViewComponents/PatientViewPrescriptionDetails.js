@@ -30,6 +30,8 @@ import AddAlarmIcon from '@mui/icons-material/AddAlarm';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import Snackbar from '@mui/material/Snackbar';
+import { Alert } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 
@@ -40,6 +42,26 @@ const PatientViewPrescriptionDetails = ({ match }) => {
 	const theme = useTheme();
 	const patientId = userId;
 	let { id } = useParams();
+	const [prescription, setPrescription] = useState([]);
+	const [medicine, setMedicine] = useState([]);
+	const [successOpen, setSuccessOpen] = useState(false);
+	const [successMessage, setSuccessMessage] = useState("");
+	const [errorOpen, setErrorOpen] = useState(false);
+	const [errorMessage, setErrorMessage] = useState("");
+
+	const handleSuccessClose = (event, reason) => {
+		if (reason === "clickaway") {
+		  return;
+		}
+		setSuccessOpen(false);
+	  };
+	  const handleErrorClose = (event, reason) => {
+		if (reason === "clickaway") {
+		  return;
+		}
+		setErrorOpen(false);
+	  };
+	
 
 	useEffect(() => {
 		const response = axios.post(`http://localhost:8000/auth/token`).then((res) => {
@@ -47,9 +69,7 @@ const PatientViewPrescriptionDetails = ({ match }) => {
 			sessionStorage.setItem('authorization', res.data.authorization);
 		});
 	}, []);
-	const [prescription, setPrescription] = useState([]);
-	const [medicine, setMedicine] = useState([]);
-	const [errorMessage, setErrorMessage] = useState(null);
+	// const [errorMessage, setErrorMessage] = useState(null);
 
 	const StyledTableCell = styled(TableCell)(({ theme }) => ({
 		[`&.${tableCellClasses.head}`]: {
@@ -109,7 +129,9 @@ const PatientViewPrescriptionDetails = ({ match }) => {
 	};
 
 	const handleButtonClick = async () => {
+		try {
 		console.log("collecting");
+		let x = 0;
 		for (let i = 0; i < prescription.medicine.length; i++) {
 			let medicine = await axios.get(`http://localhost:8000/prescriptions/medicineDetails/${prescription.medicine[i].medId}`);
 			let medName = medicine.data.name;
@@ -120,11 +142,35 @@ const PatientViewPrescriptionDetails = ({ match }) => {
 				medPrice,
 				medQuantity
 			}
-			await axios.post(`http://localhost:8000/prescriptions/${id}/addMedicineToCart`, dataToServer);
+			try{
+				await axios.post(`http://localhost:8000/prescriptions/${id}/addMedicineToCart`, dataToServer);
+				x++;
+			} catch (error) {
+				console.error("Error adding medicine to cart:", error);
+				if (error.response.status === 400) {
+					setErrorMessage(error.response.data + " for " + medName);
+					setErrorOpen(true);
+				}
+			}
 			console.log("LOOP: " + i);
 		}
 		console.log("DONE");
-		window.location.href = `http://localhost:3001/auth/redirect/${encodeURIComponent(sessionStorage.getItem('authorization'))}`;
+		if (x > 0) {
+			console.log("iddd isss: " + id);
+			console.log("Prescription is collected: " + JSON.stringify(prescription));
+			await axios
+				.put(`http://localhost:8000/prescriptions/${id}/collect`)
+				.then((res) => {
+					{console.log("Prescription is collected Successfully " + JSON.stringify(res.data))}
+					window.location.href = `http://localhost:3001/auth/redirect/${encodeURIComponent(sessionStorage.getItem('authorization'))}`
+				})
+				.catch((error) => {
+					console.error("Error collecting prescription:", error);
+				});
+		}
+		} catch (error) {
+			console.error("Error collecting prescription:", error);
+		}
 	}
 
 	return (
@@ -211,6 +257,36 @@ const PatientViewPrescriptionDetails = ({ match }) => {
 					</Container>
 				</Grid>
 			</Grid>
+
+			<Snackbar
+				open={successOpen}
+				autoHideDuration={3000}
+				onClose={handleSuccessClose}
+			>
+				<Alert
+				elevation={6}
+				variant="filled"
+				onClose={handleSuccessClose}
+				severity="success"
+				>
+				{successMessage}
+				</Alert>
+			</Snackbar>
+			<Snackbar
+				open={errorOpen}
+				autoHideDuration={3000}
+				onClose={handleErrorClose}
+			>
+				<Alert
+				elevation={6}
+				variant="filled"
+				onClose={handleErrorClose}
+				severity="error"
+				>
+				{errorMessage}
+				</Alert>
+			</Snackbar>
+
 		</Container>
 
 	);

@@ -745,13 +745,13 @@ const rescheduleAppointment = async (req: Request, res: Response) => {
 						 }
 						 );
 
-						//  const subject = "Appointment Resceduled";
-						//  let html = `Hello patient, \n your appointment was resceduled with date ${newDate}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
-						//  sendMailService.sendMail(patientEmail, subject, html);
-						//  html = `Hello doctor, \n your appointment was resceduled with date ${newDate}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
-						//  sendMailService.sendMail(doctorEmail, subject, html);
-						//  NotificationController.createNotificationwithId(apt.patient.toString(), "Your appointment is rescheduled", "/patient/appointments");
-						//  NotificationController.createNotificationwithId(apt.doctor.toString(), "Your appointment is rescheduled", "/doctor/appointments");
+						  const subject = "Appointment Resceduled";
+						  let html = `Hello patient, \n your appointment was resceduled with date ${newDate}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
+						  sendMailService.sendMail(patientEmail, subject, html);
+						  html = `Hello doctor, \n your appointment was resceduled with date ${newDate}. \n Please be on time. \n With Love, \n El7a2ni Clinic xoxo.`;
+						  sendMailService.sendMail(doctorEmail, subject, html);
+						  NotificationController.createNotificationwithId(apt.patient.toString(), "Your appointment is rescheduled", "/patient/appointments");
+						  NotificationController.createNotificationwithId(apt.doctor.toString(), "Your appointment is rescheduled", "/doctor/appointments");
 
 						return res.status(200).json({ message: "Appointment rescheduled successfully", appointment: apt });
 					} else {
@@ -1071,14 +1071,14 @@ const cancelAppointment = async (req: Request, res: Response) => {
 			await apt.save();
 			console.log(`success`);
 			
-			// const subject = "Appointment cancelled";
-			// let html = `Hello patient, <br /> Your appointment with date ${appointmentDate} was cancelled .<br /> With Love, <br /> El7a2ni Clinic xoxo.`;
-			// sendMailService.sendMail(patientEmail, subject, html);
-			// html = `Hello doctor, <br /> Your appointment with date ${appointmentDate} was cancelled .<br /> With Love, <br /> El7a2ni Clinic xoxo.`;
-			// sendMailService.sendMail(doctorEmail, subject, html);
-			// console.log("sending notification for appointmen: patient", apt.patient, " | doctor", doc._id);
-			// NotificationController.createNotificationwithId(apt.patient.toString(), "Your appointment was cancelled", "/patient/appointments");
-			// NotificationController.createNotificationwithId(apt.doctor.toString(), "Your appointment was cancelled", "/doctor/appointments");
+			 const subject = "Appointment cancelled";
+			 let html = `Hello patient, <br /> Your appointment with date ${appointmentDate} was cancelled .<br /> With Love, <br /> El7a2ni Clinic xoxo.`;
+			 sendMailService.sendMail(patientEmail, subject, html);
+			 html = `Hello doctor, <br /> Your appointment with date ${appointmentDate} was cancelled .<br /> With Love, <br /> El7a2ni Clinic xoxo.`;
+			 sendMailService.sendMail(doctorEmail, subject, html);
+			 console.log("sending notification for appointmen: patient", apt.patient, " | doctor", doc._id);
+			 NotificationController.createNotificationwithId(apt.patient.toString(), "Your appointment was cancelled", "/patient/appointments");
+			 NotificationController.createNotificationwithId(apt.doctor.toString(), "Your appointment was cancelled", "/doctor/appointments");
 			return res.status(200).json({ message: "Appointment cancelled and money refunded successfuly. " });
 		}
 	}

@@ -27,12 +27,20 @@ import {
   Divider,
 } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
+import EventRepeatIcon from '@mui/icons-material/EventRepeat';
+import FeedIcon from '@mui/icons-material/Feed';
+import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import TodayIcon from "@mui/icons-material/Today";
+import MoreTimeIcon from '@mui/icons-material/MoreTime';
 import PeopleIcon from "@mui/icons-material/People";
+import PostAddIcon from '@mui/icons-material/PostAdd';
 import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
 import { Link } from "react-router-dom";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useUser } from "../../userContest";
+import { RepeatIcon } from "@chakra-ui/icons";
+import { More, PostAdd } from "@mui/icons-material";
+import PasswordIcon from '@mui/icons-material/Password';
 
 const DoctorDashboard = (props) => {
   const { userId, setUserId, userRole, setUserRole } = useUser();
@@ -90,6 +98,7 @@ const DoctorDashboard = (props) => {
               <ListItemButton component={Link} to="/doctor/contracts">
                 <ListItemIcon>
                   <ContractsIcon style={{ color: 'black' }} /> {/* Contracts icon */}
+                  
                 </ListItemIcon>
                 <ListItemText primary="My Contracts" />
               </ListItemButton>
@@ -113,7 +122,7 @@ const DoctorDashboard = (props) => {
                 <ListItemIcon>
                   <FollowUpsIcon style={{ color: 'black' }} /> {/* Follow-ups icon */}
                 </ListItemIcon>
-                <ListItemText primary="Follow Ups" />
+                <ListItemText primary="My Follow Ups" />
               </ListItemButton>
             </ListItem>
           </List>

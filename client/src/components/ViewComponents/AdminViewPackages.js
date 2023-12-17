@@ -12,13 +12,15 @@ import {
   DialogContent,
   DialogActions,
   Input,
+  styled,
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TableRow,
 } from "@mui/material";
-
+import {Snackbar,Alert} from '@mui/material';
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
@@ -32,6 +34,10 @@ export default function AdminViewPackages(props) {
   const [data, setData] = useState([]);
   const [Query, setQuery] = useState("");
   const [uniqueMedicinalUses, setUniqueMedicinalUses] = useState(["All"]);
+  const [successOpen, setSuccessOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorOpen, setErrorOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const fetchTableData = () => {
     axios
@@ -53,18 +59,85 @@ export default function AdminViewPackages(props) {
       });
   };
 
+  const handleSuccessClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSuccessOpen(false);
+  };
+  const handleErrorClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setErrorOpen(false);
+  };
+
+  const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+      backgroundColor: theme.palette.primary.main,
+            color: theme.palette.common.white,
+    },
+    [`&.${tableCellClasses.body}`]: {
+      fontSize: 14,
+    },
+  }));
+
+  const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.action.hover,
+    },
+    // hide last border
+    '&:last-child td, &:last-child th': {
+      border: 0,
+    },
+  }));
+
   useEffect(() => {
     fetchTableData();
   }, [props.dataIsUpdated]);
+
+  const [deleteConfirmation, setDeleteConfirmation] = useState({
+    open: false,
+    idToDelete: null,
+  });
+
+  const handleDeleteClick = (id) => {
+    setDeleteConfirmation({
+      open: true,
+      idToDelete: id,
+    });
+  };
+
+  const handleDeleteConfirm = () => {
+    // Perform delete operation here
+    handleClickDelete(deleteConfirmation.idToDelete);
+    // Close the confirmation dialog
+    setDeleteConfirmation({
+      open: false,
+      idToDelete: null,
+    });
+  };
+
+  const handleDeleteCancel = () => {
+    // Close the confirmation dialog without performing delete operation
+    setDeleteConfirmation({
+      open: false,
+      idToDelete: null,
+    });
+  };
 
   const handleClickDelete = (id) => {
     axios
       .delete(`http://localhost:8000/packages/${id}`)
       .then((response) => {
         console.log("DELETE request successful", response);
+        setSuccessOpen(true);
+        setSuccessMessage("package deleted Successfully!");
         fetchTableData();
       })
       .catch((error) => {
+         setErrorOpen(true);
+         setErrorMessage("can't delete!");
         console.error("Error making DELETE request", error);
       });
   };
@@ -74,31 +147,32 @@ export default function AdminViewPackages(props) {
   };
 
   return (
-    <Container maxWidth="xl">
-      <Paper elevation={3} sx={{ p: "20px", my: "40px", paddingBottom: 5 }}>
-        <Container>
+    // <Container maxWidth="xl">
+    //   <Paper elevation={3} sx={{ p: "20px", my: "40px", paddingBottom: 5 }}>
+    
+        <TableContainer component={Paper}>
           <Table>
             <TableHead>
-              <TableRow>
-                <TableCell
+              <StyledTableRow>
+                <StyledTableCell
                   key="name"
                   sx={{ fontWeight: "bold", borderTop: "1px solid #ccc" }}
                 >
                   Name
-                </TableCell>
-                <TableCell
+                </StyledTableCell>
+                <StyledTableCell
                   key="price"
                   sx={{ fontWeight: "bold", borderTop: "1px solid #ccc" }}
                 >
                   Price
-                </TableCell>
-                <TableCell
+                </StyledTableCell>
+                <StyledTableCell
                   key="discountOnDoctorSessions"
                   sx={{ fontWeight: "bold", borderTop: "1px solid #ccc" }}
                 >
                   Discount On Doctor Sessions
-                </TableCell>
-                <TableCell
+                </StyledTableCell>
+                <StyledTableCell
                   key="discountOnMedicine"
                   sx={{
                     fontWeight: "bold",
@@ -107,8 +181,8 @@ export default function AdminViewPackages(props) {
                   }}
                 >
                   Discount on Medicine
-                </TableCell>
-                <TableCell
+                </StyledTableCell>
+                <StyledTableCell
                   key="discountForFamily"
                   sx={{
                     fontWeight: "bold",
@@ -117,8 +191,8 @@ export default function AdminViewPackages(props) {
                   }}
                 >
                   Discount For Family
-                </TableCell>
-                <TableCell
+                </StyledTableCell>
+                <StyledTableCell
                   key="subscription"
                   sx={{
                     fontWeight: "bold",
@@ -127,8 +201,8 @@ export default function AdminViewPackages(props) {
                   }}
                 >
                   Subscription Period
-                </TableCell>
-                <TableCell
+                </StyledTableCell>
+                <StyledTableCell
                   colSpan={2}
                   key="details"
                   sx={{
@@ -138,39 +212,84 @@ export default function AdminViewPackages(props) {
                   }}
                 >
                   Actions
-                </TableCell>
+                </StyledTableCell>
                 {/* <TableCell key="details" sx={{ textAlign: 'center', fontWeight: "bold" }}>Edit</TableCell> */}
-              </TableRow>
+              </StyledTableRow>
             </TableHead>
             <TableBody>
               {data.map(
                 (row) =>
                   row.name.toLowerCase().includes(Query.toLowerCase()) && (
-                    <TableRow key={row.username}>
-                      <TableCell>{row.name}</TableCell>
-                      <TableCell>EGP {row.price}</TableCell>
-                      <TableCell>{row.discountOnDoctorSessions}%</TableCell>
-                      <TableCell>{row.discountOnMedicine}%</TableCell>
-                      <TableCell>{row.discountForFamily}%</TableCell>
-                      <TableCell>{row.subscriptionPeriod} days</TableCell>
-                      <TableCell sx={{ textAlign: "center" }}>
+                    <StyledTableRow key={row.username}>
+                      <StyledTableCell>{row.name}</StyledTableCell>
+                      <StyledTableCell>EGP {row.price}</StyledTableCell>
+                      <StyledTableCell>{row.discountOnDoctorSessions}%</StyledTableCell>
+                      <StyledTableCell>{row.discountOnMedicine}%</StyledTableCell>
+                      <StyledTableCell>{row.discountForFamily}%</StyledTableCell>
+                      <StyledTableCell>{row.subscriptionPeriod} days</StyledTableCell>
+                      <StyledTableCell sx={{ textAlign: "center" }}>
                         <IconButton onClick={() => handleClickEdit(row._id)}>
                           <EditIcon />
                         </IconButton>
-                      </TableCell>
+                      </StyledTableCell>
 
-                      <TableCell sx={{ textAlign: "center" }}>
-                        <IconButton onClick={() => handleClickDelete(row._id)}>
+                      <StyledTableCell sx={{ textAlign: "center" }}>
+                        <IconButton onClick={() => handleDeleteClick(row._id)}>
                           <DeleteIcon />
                         </IconButton>
-                      </TableCell>
-                    </TableRow>
+                      </StyledTableCell>
+                    </StyledTableRow>
                   ),
               )}
             </TableBody>
           </Table>
-        </Container>
-      </Paper>
-    </Container>
+
+          <Snackbar
+      open={successOpen}
+      autoHideDuration={3000}
+      onClose={handleSuccessClose}
+    >
+      <Alert
+        elevation={6}
+        variant="filled"
+        onClose={handleSuccessClose}
+        severity="success"
+      >
+        {successMessage}
+      </Alert>
+    </Snackbar>
+    <Snackbar
+      open={errorOpen}
+      autoHideDuration={3000}
+      onClose={handleErrorClose}
+    >
+      <Alert
+        elevation={6}
+        variant="filled"
+        onClose={handleErrorClose}
+        severity="error"
+      >
+        {errorMessage}
+      </Alert>
+    </Snackbar> 
+
+    <Dialog open={deleteConfirmation.open} onClose={handleDeleteCancel}>
+            <DialogTitle>Confirm Delete</DialogTitle>
+            <DialogContent>
+              Are you sure you want to delete this item?
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleDeleteCancel} color="primary">
+                Cancel
+              </Button>
+              <Button onClick={handleDeleteConfirm} style={{ color: 'red' }} autoFocus>
+                Delete
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+        </TableContainer>
+    //   </Paper>
+    // </Container>
   );
 }

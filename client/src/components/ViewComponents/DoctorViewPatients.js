@@ -164,21 +164,6 @@ export default function DoctorViewPatients() {
             <ListItem>{"Relationship: " + selectedPatient.emergencyContact.relationship}</ListItem>
           </List>
             
-
-          {/* <Typography>Health Records</Typography> */}
-
-          {/* <Typography> {`items: ${selectedPatient.healthRecords}`}</Typography> */}
-
-
-          {/* {selectedPatient.healthRecords.map((item) => {
-            return (
-              <List>
-                <ListItem>{"Name: " + item.name}</ListItem>
-                <ListItem>{"Diagnosis: " + item.diagnosis}</ListItem>
-                <ListItem>{"Date: " + item.date}</ListItem>
-              </List>
-            );
-          })} */}
         </List>
       )}
     </Container>

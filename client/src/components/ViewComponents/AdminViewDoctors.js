@@ -22,6 +22,7 @@ import {
   DialogContent,
   DialogActions,
   Radio,
+  List,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { capitalize } from "../../utils";
@@ -204,7 +205,10 @@ export default function AdminViewDoctors() {
     fetchTableData();
   }, []);
 
- 
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
 
   
   return (
@@ -321,7 +325,7 @@ export default function AdminViewDoctors() {
                                   sx={{ textAlign: "left", mb: "5px" }}
                                 >
                                   Date Of Birth:{" "} 
-                                  {row.dateOfBirth}
+                                  {formatDate(row.dateOfBirth)}
                                 </Typography>
 
                                 <Typography
@@ -364,11 +368,8 @@ export default function AdminViewDoctors() {
                                   {row.hourlyRate}
                                 </Typography>
 
-                                <Typography
-                                  variant="body1"
-                                  sx={{ textAlign: "left", mb: "5px" }}
-                                >
-                                  Files:{" "} 
+                                <Typography variant="body1" >Files</Typography>
+                                  <List>
                                   <ul>
                                   {row.files.map((file, index) => (
                                     <li key={index}>
@@ -379,7 +380,7 @@ export default function AdminViewDoctors() {
                                     </li>
                                   ))}
                                 </ul>
-                                </Typography>
+                                  </List>
 
        </AccordionDetails>                   
     </Accordion>

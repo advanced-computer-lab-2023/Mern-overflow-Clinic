@@ -419,7 +419,7 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
                       <Button variant="contained" onClick={() => handleEditClick(selectedMedicine?._id)} sx={{ margin: '0.5em', width: '80%' }}>
                         Edit Medicine
                       </Button>
-                      <Button variant="contained" onClick={() => handleClickDelete(selectedMedicine?._id)} sx={{ margin: '0.5em', width: '80%', backgroundColor: 'red' }}>
+                      <Button variant="contained" onClick={() => handleDeleteClick(selectedMedicine?._id)} sx={{ margin: '0.5em', width: '80%', backgroundColor: 'red' }}>
                         Delete Medicine
                       </Button>
                     </Grid>
@@ -548,128 +548,10 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
 
 		</Container>
 
-
-      
-
-      {/* <h4>Medicines Details</h4> */}
-
-      
-
-{/* <TableContainer component={Paper}>
-      <Table>
-        <TableHead>
-          <StyledTableRow>
-            <StyledTableCell>Name</StyledTableCell>
-            <StyledTableCell>Dosage</StyledTableCell>
-            <StyledTableCell>Medicinal Use</StyledTableCell>
-            <StyledTableCell>Description</StyledTableCell>
-            <StyledTableCell>Active Ingredients</StyledTableCell>
-            <StyledTableCell>Price</StyledTableCell>
-            <StyledTableCell>Quantity</StyledTableCell>
-            <StyledTableCell>Over The Counter</StyledTableCell>
-            <StyledTableCell>Edit</StyledTableCell>
-            <StyledTableCell>Delete</StyledTableCell>
-          </StyledTableRow>
-        </TableHead>
-        <TableBody>
-          {medicine.map((med, index) => (
-            <StyledTableRow key={index}>
-              <StyledTableCell>{med?.name}</StyledTableCell>
-              <StyledTableCell>{prescription.medicine[index]?.dailyDosage} {prescription.medicine[index]?.dailyDosage === 1 ? 'dosage' : 'dosages'} per day</StyledTableCell>
-              <StyledTableCell>{med?.medicinalUse}</StyledTableCell>
-              <StyledTableCell>{med?.details.description}</StyledTableCell>
-              <StyledTableCell>
-                <ul>
-                  {med?.details.activeIngredients.map((ingredient, i) => (
-                    <li key={i}>{ingredient}</li>
-                  ))}
-                </ul>
-              </StyledTableCell>
-              <StyledTableCell>{med?.price}</StyledTableCell>
-              <StyledTableCell>{prescription.medicine[index]?.quantity}</StyledTableCell>
-              <StyledTableCell>{med?.overTheCounter ? 'Yes' : 'No' }</StyledTableCell>
-              <StyledTableCell>
-                <IconButton onClick={() => handleEditClick(med?._id)}>
-                  <EditIcon />
-                </IconButton>
-              </StyledTableCell>
-              <StyledTableCell>
-                <IconButton onClick={() => handleDeleteClick(med?._id)}>
-                  <DeleteIcon />
-                </IconButton>
-              </StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-      {/* Delete Confirmation Dialog 
-      <Dialog open={deleteConfirmation.open} onClose={handleDeleteCancel}>
-        <DialogTitle>Confirm Delete</DialogTitle>
-        <DialogContent>
-          Are you sure you want to delete this item?
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDeleteCancel} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleDeleteConfirm} style={{ color: 'red' }} autoFocus>
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Edit Dialog 
-      <Dialog open={editDialog.open} onClose={handleEditCancel}>
-        <DialogTitle>Edit Details</DialogTitle>
-        <DialogContent>
-          <TextField
-            label="Dosage"
-            variant="outlined"
-            fullWidth
-            style={{ marginTop: '1em', paddingBottom: '1em' }} 
-            value={editDialog.editedDosage}
-            onChange={(e) => setEditDialog({ ...editDialog, editedDosage: e.target.value })}
-          />
-          <TextField
-            label="Quantity"
-            variant="outlined"
-            fullWidth
-            style={{ paddingBottom: '1em' }}
-            value={editDialog.editedQuantity}
-            onChange={(e) => setEditDialog({ ...editDialog, editedQuantity: e.target.value })}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleEditCancel} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleEditConfirm} color="primary" autoFocus>
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-    </TableContainer> */}
-
-    {/* <br></br> */}
-
-
-      {/* <button className="btn btn-primary"  onClick={() => handleClick(id)}>
-                View Official Prescription Document
-              </button> */}
     </div>
   );
 };
 
-// {/* <td style={styles.td}>
-// <ul>
-//   {medicine.map((med, index) => (
-//     <ul key={index} style={styles.td}>
-//       {/* Your medicine details here */}
-//     </ul>
-//   ))}
-// </ul>
-// </td> */}
 
 const styles = {
   container: {
@@ -696,27 +578,5 @@ const styles = {
     textAlign: 'left',
   },
 };
-
-// const styles = {
-//   container: {
-//     textAlign: "center",
-//     margin: "20px",
-//   },
-//   header: {
-//     fontSize: "1.5rem",
-//   },
-//   healthRecordsTable: {
-//     width: "100%",
-//     borderCollapse: "collapse",
-//   },
-//   recordRow: {
-//     borderTop: "15px solid transparent",
-//   },
-//   errorMessage: {
-//     backgroundColor: "lightcoral",
-//     padding: "1rem",
-//     margin: "1rem",
-//   },
-// };
 
 export default DoctorViewPrescriptionDetails;

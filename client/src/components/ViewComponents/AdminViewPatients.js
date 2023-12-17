@@ -164,6 +164,11 @@ export default function AdminViewPatients() {
     });
   };
 
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
 return (
 
   <div style={{ textAlign: 'center', paddingTop: '20px' }}>
@@ -289,7 +294,7 @@ return (
                               sx={{ textAlign: "left", mb: "5px" }}
                             >
                               Date Of Birth:{" "} 
-                              {row.dateOfBirth}
+                              {formatDate(row.dateOfBirth)}
                             </Typography>
 
                             <Typography

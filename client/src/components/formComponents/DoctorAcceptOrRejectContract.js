@@ -19,8 +19,6 @@ const ContractPage = ({ match }) => {
   let id = userId;
   const [contracts, setContracts] = useState([]);
   const [selectedContractId, setSelectedContractId] = useState(null);
-  // const [successMessage, setSuccessMessage] = useState(null);
-  // const [errorMessage, setErrorMessage] = useState(null);
    const [statusMessage, setStatusMessage] = useState("");
    const [successOpen, setSuccessOpen] = useState(false);
    const [successMessage, setSuccessMessage] = useState("");
@@ -186,64 +184,6 @@ const ContractPage = ({ match }) => {
       </Snackbar> 
 
       <h1 style={styles.header}>Doctor's Contracts</h1>
-      {/* {successMessage && (
-        <div style={styles.successMessage}>{successMessage}</div>
-      )}
-      {errorMessage && <div style={styles.errorMessage}>{errorMessage}</div>} */}
-      {/* <table style={styles.contractTable}>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Clinic Markup</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {contracts.map((contract, index) => (
-            <tr key={contract._id} style={styles.contractRow}>
-              <td>{formatDate(contract.date)}</td>
-              <td>{formatMarkup(contract.clinicMarkup)}</td>
-              <td>{contract.status}</td>
-              <td>
-                {contract.status === "pending" ? (
-                  <>
-                    <button
-                      style={styles.acceptButton}
-                      onClick={() => {
-                        setSelectedContractId(contract._id);
-                        handleAccept();
-                      }}
-                    >
-                      Accept
-                    </button>
-                    <button
-                      style={styles.rejectButton}
-                      onClick={() => {
-                        setSelectedContractId(contract._id);
-                        handleReject();
-                      }}
-                    >
-                      Reject
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button style={styles.acceptButtonDimmed} disabled>
-                      Accept
-                    </button>
-                    <button style={styles.rejectButtonDimmed} disabled>
-                      Reject
-                    </button>
-                  </>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table> */}
-
-
       <TableContainer component={Paper}>
       <Table>
         <TableHead>

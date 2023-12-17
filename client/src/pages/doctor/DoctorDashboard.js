@@ -1,6 +1,14 @@
 import ButtonAppBar from "../../components/ButtonAppBar";
 import SmsIcon from '@mui/icons-material/Sms';
 import * as React from "react";
+import ContractsIcon from '@mui/icons-material/Description'; // Contracts icon
+import AppointmentsIcon from '@mui/icons-material/Event'; // Appointments icon
+import FollowUpsIcon from '@mui/icons-material/Assignment'; // Follow-ups icon
+import FreeSlotsIcon from '@mui/icons-material/AccessTime'; // Free slots icon
+import HealthRecordsIcon from '@mui/icons-material/AssignmentInd'; // Health Records icon
+import LockIcon from "@mui/icons-material/Lock"; // Import the Lock icon from MUI
+import PersonIcon from "@mui/icons-material/Person"; // Import the Person icon from MUI
+
 import {
   Typography,
   Toolbar,
@@ -65,7 +73,7 @@ const DoctorDashboard = (props) => {
           <Divider />
           <List>
             <ListItem disablePadding>
-              <ListItemButton component={Link} to="/doctor/contracts">
+              <ListItemButton component={Link} to="/doctor/profile">
                 <ListItemIcon>
                   <Avatar
                     sx={{
@@ -77,8 +85,21 @@ const DoctorDashboard = (props) => {
                       padding: 0,
                     }}
                   >
-                    <FeedIcon sx={{ width: 25, height: 25 }} />
+                   <PersonIcon style={{ color: 'black' }} /> {/* Person icon */}
                   </Avatar>
+                </ListItemIcon>
+                <ListItemText primary="Update Profile" />
+              </ListItemButton>
+            </ListItem>
+          </List>
+          <Divider />
+          <List>
+            <ListItem disablePadding>
+              <ListItemButton component={Link} to="/doctor/contracts">
+                <ListItemIcon>
+                  <ContractsIcon style={{ color: 'black' }} /> {/* Contracts icon */}
+                  
+                  
                 </ListItemIcon>
                 <ListItemText primary="My Contracts" />
               </ListItemButton>
@@ -89,18 +110,7 @@ const DoctorDashboard = (props) => {
             <ListItem disablePadding>
               <ListItemButton component={Link} to="/doctor/appointments">
                 <ListItemIcon>
-                  <Avatar
-                    sx={{
-                      m: 0,
-                      bgcolor: "white",
-                      color: "black",
-                      width: 30,
-                      height: 30,
-                      padding: 0,
-                    }}
-                  >
-                    <TodayIcon sx={{ width: 25, height: 25 }} />
-                  </Avatar>
+                  <AppointmentsIcon style={{ color: 'black' }} /> {/* Appointments icon */}
                 </ListItemIcon>
                 <ListItemText primary="My Appointments" />
               </ListItemButton>
@@ -111,18 +121,7 @@ const DoctorDashboard = (props) => {
             <ListItem disablePadding>
               <ListItemButton component={Link} to="/doctor/followups">
                 <ListItemIcon>
-                  <Avatar
-                    sx={{
-                      m: 0,
-                      bgcolor: "white",
-                      color: "black",
-                      width: 30,
-                      height: 30,
-                      padding: 0,
-                    }}
-                  >
-                    <EventRepeatIcon sx={{ width: 25, height: 25 }} />
-                  </Avatar>
+                  <FollowUpsIcon style={{ color: 'black' }} /> {/* Follow-ups icon */}
                 </ListItemIcon>
                 <ListItemText primary="My Follow Ups" />
               </ListItemButton>
@@ -130,29 +129,7 @@ const DoctorDashboard = (props) => {
           </List>
           <Divider />
 
-          <List>
-            <ListItem disablePadding>
-              <ListItemButton component={Link} to="/doctor/pendingFollowUps">
-                <ListItemIcon>
-                  <Avatar
-                    sx={{
-                      m: 0,
-                      bgcolor: "white",
-                      color: "black",
-                      width: 30,
-                      height: 30,
-                      padding: 0,
-                    }}
-                  >
-                    <PendingActionsIcon sx={{ width: 25, height: 25 }} />
-                  </Avatar>
-                </ListItemIcon>
-                <ListItemText primary="Pending Follow Ups" />
-              </ListItemButton>
-            </ListItem>
-          </List>
-          <Divider />
-          <List>
+            <List>
             <ListItem disablePadding>
               <ListItemButton component={Link} to="/doctor/patients">
                 <ListItemIcon>
@@ -200,18 +177,7 @@ const DoctorDashboard = (props) => {
             <ListItem disablePadding>
               <ListItemButton component={Link} to="/doctor/addHealthRecords">
                 <ListItemIcon>
-                  <Avatar
-                    sx={{
-                      m: 0,
-                      bgcolor: "white",
-                      color: "black",
-                      width: 30,
-                      height: 30,
-                      padding: 0,
-                    }}
-                  >
-                    <PostAddIcon sx={{ width: 25, height: 25 }} />
-                  </Avatar>
+                  <HealthRecordsIcon style={{ color: 'black' }} /> {/* Add Health Records icon */}
                 </ListItemIcon>
                 <ListItemText primary="Add Health Records" />
               </ListItemButton>
@@ -222,20 +188,20 @@ const DoctorDashboard = (props) => {
             <ListItem disablePadding>
               <ListItemButton component={Link} to="/doctor/freeSlots">
                 <ListItemIcon>
-                  <Avatar
-                    sx={{
-                      m: 0,
-                      bgcolor: "white",
-                      color: "black",
-                      width: 30,
-                      height: 30,
-                      padding: 0,
-                    }}
-                  >
-                    <MoreTimeIcon sx={{ width: 25, height: 25 }} />
-                  </Avatar>
+                  <FreeSlotsIcon style={{ color: 'black' }} /> {/* Free Slots icon */}
                 </ListItemIcon>
                 <ListItemText primary="Add Free Slots" />
+              </ListItemButton>
+            </ListItem>
+          </List>
+          <Divider />
+          <List>
+            <ListItem disablePadding>
+              <ListItemButton component={Link} to="/auth/changepassword">
+                <ListItemIcon>
+                  <LockIcon style={{ color: 'black' }} /> {/* Lock icon */}
+                </ListItemIcon>
+                <ListItemText primary="Change My Password" />
               </ListItemButton>
             </ListItem>
           </List>
@@ -268,5 +234,6 @@ const DoctorDashboard = (props) => {
       )}
     </>
   );
+  
 };
 export default DoctorDashboard;

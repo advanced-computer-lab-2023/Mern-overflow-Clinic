@@ -1,4 +1,4 @@
-  import {
+import {
     IconButton,
     Paper,
     Table,
@@ -56,7 +56,7 @@ export default function PatientInfo(props) {
 
     const fetchTableData = () => {
         axios.get(`http://localhost:8000/patients/${userId}`).then((res) => {
-          console.log(res.data);
+            console.log(res.data);
             setData(res.data);
             setTimeout(() => setLoading(false), 500);
         });
@@ -102,7 +102,7 @@ export default function PatientInfo(props) {
                             <Typography sx={{ fontWeight: "bold", my: "20px", fontFamily: "monospace" }}>
                                 {capitalize(data.name)}
                             </Typography>
-                            <Table sx={{ width: "50%", ml: "50px" }}>
+                            <Table sx={{ width: "70%", ml: "15%" }}>
                                 <TableBody>
                                     <TableRow sx={{ border: "none" }}>
                                         <TableCell sx={{ width: "50%", textAlign: "right", border: "none" }}>
@@ -133,9 +133,7 @@ export default function PatientInfo(props) {
                                                 <Typography>Email</Typography>
                                             </Box>
                                         </TableCell>
-                                        <TableCell sx={{ border: "none", textAlign: "left" }}>
-                                            {data.email}
-                                        </TableCell>
+                                        <TableCell sx={{ border: "none", textAlign: "left" }}>{data.email}</TableCell>
                                     </TableRow>
                                     <TableRow sx={{ border: "none" }}>
                                         <TableCell sx={{ width: "50%", textAlign: "right", border: "none" }}>
@@ -198,7 +196,7 @@ export default function PatientInfo(props) {
                         </Divider>
 
                         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                            <Table sx={{ width: "50%", ml: "50px" }}>
+                            <Table sx={{ width: "70%", ml: "15%" }}>
                                 <TableBody>
                                     <TableRow sx={{ border: "none" }}>
                                         <TableCell sx={{ width: "50%", textAlign: "right", border: "none" }}>

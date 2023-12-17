@@ -237,6 +237,7 @@ const createFollowUp = async (req: Request, res: Response) => {
 	req.body.duration = 1;
 	req.body.status = "upcoming";
 	req.body.appointmentType = "followup";
+	req.body.followUpStatus = "accepted";
 	console.log(req.body);
 	// 1. Extract the patient's email from req.body
 	const patientEmail = req.body.email;

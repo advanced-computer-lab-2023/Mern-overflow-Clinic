@@ -61,7 +61,7 @@ export default function SignIn() {
 					navigate("/patient/family");
 				} else if (type === "Doctor") {
 					setUserRole("Doctor");
-					navigate("/doctor/profile");
+					navigate("/doctor/info");
 				} else if (type === "Adminstrator") {
 					setUserRole("Admin");
 					navigate("/admin/patients");

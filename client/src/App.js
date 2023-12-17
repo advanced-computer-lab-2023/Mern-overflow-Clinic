@@ -12,7 +12,6 @@ import SignIn from "./pages/authentication/SignIn";
 import DoctorManageAppointments from "./pages/doctor/DoctorManageAppointments";
 import DoctorManageInfo from "./pages/doctor/DoctorManageInfo";
 import DoctorManagePatients from "./pages/doctor/DoctorManagePatients";
-import DoctorManageProfile from "./pages/doctor/DoctorManageProfile";
 import PatientManageAppointments from "./pages/patient/PatientManageAppointments";
 import PatientManageDoctors from "./pages/patient/PatientManageDoctors";
 import PatientManageFollowUp from "./pages/patient/PatientViewCompletedAppointments";
@@ -45,7 +44,6 @@ import DoctorDownloadPdf from "./pages/doctor/DoctorDownloadPdf";
 import PatientDownloadPdf from "./pages/patient/PatientDownloadPdf";
 
 // import PatientManageFamily from "./pages/patient/PatientManageFamily";
-// import EditDoctorProfile from './components/formComponents/EditDoctorProfile';
 import axios from "axios";
 import PatientPayAppointment from "./pages/patient/PatientPayAppointment";
 import NotFoundPage from "./NotFoundPage";
@@ -101,14 +99,6 @@ function App() {
     {
       path: "/admin/doctor-requests",
       element: <AdminManageDoctorRequests />,
-    },
-    {
-      path: "/doctor/profile",
-      element: <DoctorManageProfile />,
-    },
-    {
-      path: "/doctor/profile/:id",
-      element: <DoctorManageProfile />,
     },
     {
       path: "/doctor/appointments",

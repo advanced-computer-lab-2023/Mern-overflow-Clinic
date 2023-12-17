@@ -57,28 +57,6 @@ const DoctorDashboard = (props) => {
           <Divider />
           <List>
             <ListItem disablePadding>
-              <ListItemButton component={Link} to="/doctor/profile">
-                <ListItemIcon>
-                  <Avatar
-                    sx={{
-                      m: 0,
-                      bgcolor: "white",
-                      color: "black",
-                      width: 30,
-                      height: 30,
-                      padding: 0,
-                    }}
-                  >
-                    <AccountCircleIcon sx={{ width: 25, height: 25 }} />
-                  </Avatar>
-                </ListItemIcon>
-                <ListItemText primary="Profile" />
-              </ListItemButton>
-            </ListItem>
-          </List>
-          <Divider />
-          <List>
-            <ListItem disablePadding>
               <ListItemButton component={Link} to="/doctor/contracts">
                 <ListItemIcon>
                   <Avatar

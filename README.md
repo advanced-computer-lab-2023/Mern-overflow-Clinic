@@ -141,7 +141,7 @@ You will then need to run the following command each time before your next commi
 | :----------------------------------------------------------------------------------------------------------------------------------------: |
 |                                               <p style="text-align:center">Manage Profile</p>                                                |
 
-| ![Manage Contracts]https://github.com/advanced-computer-lab-2023/Mern-overflow-Clinic/assets/97978852/b3831609-c568-4a50-8e81-29c60b80775b)  |
+| ![Manage Contracts](https://github.com/advanced-computer-lab-2023/Mern-overflow-Clinic/assets/97978852/b3831609-c568-4a50-8e81-29c60b80775b)  |
 | :----------------------------------------------------------------------------------------------------------------------------------------: |
 |                                               <p style="text-align:center">Manage Contracts</p>                                                |
 

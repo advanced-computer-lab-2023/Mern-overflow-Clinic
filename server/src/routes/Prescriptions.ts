@@ -15,14 +15,12 @@ router.get("/:id/medicineDosageQuantity/:mid",isAuthenticated, prescriptionContr
 //POST
 router.post("/doctors/:dId/patients/:pId/addPrescription",isAuthenticated, prescriptionController.createPrescription);
 router.post("/:id/addMedicine",isAuthenticated, prescriptionController.addMedicine);
-router.post("/:id/addMedicineToCart", prescriptionController.addMedicineToCart);
+router.post("/:id/addMedicineToCart", isAuthenticated, prescriptionController.addMedicineToCart);
 
 
 //PUT
-// router.put("/:id", prescriptionController.updatePrescription);
-router.put("/:id/update/:mid", prescriptionController.updatePrescriptionMedicine);
-// router.put("/:id",isAuthenticated, prescriptionController.updatePrescription);
-// router.put("/:id/updateDosage/:mid",isAuthenticated, prescriptionController.updateDosage);
+router.put("/:id/update/:mid", isAuthenticated, prescriptionController.updatePrescriptionMedicine);
+router.put("/:id/collect", prescriptionController.collectPrescription);
 
 //DELETE
 router.delete("/:id", isAuthenticated, prescriptionController.deletePrescription);

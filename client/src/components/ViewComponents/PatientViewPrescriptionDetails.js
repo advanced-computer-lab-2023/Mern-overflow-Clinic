@@ -156,7 +156,17 @@ const PatientViewPrescriptionDetails = ({ match }) => {
 		}
 		console.log("DONE");
 		if (x > 0) {
-		window.location.href = `http://localhost:3001/auth/redirect/${encodeURIComponent(sessionStorage.getItem('authorization'))}`;
+			console.log("iddd isss: " + id);
+			console.log("Prescription is collected: " + JSON.stringify(prescription));
+			await axios
+				.put(`http://localhost:8000/prescriptions/${id}/collect`)
+				.then((res) => {
+					{console.log("Prescription is collected Successfully " + JSON.stringify(res.data))}
+					window.location.href = `http://localhost:3001/auth/redirect/${encodeURIComponent(sessionStorage.getItem('authorization'))}`
+				})
+				.catch((error) => {
+					console.error("Error collecting prescription:", error);
+				});
 		}
 		} catch (error) {
 			console.error("Error collecting prescription:", error);

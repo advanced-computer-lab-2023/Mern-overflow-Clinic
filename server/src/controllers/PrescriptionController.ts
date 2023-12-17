@@ -325,6 +325,19 @@ return res.status(400).json(err);
   }
 };
 
+const collectPrescription = async (req: Request, res: Response) => {
+  const id = req.params.id;
+  console.log("Prescription by collect foo2: " + id);
+  const pres = await Prescription.findById(id);
+  console.log("Prescription by collect: " + pres);
+  if (!pres) {
+    return res.status(404).json({ message: "Prescription not found" });
+  }
+  pres.filled = true;
+  await pres.save();
+  return res.status(200).json(pres);
+}
+
 export default {
   addMedicineToCart,
   createPrescription,
@@ -338,4 +351,5 @@ export default {
   deleteMedicine,
   listMedicine,
   readPresMedDetails,
+  collectPrescription,
 }

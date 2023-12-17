@@ -164,178 +164,6 @@ export default function AdminViewPatients() {
     });
   };
 
- // return (
-    // <Container maxWidth="xl">
-    //   <Paper elevation={3} sx={{ p: "20px", my: "40px", paddingBottom: 5 }}>
-    //     <Container>
-    //       <Container
-    //         sx={{
-    //           display: "flex",
-    //           alignItems: "center",
-    //           justifyContent: "space-between",
-    //           my: 5,
-    //         }}
-    //       >
-    //         <Container sx={{ width: "48%" }}>
-    //           <Input
-    //             size="lg"
-    //             bordered
-    //             clearable
-    //             placeholder="Search..."
-    //             onChange={(e) => setQuery(e.target.value)}
-    //             fullWidth
-    //           />
-    //         </Container>
-    //       </Container>
-    //     </Container>
-    //   </Paper>
-    //   <Table>
-    //     <TableHead>
-    //       <TableRow>
-    //         <TableCell key="username">Username</TableCell>
-    //         <TableCell key="name">Name</TableCell>
-    //         <TableCell key="email">Email</TableCell>
-    //         <TableCell key="dateOfBirth">Date of Birth</TableCell>
-    //         <TableCell key="gender">Gender</TableCell>
-    //         <TableCell key="mobileNumber">Mobile Number</TableCell>
-    //       </TableRow>
-    //     </TableHead>
-    //     <TableBody>
-    //       {data.map(
-    //         (row) =>
-    //           row.name.toLowerCase().includes(Query.toLowerCase()) && (
-    //             <TableRow key={row.username}>
-    //               <TableCell>{row.username}</TableCell>
-    //               <TableCell>{row.name}</TableCell>
-    //               <TableCell>{row.email}</TableCell>
-    //               <TableCell>{row.dateOfBirth}</TableCell>
-    //               <TableCell>{row.gender}</TableCell>
-    //               <TableCell>{row.mobileNumber}</TableCell>
-    //               <TableCell>
-    //                 <Button onClick={() => setSelectedPatient(row)}>
-    //                   Select Patient
-    //                 </Button>
-    //               </TableCell>
-
-    //               <TableCell>
-    //                 <IconButton onClick={() => handleDelete(row._id)}>
-    //                   <DeleteIcon />
-    //                 </IconButton>
-    //               </TableCell>
-    //             </TableRow>
-    //           ),
-    //       )}
-    //     </TableBody>
-    //   </Table>
-    //   {typeof selectedPatient.name !== "undefined" && (
-    //     <List>
-    //       <ListItem>{"Name: " + selectedPatient.name}</ListItem>
-    //       <ListItem>{"Email: " + selectedPatient.email}</ListItem>
-    //       <ListItem>{"Date of Birth: " + selectedPatient.dateOfBirth}</ListItem>
-    //       <ListItem>{"Gender: " + selectedPatient.gender}</ListItem>
-    //       <ListItem>
-    //         {"Mobile Number: " + selectedPatient.mobileNumber}
-    //       </ListItem>
-    //       <Typography>Emergency Contacts</Typography>
-    //           <List>
-    //             <ListItem>{"Name: " + selectedPatient.emergencyContact.name}</ListItem>
-    //             <ListItem>{"Mobile Number: " + selectedPatient.emergencyContact.mobileNumber}</ListItem>
-    //             <ListItem>{"Relation: " + selectedPatient.emergencyContact.relation}</ListItem>
-    //           </List>
-    //     </List>
-    //   )}
-    // </Container>
-  //);
-
-  //function Row(props: { row: ReturnType<typeof createData> }) {
-    //const {  row } = props;
-
-  // Use an object to store the open state for each row
- // Initialize an object with row IDs as keys, and their respective open/closed states
-//  const [openRows, setOpenRows] = useState({});
-
-//   const handleRowToggle = (rowId) => {
-//     // Use the current state to update the specific row's open/closed state
-//     setOpenRows((prevOpenRows) => ({
-//       ...prevOpenRows,
-//       [rowId]: !prevOpenRows[rowId],
-//   }));
-//   };
-
-  
-//     <TableContainer>
-//       <Table>
-//         <TableBody>
-//           {data.map((row) => (
-//             <React.Fragment key={row.id}>
-//               <TableRow>
-//                 <TableCell>
-//                 <IconButton
-//    aria-label="expand row"
-//    size="small"
-//    onClick={() => setOpenStates((prevOpenStates) => {
-//      const updatedOpenStates = [...prevOpenStates];
-//      updatedOpenStates[row.index] = !prevOpenStates[row.index];
-//      return updatedOpenStates;
-//    })}
-//  >
-//    {openStates[row.index] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-//  </IconButton>
-//                 </TableCell>
-//                 <TableCell component="th" scope="row">
-//                   {row.name}
-//                 </TableCell>
-//                 <TableCell align="right">{row.username}</TableCell>
-//                 <TableCell align="right">{row.email}</TableCell>
-//                 <TableCell align="right">{row.dateOfBirth}</TableCell>
-//                 <TableCell align="right">{row.gender}</TableCell>
-//                 <TableCell align="right">{row.mobileNumber}</TableCell>
-//                 <TableCell>
-//                   <IconButton onClick={() => handleDelete(row.id)}>
-//                     <DeleteIcon />
-//                   </IconButton>
-//                 </TableCell>
-//               </TableRow>
-//               <TableRow>
-//                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
-//                 <Collapse in={openStates[row.index]} timeout="auto" unmountOnExit> 
-//                   <Box sx={{ margin: 1 }}>
-//                       <Typography variant="h6" gutterBottom component="div">
-//                         Patient Details
-//                       </Typography>
-//                       <Table size="small" aria-label="purchases">
-//                         <TableHead>
-//                           <TableRow>
-//                             <TableCell>Name</TableCell>
-//                             <TableCell>Email</TableCell>
-//                         <TableCell align="right">Date Of Birth</TableCell>
-//                             <TableCell align="right">Gender</TableCell>
-//                             <TableCell align="right">Mobile Number</TableCell>
-//                             <TableCell align="right">Emergency Contact</TableCell>
-//                           </TableRow>
-//                         </TableHead>
-//                         <TableBody>
-//                           <TableRow key={row.id}>
-//                             <TableCell component="th" scope="row">
-//                               {row.name}
-//                             </TableCell>
-//                             <TableCell>{row.email}</TableCell>
-//                             <TableCell align="right">{row.dateOfBirth}</TableCell>
-//                             <TableCell align="right">{row.gender}</TableCell>
-//                             <TableCell align="right">{row.mobileNumber}</TableCell>
-//                             <TableCell align="right">{row.emergencyContact.name}</TableCell>
-//                           </TableRow>
-//                         </TableBody>
-//                       </Table>
-//                     </Box>
-//                   </Collapse>
-//                 </TableCell>
-//         </TableRow>
-//             </React.Fragment>
-//           ))}
-//         </TableBody>
-//       </Table>
-//     </TableContainer>
 return (
 
   <div style={{ textAlign: 'center', paddingTop: '20px' }}>
@@ -444,7 +272,7 @@ return (
                               variant="body1"
                               sx={{ textAlign: "left", mb: "5px" }}
                             >
-                              username:{" "} 
+                              Username:{" "} 
                               {row.username}
                             </Typography>
 
@@ -452,7 +280,7 @@ return (
                               variant="body1"
                               sx={{ textAlign: "left", mb: "5px" }}
                             >
-                              gender:{" "} 
+                              Gender:{" "} 
                               {row.gender}
                             </Typography>
 
@@ -460,7 +288,7 @@ return (
                               variant="body1"
                               sx={{ textAlign: "left", mb: "5px" }}
                             >
-                              dateOfBirth:{" "} 
+                              Date Of Birth:{" "} 
                               {row.dateOfBirth}
                             </Typography>
 
@@ -468,33 +296,32 @@ return (
                               variant="body1"
                               sx={{ textAlign: "left", mb: "5px" }}
                             >
-                              mobilenumber:{" "} 
+                              Mobile Number:{" "} 
                               {row.mobileNumber}
                             </Typography>
 
-                            <Typography
-                              variant="body1"
-                              sx={{ textAlign: "left", mb: "5px" }}
-                            >
-                              emergencyContactName:{" "} 
-                              {row.emergencyContact.name}
-                            </Typography>
-
-                            <Typography
-                              variant="body1"
-                              sx={{ textAlign: "left", mb: "5px" }}
-                            >
-                              emergencyContactMobileNumber:{" "} 
-                              {row.emergencyContact.mobileNumber}
-                            </Typography>
-
-                            <Typography
-                              variant="body1"
-                              sx={{ textAlign: "left", mb: "5px" }}
-                            >
-                              emergencyContactRelation:{" "} 
-                              {row.emergencyContact.relation}
-                            </Typography>
+                       <Grid container spacing={2}>
+                        <Grid item xs={12} sx={{ textAlign: 'center' }}>
+                          <Typography variant="h6" gutterBottom>
+                            Emergency Contact
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Typography variant="body1" sx={{ textAlign: 'left', mb: '5px' }}>
+                            Name: {row.emergencyContact.name}
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Typography variant="body1" sx={{ textAlign: 'left', mb: '5px' }}>
+                            Mobile Number: {row.emergencyContact.mobileNumber}
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Typography variant="body1" sx={{ textAlign: 'left', mb: '5px' }}>
+                            Relation: {row.emergencyContact.relation}
+                          </Typography>
+                        </Grid>
+                      </Grid>
    </AccordionDetails>                   
 </Accordion>
 </Paper>

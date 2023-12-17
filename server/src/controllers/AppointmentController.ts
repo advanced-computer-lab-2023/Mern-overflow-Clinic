@@ -898,53 +898,53 @@ const listAllPendingFllowUps = async (req: Request, res: Response) => {
 // }
 
 const getAllAppointments = async (req: Request, res: Response) => {
-    const id = req.params.id;
-    console.log(id);
-    
-	console.log("here");
-
-
-
-    var apt = await appointment.find({ patient: id }).exec();
-
-
-
-    if (apt.length <= 0 || !apt || apt === undefined) {
-
-		 apt = await appointment.find({ doctor: id }).exec();
-
-    }
-
-	if (apt.length <= 0 || !apt || apt === undefined) {
-        console.log("empty");
-        return res.status(200).json([]);
-	}
-
-
-	// Fetch doctor details for each appointment
-	const appointmentsWithDoctor = await Promise.all(apt.map(async (appointment) => {
+	const patientId = req.params.id;
+  
+	try {
+	  // Find all appointments with the given patient ID
+	  const appointments = await appointment.find({ patient: patientId }).exec();
+  
+	  if (!appointments || appointments.length === 0) {
+		return res.status(200).json([]);
+	  }
+  
+	  // Fetch patient and doctor details for each appointment
+	  const appointmentsWithDetails = await Promise.all(appointments.map(async (apt) => {
 		try {
-			// Fetch the doctor's details based on appointment.doctor (assuming appointment.doctor is the doctor's ID)
-			const doctor = await Doctor.findById(appointment.doctor).exec(); // Replace `Doctor` with your doctor model
-			if (doctor) {
-				return {
-					...appointment.toObject(), // Convert Mongoose document to plain JavaScript object
-					doctor: {
-						name: doctor.name, // Assuming doctor has a 'name' field
-						_id: doctor._id
-					}
-				};
-			} else {
-				return appointment.toObject();
-			}
+		  // Fetch the patient's details based on appointment.patient (assuming appointment.patient is the patient's ID)
+		  const patient = await Patient.findById(apt.patient).exec(); // Replace `Patient` with your patient model
+  
+		  // Fetch the doctor's details based on appointment.doctor (assuming appointment.doctor is the doctor's ID)
+		  const doctor = await Doctor.findById(apt.doctor).exec(); // Replace `Doctor` with your doctor model
+  
+		  if (patient && doctor) {
+			return {
+			  ...apt.toObject(), // Convert Mongoose document to plain JavaScript object
+			  patient: {
+				name: patient.name, // Assuming patient has a 'name' field
+				_id: patient._id
+			  },
+			  doctor: {
+				name: doctor.name, // Assuming doctor has a 'name' field
+				_id: doctor._id
+			  }
+			};
+		  } else {
+			return apt.toObject();
+		  }
 		} catch (error) {
-			console.error('Error fetching doctor details:', error);
-			return appointment.toObject();
+		  console.error('Error fetching details:', error);
+		  return apt.toObject();
 		}
-	}));
-
-	return res.status(200).json(appointmentsWithDoctor);
-};
+	  }));
+  
+	  return res.status(200).json(appointmentsWithDetails);
+	} catch (error) {
+	  console.error('Error fetching appointments:', error);
+	  return res.status(500).json({ message: 'Internal Server Error' });
+	}
+  };
+  
 
 const cancelAppointment = async (req: Request, res: Response) => {
 	const id = req.params.id;

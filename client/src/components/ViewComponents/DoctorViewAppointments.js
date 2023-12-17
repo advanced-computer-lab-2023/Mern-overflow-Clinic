@@ -318,12 +318,12 @@ export default function DoctorViewAppointments() {
               <TableRow
                 key={
                   row.date +
-                  (row.patient?.name || "") +
+                  (row.patientName || "") +
                   row.status +
                   Math.random()
                 }
               >
-                <TableCell>{row.patient?.name || "N/A"}</TableCell>
+                <TableCell>{row.patientName || "N/A"}</TableCell>
                 <TableCell>{row.duration + " hour"}</TableCell>
                 <TableCell>{dayjs(row.date).format("MMMM D, YYYY h:mm A")}</TableCell>
                 <TableCell>{row.status}</TableCell>

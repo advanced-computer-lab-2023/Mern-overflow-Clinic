@@ -183,7 +183,7 @@ export default function DoctorViewInfo(props) {
                                                 <>{data.email}</>
                                                 : <TextField variant="standard"
                                                     value={email}
-                                                    InputProps={{ style: { fontSize: '12px' } }} 
+                                                    InputProps={{ style: { fontSize: '12px' } }}
                                                     onChange={(e) => {
                                                         setEmail(e.target.value);
                                                     }}
@@ -234,7 +234,7 @@ export default function DoctorViewInfo(props) {
                                                 <>EGP {data.hourlyRate}</>
                                                 : <TextField variant="standard" sx={{}}
                                                     value={`${hourlyRate}`}
-                                                    InputProps={{ style: { fontSize: '12px' } }} 
+                                                    InputProps={{ style: { fontSize: '12px' } }}
                                                     onChange={(e) => {
                                                         setHourlyRate(e.target.value);
                                                     }}
@@ -259,7 +259,7 @@ export default function DoctorViewInfo(props) {
                                                 <>{capitalize(data.affiliation)}</>
                                                 : <TextField variant="standard" sx={{}}
                                                     value={affiliation}
-                                                    InputProps={{ style: { fontSize: '12px' } }} 
+                                                    InputProps={{ style: { fontSize: '12px' } }}
                                                     onChange={(e) => {
                                                         setAffiliation(e.target.value);
                                                     }}
@@ -304,7 +304,7 @@ export default function DoctorViewInfo(props) {
                                     <Button variant="contained" sx={{ mt: "25px" }} onClick={onSubmit}>
                                         <SaveIcon sx={{ mr: "5px" }} /> Save Changes
                                     </Button>
-                                    <Button variant="outlined" sx={{mt: "25px"}} onClick={onCancel}>
+                                    <Button variant="outlined" sx={{ mt: "25px" }} onClick={onCancel}>
                                         <CancelIcon sx={{ mr: "5px" }} /> Cancel
                                     </Button>
                                 </>

@@ -282,7 +282,7 @@ export default function AdminViewDoctors() {
           {capitalize(row.name)}
         </Typography>
         <Typography variant="body2" gutterBottom>
-          email: {row.email}
+          Email: {row.email}
         </Typography>
 
         <Button onClick={() => handleAccept(row._id)} style={{ color: 'green' }}>
@@ -312,7 +312,7 @@ export default function AdminViewDoctors() {
                                   variant="body1"
                                   sx={{ textAlign: "left", mb: "5px" }}
                                 >
-                                  username:{" "} 
+                                  Username:{" "} 
                                   {row.username}
                                 </Typography>
     
@@ -320,7 +320,7 @@ export default function AdminViewDoctors() {
                                   variant="body1"
                                   sx={{ textAlign: "left", mb: "5px" }}
                                 >
-                                  dateOfBirth:{" "} 
+                                  Date Of Birth:{" "} 
                                   {row.dateOfBirth}
                                 </Typography>
 
@@ -328,7 +328,7 @@ export default function AdminViewDoctors() {
                                   variant="body1"
                                   sx={{ textAlign: "left", mb: "5px" }}
                                 >
-                                  affiliation:{" "} 
+                                  Affiliation:{" "} 
                                   {row.affiliation}
                                 </Typography>
     
@@ -336,7 +336,7 @@ export default function AdminViewDoctors() {
                                   variant="body1"
                                   sx={{ textAlign: "left", mb: "5px" }}
                                 >
-                                  education:{" "} 
+                                  Education:{" "} 
                                   {row.education}
                                 </Typography>
     
@@ -344,7 +344,7 @@ export default function AdminViewDoctors() {
                                   variant="body1"
                                   sx={{ textAlign: "left", mb: "5px" }}
                                 >
-                                  status:{" "} 
+                                  Status:{" "} 
                                   {row.status}
                                 </Typography>
     
@@ -352,7 +352,7 @@ export default function AdminViewDoctors() {
                                   variant="body1"
                                   sx={{ textAlign: "left", mb: "5px" }}
                                 >
-                                  speciality:{" "} 
+                                  Speciality:{" "} 
                                   {row.speciality}
                                 </Typography>
     
@@ -360,7 +360,7 @@ export default function AdminViewDoctors() {
                                   variant="body1"
                                   sx={{ textAlign: "left", mb: "5px" }}
                                 >
-                                  hourlyRate:{" "} 
+                                  Hourly Rate:{" "} 
                                   {row.hourlyRate}
                                 </Typography>
 
@@ -368,7 +368,7 @@ export default function AdminViewDoctors() {
                                   variant="body1"
                                   sx={{ textAlign: "left", mb: "5px" }}
                                 >
-                                  files:{" "} 
+                                  Files:{" "} 
                                   <ul>
                                   {row.files.map((file, index) => (
                                     <li key={index}>

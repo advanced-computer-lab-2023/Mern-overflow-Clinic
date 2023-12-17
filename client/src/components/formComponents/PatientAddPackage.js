@@ -4,6 +4,11 @@ import { useUser } from '../../userContest';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Grid, Typography, Card, CardActions, Button, CardContent } from '@mui/material';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import DiscountIcon from '@mui/icons-material/Discount';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import RedeemIcon from '@mui/icons-material/Redeem';
+import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
 
 const PatientAddPackage = () => {
   const [subscriptionType, setSubscriptionType] = useState('Yourself');
@@ -13,6 +18,8 @@ const PatientAddPackage = () => {
   const [selectedPackage, setSelectedPackage] = useState('');
   const [packageInfo, setPackageInfo] = useState({});
   const [subscriptionResult, setSubscriptionResult] = useState('');
+  const [selectedPatient, setSelectedPatient] = useState('');
+  const [myPackage, setMyPackage] = useState('');
 
   const { userId } = useUser();
   const navigate = useNavigate();
@@ -22,9 +29,18 @@ const PatientAddPackage = () => {
   useEffect(() => {
     // Fetch family members from MongoDB
     axios.get(`http://localhost:8000/patients/${id}`, { params: { id: id } })
-      .then(response => setFamilyMembers(response.data.familyMembers))
+      .then(response => {
+        setFamilyMembers(response.data.familyMembers);
+        setSelectedPatient(response.data);
+  
+        if (response.data.package) {
+          axios.get(`http://localhost:8000/packages/${response.data.package}`, { params: { id: response.data.package } })
+            .then(response => setMyPackage(response.data))
+            .catch(error => console.error('Error fetching package details:', error));
+        }
+      })
       .catch(error => console.error('Error fetching family members:', error));
-
+  
     // Fetch packages from MongoDB
     axios.get('http://localhost:8000/packages')
       .then(response => setPackages(response.data))
@@ -49,34 +65,21 @@ const PatientAddPackage = () => {
   };
 
   const handleSubscribe = () => {
-    // Perform the subscription logic using axios.post
-    // Include the necessary data like selectedFamilyMember, selectedPackage, etc.
-    // Update the subscriptionResult state based on the result of the post request
-    // Example:
-    // console.log("selectedPackage is equal to: " + selectedPackage);
-    // console.log("selectedFamilyMember is equal to: " + selectedFamilyMember);
-    // console.log("subscriptionType is equal to: " + subscriptionType);
-    // console.log("packageId is equal to: " + selectedPackage._id);
-    // console.log("familyMemberId is equal to: " + selectedFamilyMember._id);
     if (subscriptionType === 'Yourself' && selectedPackage) {
-      // console.log("subscriptionType1 is equal to: " + subscriptionType);
       axios.post(`http://localhost:8000/patients/${id}/packages/${selectedPackage}`, {
         params: { id: id, packageId: selectedPackage }
       })
         .then((res) => {
-          // setSubscriptionResult(res.data.message);
           navigate('/patient/pay/package', { state: { packageId: selectedPackage, famId: null } });
         })
         .catch((error) => {
           setSubscriptionResult('Error subscribing: ' + error.message);
         });
     } else if (subscriptionType === 'FamilyMember' && selectedPackage && selectedFamilyMember) {
-      // console.log("subscriptionType2 is equal to: " + subscriptionType);
       axios.post(`http://localhost:8000/patients/${id}/packages/${selectedFamilyMember}/${selectedPackage}`, {
         params: { id: id, pId: selectedFamilyMember, packageId: selectedPackage }
       })
         .then((res) => {
-          // setSubscriptionResult(res.data.message);
           navigate('/patient/pay/package', { state: { packageId: selectedPackage, famId: selectedFamilyMember } });
         })
         .catch((error) => {
@@ -87,31 +90,100 @@ const PatientAddPackage = () => {
     // window.location.reload();
   }
 
+  const handleCancelling = () => {
+    axios
+      .delete(`http://localhost:8000/patients/${id}/packages`, {
+        params: { id: id },
+      })
+      .then((res) => {
+        console.log(res.data);
+        window.location.reload();
+      });
+  }
+
   return (
 
-    <Container spacing={2} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+    <Container spacing={2} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '65vh' }}>
 
     <Grid item xs={12} md={4} >
-      <Card elevation={5} sx={{ height: '21em', width: '17em', marginRight: '1em', marginLeft: '2em', borderRadius: '0.8em' }}>
+      <Card elevation={5} sx={{ height: '30em', width: '18em', marginRight: '1em', marginLeft: '2em', borderRadius: '0.8em' }}>
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
             Your Package
           </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Lizards are a widespread group of squamate reptiles, with over 6,000
-            species, ranging across all continents except Antarctica
+          {myPackage ? (
+            <>
+          <Typography variant="body2" paragraph>
+            <RedeemIcon></RedeemIcon> {myPackage.name} Package
           </Typography>
+          <Typography variant="body2" paragraph>
+            <AttachMoneyIcon></AttachMoneyIcon> {myPackage.price} EGP
+          </Typography>
+          <Typography variant="body2" paragraph>
+            <DiscountIcon></DiscountIcon> {myPackage.discountOnDoctorSessions}% Discount on Doctor Sessions
+          </Typography>
+          <Typography variant="body2" paragraph>
+            <DiscountIcon></DiscountIcon> {myPackage.discountOnMedicine}% Discount on Medicine
+          </Typography>
+          <Typography variant="body2" paragraph>
+            <DiscountIcon></DiscountIcon> {myPackage.discountForFamily}% Discount for Family
+          </Typography>
+          {selectedPatient && selectedPatient.package && 
+            selectedPatient.subscribedToPackage === true && 
+            new Date(selectedPatient.packageRenewalDate).getTime() > Date.now() ? (
+            <Typography variant="body2" paragraph>
+              <CalendarMonthIcon></CalendarMonthIcon> Subscribed until {new Date(selectedPatient.packageRenewalDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+            </Typography>
+          ) : ( selectedPatient && selectedPatient.package && 
+            selectedPatient.subscribedToPackage === false && 
+            new Date(selectedPatient.packageRenewalDate).getTime() > Date.now() ? (
+            <Typography variant="body2" paragraph>
+              <CalendarMonthIcon></CalendarMonthIcon> Subscription Cancelled With End Date {new Date(selectedPatient.packageRenewalDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+            </Typography>
+          ) : (selectedPatient && (selectedPatient.package && 
+            new Date(selectedPatient.packageRenewalDate).getTime() <= Date.now())
+            || !selectedPatient.package ? (
+            <Typography variant="body2" paragraph>
+              <CalendarMonthIcon></CalendarMonthIcon> Not Subscribed
+            </Typography>
+          ) : null))}
+          </>
+          ) : (
+            <Typography variant="body2" color="textSecondary" sx={{ margin: '7em 3em 7em 3em' }}>
+              <CancelPresentationIcon /> No Package Available
+            </Typography>
+          )}
         </CardContent>
         <CardActions>
-          <Button size="small">Share</Button>
-          <Button size="small">Learn More</Button>
+        {myPackage ? (
+          selectedPatient && selectedPatient.package && 
+          selectedPatient.subscribedToPackage === true && 
+          new Date(selectedPatient.packageRenewalDate).getTime() > Date.now() ? (
+            <Button variant="contained" color="error" onClick={() => handleCancelling()} fullWidth>
+              Cancel Subscription
+            </Button>
+          ) : (
+            <Button disabled fullWidth>
+              Cancel Subscription
+            </Button>
+          )
+        ) : (
+          <Button disabled fullWidth>
+            Not Subscribed
+          </Button>
+        )}
         </CardActions>
       </Card>
     </Grid>
     
     <Grid item xs={12} md={8} >
     <div className="d-grid vh-75 bg-white justify-content-center align-items-center p-5">
-      <div className='d-grid justify-content-center align-items-center bg-blue border-5 border rounded p-3' style={{ height: '21em', width: '70em' }}>
+      <div className='d-grid justify-content-center align-items-center bg-blue border-5 border rounded p-3' style={{ height: '30em', width: '70em' }}>
+        
+        <Typography variant="h5" component="div">
+          <CalendarMonthIcon></CalendarMonthIcon> Subscribe to a Package
+        </Typography>
+        
         <div style={styles.row} className='d-grid align-items-center justify-content-center'>
           <label>
             <input
@@ -203,12 +275,6 @@ const PatientAddPackage = () => {
 
 const styles = {
 
-  // body: {
-  //   display: 'flex',
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   height: '100vh'
-  // },
   container: {
     padding: '20px',
     border: '1px solid #ccc',

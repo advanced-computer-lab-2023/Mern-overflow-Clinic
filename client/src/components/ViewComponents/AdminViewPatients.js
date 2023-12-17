@@ -252,15 +252,15 @@ export default function AdminViewPatients() {
 
   // Use an object to store the open state for each row
  // Initialize an object with row IDs as keys, and their respective open/closed states
- const [openRows, setOpenRows] = useState({});
+//  const [openRows, setOpenRows] = useState({});
 
-  const handleRowToggle = (rowId) => {
-    // Use the current state to update the specific row's open/closed state
-    setOpenRows((prevOpenRows) => ({
-      ...prevOpenRows,
-      [rowId]: !prevOpenRows[rowId],
-  }));
-  };
+//   const handleRowToggle = (rowId) => {
+//     // Use the current state to update the specific row's open/closed state
+//     setOpenRows((prevOpenRows) => ({
+//       ...prevOpenRows,
+//       [rowId]: !prevOpenRows[rowId],
+//   }));
+//   };
 
   
 //     <TableContainer>
@@ -337,7 +337,10 @@ export default function AdminViewPatients() {
 //       </Table>
 //     </TableContainer>
 return (
-  
+
+  <div style={{ textAlign: 'center', paddingTop: '20px' }}>
+
+  <h1>Patients</h1>
 
 <Container
                 sx={{
@@ -350,6 +353,10 @@ return (
                   justifyContent: "space-between",
                 }}
               >
+
+
+                
+
 <Snackbar
   open={successOpen}
   autoHideDuration={3000}
@@ -378,7 +385,6 @@ return (
     {errorMessage}
   </Alert>
 </Snackbar> 
-
 {data.map((row) => {
   return (
     <Paper
@@ -512,6 +518,7 @@ return (
       </Dialog>
 
 </Container>
+</div>
 );
 
   

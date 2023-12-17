@@ -206,100 +206,12 @@ export default function AdminViewDoctors() {
 
  
 
-  // return (
-  //   <div>
-  //     {/* {errorMessage && <div style={styles.errorMessage}>{errorMessage}</div>} */}
-      
-
-  //      <Snackbar
-  //       open={successOpen}
-  //       autoHideDuration={3000}
-  //       onClose={handleSuccessClose}
-  //     >
-  //       <Alert
-  //         elevation={6}
-  //         variant="filled"
-  //         onClose={handleSuccessClose}
-  //         severity="success"
-  //       >
-  //         {successMessage}
-  //       </Alert>
-  //     </Snackbar>
-  //     <Snackbar
-  //       open={errorOpen}
-  //       autoHideDuration={3000}
-  //       onClose={handleErrorClose}
-  //     >
-  //       <Alert
-  //         elevation={6}
-  //         variant="filled"
-  //         onClose={handleErrorClose}
-  //         severity="error"
-  //       >
-  //         {errorMessage}
-  //       </Alert>
-  //     </Snackbar> 
-
-  //   <TableContainer component={Paper} style={{ paddingTop: 50 }}>
-  //         <Table>
-  //           <TableHead>
-  //             <StyledTableRow>
-  //               {columns.map((column) => (
-  //                 <StyledTableCell key={column.key} sx={{ fontWeight: 'bold' }}>{column.label}</StyledTableCell>
-  //               ))}
-  //             </StyledTableRow>
-  //           </TableHead>
-  //           <TableBody>
-  //             {filteredData.map((row) => (
-  //               <StyledTableRow key={row.username}>
-  //                 <StyledTableCell>{row.username}</StyledTableCell>
-  //                 <StyledTableCell>{row.name}</StyledTableCell>
-  //                 <StyledTableCell>{row.email}</StyledTableCell>
-  //                 <StyledTableCell>{row.dateOfBirth}</StyledTableCell>
-  //                 <StyledTableCell>{row.affiliation}</StyledTableCell>
-  //                 <StyledTableCell>{row.education}</StyledTableCell>
-  //                 <StyledTableCell>{row.status}</StyledTableCell>
-  //                 <StyledTableCell>{row.speciality}</StyledTableCell>
-  //                 <StyledTableCell>{row.hourlyRate}</StyledTableCell>
-  //                 <StyledTableCell>{
-  //                   <ul>
-  //                     {row.files.map((file, index) => (
-  //                     <li key={index}>{file.filename}
-  //                     <a href = {`http://localhost:8000/uploads/` + file.filename} target = "_blank">            View</a></li>
-  //                     ))}
-  //                   </ul>}
-  //                 </StyledTableCell>
-  //                 <StyledTableCell>
-  //                   <IconButton onClick={() => handleDeleteClick(row._id)}>
-  //                     <DeleteIcon />
-  //                   </IconButton>
-  //                 </StyledTableCell>
-  //               </StyledTableRow>
-  //             ))}
-  //           </TableBody>
-  //         </Table>
-
-  //         <Dialog open={deleteConfirmation.open} onClose={handleDeleteCancel}>
-  //       <DialogTitle>Confirm Delete</DialogTitle>
-  //       <DialogContent>
-  //         Are you sure you want to delete this item?
-  //       </DialogContent>
-  //       <DialogActions>
-  //         <Button onClick={handleDeleteCancel} color="primary">
-  //           Cancel
-  //         </Button>
-  //         <Button onClick={handleDeleteConfirm} style={{ color: 'red' }} autoFocus>
-  //           Delete
-  //         </Button>
-  //       </DialogActions>
-  //     </Dialog>
-
-  //   </TableContainer>
-  //   </div>
-  // );
-
+  
   return (
   
+    <div style={{ textAlign: 'center', paddingTop: '20px' }}>
+
+  <h1>Doctors</h1>
 
     <Container
                     sx={{
@@ -492,6 +404,7 @@ export default function AdminViewDoctors() {
           </Dialog>
     
     </Container>
+    </div>
     );
 
 }

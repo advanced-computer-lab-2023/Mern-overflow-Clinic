@@ -15,8 +15,17 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
 import sha256 from "js-sha256";
+import { useUser } from "../../userContest";
+import PatientDashboard from "../patient/PatientDashboard";
+import AdminDashboard from "../admin/AdminDashboard";
+import DoctorDashboard from "../doctor/DoctorDashboard";
+
+
+
+
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+
 
 const GridContainer = styled(Grid)`
   display: flex;
@@ -31,6 +40,7 @@ const theme = createTheme({
 });
 
 export default function ChangePassword() {
+  const { userId, setUserId, userRole, setUserRole } = useUser();
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
@@ -114,6 +124,21 @@ export default function ChangePassword() {
   );
 
   return (
+    <>
+  {userRole === "Patient" ? (
+    <>
+      <PatientDashboard title="Change Password" />
+    </>
+  ) : userRole === "Admin" ? (
+    <>
+      <AdminDashboard title="Change Password" />    </>
+  ) : userRole === "Doctor" ? (
+    <>
+      <DoctorDashboard title="Change Password" />
+    </>
+  ) : (
+    <p>Excuse me, who are you?</p>
+  )}
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -140,5 +165,7 @@ export default function ChangePassword() {
         </GridContainer>
       </Container>
     </ThemeProvider>
+</>
+  
   );
 }

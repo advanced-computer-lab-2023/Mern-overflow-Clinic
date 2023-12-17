@@ -99,6 +99,7 @@ const DoctorDashboard = (props) => {
                 <ListItemIcon>
                   <ContractsIcon style={{ color: 'black' }} /> {/* Contracts icon */}
                   
+                  
                 </ListItemIcon>
                 <ListItemText primary="My Contracts" />
               </ListItemButton>

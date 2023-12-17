@@ -207,6 +207,7 @@ export default function DoctorViewAppointments() {
     axios
       .get(`http://localhost:8000/patients/${userId}/completedAppointments`)
       .then((res) => {
+        console.log("API Response:", res.data);
         setData(res.data);
       })
       .catch((error) => {

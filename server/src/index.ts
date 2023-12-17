@@ -77,31 +77,36 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-app.get("/google", (req, res) => {
+app.get("/google/:id/:email1/:email2", (req, res) => {
+
   const url = oauth2Client.generateAuthUrl({
     access_type: "offline",
     scope: scopes,
+    state: Buffer.from(JSON.stringify(req.params)).toString('base64'),
   });
 
   res.redirect(url);
 });
 
-app.get("/google/redirect", async (req, res) => {
-  const code: any = req.query.code;
+// app.get("/google/redirect", async (req, res) => {
 
+//   console.log("I am still here");
+//   res.send({
+//     msg: "You have successfully logged in",
+//   });
+// });
+
+app.get("/call", async (req, res) => {
+  //TODO:axios.get("http://localhost:8000/google");
+
+  const code: any = req.query.code;
   const { tokens } = await oauth2Client.getToken(code);
   oauth2Client.setCredentials(tokens);
 
-  res.send({
-    msg: "You have successfully logged in",
-  });
-});
+  const state:any = req.query.state;
+  const info = JSON.parse(Buffer.from(state,'base64').toString('utf-8'));
+  const {id, email1, email2} = info;
 
-app.get("/call/:id/:email1/:email2", async (req, res) => {
-  //TODO:axios.get("http://localhost:8000/google");
-  console.log("call");
-
-  const { id, email1, email2 } = req.params;
   const LoggedInUserName = (await User.findById(id))?.username;
   const emailLoggedInUser = (await User.findById(id))?.email;
   let receiverId;
@@ -142,16 +147,14 @@ app.get("/call/:id/:email1/:email2", async (req, res) => {
     },
   });
 
-  console.log(meet.data.hangoutLink);
+  console.log(LoggedInUserName+" "+receiverId.toString()+" "+meet.data.hangoutLink);
   NotificationController.createNotificationwithId(
     receiverId.toString(),
     `${LoggedInUserName} is trying to video call you `,
     meet.data.hangoutLink + ""
   );
-
-  res.status(200).send({
-    link: meet.data.hangoutLink,
-  });
+  const meetlink:any =meet.data.hangoutLink; 
+  res.redirect(meetlink);
 });
 
 app.use(cors(corsOptions));

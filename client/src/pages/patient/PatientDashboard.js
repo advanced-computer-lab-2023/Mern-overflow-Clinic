@@ -18,13 +18,16 @@ import {
   ListItemText,
   Divider,
 } from "@mui/material";
+import EventRepeatIcon from '@mui/icons-material/EventRepeat';
 import Avatar from "@mui/material/Avatar";
 import FamilyRestroomIcon from "@mui/icons-material/FamilyRestroom";
 import MedicationIcon from "@mui/icons-material/Medication";
 import FileIcon from '@mui/icons-material/InsertDriveFile';
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import DescriptionIcon from '@mui/icons-material/Description';
 import TodayIcon from "@mui/icons-material/Today";
 import LinkIcon from '@mui/icons-material/Link';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import InfoIcon from '@mui/icons-material/Info';
 import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
 import PasswordIcon from '@mui/icons-material/Password';
@@ -53,10 +56,10 @@ const PatientDashboard = (props) => {
                       padding: 0,
                     }}
                   >
-                    <InfoIcon sx={{ width: 30, height: 30 }} />
+                    <AccountCircleIcon sx={{ width: 25, height: 25 }} />
                   </Avatar>
                 </ListItemIcon>
-                <ListItemText primary="My Information" />
+                <ListItemText primary="My Profile" />
               </ListItemButton>
             </ListItem>
           </List>
@@ -75,7 +78,7 @@ const PatientDashboard = (props) => {
                       padding: 0,
                     }}
                   >
-                    <FamilyRestroomIcon sx={{ width: 30, height: 30 }} />
+                    <FamilyRestroomIcon sx={{ width: 25, height: 25 }} />
                   </Avatar>
                 </ListItemIcon>
                 <ListItemText primary="Family" />
@@ -97,7 +100,7 @@ const PatientDashboard = (props) => {
                       padding: 0,
                     }}
                   >
-                    <AccountBoxIcon sx={{ width: 30, height: 30 }} />
+                    <AccountBoxIcon sx={{ width: 25, height: 25 }} />
                   </Avatar>
                 </ListItemIcon>
                 <ListItemText primary="Doctors" />
@@ -119,7 +122,7 @@ const PatientDashboard = (props) => {
                       padding: 0,
                     }}
                   >
-                    <TodayIcon sx={{ width: 30, height: 30 }} />
+                    <TodayIcon sx={{ width: 25, height: 25 }} />
                   </Avatar>
                 </ListItemIcon>
                 <ListItemText primary="My Appointments" />
@@ -141,7 +144,7 @@ const PatientDashboard = (props) => {
                       padding: 0,
                     }}
                   >
-                    <AccountBoxIcon sx={{ width: 30, height: 30 }} />
+                    <DescriptionIcon sx={{ width: 25, height: 25 }} />
                   </Avatar>
                 </ListItemIcon>
                 <ListItemText primary="My Health Records" />
@@ -163,7 +166,7 @@ const PatientDashboard = (props) => {
                       padding: 0,
                     }}
                   >
-                    <HistoryEduIcon sx={{ width: 30, height: 30 }} />
+                    <HistoryEduIcon sx={{ width: 25, height: 25 }} />
                   </Avatar>
                 </ListItemIcon>
                 <ListItemText primary="My Prescriptions" />
@@ -176,7 +179,7 @@ const PatientDashboard = (props) => {
                   <ListItemButton component={Link} to='/patient/documents'>
                       <ListItemIcon>
                           <Avatar sx={{ m: 0, bgcolor: 'white', color: 'black', width: 30, height: 30, padding: 0 }}>
-                              <FileIcon sx={{ width: 30, height: 30 }} />
+                              <FileIcon sx={{ width: 25, height: 25 }} />
                           </Avatar>
                       </ListItemIcon>
                       <ListItemText primary="My Documents" />
@@ -189,7 +192,7 @@ const PatientDashboard = (props) => {
                   <ListItemButton component={Link} to='/patient/packages'>
                       <ListItemIcon>
                           <Avatar sx={{ m: 0, bgcolor: 'white', color: 'black', width: 30, height: 30, padding: 0 }}>
-                              <InventoryIcon sx={{ width: 30, height: 30 }} />
+                              <InventoryIcon sx={{ width: 25, height: 25 }} />
                           </Avatar>
                       </ListItemIcon>
                       <ListItemText primary="My Packages" />
@@ -201,34 +204,12 @@ const PatientDashboard = (props) => {
                   <ListItemButton component={Link} to='/patient/followups'>
                       <ListItemIcon>
                           <Avatar sx={{ m: 0, bgcolor: 'white', color: 'black', width: 30, height: 30, padding: 0 }}>
-                              <InventoryIcon sx={{ width: 30, height: 30 }} />
+                              <EventRepeatIcon sx={{ width: 25, height: 25 }} />
                           </Avatar>
                       </ListItemIcon>
                       <ListItemText primary="FollowUps" />
                   </ListItemButton>
               </ListItem>
-          </List>
-          <Divider />
-          <List>
-            <ListItem disablePadding>
-              <ListItemButton component={Link} to="/auth/changepassword">
-                <ListItemIcon>
-                  <Avatar
-                    sx={{
-                      m: 0,
-                      bgcolor: "white",
-                      color: "black",
-                      width: 30,
-                      height: 30,
-                      padding: 0,
-                    }}
-                  >
-                    <PasswordIcon sx={{ width: 30, height: 30 }} />
-                  </Avatar>
-                </ListItemIcon>
-                <ListItemText primary="Change My Password" />
-              </ListItemButton>
-            </ListItem>
           </List>
           <Divider />
           <List>
@@ -245,7 +226,7 @@ const PatientDashboard = (props) => {
                       padding: 0,
                     }}
                   >
-                    <SmsIcon sx={{ width: 30, height: 30 }} />
+                    <SmsIcon sx={{ width: 25, height: 25 }} />
                   </Avatar>
                 </ListItemIcon>
                 <ListItemText primary="Chat/Videocall Doctors" />

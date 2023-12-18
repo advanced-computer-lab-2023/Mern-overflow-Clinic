@@ -419,7 +419,7 @@ const DoctorViewPrescriptionDetails = ({ match }) => {
                       <Button variant="contained" onClick={() => handleEditClick(selectedMedicine?._id)} sx={{ margin: '0.5em', width: '80%' }}>
                         Edit Medicine
                       </Button>
-                      <Button variant="contained" onClick={() => handleDeleteClick(selectedMedicine?._id)} sx={{ margin: '0.5em', width: '80%', backgroundColor: 'red' }}>
+                      <Button variant="contained" color="error" onClick={() => handleDeleteClick(selectedMedicine?._id)} sx={{ margin: '0.5em', width: '80%' }}>
                         Delete Medicine
                       </Button>
                     </Grid>

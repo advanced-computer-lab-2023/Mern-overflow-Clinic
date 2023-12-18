@@ -4,6 +4,9 @@ import { Popover } from '@mui/material';
 import { Avatar } from "@chakra-ui/avatar";
 import { BellIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import { Link } from 'react-router-dom';
+import { Container, Typography, IconButton, Grid } from '@mui/material';
+import { Facebook, Twitter, Instagram, LinkedIn } from '@mui/icons-material';
+import FacebookIcon from '@mui/icons-material/Facebook';
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import {
 	AppBar,
@@ -14,9 +17,7 @@ import {
 	Fab,
 	Divider,
 	Drawer,
-	IconButton,
 	Toolbar,
-	Typography,
 } from "@mui/material";
 import axios from "axios";
 import * as React from "react";
@@ -27,6 +28,7 @@ import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import CloseIcon from "@mui/icons-material/Close";
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import NotificationImportantIcon from '@mui/icons-material/NotificationImportant';
+import CallIcon from '@mui/icons-material/Call';
 import Menu from '@mui/material/Menu';
 import logo from "../assets/photos/logo.png";
 import MenuItem from '@mui/material/MenuItem';
@@ -207,6 +209,23 @@ export default function ButtonAppBar(props) {
 						<Typography variant="h6" component="div" sx={{ flexGrow: 1, textAlign: "left" }}>
 							{props.title}
 						</Typography>
+						<Grid sx={{ marginRight: '43em' }} >
+							<a href="https://www.facebook.com/el7a2nycaree" target="_blank" rel="noopener noreferrer">
+								<IconButton color="white" aria-label="Facebook">
+								<Facebook />
+								</IconButton>
+							</a>
+							<a href="https://twitter.com/el7a2nycaree" target="_blank" rel="noopener noreferrer">
+								<IconButton color="white" aria-label="Twitter">
+								<Twitter />
+								</IconButton>
+							</a>
+							<a href="https://www.instagram.com/el7a2nycaree" target="_blank" rel="noopener noreferrer">
+								<IconButton color="white" aria-label="Instagram">
+								<Instagram />
+								</IconButton>
+							</a>
+						</Grid>
 						<div>
 							<IconButton onClick={handleClick} color="inherit">
 								{newNotifications ? (
